@@ -56,7 +56,7 @@ import {keyframes} from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import {LoadingButton} from "@mui/lab";
-import BytesCard from "../components/BytesCard";
+import BytesCard from "@/components/BytesCard";
 import {programmingLanguages} from "../services/vars";
 import AboutBytesIcon from "../components/Icons/bytes/AboutPage";
 import {AwesomeButton} from "react-awesome-button";
