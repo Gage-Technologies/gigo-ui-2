@@ -1,7 +1,7 @@
 import React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
 import { Icon } from "@material-ui/core";
-import pro from './premium_gorilla_pro.svg'
+import pro from '@/img/pro/premium_gorilla_pro.svg'
 const CustomSvgIcon = (props: any) => {
     return (
         <SvgIcon {...props}>

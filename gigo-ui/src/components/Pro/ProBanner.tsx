@@ -1,7 +1,7 @@
 import React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
 import { Icon } from "@material-ui/core";
-import ProBanner from '../../img/proBanner.svg'
+import ProBanner from '@/img/pro/proBanner.svg'
 // function ProBannerIcon(props: any){
 //     return (
 //         <SvgIcon {...props} viewBox="0 0 217.78821 226.17276">
