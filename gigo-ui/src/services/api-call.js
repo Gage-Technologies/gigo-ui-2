@@ -5,7 +5,7 @@ import config from "../config";
 import JSZip from "jszip";
 import swal from "sweetalert";
 import { Buffer } from "buffer";
-import { store } from "../app/store";
+import { store } from "@/reducers/store";
 import { initialAuthState, updateAuthState } from "@/reducers/auth/auth";
 import { resetAppWrapper } from "@/reducers/appWrapper/appWrapper";
 import { clearProjectState } from "@/reducers/createProject/createProject";
