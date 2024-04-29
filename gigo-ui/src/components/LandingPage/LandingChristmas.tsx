@@ -2,14 +2,14 @@ import React, { useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 
-import backgroundImageWebP from "../../img/gigo-landing-christmas.webp"
-import backgroundImageLargeWebP from "../../img/gigo-landing-christmas-large.webp"
-import { useAppSelector } from '../../app/hooks';
-import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '../../reducers/appWrapper/appWrapper';
-import { getAllTokens, themeHelpers } from '../../theme';
+import backgroundImageWebP from "@/img/landing/gigo-landing-christmas.webp"
+import backgroundImageLargeWebP from "@/img/landing/gigo-landing-christmas-large.webp"
+import { useAppSelector } from '@/reducers/hooks';
+import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
+import { getAllTokens, themeHelpers } from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../Icons/GigoCircleLogo';
+import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Snowfall from 'react-snowfall';
 
 

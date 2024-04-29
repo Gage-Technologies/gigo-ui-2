@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
-import backgroundImageWebP from "../../img/gigo-landing-mobile.webp";
-import { getAllTokens, themeHelpers } from '../../theme';
+import backgroundImageWebP from "@/img/landing/gigo-landing-mobile.webp";
+import { getAllTokens, themeHelpers } from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../Icons/GigoCircleLogo';
+import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 
 // Responsive Hero container for mobile
 const HeroContainer = styled(Box)(({ theme }) => ({
