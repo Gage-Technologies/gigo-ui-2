@@ -31,8 +31,8 @@ import {
   selectAuthStateId,
   selectAuthStateTutorialState,
   updateAuthState,
-} from "../reducers/auth/auth";
-import {useAppDispatch, useAppSelector} from "../app/hooks";
+} from "@/reducers/auth/auth";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import XpPopup from "../components/XpPopup";
 import MoonLoader from "react-spinners/MoonLoader";
 import useInfiniteScroll from "../hooks/infiniteScroll";
