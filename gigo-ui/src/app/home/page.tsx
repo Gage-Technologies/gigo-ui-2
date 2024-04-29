@@ -37,7 +37,7 @@ import XpPopup from "@/components/xp/XpPopup";
 import MoonLoader from "react-spinners/MoonLoader";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import LazyLoad from 'react-lazyload';
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "../reducers/appWrapper/appWrapper";
+import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 //@ts-ignore
 import ReactGA from "react-ga4";
 import ProjectCardLongStyle from "@/components/project/ProjectCardLongStyle";
@@ -57,7 +57,7 @@ import StarIcon from '@mui/icons-material/Star';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import {LoadingButton} from "@mui/lab";
 import BytesCard from "@/components/BytesCard";
-import {programmingLanguages} from "../services/vars";
+import {programmingLanguages} from "@/services/vars";
 import AboutBytesIcon from "../components/Icons/bytes/AboutPage";
 import {AwesomeButton} from "react-awesome-button";
 import JourneyIcon from "../components/Icons/bytes/JourneyIcon";
