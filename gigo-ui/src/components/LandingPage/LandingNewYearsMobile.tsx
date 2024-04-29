@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
-import backgroundImageWebP from "../../img/gigo-landing-new-years-mobile.webp";
+import backgroundImageWebP from "@/img/landing/gigo-landing-new-years-mobile.webp";
 import { getAllTokens, themeHelpers } from '@/theme';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';

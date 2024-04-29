@@ -2,8 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 
-import backgroundImageWebP from "../../img/gigo-landing-valentines.webp"
-import backgroundImageLargeWebP from "../../img/gigo-landing-valentines-large.webp"
+import backgroundImageWebP from "@/img/landing/gigo-landing-valentines.webp"
+import backgroundImageLargeWebP from "@/img/landing/gigo-landing-valentines-large.webp"
 import { useAppSelector } from '@/reducers/hooks';
 import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
 import { getAllTokens, themeHelpers } from '@/theme';
