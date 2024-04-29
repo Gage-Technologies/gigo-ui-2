@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import config from "../../config";
 import LottieAnimation from "../../components/LottieAnimation";
-import ProBannerCircle from "@/components/pro/ProBannerCircle";
+import ProBannerCircle from "@/components/Pro/ProBannerCircle";
 import { Buffer } from 'buffer';
 
 interface IProps {

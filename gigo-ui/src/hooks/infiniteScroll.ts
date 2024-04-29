@@ -4,7 +4,7 @@ import {debounce} from "@mui/material";
 type FetchCallback = () => Promise<void>;
 
 /**
- * Infinite scroll hook to fetch more data when user scrolls to the bottom of the page
+ * Infinite scroll hook to fetch more data when User scrolls to the bottom of the page
  * @param disableInfiniteScroll
  * @param callback function that is called to fetch more data
  * @param initialize whether to call the callback function on initial render

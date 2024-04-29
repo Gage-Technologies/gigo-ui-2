@@ -151,11 +151,11 @@ async function chunkFile(
       if (completionCallback === null) {
         // check upload success
         if (res === undefined || !("message" in res)) {
-          // notify user of failure
+          // notify User of failure
           if (sessionStorage.getItem("alive") === "true")
             swal("File Upload: " + args["name"] + " Failed.");
         } else {
-          // notify user of success
+          // notify User of success
           if (sessionStorage.getItem("alive") === "true") swal(res["message"]);
         }
       } else {
@@ -182,7 +182,7 @@ async function chunkFile(
   // execute recursive file chunk reader
   await reader.readAsArrayBuffer(file.slice(offset, endOffset));
 
-  // alert user to the upload start
+  // alert User to the upload start
   // if (sessionStorage.getItem("alive") === "true")
   //   swal(
   //     "File Upload Is Starting. You can continue to navigate the site as normal." +
@@ -210,7 +210,7 @@ async function apiCall(
   // create variable to hold body content
   let body = null;
 
-  // handle user credentials if they were passed
+  // handle User credentials if they were passed
   if (username != null) {
     // assemble auth header with credentials
     headers.append(

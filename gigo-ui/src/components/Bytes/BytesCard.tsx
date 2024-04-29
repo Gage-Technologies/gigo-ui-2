@@ -19,10 +19,10 @@ import { string } from "prop-types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BytesEasyBadge from "@/icons/bytes/BytesEasyBadge";
-import BytesMediumBadge from "@/icons/bytes/BytesMediumBadge";
-import BytesHardBadge from "@/icons/bytes/BytesHardBadge";
-import BytesLanguage from "@/icons/bytes/BytesLanguage";
+import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
+import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
+import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
+import BytesLanguage from "@/icons/Bytes/BytesLanguage";
 
 
 interface IProps {

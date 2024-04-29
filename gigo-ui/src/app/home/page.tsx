@@ -18,7 +18,7 @@ import {
   Typography
 } from "@mui/material";
 import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "@/theme";
-import ProjectCard from "@/components/project/ProjectCard";
+import ProjectCard from "@/components/Project/ProjectCard";
 import {useNavigate} from "react-router-dom";
 import config from "@/config";
 import call from "@/services/api-call";
@@ -33,36 +33,36 @@ import {
   updateAuthState,
 } from "@/reducers/auth/auth";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
-import XpPopup from "@/components/xp/XpPopup";
+import XpPopup from "@/components/Xp/XpPopup";
 import MoonLoader from "react-spinners/MoonLoader";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import LazyLoad from 'react-lazyload';
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 //@ts-ignore
 import ReactGA from "react-ga4";
-import ProjectCardLongStyle from "@/components/project/ProjectCardLongStyle";
+import ProjectCardLongStyle from "@/components/Project/ProjectCardLongStyle";
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ArrowBackIosNewSharpIcon from '@mui/icons-material/ArrowBackIosNewSharp';
-import GIGOLandingPage from "@/components/landingPage/Landing";
-import GIGOLandingPageMobile from "@/components/landingPage/LandingMobile";
-import GIGOLandingPageChristmas from "@/components/landingPage/LandingChristmas";
-import GIGOLandingPageChristmasMobile from "@/components/landingPage/LandingChristmasMobile";
-import GIGOLandingPageNewYearsMobile from "@/components/landingPage/LandingNewYearsMobile";
-import GIGOLandingPageNewYears from "@/components/landingPage/LandingNewYears";
-import GIGOLandingPageValentines from "@/components/landingPage/LandingValentines";
-import GIGOLandingPageValentinesMobile from "@/components/landingPage/LandingValentinesMobile";
+import GIGOLandingPage from "@/components/LandingPage/Landing";
+import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
+import GIGOLandingPageChristmas from "@/components/LandingPage/LandingChristmas";
+import GIGOLandingPageChristmasMobile from "@/components/LandingPage/LandingChristmasMobile";
+import GIGOLandingPageNewYearsMobile from "@/components/LandingPage/LandingNewYearsMobile";
+import GIGOLandingPageNewYears from "@/components/LandingPage/LandingNewYears";
+import GIGOLandingPageValentines from "@/components/LandingPage/LandingValentines";
+import GIGOLandingPageValentinesMobile from "@/components/LandingPage/LandingValentinesMobile";
 import {keyframes} from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import {LoadingButton} from "@mui/lab";
-import BytesCard from "@/components/BytesCard";
+import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
-import BytesIcon from "@/icons/bytes/BytesIcon";
+import BytesIcon from "@/icons/Bytes/BytesIcon";
 import {AwesomeButton} from "react-awesome-button";
-import JourneyIcon from "../components/Icons/bytes/JourneyIcon";
-import BytesCardMobile from "../components/BytesCardMobile";
-import SheenPlaceholder from "../components/Loading/SheenPlaceholder";
+import JourneyIcon from "../components/Icons/Bytes/JourneyIcon";
+import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
+import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 
 const gradientAnimation = keyframes`
     0% {
@@ -220,7 +220,7 @@ function Home() {
     // we make up to 3 attempts to retrieve the next block of data
     for (let i = 0; i < 3; i++) {
       let rec = await call(
-          "/api/project/recommended",
+          "/api/Project/recommended",
           "post",
           null,
           null,
@@ -263,7 +263,7 @@ function Home() {
 
   const loadByteData = async () => {
     let bytes = await call(
-        "/api/bytes/getRecommendedBytes",
+        "/api/Bytes/getRecommendedBytes",
         "post",
         null,
         null,
@@ -282,7 +282,7 @@ function Home() {
   const apiLoad = async () => {
     if ((activeData.length === 0 || recData.length === 0 || followData.length === 0 || topRec.length === 0) && loggedIn) {
       let active = call(
-          "/api/project/active",
+          "/api/Project/active",
           "post",
           null,
           null,
@@ -294,7 +294,7 @@ function Home() {
       )
 
       let follow = call(
-          "/api/project/following",
+          "/api/Project/following",
           "post",
           null,
           null,
@@ -306,7 +306,7 @@ function Home() {
       )
 
       let top = call(
-          "/api/project/top",
+          "/api/Project/top",
           "post",
           null,
           null,
@@ -492,34 +492,34 @@ function Home() {
   //                 <Carousel show={(document.documentElement.clientWidth < 1000 ? 1 : 4)}>
   //                     {
   //                         //@ts-ignore
-  //                         userProjects.map((project, index) => {
+  //                         userProjects.map((Project, index) => {
   //                             return (
   //                                 <div className={'attempt'} style={{ paddingBottom: "10px" }}>
   //                                     <LazyLoad once scroll unmountIfInvisible>
-  //                                         <projectCard
+  //                                         <ProjectCard
   //                                             height={"23vh"}
   //                                             imageHeight={"23vh"}
   //                                             width={(chatOpen || sidebarOpen) ? "16vw" : (document.documentElement.clientWidth < 1000 ? 'fit-content' : '20vw')}
   //                                             imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}
-  //                                             projectId={project["_id"]}
-  //                                             projectTitle={project["title"]}
-  //                                             projectDesc={project["description"]}
-  //                                             projectThumb={config.rootPath + project["thumbnail"]}
-  //                                             projectDate={project["updated_at"]}
-  //                                             projectType={project["post_type_string"]}
-  //                                             renown={project["tier"]}
-  //                                             onClick={() => navigate("/challenge/" + project["_id"])}
+  //                                             projectId={Project["_id"]}
+  //                                             projectTitle={Project["title"]}
+  //                                             projectDesc={Project["description"]}
+  //                                             projectThumb={config.rootPath + Project["thumbnail"]}
+  //                                             projectDate={Project["updated_at"]}
+  //                                             projectType={Project["post_type_string"]}
+  //                                             renown={Project["tier"]}
+  //                                             onClick={() => navigate("/challenge/" + Project["_id"])}
   //                                             userTier={authState.tier}
-  //                                             userThumb={config.rootPath + "/static/user/pfp/" + authState.id}
+  //                                             userThumb={config.rootPath + "/static/User/pfp/" + authState.id}
   //                                             userId={authState.id}
   //                                             username={authState.userName}
   //                                             backgroundName={authState.backgroundName}
   //                                             backgroundPalette={authState.backgroundColor}
   //                                             backgroundRender={authState.backgroundRenderInFront}
-  //                                             exclusive={project["challenge_cost"] === null ? false : true}
+  //                                             exclusive={Project["challenge_cost"] === null ? false : true}
   //                                             hover={false}
   //                                             role={authState.role}
-  //                                             estimatedTime={project["estimated_tutorial_time_millis"]}
+  //                                             estimatedTime={Project["estimated_tutorial_time_millis"]}
   //                                         />
   //                                     </LazyLoad>
   //                                 </div>
@@ -535,7 +535,7 @@ function Home() {
   const [currentProjectTimeout, setCurrentProjectTimeout] = useState<NodeJS.Timer | null>(null)
 
   const nextProject = () => {
-    // disable auto scroll if the user click
+    // disable auto scroll if the User click
     if (currentProjectTimeout) {
       clearInterval(currentProjectTimeout)
       setCurrentProjectTimeout(null)
@@ -544,7 +544,7 @@ function Home() {
   };
 
   const prevProject = () => {
-    // disable auto scroll if the user click
+    // disable auto scroll if the User click
     if (currentProjectTimeout) {
       clearInterval(currentProjectTimeout)
       setCurrentProjectTimeout(null)
@@ -631,7 +631,7 @@ function Home() {
                             renown={topRec[currentProjectIndex]["tier"]}
                             onClick={() => navigate("/challenge/" + topRec[currentProjectIndex]["_id"])}
                             userTier={topRec[currentProjectIndex]["user_tier"]}
-                            userThumb={config.rootPath + "/static/user/pfp/" + topRec[currentProjectIndex]["author_id"]}
+                            userThumb={config.rootPath + "/static/User/pfp/" + topRec[currentProjectIndex]["author_id"]}
                             userId={topRec[currentProjectIndex]["author_id"]}
                             username={topRec[currentProjectIndex]["author"]}
                             backgroundName={topRec[currentProjectIndex]["background_name"]}
@@ -825,7 +825,7 @@ function Home() {
       )
     } else {
       return (
-          // TODO check if user has an active journey -- change for mobile --
+          // TODO check if User has an active journey -- change for mobile --
           <>
             <Box sx={{width: "100%", height: "500px", zIndex: 3, m: 2, borderRadius: "12px"}}>
               <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
@@ -1131,7 +1131,7 @@ function Home() {
                                   renown={project["tier"]}
                                   onClick={() => navigate("/attempt/" + project["_id"])}
                                   userTier={authState.tier}
-                                  userThumb={config.rootPath + "/static/user/pfp/" + authState.id}
+                                  userThumb={config.rootPath + "/static/User/pfp/" + authState.id}
                                   userId={authState.id}
                                   username={authState.userName}
                                   backgroundName={authState.backgroundName}
@@ -1203,7 +1203,7 @@ function Home() {
                                 bytesId={project["_id"]}
                                 bytesTitle={project["name"]}
                                 bytesDesc={project["description_medium"]}
-                                bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
+                                bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
                                 onClick={() => navigate("/byte/" + project["_id"])}
                                 role={authState.role}
                                 completedEasy={project["completed_easy"]}
@@ -1262,7 +1262,7 @@ function Home() {
               Bytes
             </Typography>
             <Button variant="text"
-                    href={"/bytes"}
+                    href={"/Bytes"}
                     sx={{
                       fontSize: "0.8em",
                       fontWeight: "light",
@@ -1298,7 +1298,7 @@ function Home() {
                                   bytesId={project["_id"]}
                                   bytesTitle={project["name"]}
                                   bytesDesc={project["description_medium"]}
-                                  bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
+                                  bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
                                   onClick={() => navigate("/byte/" + project["_id"])}
                                   role={authState.role}
                                   completedEasy={project["completed_easy"]}
@@ -1378,7 +1378,7 @@ function Home() {
                             renown={project["tier"]}
                             onClick={() => navigate("/challenge/" + project["_id"])}
                             userTier={project["user_tier"]}
-                            userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
+                            userThumb={config.rootPath + "/static/User/pfp/" + project["author_id"]}
                             userId={project["author_id"]}
                             username={project["author"]}
                             backgroundName={project["background_name"]}
@@ -1586,7 +1586,7 @@ function Home() {
       },
       {
         title: "How to use tutorials",
-        content: "Tutorials will start on important pages to guide you through the platform. This is the only mandatory tutorial. If you skip a tutorial, you can always restart it using the help button at the bottom of the left-hand sidebar (desktop) or the user icon drop down (mobile).",
+        content: "Tutorials will start on important pages to guide you through the platform. This is the only mandatory tutorial. If you skip a tutorial, you can always restart it using the help button at the bottom of the left-hand sidebar (desktop) or the User icon drop down (mobile).",
       },
       {
         title: "Let's Get Started!",
@@ -1695,7 +1695,7 @@ function Home() {
 
                             // send api call to backend to mark the challenge tutorial as completed
                             await call(
-                                "/api/user/markTutorial",
+                                "/api/User/markTutorial",
                                 "post",
                                 null,
                                 null,
@@ -1731,7 +1731,7 @@ function Home() {
 
                         // send api call to backend to mark the challenge tutorial as completed
                         await call(
-                            "/api/user/markTutorial",
+                            "/api/User/markTutorial",
                             "post",
                             null,
                             null,

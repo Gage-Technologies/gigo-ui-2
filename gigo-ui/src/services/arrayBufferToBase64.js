@@ -23,9 +23,9 @@ export default function base64ArrayBuffer(arrayBuffer) {
   var a, b, c, d;
   var chunk;
 
-  // Main loop deals with bytes in chunks of 3
+  // Main loop deals with Bytes in chunks of 3
   for (var i = 0; i < mainLength; i = i + 3) {
-    // Combine the three bytes into a single integer
+    // Combine the three Bytes into a single integer
     chunk = (bytes[i] << 16) | (bytes[i + 1] << 8) | bytes[i + 2];
 
     // Use bitmasks to extract 6-bit segments from the triplet
@@ -38,7 +38,7 @@ export default function base64ArrayBuffer(arrayBuffer) {
     base64 += encodings[a] + encodings[b] + encodings[c] + encodings[d];
   }
 
-  // Deal with the remaining bytes and padding
+  // Deal with the remaining Bytes and padding
   if (byteRemainder === 1) {
     chunk = bytes[mainLength];
 

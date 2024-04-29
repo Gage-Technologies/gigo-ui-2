@@ -15,14 +15,14 @@ import {
 } from "@mui/material";
 import {themeHelpers, getAllTokens} from "@/theme";
 import {string} from "prop-types";
-import UserIcon from "@/icons/user/UserIcon";
+import UserIcon from "@/icons/User/UserIcon";
 import {useEffect} from "react";
 import {useNavigate} from "react-router-dom";
-import HorseIcon from "@/icons/projectCard/Horse";
-import HoodieIcon from "@/icons/projectCard/Hoodie";
+import HorseIcon from "@/icons/ProjectCard/Horse";
+import HoodieIcon from "@/icons/ProjectCard/Hoodie";
 import { QuestionMark } from "@mui/icons-material";
-import TrophyIcon from "@/icons/projectCard/Trophy";
-import GraduationIcon from "@/icons/projectCard/Graduation";
+import TrophyIcon from "@/icons/ProjectCard/Trophy";
+import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
@@ -34,7 +34,7 @@ import renown7 from "../img/renown/renown7.svg"
 import renown8 from "../img/renown/renown8.svg"
 import renown9 from "../img/renown/renown9.svg"
 import renown10 from "../img/renown/renown10.svg"
-import DebugIcon from "@/icons/projectCard/Debug";
+import DebugIcon from "@/icons/ProjectCard/Debug";
 
 interface IProps {
     role: any | null;

@@ -35,7 +35,7 @@ export async function authorize(username, password) {
 
   window.sessionStorage.setItem("user", decodedToken["user"])
   window.sessionStorage.setItem("alive", "true");
-  window.sessionStorage.setItem("loginXP", JSON.stringify(res["xp"]));
+  window.sessionStorage.setItem("loginXP", JSON.stringify(res["Xp"]));
 
   return decodedToken;
 }
@@ -78,8 +78,8 @@ export async function authorizeGoogle(externalToken, password) {
     config.rootPath
   )
 
-  if (res["message"] === 'user not found') {
-    return "user not found";
+  if (res["message"] === 'User not found') {
+    return "User not found";
   }
 
   let decodedToken = decodeToken(res["token"]);
