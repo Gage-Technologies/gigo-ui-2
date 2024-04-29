@@ -7,7 +7,7 @@ export type AboutPageStyle = {
     miniIcon?: boolean | undefined
 };
 
-function AboutBytesIcon(props: AboutPageStyle) {
+function BytesIcon(props: AboutPageStyle) {
 
     if (props.miniIcon) {
         return (
@@ -24,4 +24,4 @@ function AboutBytesIcon(props: AboutPageStyle) {
     }
 }
 
-export default AboutBytesIcon;
+export default BytesIcon;

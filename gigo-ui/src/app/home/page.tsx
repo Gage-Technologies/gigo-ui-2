@@ -58,7 +58,7 @@ import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import {LoadingButton} from "@mui/lab";
 import BytesCard from "@/components/BytesCard";
 import {programmingLanguages} from "@/services/vars";
-import AboutBytesIcon from "../components/Icons/bytes/AboutPage";
+import BytesIcon from "@/icons/bytes/BytesIcon";
 import {AwesomeButton} from "react-awesome-button";
 import JourneyIcon from "../components/Icons/bytes/JourneyIcon";
 import BytesCardMobile from "../components/BytesCardMobile";
@@ -1170,7 +1170,7 @@ function Home() {
           <div style={{display: "inline-flex", alignItems: 'center', padding: "10px 0"}}>
             <Typography variant="h6" gutterBottom
                         sx={{display: 'flex', alignItems: 'center', flexGrow: 1, marginLeft: "10%"}}>
-              <AboutBytesIcon style={{height: "20px", width: "20px", marginRight: "5px"}}
+              <BytesIcon style={{height: "20px", width: "20px", marginRight: "5px"}}
                               miniIcon={userPref === 'light'}/>
               Bytes Swipe
             </Typography>
