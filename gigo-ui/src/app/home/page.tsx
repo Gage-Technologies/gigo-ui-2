@@ -24,7 +24,7 @@ import config from "@/config";
 import call from "../services/api-call";
 import swal from "sweetalert";
 import * as animationData from '@/img/85023-no-data.json'
-import Carousel from "../components/Carousel2";
+import Carousel from "../../components/carousesl";
 import {
   initialAuthStateUpdate,
   selectAuthState,
@@ -40,25 +40,25 @@ import LazyLoad from 'react-lazyload';
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "../reducers/appWrapper/appWrapper";
 //@ts-ignore
 import ReactGA from "react-ga4";
-import ProjectCardLongStyle from "../components/ProjectCardLongStyle";
+import ProjectCardLongStyle from "../../components/project/projectCardLongStyle";
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ArrowBackIosNewSharpIcon from '@mui/icons-material/ArrowBackIosNewSharp';
-import GIGOLandingPage from "../components/Landing/Landing";
-import GIGOLandingPageMobile from "../components/Landing/LandingMobile";
-import GIGOLandingPageChristmas from "../components/Landing/LandingChristmas";
-import GIGOLandingPageChristmasMobile from "../components/Landing/LandingChristmasMobile";
+import GIGOLandingPage from "../../components/landingPage/landing";
+import GIGOLandingPageMobile from "../../components/landingPage/landingMobile";
+import GIGOLandingPageChristmas from "../../components/landingPage/landingChristmas";
+import GIGOLandingPageChristmasMobile from "../../components/landingPage/landingChristmasMobile";
+import GIGOLandingPageNewYearsMobile from "../../components/landingPage/landingNewYearsMobile";
+import GIGOLandingPageNewYears from "../../components/landingPage/landingNewYears";
+import GIGOLandingPageValentines from "../../components/landingPage/landingValentines";
+import GIGOLandingPageValentinesMobile from "../../components/landingPage/landingValentinesMobile";
 import {keyframes} from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import {LoadingButton} from "@mui/lab";
-import GIGOLandingPageNewYearsMobile from "../components/Landing/LandingNewYearsMobile";
-import GIGOLandingPageNewYears from "../components/Landing/LandingNewYears";
 import BytesCard from "../components/BytesCard";
 import {programmingLanguages} from "../services/vars";
 import AboutBytesIcon from "../components/Icons/bytes/AboutPage";
-import GIGOLandingPageValentines from "../components/Landing/LandingValentines";
-import GIGOLandingPageValentinesMobile from "../components/Landing/LandingValentinesMobile";
 import {AwesomeButton} from "react-awesome-button";
 import JourneyIcon from "../components/Icons/bytes/JourneyIcon";
 import BytesCardMobile from "../components/BytesCardMobile";
