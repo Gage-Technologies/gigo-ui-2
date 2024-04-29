@@ -1,10 +1,10 @@
 import React, { useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
-import backgroundImageWebP from "../../../../../gigo.dev/ui/src/img/gigo-landing-new-years-mobile.webp";
-import { getAllTokens, themeHelpers } from '../../../../../gigo.dev/ui/src/theme';
+import backgroundImageWebP from "../../img/gigo-landing-new-years-mobile.webp";
+import { getAllTokens, themeHelpers } from '../../theme';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../../../../../gigo.dev/ui/src/components/Icons/GigoCircleLogo';
+import GigoCircleIcon from '../Icons/GigoCircleLogo';
 import Confetti from "react-confetti";
 
 // Responsive Hero container for mobile
@@ -61,7 +61,7 @@ const GIGOLandingPageNewYearsMobile: React.FC = () => {
                     <Typography variant="body2" gutterBottom sx={{ maxWidth: "80vw" }}> {/* Change typography variant and max width */}
                         Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
                         Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
-                        Pick a project and click launch to get started!
+                        Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
                         variant="outlined"

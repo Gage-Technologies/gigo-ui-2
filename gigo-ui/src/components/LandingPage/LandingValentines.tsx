@@ -2,15 +2,15 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 
-import backgroundImageWebP from "../../../../../gigo.dev/ui/src/img/gigo-landing-valentines.webp"
-import backgroundImageLargeWebP from "../../../../../gigo.dev/ui/src/img/gigo-landing-valentines-large.webp"
-import { useAppSelector } from '../../../../../gigo.dev/ui/src/app/hooks';
-import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '../../../../../gigo.dev/ui/src/reducers/appWrapper/appWrapper';
-import { getAllTokens, themeHelpers } from '../../../../../gigo.dev/ui/src/theme';
+import backgroundImageWebP from "../../img/gigo-landing-valentines.webp"
+import backgroundImageLargeWebP from "../../img/gigo-landing-valentines-large.webp"
+import { useAppSelector } from '../../app/hooks';
+import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '../../reducers/appWrapper/appWrapper';
+import { getAllTokens, themeHelpers } from '../../theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../../../../../gigo.dev/ui/src/components/Icons/GigoCircleLogo';
-import HeartIcon from '../../../../../gigo.dev/ui/src/components/Icons/Heart';
+import GigoCircleIcon from '../Icons/GigoCircleLogo';
+import HeartIcon from '../Icons/Heart';
 
 
 // Hero container with jungle-themed background
@@ -135,7 +135,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                     <Typography variant="body1" gutterBottom sx={{ maxWidth: "40vw" }}>
                         Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
                         Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
-                        Pick a project and click launch to get started!
+                        Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
                         variant="outlined"
@@ -149,7 +149,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
                         }}
-                        href="/byte/1750943457427324928"
+                        href="/journey/main"
                         // onClick={() => {
                         //     if (endRef.current) {
                         //         endRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' });

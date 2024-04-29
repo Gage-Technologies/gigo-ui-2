@@ -3,7 +3,7 @@ import {createTheme, CssBaseline, PaletteMode, ThemeProvider, Box, Modal} from "
 import {getAllTokens} from "@/theme";
 import { useEffect} from "react";
 import Lottie from "react-lottie";
-import freeze from "../img/streak/freeze.svg"
+import freeze from "@/img/streak/freeze.svg"
 import {Rotate, Slide} from "react-awesome-reveal"
 import Button from '@mui/material/Button';
 import config from "@/config";

@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
-import backgroundImageWebP from "../../../../../gigo.dev/ui/src/img/gigo-landing-mobile.webp";
-import { getAllTokens, themeHelpers } from '../../../../../gigo.dev/ui/src/theme';
+import backgroundImageWebP from "../../img/gigo-landing-mobile.webp";
+import { getAllTokens, themeHelpers } from '../../theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../../../../../gigo.dev/ui/src/components/Icons/GigoCircleLogo';
+import GigoCircleIcon from '../Icons/GigoCircleLogo';
 
 // Responsive Hero container for mobile
 const HeroContainer = styled(Box)(({ theme }) => ({
@@ -125,9 +125,9 @@ const GIGOLandingPageMobile: React.FC = () => {
                         GIGO is the best place to learn how to code
                     </Typography>
                     <Typography variant="body2" gutterBottom sx={{ maxWidth: "80vw" }}> {/* Change typography variant and max width */}
+                        Code in the cloud, learn from thousands of lessons, and work with the latest technologies from any machine, even a tablet!
                         Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
-                        Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
-                        Pick a project and click launch to get started!
+                        Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
                         variant="outlined"
@@ -140,14 +140,14 @@ const GIGOLandingPageMobile: React.FC = () => {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
                         }}
-                        href="/signup"
+                        href="/journey/main"
                         // onClick={() => {
                         //     if (endRef.current) {
                         //         endRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' });
                         //     }
                         // }}
                     >
-                        Enter The Jungle
+                        Start Your Journey
                     </Button>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
                         <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank"> {/* Change typography variant */}

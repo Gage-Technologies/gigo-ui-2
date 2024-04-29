@@ -38,7 +38,6 @@ import MoonLoader from "react-spinners/MoonLoader";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import LazyLoad from 'react-lazyload';
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
-//@ts-ignore
 import ReactGA from "react-ga4";
 import ProjectCardLongStyle from "@/components/Project/ProjectCardLongStyle";
 import IconButton from '@mui/material/IconButton';

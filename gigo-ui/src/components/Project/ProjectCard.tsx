@@ -24,17 +24,17 @@ import { QuestionMark } from "@mui/icons-material";
 import TrophyIcon from "@/icons/ProjectCard/Trophy";
 import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import renown1 from "../img/renown/renown1.svg"
-import renown2 from "../img/renown/renown2.svg"
-import renown3 from "../img/renown/renown3.svg"
-import renown4 from "../img/renown/renown4.svg"
-import renown5 from "../img/renown/renown5.svg"
-import renown6 from "../img/renown/renown6.svg"
-import renown7 from "../img/renown/renown7.svg"
-import renown8 from "../img/renown/renown8.svg"
-import renown9 from "../img/renown/renown9.svg"
-import renown10 from "../img/renown/renown10.svg"
-import DebugIcon from "@/icons/ProjectCard/debug.svg";
+import renown1 from "@/img/renown/renown1.svg"
+import renown2 from "@/img/renown/renown2.svg"
+import renown3 from "@/img/renown/renown3.svg"
+import renown4 from "@/img/renown/renown4.svg"
+import renown5 from "@/img/renown/renown5.svg"
+import renown6 from "@/img/renown/renown6.svg"
+import renown7 from "@/img/renown/renown7.svg"
+import renown8 from "@/img/renown/renown8.svg"
+import renown9 from "@/img/renown/renown9.svg"
+import renown10 from "@/img/renown/renown10.svg"
+import DebugIcon from "@/icons/ProjectCard/Debug";
 
 
 interface IProps {
