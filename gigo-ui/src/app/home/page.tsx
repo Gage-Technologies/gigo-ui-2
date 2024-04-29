@@ -62,6 +62,7 @@ import {AwesomeButton} from "react-awesome-button";
 import JourneyIcon from "@/icons/Journey/JourneyIcon";
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
+import Layout from "@/app/home/layout";
 
 const gradientAnimation = keyframes`
     0% {
@@ -166,7 +167,7 @@ function Home() {
   ReactGA.initialize("G-38KBFJZ6M6");
 
 
-  let navigate = useNavigate();
+  //let navigate = useNavigate();
 
   let loggedIn = false
   if (authState.authenticated !== false) {
@@ -628,7 +629,7 @@ function Home() {
                             projectDate={topRec[currentProjectIndex]["updated_at"]}
                             projectType={topRec[currentProjectIndex]["post_type_string"]}
                             renown={topRec[currentProjectIndex]["tier"]}
-                            onClick={() => navigate("/challenge/" + topRec[currentProjectIndex]["_id"])}
+                            onClick={() => console.log("navigate")}
                             userTier={topRec[currentProjectIndex]["user_tier"]}
                             userThumb={config.rootPath + "/static/User/pfp/" + topRec[currentProjectIndex]["author_id"]}
                             userId={topRec[currentProjectIndex]["author_id"]}
@@ -1128,7 +1129,7 @@ function Home() {
                                   projectDate={project["updated_at"]}
                                   projectType={project["post_type_string"]}
                                   renown={project["tier"]}
-                                  onClick={() => navigate("/attempt/" + project["_id"])}
+                                  onClick={() => console.log("navigate")}
                                   userTier={authState.tier}
                                   userThumb={config.rootPath + "/static/User/pfp/" + authState.id}
                                   userId={authState.id}
@@ -1203,7 +1204,7 @@ function Home() {
                                 bytesTitle={project["name"]}
                                 bytesDesc={project["description_medium"]}
                                 bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
-                                onClick={() => navigate("/byte/" + project["_id"])}
+                                onClick={() => console.log("navigate")}
                                 role={authState.role}
                                 completedEasy={project["completed_easy"]}
                                 completedMedium={project["completed_medium"]}
@@ -1298,7 +1299,7 @@ function Home() {
                                   bytesTitle={project["name"]}
                                   bytesDesc={project["description_medium"]}
                                   bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
-                                  onClick={() => navigate("/byte/" + project["_id"])}
+                                  onClick={() => console.log("navigate")}
                                   role={authState.role}
                                   completedEasy={project["completed_easy"]}
                                   completedMedium={project["completed_medium"]}
@@ -1375,7 +1376,7 @@ function Home() {
                             projectDate={project["updated_at"]}
                             projectType={project["post_type"]}
                             renown={project["tier"]}
-                            onClick={() => navigate("/challenge/" + project["_id"])}
+                            onClick={() => console.log("navigate")}
                             userTier={project["user_tier"]}
                             userThumb={config.rootPath + "/static/User/pfp/" + project["author_id"]}
                             userId={project["author_id"]}
@@ -1832,129 +1833,131 @@ function Home() {
   }
 
   return (
-      <ThemeProvider theme={theme}>
-        <CssBaseline>
-          <div>
-            {renderWelcomePopup()}
-            {window.innerWidth > 1000 && renderLanding()}
-            <Typography component={"div"}>
-            </Typography>
-            {xpPopup ? (<XpPopup oldXP={
-              //@ts-ignore
-                (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
-              //@ts-ignore
-              xpData["level_up_reward"] === null ? false : true} maxXP={100}
+      <Layout>
+        <ThemeProvider theme={theme}>
+          <CssBaseline>
+            <div>
+              {renderWelcomePopup()}
+              {window.innerWidth > 1000 && renderLanding()}
+              <Typography component={"div"}>
+              </Typography>
+              {xpPopup ? (<XpPopup oldXP={
                 //@ts-ignore
-                                 newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
+                  (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
                 //@ts-ignore
-                                 nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
-                //@ts-ignore
-                                 gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
-                //@ts-ignore
-                                 reward={xpData["level_up_reward"]}
-                //@ts-ignore
-                                 renown={xpData["xp_update"]["current_renown"]} popupClose={PopupClose}
-                                 homePage={true}/>) : null}
-            {/*<XpPopup oldXP={*/}
-            {/*    //@ts-ignore*/}
-            {/*    8} levelUp={*/}
-            {/*    //@ts-ignore*/}
-            {/*    true} maxXP={100}*/}
-            {/*    //@ts-ignore*/}
-            {/*                     newXP={9}*/}
-            {/*    //@ts-ignore*/}
-            {/*                     nextLevel={9}*/}
-            {/*    //@ts-ignore*/}
-            {/*                     gainedXP={7}*/}
-            {/*    //@ts-ignore*/}
-            {/*                     reward={{"reward_type": "xp_boost"}}*/}
-            {/*    //@ts-ignore*/}
-            {/*                     renown={9} popupClose={null}*/}
-            {/*                     homePage={true}/>*/}
-            <Grid container sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "1",
-              // paddingLeft: "50px"
-            }}>
-              <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: "wrap",
-                    width: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: 'background.default',
-                    color: 'text.primary',
-                    borderRadius: 1,
-                  }}
-              >
-                {(window.innerWidth >= 1000) && (
-                    <Grid container spacing={2} sx={{ width: "100%", height: "500px", backgroundColor: "#ffef62", zIndex: 3, m: 2, borderRadius: "12px", position: "relative" }}>
-                      {authState.authenticated && loadingJourney
-                          ?
-                          <Box
-                              position="absolute"
-                              top="25%"
-                              left="50%"
-                          >
-                            <CircularProgress color="inherit" />
-                          </Box>
-                          :
-                          JourneyHeader()
-                      }
-                    </Grid>
-                )}
-                {(window.innerWidth < 1000) && headerMobile}
-              </Box>
-              <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: "wrap",
-                    width: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: 'background.default',
-                    color: 'text.primary',
-                    borderRadius: 1,
-                  }}
-              >
-                {Bytes()}
-              </Box>
-              <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: "wrap",
-                    width: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: 'background.default',
-                    color: 'text.primary',
-                    borderRadius: 1,
-                  }}
-              >
-                {(window.innerWidth > 1000) ? ActiveProjects() : null}
-              </Box>
+                xpData["level_up_reward"] === null ? false : true} maxXP={100}
+                  //@ts-ignore
+                                   newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
+                  //@ts-ignore
+                                   nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
+                  //@ts-ignore
+                                   gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
+                  //@ts-ignore
+                                   reward={xpData["level_up_reward"]}
+                  //@ts-ignore
+                                   renown={xpData["xp_update"]["current_renown"]} popupClose={PopupClose}
+                                   homePage={true}/>) : null}
+              {/*<XpPopup oldXP={*/}
+              {/*    //@ts-ignore*/}
+              {/*    8} levelUp={*/}
+              {/*    //@ts-ignore*/}
+              {/*    true} maxXP={100}*/}
+              {/*    //@ts-ignore*/}
+              {/*                     newXP={9}*/}
+              {/*    //@ts-ignore*/}
+              {/*                     nextLevel={9}*/}
+              {/*    //@ts-ignore*/}
+              {/*                     gainedXP={7}*/}
+              {/*    //@ts-ignore*/}
+              {/*                     reward={{"reward_type": "xp_boost"}}*/}
+              {/*    //@ts-ignore*/}
+              {/*                     renown={9} popupClose={null}*/}
+              {/*                     homePage={true}/>*/}
+              <Grid container sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "1",
+                // paddingLeft: "50px"
+              }}>
+                <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: "wrap",
+                      width: "100%",
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: 'background.default',
+                      color: 'text.primary',
+                      borderRadius: 1,
+                    }}
+                >
+                  {(window.innerWidth >= 1000) && (
+                      <Grid container spacing={2} sx={{ width: "100%", height: "500px", backgroundColor: "#ffef62", zIndex: 3, m: 2, borderRadius: "12px", position: "relative" }}>
+                        {authState.authenticated && loadingJourney
+                            ?
+                            <Box
+                                position="absolute"
+                                top="25%"
+                                left="50%"
+                            >
+                              <CircularProgress color="inherit" />
+                            </Box>
+                            :
+                            JourneyHeader()
+                        }
+                      </Grid>
+                  )}
+                  {(window.innerWidth < 1000) && headerMobile}
+                </Box>
+                <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: "wrap",
+                      width: "100%",
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: 'background.default',
+                      color: 'text.primary',
+                      borderRadius: 1,
+                    }}
+                >
+                  {Bytes()}
+                </Box>
+                <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: "wrap",
+                      width: "100%",
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: 'background.default',
+                      color: 'text.primary',
+                      borderRadius: 1,
+                    }}
+                >
+                  {(window.innerWidth > 1000) ? ActiveProjects() : null}
+                </Box>
 
-              <Box
-                  sx={{
-                    display: 'flex',
-                    flexWrap: "wrap",
-                    width: "100%",
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    bgcolor: 'background.default',
-                    color: 'text.primary',
-                    borderRadius: 1,
-                  }}
-              >
-                {Recommended()}
-              </Box>
-            </Grid>
-          </div>
-        </CssBaseline>
-      </ThemeProvider>
+                <Box
+                    sx={{
+                      display: 'flex',
+                      flexWrap: "wrap",
+                      width: "100%",
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      bgcolor: 'background.default',
+                      color: 'text.primary',
+                      borderRadius: 1,
+                    }}
+                >
+                  {Recommended()}
+                </Box>
+              </Grid>
+            </div>
+          </CssBaseline>
+        </ThemeProvider>
+      </Layout>
   );
 }
 

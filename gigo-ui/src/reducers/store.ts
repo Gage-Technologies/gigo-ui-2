@@ -69,8 +69,7 @@ const cacheMiddleware = (store: any) => (next: any) => (action: any) => {
 export const store = configureStore({
     reducer: persistedReducer,
     devTools: process.env.NODE_ENV !== 'production',
-    // @ts-ignore
-    middleware: [cacheMiddleware], // Add cacheMiddleware
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(cacheMiddleware),
 });
 
 export type AppDispatch = typeof store.dispatch;
