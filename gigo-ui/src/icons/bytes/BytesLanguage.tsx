@@ -5,7 +5,7 @@ import { RustOriginal } from "devicons-react";
 import { CplusplusOriginal } from 'devicons-react';
 import { JavascriptOriginal } from 'devicons-react';
 import { CsharpOriginal } from 'devicons-react';
-import { themeHelpers } from "../../../theme";
+import { themeHelpers } from "@/theme";
 
 export type ByteBadgeProps = {
     language: string

@@ -1,5 +1,5 @@
 import React from "react";
-import banana from './compass.svg';
+import banana from '../../img/bytes/compass.svg';
 
 export type AboutPageStyle = {
     style: React.CSSProperties;

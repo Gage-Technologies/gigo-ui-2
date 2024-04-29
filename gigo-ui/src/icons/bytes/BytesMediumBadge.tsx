@@ -1,5 +1,5 @@
 import React from "react";
-import mediumBadge from './bytesMedium.svg';
+import mediumBadge from '../../img/bytes/bytesMedium.svg';
 
 export type ByteBadgeProps = {
     style?: React.CSSProperties;

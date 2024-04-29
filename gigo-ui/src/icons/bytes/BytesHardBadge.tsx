@@ -1,5 +1,5 @@
 import React from "react";
-import hardBadge from './bytesHard.svg';
+import hardBadge from '../../img/bytes/bytesHard.svg';
 
 export type ByteBadgeProps = {
     style?: React.CSSProperties;

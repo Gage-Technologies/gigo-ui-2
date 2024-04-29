@@ -1,6 +1,6 @@
 import React from "react";
-import banana from './banana.svg';
-import darkBanana from './dark-banana.svg';
+import banana from '../../img/bytes/banana.svg';
+import darkBanana from '../../img/bytes/dark-banana.svg';
 
 export type AboutPageStyle = {
     style: React.CSSProperties;

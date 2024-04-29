@@ -1,5 +1,5 @@
 import React from "react";
-import easyBadge from './bytesEasy.svg';
+import easyBadge from '../../img/bytes/bytesEasy.svg';
 
 export type ByteBadgeProps = {
     style?: React.CSSProperties;
