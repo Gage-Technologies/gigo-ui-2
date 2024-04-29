@@ -10,19 +10,19 @@ import {
     Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {getAllTokens} from "../theme";
+import {getAllTokens} from "../../theme";
 import { keyframes } from "@emotion/react";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useEffect} from "react";
 import { Button } from "@mui/material"
 import {Fade} from "react-awesome-reveal"
 import LootPopup from "./LootPopup";
-import { selectAuthState } from "../reducers/auth/auth";
-import { useAppSelector } from "../app/hooks";
+import { selectAuthState } from "@/reducers/auth/auth";
+import { useAppSelector } from "@/reducers/hooks";
 import premiumGorilla from "../img/pro-pop-up-icon-plain.svg"
 import proBackground from "../img/popu-up-backgraound-plain.svg"
-import call from "../services/api-call";
-import config from "../config";
+import call from "../../services/api-call";
+import config from "../../config";
 import { Close } from "@material-ui/icons";
 import { LoadingButton } from "@mui/lab";
 

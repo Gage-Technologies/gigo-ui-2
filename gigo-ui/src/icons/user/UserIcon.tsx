@@ -6,8 +6,8 @@ import Badge from '@mui/material/Badge';
 import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import config from "../../config";
-import LottieAnimation from "../../components/lottieAnimation";
-import ProBannerCircle from "./Icons/ProBannerCircle";
+import LottieAnimation from "../../components/LottieAnimation";
+import ProBannerCircle from "@/components/pro/ProBannerCircle";
 import { Buffer } from 'buffer';
 
 interface IProps {

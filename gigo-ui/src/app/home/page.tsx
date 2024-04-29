@@ -18,13 +18,13 @@ import {
   Typography
 } from "@mui/material";
 import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "@/theme";
-import ProjectCard from "../../components/project/projectCard";
+import ProjectCard from "@/components/project/ProjectCard";
 import {useNavigate} from "react-router-dom";
 import config from "@/config";
-import call from "../services/api-call";
+import call from "@/services/api-call";
 import swal from "sweetalert";
 import * as animationData from '@/img/85023-no-data.json'
-import Carousel from "../../components/carousesl";
+import Carousel from "../../components/Carousesl";
 import {
   initialAuthStateUpdate,
   selectAuthState,
@@ -33,25 +33,25 @@ import {
   updateAuthState,
 } from "@/reducers/auth/auth";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
-import XpPopup from "../components/XpPopup";
+import XpPopup from "@/components/xp/XpPopup";
 import MoonLoader from "react-spinners/MoonLoader";
-import useInfiniteScroll from "../hooks/infiniteScroll";
+import useInfiniteScroll from "@/hooks/infiniteScroll";
 import LazyLoad from 'react-lazyload';
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "../reducers/appWrapper/appWrapper";
 //@ts-ignore
 import ReactGA from "react-ga4";
-import ProjectCardLongStyle from "../../components/project/projectCardLongStyle";
+import ProjectCardLongStyle from "@/components/project/ProjectCardLongStyle";
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosSharpIcon from '@mui/icons-material/ArrowForwardIosSharp';
 import ArrowBackIosNewSharpIcon from '@mui/icons-material/ArrowBackIosNewSharp';
-import GIGOLandingPage from "../../components/landingPage/landing";
-import GIGOLandingPageMobile from "../../components/landingPage/landingMobile";
-import GIGOLandingPageChristmas from "../../components/landingPage/landingChristmas";
-import GIGOLandingPageChristmasMobile from "../../components/landingPage/landingChristmasMobile";
-import GIGOLandingPageNewYearsMobile from "../../components/landingPage/landingNewYearsMobile";
-import GIGOLandingPageNewYears from "../../components/landingPage/landingNewYears";
-import GIGOLandingPageValentines from "../../components/landingPage/landingValentines";
-import GIGOLandingPageValentinesMobile from "../../components/landingPage/landingValentinesMobile";
+import GIGOLandingPage from "@/components/landingPage/Landing";
+import GIGOLandingPageMobile from "@/components/landingPage/LandingMobile";
+import GIGOLandingPageChristmas from "@/components/landingPage/LandingChristmas";
+import GIGOLandingPageChristmasMobile from "@/components/landingPage/LandingChristmasMobile";
+import GIGOLandingPageNewYearsMobile from "@/components/landingPage/LandingNewYearsMobile";
+import GIGOLandingPageNewYears from "@/components/landingPage/LandingNewYears";
+import GIGOLandingPageValentines from "@/components/landingPage/LandingValentines";
+import GIGOLandingPageValentinesMobile from "@/components/landingPage/LandingValentinesMobile";
 import {keyframes} from '@mui/system';
 import StarIcon from '@mui/icons-material/Star';
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
