@@ -18,7 +18,7 @@ import {
   Typography
 } from "@mui/material";
 import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "@/theme";
-import ProjectCard from "../components/ProjectCard";
+import ProjectCard from "../../components/project/projectCard";
 import {useNavigate} from "react-router-dom";
 import config from "@/config";
 import call from "../services/api-call";
@@ -220,7 +220,7 @@ function Home() {
     // we make up to 3 attempts to retrieve the next block of data
     for (let i = 0; i < 3; i++) {
       let rec = await call(
-          "/api/home/recommended",
+          "/api/project/recommended",
           "post",
           null,
           null,
@@ -282,7 +282,7 @@ function Home() {
   const apiLoad = async () => {
     if ((activeData.length === 0 || recData.length === 0 || followData.length === 0 || topRec.length === 0) && loggedIn) {
       let active = call(
-          "/api/home/active",
+          "/api/project/active",
           "post",
           null,
           null,
@@ -294,7 +294,7 @@ function Home() {
       )
 
       let follow = call(
-          "/api/home/following",
+          "/api/project/following",
           "post",
           null,
           null,
@@ -306,7 +306,7 @@ function Home() {
       )
 
       let top = call(
-          "/api/home/top",
+          "/api/project/top",
           "post",
           null,
           null,
@@ -496,7 +496,7 @@ function Home() {
   //                             return (
   //                                 <div className={'attempt'} style={{ paddingBottom: "10px" }}>
   //                                     <LazyLoad once scroll unmountIfInvisible>
-  //                                         <ProjectCard
+  //                                         <projectCard
   //                                             height={"23vh"}
   //                                             imageHeight={"23vh"}
   //                                             width={(chatOpen || sidebarOpen) ? "16vw" : (document.documentElement.clientWidth < 1000 ? 'fit-content' : '20vw')}
