@@ -17,7 +17,7 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "../theme";
+import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "@/theme";
 import ProjectCard from "../components/ProjectCard";
 import {useNavigate} from "react-router-dom";
 import config from "../config";
