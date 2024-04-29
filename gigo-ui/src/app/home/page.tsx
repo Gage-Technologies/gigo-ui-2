@@ -20,7 +20,7 @@ import {
 import {getAllTokens, getDesignTokens, isHoliday, themeHelpers} from "@/theme";
 import ProjectCard from "../components/ProjectCard";
 import {useNavigate} from "react-router-dom";
-import config from "../config";
+import config from "@/config";
 import call from "../services/api-call";
 import swal from "sweetalert";
 import * as animationData from '../img/85023-no-data.json'
