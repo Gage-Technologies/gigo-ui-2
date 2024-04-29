@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
+import Image from 'next/image';
 
-import backgroundImageWebP from "@/img/landing/gigo-landing.webp"
-import backgroundImageLargeWebP from "@/img/landing/gigo-landing-large.webp"
+import backgroundImageWebP from "@/img/landing/gigo-landing.webp";
+import backgroundImageLargeWebP from "@/img/landing/gigo-landing-large.webp";
 import { useAppSelector } from '@/reducers/hooks';
 import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
 import { getAllTokens, themeHelpers } from '@/theme';
@@ -22,11 +23,6 @@ const HeroContainer = styled(Box)(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundImage: `
-        url(${window.innerWidth > 2000 ? backgroundImageLargeWebP : backgroundImageWebP})
-    `,
-    backgroundSize: 'cover',
-    backgroundPosition: 'center',
     overflow: 'hidden',
 }));
 
@@ -42,16 +38,13 @@ const HeroContent = styled(Box)({
     backgroundColor: "#1D1D1D25"
 });
 
-
 const GIGOLandingPage: React.FC = () => {
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
+    let userPref = localStorage.getItem('theme');
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [fireflies, setFireflies] = useState<string[]>([]);
-    const leftOpen = useAppSelector(selectAppWrapperSidebarOpen)
-    const rightOpen = useAppSelector(selectAppWrapperChatOpen)
+    const leftOpen = useAppSelector(selectAppWrapperSidebarOpen);
+    const rightOpen = useAppSelector(selectAppWrapperChatOpen);
     const endRef = useRef<HTMLDivElement | null>(null);
 
     // Define the move animation
@@ -62,12 +55,10 @@ const GIGOLandingPage: React.FC = () => {
             while (Math.abs(moveX) < 100) {
                 moveX = Math.random() * window.innerWidth * (Math.random() > .5 ? -1 : 1);
             }
-
             let moveY = Math.random() * window.innerHeight * (Math.random() > .5 ? -1 : 1);
             while (Math.abs(moveY) < 100) {
                 moveY = Math.random() * window.innerHeight * (Math.random() > .5 ? -1 : 1);
             }
-
             return `
                 @keyframes move_${index} {
                     0% { transform: translate(0, 0); }
@@ -93,9 +84,9 @@ const GIGOLandingPage: React.FC = () => {
                     {glowAnimation}
                 </style>
                 {fireflies.map((_, index) => {
-                    let size = Math.max(Math.random() * 12, 5)
+                    let size = Math.max(Math.random() * 12, 5);
                     return (
-                        <LazyLoad once scroll unmountIfInvisible>
+                        <LazyLoad key={index} once scroll unmountIfInvisible>
                             <Box
                                 key={index}
                                 className="firefly"
@@ -104,36 +95,40 @@ const GIGOLandingPage: React.FC = () => {
                                     borderRadius: '50%',
                                     width: `${size}px`,
                                     height: `${size}px`,
-                                    // @ts-ignore
                                     background: "#FFFCAB",
                                     top: `${Math.random() * 100}%`,
                                     left: `${Math.random() * 100}%`,
-                                    // animation: `moveAndGlow_${index} ${Math.max(Math.random() * 120, 15)}s ease-in-out infinite`,
                                     animation: `move_${index} ${Math.max(Math.random() * 120, 15)}s ease-in-out infinite, glow 3s ease-in-out infinite`,
                                 }}
                             />
                         </LazyLoad>
-                    )
+                    );
                 })}
             </>
         )
-    }, [fireflies])
+    }, [fireflies]);
 
-    let width = '100vw'
+    let width = '100vw';
     let widthSub = 0;
     if (leftOpen) {
-        widthSub += 200
+        widthSub += 200;
     }
     if (rightOpen) {
-        widthSub += 300
+        widthSub += 300;
     }
-    if (widthSub > 0) {
-        width = `calc(100vw - ${widthSub}px)`
-    }
+    width = widthSub > 0 ? `calc(100vw - ${widthSub}px)` : '100vw';
 
     return (
         <>
-            <HeroContainer sx={{ width: width }}>
+            <HeroContainer sx={{ width }}>
+                <Image
+                    src={window.innerWidth > 2000 ? backgroundImageLargeWebP : backgroundImageWebP}
+                    alt="Landing background"
+                    layout="fill"
+                    objectFit="cover"
+                    objectPosition="center"
+                    priority={true}
+                />
                 {fireflyMemo}
                 <HeroContent>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
@@ -157,22 +152,16 @@ const GIGOLandingPage: React.FC = () => {
                             mt: 2,
                             color: "white",
                             backgroundColor: theme.palette.primary.main + "50",
-                            // highlight on hover
                             '&:hover': {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
                         }}
                         href="/journey/main"
-                        // onClick={() => {
-                        //     if (endRef.current) {
-                        //         endRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' });
-                        //     }
-                        // }}
                     >
                         Start Your Journey
                     </Button>
                     <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank" > {/* Change typography variant */}
+                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank" >
                             Join us on Discord!
                         </Link>
                         <SocialIcon
