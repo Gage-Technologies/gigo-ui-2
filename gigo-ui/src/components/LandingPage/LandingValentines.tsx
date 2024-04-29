@@ -4,13 +4,13 @@ import { styled } from '@mui/system';
 
 import backgroundImageWebP from "../../img/gigo-landing-valentines.webp"
 import backgroundImageLargeWebP from "../../img/gigo-landing-valentines-large.webp"
-import { useAppSelector } from '../../app/hooks';
-import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '../../reducers/appWrapper/appWrapper';
-import { getAllTokens, themeHelpers } from '../../theme';
+import { useAppSelector } from '@/reducers/hooks';
+import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
+import { getAllTokens, themeHelpers } from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../Icons/GigoCircleLogo';
-import HeartIcon from '../Icons/Heart';
+import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
+import HeartIcon from '@/icons/GIGO/Heart';
 
 
 // Hero container with jungle-themed background

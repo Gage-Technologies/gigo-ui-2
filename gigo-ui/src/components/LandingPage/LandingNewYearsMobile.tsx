@@ -2,9 +2,9 @@ import React, { useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 import backgroundImageWebP from "../../img/gigo-landing-new-years-mobile.webp";
-import { getAllTokens, themeHelpers } from '../../theme';
+import { getAllTokens, themeHelpers } from '@/theme';
 import { SocialIcon } from 'react-social-icons';
-import GigoCircleIcon from '../Icons/GigoCircleLogo';
+import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Confetti from "react-confetti";
 
 // Responsive Hero container for mobile
