@@ -1,5 +1,5 @@
 import React from "react";
-import banana from '../../img/journey/compass.svg';
+import compass from '@/img/journey/compass.svg';
 
 export type AboutPageStyle = {
     style: React.CSSProperties;
@@ -8,7 +8,7 @@ export type AboutPageStyle = {
 function JourneyIcon(props: AboutPageStyle) {
     return (
         <div style={{display: "flex", justifyContent: "center"}}>
-            <img alt="" src={banana} style={props.style}/>
+            <img alt="" src={compass} style={props.style}/>
         </div>
     );
 }

@@ -60,7 +60,7 @@ import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";
 import {AwesomeButton} from "react-awesome-button";
-import JourneyIcon from "../components/Icons/Bytes/JourneyIcon";
+import JourneyIcon from "@/icons/Journey/JourneyIcon";
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 
@@ -1251,7 +1251,7 @@ function Home() {
                   display: 'flex',
                   alignItems: 'center'
                 }}>
-              <AboutBytesIcon
+              <BytesIcon
                   style={{
                     height: "20px",
                     width: "20px",
