@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "HTTPS=true SSL_CRT_FILE=../gigo-ui-dev-env/dev.crt SSL_KEY_FILE=../gigo-ui-dev-env/dev.key HOST=0.0.0.0 PORT=33000 node dev-server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -45,6 +45,7 @@
     "react-use-websocket": "^4.8.1",
     "redux-persist": "^6.0.0",
     "sweetalert": "^2.1.2",
+    "typeface-poppins": "^1.1.13",
     "uuid": "^9.0.1"
   },
   "devDependencies": {
@@ -53,6 +54,7 @@
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "express": "^4.19.2",
     "typescript": "^5"
   }
 }
