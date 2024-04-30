@@ -1,9 +1,9 @@
 
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
+import {RootState} from '@/reducers/store';
 import Post from "../../models/post";
-import {DefaultWorkspaceConfig, WorkspaceConfig} from "../../models/workspace";
+import {DefaultWorkspaceConfig, WorkspaceConfig} from "@/models/workspace";
 
 export interface CreateProjectState {
     active: boolean;

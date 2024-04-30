@@ -52,7 +52,7 @@ export default function BytesCard(props: IProps) {
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
-    let navigate = useNavigate();
+    // let navigate = useNavigate();
 
     const styles = {
         card: {

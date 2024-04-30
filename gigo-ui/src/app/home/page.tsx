@@ -220,7 +220,7 @@ function Home() {
     // we make up to 3 attempts to retrieve the next block of data
     for (let i = 0; i < 3; i++) {
       let rec = await call(
-          "/api/Project/recommended",
+          "/api/project/recommended",
           "post",
           null,
           null,
@@ -263,7 +263,7 @@ function Home() {
 
   const loadByteData = async () => {
     let bytes = await call(
-        "/api/Bytes/getRecommendedBytes",
+        "/api/bytes/getRecommendedBytes",
         "post",
         null,
         null,
@@ -282,7 +282,7 @@ function Home() {
   const apiLoad = async () => {
     if ((activeData.length === 0 || recData.length === 0 || followData.length === 0 || topRec.length === 0) && loggedIn) {
       let active = call(
-          "/api/Project/active",
+          "/api/project/active",
           "post",
           null,
           null,
@@ -294,7 +294,7 @@ function Home() {
       )
 
       let follow = call(
-          "/api/Project/following",
+          "/api/project/following",
           "post",
           null,
           null,
@@ -306,7 +306,7 @@ function Home() {
       )
 
       let top = call(
-          "/api/Project/top",
+          "/api/project/top",
           "post",
           null,
           null,
@@ -510,7 +510,7 @@ function Home() {
   //                                             renown={Project["tier"]}
   //                                             onClick={() => navigate("/challenge/" + Project["_id"])}
   //                                             userTier={authState.tier}
-  //                                             userThumb={config.rootPath + "/static/User/pfp/" + authState.id}
+  //                                             userThumb={config.rootPath + "/static/user/pfp/" + authState.id}
   //                                             userId={authState.id}
   //                                             username={authState.userName}
   //                                             backgroundName={authState.backgroundName}
@@ -631,7 +631,7 @@ function Home() {
                             renown={topRec[currentProjectIndex]["tier"]}
                             onClick={() => console.log("navigate")}
                             userTier={topRec[currentProjectIndex]["user_tier"]}
-                            userThumb={config.rootPath + "/static/User/pfp/" + topRec[currentProjectIndex]["author_id"]}
+                            userThumb={config.rootPath + "/static/user/pfp/" + topRec[currentProjectIndex]["author_id"]}
                             userId={topRec[currentProjectIndex]["author_id"]}
                             username={topRec[currentProjectIndex]["author"]}
                             backgroundName={topRec[currentProjectIndex]["background_name"]}
@@ -1131,7 +1131,7 @@ function Home() {
                                   renown={project["tier"]}
                                   onClick={() => console.log("navigate")}
                                   userTier={authState.tier}
-                                  userThumb={config.rootPath + "/static/User/pfp/" + authState.id}
+                                  userThumb={config.rootPath + "/static/user/pfp/" + authState.id}
                                   userId={authState.id}
                                   username={authState.userName}
                                   backgroundName={authState.backgroundName}
@@ -1203,7 +1203,7 @@ function Home() {
                                 bytesId={project["_id"]}
                                 bytesTitle={project["name"]}
                                 bytesDesc={project["description_medium"]}
-                                bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
+                                bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
                                 onClick={() => console.log("navigate")}
                                 role={authState.role}
                                 completedEasy={project["completed_easy"]}
@@ -1262,7 +1262,7 @@ function Home() {
               Bytes
             </Typography>
             <Button variant="text"
-                    href={"/Bytes"}
+                    href={"/bytes"}
                     sx={{
                       fontSize: "0.8em",
                       fontWeight: "light",
@@ -1298,7 +1298,7 @@ function Home() {
                                   bytesId={project["_id"]}
                                   bytesTitle={project["name"]}
                                   bytesDesc={project["description_medium"]}
-                                  bytesThumb={config.rootPath + "/static/Bytes/t/" + project["_id"]}
+                                  bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
                                   onClick={() => console.log("navigate")}
                                   role={authState.role}
                                   completedEasy={project["completed_easy"]}
@@ -1378,7 +1378,7 @@ function Home() {
                             renown={project["tier"]}
                             onClick={() => console.log("navigate")}
                             userTier={project["user_tier"]}
-                            userThumb={config.rootPath + "/static/User/pfp/" + project["author_id"]}
+                            userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
                             userId={project["author_id"]}
                             username={project["author"]}
                             backgroundName={project["background_name"]}
@@ -1695,7 +1695,7 @@ function Home() {
 
                             // send api call to backend to mark the challenge tutorial as completed
                             await call(
-                                "/api/User/markTutorial",
+                                "/api/user/markTutorial",
                                 "post",
                                 null,
                                 null,
@@ -1731,7 +1731,7 @@ function Home() {
 
                         // send api call to backend to mark the challenge tutorial as completed
                         await call(
-                            "/api/User/markTutorial",
+                            "/api/user/markTutorial",
                             "post",
                             null,
                             null,
