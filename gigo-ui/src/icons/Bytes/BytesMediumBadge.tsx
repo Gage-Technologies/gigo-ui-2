@@ -1,5 +1,6 @@
 import React from "react";
 import mediumBadge from '../../img/bytes/bytesMedium.svg';
+import Image from 'next/image';
 
 export type ByteBadgeProps = {
     style?: React.CSSProperties;
@@ -25,7 +26,7 @@ function BytesMediumBadge(props: ByteBadgeProps) {
     if (props.finished) {
         return (
             <div>
-                <img alt="" src={mediumBadge} style={style} />
+                <Image alt="" src={mediumBadge} style={style} />
             </div>
         );
     } else {

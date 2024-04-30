@@ -18,6 +18,8 @@ import { themeHelpers, getAllTokens } from "@/theme";
 import { string } from "prop-types";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Image from 'next/image';
+
 
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
@@ -160,7 +162,7 @@ export default function BytesCard(props: IProps) {
                 >
                     <div style={{ position: 'relative' }}>
                         {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
+                        <Image style={styles.image} src={props.bytesThumb} loading="lazy" />
                         <Box 
                             display={"flex"}
                             flexDirection={"column"}

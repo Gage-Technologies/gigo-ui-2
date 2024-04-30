@@ -59,6 +59,7 @@ import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";
 import {AwesomeButton} from "react-awesome-button";
+import "react-awesome-button/dist/styles.css"
 import JourneyIcon from "@/icons/Journey/JourneyIcon";
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
@@ -162,12 +163,10 @@ function Home() {
   const handleNewBytesPopoverClose = () => {
     setNewBytesPopoverOpen(false);
   };
-  //////
 
   ReactGA.initialize("G-38KBFJZ6M6");
 
 
-  //let navigate = useNavigate();
 
   let loggedIn = false
   if (authState.authenticated !== false) {
@@ -430,9 +429,7 @@ function Home() {
     if (authState.authenticated !== false) {
       apiLoad()
     }
-    // if (tutorial === true && window.sessionStorage.getItem("help") === "true") {
-    //     setRun(true)
-    // }
+
     setLoading(false)
     if (xpLogin !== "undefined" && xpLogin !== null) {
       setXpPopup(true)
@@ -1857,22 +1854,7 @@ function Home() {
                   //@ts-ignore
                                    renown={xpData["xp_update"]["current_renown"]} popupClose={PopupClose}
                                    homePage={true}/>) : null}
-              {/*<XpPopup oldXP={*/}
-              {/*    //@ts-ignore*/}
-              {/*    8} levelUp={*/}
-              {/*    //@ts-ignore*/}
-              {/*    true} maxXP={100}*/}
-              {/*    //@ts-ignore*/}
-              {/*                     newXP={9}*/}
-              {/*    //@ts-ignore*/}
-              {/*                     nextLevel={9}*/}
-              {/*    //@ts-ignore*/}
-              {/*                     gainedXP={7}*/}
-              {/*    //@ts-ignore*/}
-              {/*                     reward={{"reward_type": "xp_boost"}}*/}
-              {/*    //@ts-ignore*/}
-              {/*                     renown={9} popupClose={null}*/}
-              {/*                     homePage={true}/>*/}
+
               <Grid container sx={{
                 display: "flex",
                 justifyContent: "center",
@@ -1889,7 +1871,6 @@ function Home() {
                       justifyContent: 'center',
                       bgcolor: 'background.default',
                       color: 'text.primary',
-                      borderRadius: 1,
                     }}
                 >
                   {(window.innerWidth >= 1000) && (
@@ -1919,7 +1900,6 @@ function Home() {
                       justifyContent: 'center',
                       bgcolor: 'background.default',
                       color: 'text.primary',
-                      borderRadius: 1,
                     }}
                 >
                   {Bytes()}
@@ -1933,7 +1913,6 @@ function Home() {
                       justifyContent: 'center',
                       bgcolor: 'background.default',
                       color: 'text.primary',
-                      borderRadius: 1,
                     }}
                 >
                   {(window.innerWidth > 1000) ? ActiveProjects() : null}
@@ -1948,8 +1927,7 @@ function Home() {
                       justifyContent: 'center',
                       bgcolor: 'background.default',
                       color: 'text.primary',
-                      borderRadius: 1,
-                    }}
+                   }}
                 >
                   {Recommended()}
                 </Box>

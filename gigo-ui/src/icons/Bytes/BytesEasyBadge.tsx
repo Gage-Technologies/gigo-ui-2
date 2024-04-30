@@ -1,5 +1,6 @@
 import React from "react";
 import easyBadge from '../../img/bytes/bytesEasy.svg';
+import Image from 'next/image';
 
 export type ByteBadgeProps = {
     style?: React.CSSProperties;
@@ -24,7 +25,7 @@ function BytesEasyBadge(props: ByteBadgeProps) {
     if (props.finished) {
         return (
             <div>
-                <img alt="" src={easyBadge} style={style} />
+                <Image alt="" src={easyBadge} style={style} />
             </div>
         );
     } else {
