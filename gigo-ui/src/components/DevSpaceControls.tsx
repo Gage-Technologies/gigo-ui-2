@@ -1,20 +1,10 @@
 import * as React from 'react';
-import { useGlobalWebSocket } from '@/services/websocket';
-import { WsMessage, WsMessageType } from '@/models/websocket';
+import {useRef, useState} from 'react';
+import {useGlobalWebSocket} from '@/services/websocket';
+import {WsMessage, WsMessageType} from '@/models/websocket';
 import LinearProgress from '@mui/material/LinearProgress';
-import {
-    Box,
-    Button,
-    Grid,
-    IconButton,
-    PaletteMode,
-    Paper,
-    Tooltip,
-    Typography,
-    createTheme,
-    Popper
-} from '@mui/material';
-import { getAllTokens, isHoliday } from '@/theme';
+import {Box, Button, createTheme, Grid, IconButton, PaletteMode, Paper, Tooltip, Typography} from '@mui/material';
+import {getAllTokens, isHoliday} from '@/theme';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StopIcon from '@mui/icons-material/Stop';
@@ -22,13 +12,11 @@ import DesktopWindowsIcon from '@mui/icons-material/DesktopWindows';
 import DesktopAccessDisabledIcon from '@mui/icons-material/DesktopAccessDisabled';
 import QueuePlayNextIcon from '@mui/icons-material/QueuePlayNext';
 import SettingsApplicationsIcon from '@mui/icons-material/SettingsApplications';
-import call from '../services/api-call';
-import { DevSpaceCache, selectDevSpaceCacheState, setDevSpaceCache } from '@/reducers/devSpace/usageCache';
-import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
-import { Workspace } from '@/models/workspace';
-import { selectAuthState } from "@/reducers/auth/auth";
+import {DevSpaceCache, selectDevSpaceCacheState, setDevSpaceCache} from '@/reducers/devSpace/usageCache';
+import {useAppDispatch, useAppSelector} from '@/reducers/hooks';
+import {Workspace} from '@/models/workspace';
+import {selectAuthState} from "@/reducers/auth/auth";
 import goProGorilla from "../img/pro-pop-up-icon-plain.svg"
-import {useEffect, useRef, useState} from "react";
 import GoProDisplay from "./GoProDisplay";
 
 interface IProps {
@@ -126,17 +114,18 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     const containerRef = useRef(null)
 
     const stopWorkspace = async () => {
-        let res = await call(
-            "/api/workspace/stopWorkspace",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/workspace/stopWorkspace`,
             {
-                workspace_id: props.wsId,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    workspace_id: props.wsId,
+                })
             }
-        )
+        ).then(res => res.json())
 
         window.history.replaceState({}, "", window.location.href.split("?")[0]);
     };
@@ -146,7 +135,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     const usageMemo = React.useMemo(() => (
         <>
             {/* CPU Usage Progress Bar */}
-            <div style={{ marginTop: '8px', position: 'relative' }}>
+            <div style={{marginTop: '8px', position: 'relative'}}>
                 <div
                     style={{
                         color: cpuUsagePercentage < 75 ? theme.palette.text.primary : cpuUsagePercentage < 90 ? theme.palette.warning.main : theme.palette.error.main
@@ -161,7 +150,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                     sx={{
                         height: "10px",
                         borderRadius: "10px",
-                        ...(cpuUsagePercentage >= 90 && { animation: 'glitch 1s infinite' })
+                        ...(cpuUsagePercentage >= 90 && {animation: 'glitch 1s infinite'})
                     }}
                 />
                 <div style={{
@@ -176,7 +165,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
             </div>
 
             {/* Memory Usage Progress Bar */}
-            <div style={{ marginTop: '8px', position: 'relative' }}>
+            <div style={{marginTop: '8px', position: 'relative'}}>
                 <div
                     style={{
                         color: memoryUsagePercentage < 75 ? theme.palette.text.primary : memoryUsagePercentage < 90 ? theme.palette.warning.main : theme.palette.error.main
@@ -191,7 +180,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                     sx={{
                         height: "10px",
                         borderRadius: "10px",
-                        ...(memoryUsagePercentage >= 90 && { animation: 'glitch 1s infinite' })
+                        ...(memoryUsagePercentage >= 90 && {animation: 'glitch 1s infinite'})
                     }}
                 />
                 <div style={{
@@ -259,11 +248,11 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                     onClick={() => setIsOpen(!isOpen)}
                     color={((cpuUsagePercentage >= 90 || memoryUsagePercentage >= 90) ? "error" : (cpuUsagePercentage >= 75 || memoryUsagePercentage >= 75) ? "warning" : "inherit")}
                     sx={{
-                        ...((cpuUsagePercentage >= 75 || memoryUsagePercentage >= 75) ? { animation: 'fade 1s infinite' } : { color: "black" })
+                        ...((cpuUsagePercentage >= 75 || memoryUsagePercentage >= 75) ? {animation: 'fade 1s infinite'} : {color: "black"})
                     }}
                     ref={containerRef}
                 >
-                    <SettingsApplicationsIcon />
+                    <SettingsApplicationsIcon/>
                 </IconButton>
             </Tooltip>
 

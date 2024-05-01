@@ -1,18 +1,21 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import CircleNotificationsIcon from "@mui/icons-material/CircleNotifications";
 import {
     Box,
     Button,
-    ClickAwayListener, createTheme,
-    Grow, IconButton,
+    ClickAwayListener,
+    createTheme,
+    Grow,
+    IconButton,
     MenuItem,
-    MenuList, PaletteMode,
+    MenuList,
+    PaletteMode,
     Paper,
-    Popper, Tooltip, Typography,
+    Popper,
+    Typography,
 } from "@mui/material";
 import Notification from "../models/notification";
 import CloseIcon from '@material-ui/icons/Close';
-import call from "../services/api-call";
 import config from "../config";
 import swal from "sweetalert";
 import {useNavigate} from "react-router-dom";
@@ -28,11 +31,11 @@ interface IProps {
 }
 
 const NotificationPopup: React.FC<IProps> = ({
-    notificationCount,
-    notifications,
-    setNotifications,
-    setNotificationCount,
-}) => {
+                                                 notificationCount,
+                                                 notifications,
+                                                 setNotifications,
+                                                 setNotificationCount,
+                                             }) => {
 
     const [open, setOpen] = useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
@@ -40,22 +43,21 @@ const NotificationPopup: React.FC<IProps> = ({
 
     let userPref = localStorage.getItem('theme')
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-        const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const acknowledgeNotification = async (notification_id: string) => {
-        let res = await call(
-            "/api/notification/acknowledge",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/notification/acknowledge`,
             {
-                notification_id: notification_id,
-            },
-            null,
-            config.rootPath
-        )
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    notification_id: notification_id,
+                })
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -76,17 +78,16 @@ const NotificationPopup: React.FC<IProps> = ({
     }
 
     const clearAllNotifications = async () => {
-        let res = await call(
-            "/api/notification/clearAll",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/notification/clearAll`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -130,7 +131,7 @@ const NotificationPopup: React.FC<IProps> = ({
         setOpen(false);
     };
 
-    const handleNotificationNavigate = (event: React.MouseEvent<HTMLLIElement, MouseEvent> | React.TouchEvent<HTMLLIElement>, notificationType : number, notifId: string) => {
+    const handleNotificationNavigate = (event: React.MouseEvent<HTMLLIElement, MouseEvent> | React.TouchEvent<HTMLLIElement>, notificationType: number, notifId: string) => {
         if (notificationType === 0) {
             // add a navigate to friends page once available
             navigate("/profile")
@@ -194,31 +195,42 @@ const NotificationPopup: React.FC<IProps> = ({
                 <CircleNotificationsIcon style={{color: theme.palette.primary.contrastText}}/>
             </Button>
             <Popper open={open} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-                {({ TransitionProps, placement }) => (
+                {({TransitionProps, placement}) => (
                     <Grow
                         {...TransitionProps}
                         style={{
                             transformOrigin: placement === "bottom" ? "center top" : "center bottom",
                         }}
                     >
-                        <Paper sx={{ width: "115%" }}>
+                        <Paper sx={{width: "115%"}}>
                             <ClickAwayListener onClickAway={handleClose}>
                                 <Box>
                                     {notifications.length > 0 ? (
-                                        <Box sx={{textAlign: "center", paddingTop: "10px", paddingBottom: "3px"}}>
-                                            <Button
-                                                variant="outlined"
-                                                color="primary"
-                                                onClick={clearAllNotifications}
-                                                size={"medium"}
-                                            >
-                                                Clear All
-                                            </Button>
-                                        </Box>
-                                    ) :
-                                        <Box sx={{textAlign: "center", paddingTop: "10px", paddingBottom: "3px", flexDirection: "column", display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                        No Notifications!
-                                            <NotificationsPausedIcon fontSize={"large"} style={{color: theme.palette.primary.contrastText, opacity: 0.2}}/>
+                                            <Box sx={{textAlign: "center", paddingTop: "10px", paddingBottom: "3px"}}>
+                                                <Button
+                                                    variant="outlined"
+                                                    color="primary"
+                                                    onClick={clearAllNotifications}
+                                                    size={"medium"}
+                                                >
+                                                    Clear All
+                                                </Button>
+                                            </Box>
+                                        ) :
+                                        <Box sx={{
+                                            textAlign: "center",
+                                            paddingTop: "10px",
+                                            paddingBottom: "3px",
+                                            flexDirection: "column",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center"
+                                        }}>
+                                            No Notifications!
+                                            <NotificationsPausedIcon fontSize={"large"} style={{
+                                                color: theme.palette.primary.contrastText,
+                                                opacity: 0.2
+                                            }}/>
                                         </Box>
                                     }
                                     <MenuList autoFocusItem={open} id="menu-list-grow">
@@ -268,7 +280,7 @@ const NotificationPopup: React.FC<IProps> = ({
                                                         zIndex: 1000
                                                     }}
                                                 >
-                                                    <CloseIcon />
+                                                    <CloseIcon/>
                                                 </IconButton>
                                             </MenuItem>
                                         ))}

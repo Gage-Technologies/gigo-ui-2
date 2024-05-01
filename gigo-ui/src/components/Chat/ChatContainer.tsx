@@ -1,5 +1,5 @@
 'use client'
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ChatMessage from "./ChatMessage";
 import {
     alpha,
@@ -27,31 +27,30 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import { getAllTokens, themeHelpers } from "@/theme";
-import { ArrowDownward, Delete, EmojiEmotions, Gif } from "@material-ui/icons";
+import {getAllTokens, themeHelpers} from "@/theme";
+import {ArrowDownward, Delete, EmojiEmotions, Gif} from "@material-ui/icons";
 import Tenor from "../Tenor";
 import Emoji from "../Emoji";
 import config from "../../config";
 import * as models from "../../models/chat";
-import { GetChatsParams } from "@/models/chat";
+import {GetChatsParams} from "@/models/chat";
 import * as wsModels from "../../models/websocket";
-import call from "../../services/api-call";
 import swal from "sweetalert";
-import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
+import {useAppDispatch, useAppSelector} from '@/reducers/hooks';
 import {
     selectAuthState,
     selectAuthStateId,
+    selectAuthStateRole,
     selectAuthStateTier,
-    selectAuthStateUserName,
-    selectAuthStateRole
+    selectAuthStateUserName
 } from '@/reducers/auth/auth';
 import ld from 'lodash';
 import MoonLoader from 'react-spinners/MoonLoader';
-import { useGlobalWebSocket } from '@/services/websocket';
-import { selectCacheState, setCache } from "@/reducers/pageCache/pageCache";
-import { selectMessageCacheState, setMessageCache } from "@/reducers/chat/cache";
-import { initialChatStateUpdate, selectChatState, updateChatState } from "@/reducers/chat/chat";
-import { useParams } from "react-router";
+import {useGlobalWebSocket} from '@/services/websocket';
+import {selectCacheState, setCache} from "@/reducers/pageCache/pageCache";
+import {selectMessageCacheState, setMessageCache} from "@/reducers/chat/cache";
+import {initialChatStateUpdate, selectChatState, updateChatState} from "@/reducers/chat/chat";
+import {useParams} from "react-router";
 import {
     differenceInHours,
     differenceInMinutes,
@@ -65,7 +64,7 @@ import {
 } from 'date-fns';
 import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
-import { ArrowForward, Check, Close, VolumeOff, VolumeUp } from '@mui/icons-material';
+import {ArrowForward, Check, Close, VolumeOff, VolumeUp} from '@mui/icons-material';
 import User from '../../models/user';
 import UserIcon from '../UserIcon';
 import renown1 from "../../img/renown/renown1.svg"
@@ -78,10 +77,10 @@ import renown7 from "../../img/renown/renown7.svg"
 import renown8 from "../../img/renown/renown8.svg"
 import renown9 from "../../img/renown/renown9.svg"
 import renown10 from "../../img/renown/renown10.svg"
-import { LoadingButton } from "@mui/lab";
+import {LoadingButton} from "@mui/lab";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import { Snackbar } from "@material-ui/core";
-import Slide, { SlideProps } from '@mui/material/Slide';
+import {Snackbar} from "@material-ui/core";
+import Slide, {SlideProps} from '@mui/material/Slide';
 import ReactDOM from "react-dom";
 import {
     initialAppWrapperStateUpdate,
@@ -93,7 +92,7 @@ import Menu from "@mui/material/Menu";
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
 function TransitionLeft(props: TransitionProps) {
-    return <Slide {...props} direction="left" />;
+    return <Slide {...props} direction="left"/>;
 }
 
 const handleRenownCheck = (renown: number) => {
@@ -239,7 +238,7 @@ export default function ChatContainer() {
     let globalWs = useGlobalWebSocket();
 
     const [chat, setChat] = React.useState<models.Chat>(
-        persistedState.selectedChat !== undefined ? persistedState.selectedChat : {
+        persistedState && persistedState.selectedChat !== undefined ? persistedState.selectedChat : {
             _id: "0",
             name: "Global",
             type: models.ChatType.ChatTypeGlobal,
@@ -258,7 +257,8 @@ export default function ChatContainer() {
 
     const [bootstrapped, setBootstrapped] = React.useState<boolean>(false);
     const [inputValue, setInputValue] = useState(
-        messageCache[chat._id] !== undefined && messageCache[chat._id].message !== undefined ? messageCache[chat._id].message as string : ""
+        // @ts-ignore
+        messageCache && messageCache[chat._id] !== undefined && messageCache[chat._id].message !== undefined ? messageCache[chat._id].message as string : ""
     );
     const [showGifPicker, setShowGifPicker] = useState(false); // State variable to control GIF picker
     const [showEmojiPicker, setShowEmojiPicker] = useState(false); // State variable to control emoji picker
@@ -274,10 +274,10 @@ export default function ChatContainer() {
     const containerEndRef = React.useRef<HTMLDivElement>(null);
     const listContainerRef = React.useRef<HTMLDivElement>(null); // Ref for the list container
     const messageInputContainerRef = React.useRef<HTMLInputElement>(null); // Ref for the message input container
-    const scrollRef = React.useRef({ prevScrollHeight: 0, prevScrollTop: 0 });
+    const scrollRef = React.useRef({prevScrollHeight: 0, prevScrollTop: 0});
 
-    const [selectedTab, setSelectedTab] = React.useState(persistedState.selectedTab);
-    const [privateChatView, setPrivateChatView] = React.useState(persistedState.privateChatView);
+    const [selectedTab, setSelectedTab] = React.useState(persistedState ? persistedState.selectedTab : "Global");
+    const [privateChatView, setPrivateChatView] = React.useState(persistedState ? persistedState.privateChatView : false);
 
     const [chats, setChats] = React.useState<models.Chat[]>([]);
 
@@ -321,14 +321,14 @@ export default function ChatContainer() {
         let renderEverythingOption = iv.length > 1 && "everyone".startsWith(iv[iv.length - 1])
         if (renderEverythingOption && mentionOptionIndex === 0) {
             const currentRef = listItemRefs.current.get("everyone");
-            currentRef?.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
+            currentRef?.scrollIntoView({behavior: 'auto', block: 'nearest', inline: 'start'});
         } else {
             let r = mentionSearchOptions[mentionOptionIndex + (renderEverythingOption ? 1 : 0)];
             if (r === undefined) {
                 return;
             }
             const currentRef = listItemRefs.current.get(r._id);
-            currentRef?.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'start' });
+            currentRef?.scrollIntoView({behavior: 'auto', block: 'nearest', inline: 'start'});
         }
     }, [mentionOptionIndex, inputValue]);
 
@@ -534,7 +534,7 @@ export default function ChatContainer() {
         setChatSelectionRightClickAnchorEl(null);
     };
 
-    let { id } = useParams();
+    let {id} = useParams();
 
 
     // debounce for dispatch calls
@@ -634,19 +634,18 @@ export default function ChatContainer() {
     };
 
     const searchFriends = async (query: string) => {
-        let res = await call(
-            "/api/search/friends",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/friends`,
             {
-                query: query,
-            },
-            null,
-            config.rootPath
-        )
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: query,
+                })
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -664,20 +663,19 @@ export default function ChatContainer() {
     }
 
     const searchChatUsers = async (query: string) => {
-        let res = await call(
-            "/api/search/chatUsers",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/chatUsers`,
             {
-                chat_id: chat._id,
-                query: query,
-            },
-            null,
-            config.rootPath
-        )
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    chat_id: chat._id,
+                    query: query,
+                })
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -695,21 +693,20 @@ export default function ChatContainer() {
     }
 
     const searchChatUsersPublic = async (query: string) => {
-        let res = await call(
-            "/api/search/users",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/users`,
             {
-                skip: 0,
-                limit: 10,
-                query: query,
-            },
-            null,
-            config.rootPath
-        )
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    skip: 0,
+                    limit: 10,
+                    query: query,
+                })
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -727,21 +724,20 @@ export default function ChatContainer() {
     }
 
     const searchUsersPublic = async (query: string) => {
-        let res = await call(
-            "/api/search/users",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/users`,
             {
-                skip: 0,
-                limit: 10,
-                query: query,
-            },
-            null,
-            config.rootPath
-        )
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    skip: 0,
+                    limit: 10,
+                    query: query,
+                })
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -1065,7 +1061,7 @@ export default function ChatContainer() {
                 }
             });
 
-            observer.observe(container, { childList: true, subtree: true });
+            observer.observe(container, {childList: true, subtree: true});
             return () => observer.disconnect();
         }
     }, [listContainerRef.current]);
@@ -1274,16 +1270,16 @@ export default function ChatContainer() {
                         endAdornment: (
                             <InputAdornment position="end">
                                 {sendingMessage ? (
-                                    <div style={{ position: 'absolute', bottom: '10px', right: '10px' }}>
-                                        <CircularProgress
-                                            color='primary'
-                                            size={20}
-                                        />
-                                    </div>
-                                )
+                                        <div style={{position: 'absolute', bottom: '10px', right: '10px'}}>
+                                            <CircularProgress
+                                                color='primary'
+                                                size={20}
+                                            />
+                                        </div>
+                                    )
                                     :
                                     (
-                                        <div style={{ position: 'absolute', bottom: '6px', right: '8px' }}>
+                                        <div style={{position: 'absolute', bottom: '6px', right: '8px'}}>
                                             <IconButton
                                                 onClick={() => setShowEmojiPicker(!showEmojiPicker)} // Toggle Emoji picker
                                                 sx={{
@@ -1293,13 +1289,13 @@ export default function ChatContainer() {
                                                     lineHeight: '1', // Adjust line height
                                                 }}
                                             >
-                                                <EmojiEmotions />
+                                                <EmojiEmotions/>
                                             </IconButton>
                                             <IconButton
                                                 onClick={() => setShowGifPicker(!showGifPicker)} // Toggle GIF picker
                                                 disabled={inputValue.length > 2000} // Disable button if input exceeds 2000 characters
                                             >
-                                                <Gif /> {/* GIF icon */}
+                                                <Gif/> {/* GIF icon */}
                                             </IconButton>
                                         </div>
                                     )
@@ -1352,7 +1348,7 @@ export default function ChatContainer() {
                             <List>
                                 {renderEverythingOption && (
                                     <ListItem
-                                        ref={(el) => listItemRefs.current.set("everyone", el)}
+                                        ref={(el) => {listItemRefs.current.set("everyone", el)}}
                                         style={{
                                             paddingBottom: '10px',
                                             paddingLeft: '10px',
@@ -1399,7 +1395,7 @@ export default function ChatContainer() {
                                                     setMentionSelectionPopperOpen(false);
                                                 }}
                                             >
-                                                <Typography variant={"h6"} sx={{ textTransform: "none" }}>
+                                                <Typography variant={"h6"} sx={{textTransform: "none"}}>
                                                     @everyone
                                                 </Typography>
                                             </Button>
@@ -1411,7 +1407,7 @@ export default function ChatContainer() {
                                     return a.user_name.toLowerCase().localeCompare(b.user_name.toLowerCase());
                                 }).map((option, index) => (
                                     <ListItem
-                                        ref={(el) => listItemRefs.current.set(option._id, el)}
+                                        ref={(el) => {listItemRefs.current.set(option._id, el)}}
                                         style={{
                                             paddingBottom: '10px',
                                             paddingLeft: '10px',
@@ -1435,7 +1431,7 @@ export default function ChatContainer() {
                                             }
                                         }}>
                                             <Button
-                                                sx={{ width: "100%" }}
+                                                sx={{width: "100%"}}
                                                 onClick={async () => {
                                                     // merge the username into the input value
                                                     let inputValueCopy = inputValue;
@@ -1453,8 +1449,13 @@ export default function ChatContainer() {
                                                 }}
                                             >
                                                 <div
-                                                    style={{ display: "flex", flexDirection: "row", width: "95%", justifyContent: "left" }}>
-                                                    <div style={{ marginTop: "2px" }}>
+                                                    style={{
+                                                        display: "flex",
+                                                        flexDirection: "row",
+                                                        width: "95%",
+                                                        justifyContent: "left"
+                                                    }}>
+                                                    <div style={{marginTop: "2px"}}>
                                                         <UserIcon
                                                             userId={option._id}
                                                             userTier={option.user_rank}
@@ -1538,7 +1539,7 @@ export default function ChatContainer() {
 
         return (
             <>
-                <List style={{ flexGrow: 1, marginTop: '70px', marginBottom: marginBottom }}>
+                <List style={{flexGrow: 1, marginTop: '70px', marginBottom: marginBottom}}>
                     {/* Show a spinner (MoonLoader from react-spinners) when we are loading new data */}
                     {loadingMessages && (
                         <div
@@ -1549,7 +1550,7 @@ export default function ChatContainer() {
                                 width: "100%",
                             }}
                         >
-                            <MoonLoader color={theme.palette.primary.main} loading={true} size={18} />
+                            <MoonLoader color={theme.palette.primary.main} loading={true} size={18}/>
                         </div>
                     )}
                     {chatMessageMemo}
@@ -1567,7 +1568,7 @@ export default function ChatContainer() {
                                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' // Add a subtle shadow
                             }}
                         >
-                            <ArrowDownward />
+                            <ArrowDownward/>
                         </IconButton>
                     </Tooltip>
                 )}
@@ -1587,7 +1588,7 @@ export default function ChatContainer() {
                                 boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)' // Add a subtle shadow
                             }}
                         >
-                            <ArrowForward />
+                            <ArrowForward/>
                         </IconButton>
                     </Tooltip>
                 )}
@@ -1607,9 +1608,9 @@ export default function ChatContainer() {
                         {messageInputMemo}
                         <>
                             <Emoji open={showEmojiPicker} closeCallback={() => setShowEmojiPicker(false)}
-                                onEmojiSelect={addEmoji} />
+                                   onEmojiSelect={addEmoji}/>
                             <Tenor open={showGifPicker} closeCallback={() => setShowGifPicker(false)}
-                                addGif={sendGif} />
+                                   addGif={sendGif}/>
                         </>
                     </Box>
                 )}
@@ -1801,7 +1802,7 @@ export default function ChatContainer() {
             }}
         >
             <SearchIconWrapper>
-                <SearchIcon />
+                <SearchIcon/>
             </SearchIconWrapper>
             <form onSubmit={(e) => handleFriendSearchInputChange(e as any)}>
                 <StyledInputBase
@@ -1896,7 +1897,7 @@ export default function ChatContainer() {
             const now = new Date();
 
             // Within the last minute
-            if (isWithinInterval(date, { start: subMinutes(now, 1), end: now })) {
+            if (isWithinInterval(date, {start: subMinutes(now, 1), end: now})) {
                 return 'now';
             }
 
@@ -1909,11 +1910,11 @@ export default function ChatContainer() {
                 return `${differenceInMinutes(now, date)}m`;
             }
             // Within the last week
-            else if (isWithinInterval(date, { start: subDays(now, 7), end: now })) {
+            else if (isWithinInterval(date, {start: subDays(now, 7), end: now})) {
                 return format(date, 'EEE');
             }
             // Within the last year
-            else if (isWithinInterval(date, { start: subYears(now, 1), end: now })) {
+            else if (isWithinInterval(date, {start: subYears(now, 1), end: now})) {
                 return format(date, 'MMM d');
             }
             // Older than a year
@@ -1938,7 +1939,7 @@ export default function ChatContainer() {
                         marginTop: "64px"
                     }}
                 >
-                    <MoonLoader color={theme.palette.primary.main} loading={true} size={18} />
+                    <MoonLoader color={theme.palette.primary.main} loading={true} size={18}/>
                 </div>
             )
         }
@@ -1974,9 +1975,9 @@ export default function ChatContainer() {
                                         color={"success"}
                                         size="small"
                                         loading={chatDeleteLoading}
-                                        sx={{ marginRight: '16px' }}
+                                        sx={{marginRight: '16px'}}
                                     >
-                                        <Check fontSize="inherit" />
+                                        <Check fontSize="inherit"/>
                                     </LoadingButton>
                                 </Tooltip>
                                 <Tooltip title="Cancel Delete">
@@ -1990,7 +1991,7 @@ export default function ChatContainer() {
                                         size="small"
                                         loading={chatDeleteLoading}
                                     >
-                                        <Close fontSize="inherit" />
+                                        <Close fontSize="inherit"/>
                                     </LoadingButton>
                                 </Tooltip>
                             </>
@@ -2003,9 +2004,9 @@ export default function ChatContainer() {
                                         color={"error"}
                                         size="small"
                                         loading={chatDeleteLoading}
-                                        sx={{ marginRight: '16px' }}
+                                        sx={{marginRight: '16px'}}
                                     >
-                                        <Delete fontSize="inherit" />
+                                        <Delete fontSize="inherit"/>
                                     </LoadingButton>
                                 </Tooltip>
                                 {chatEdit && chatEdit.muted ? (
@@ -2017,7 +2018,7 @@ export default function ChatContainer() {
                                             color={"primary"}
                                             loading={chatMuteLoading}
                                         >
-                                            <VolumeUp fontSize="inherit" />
+                                            <VolumeUp fontSize="inherit"/>
                                         </LoadingButton>
                                     </Tooltip>
                                 ) : (
@@ -2029,7 +2030,7 @@ export default function ChatContainer() {
                                             color={"primary"}
                                             loading={chatMuteLoading}
                                         >
-                                            <VolumeOff fontSize="inherit" />
+                                            <VolumeOff fontSize="inherit"/>
                                         </LoadingButton>
                                     </Tooltip>
                                 )
@@ -2038,11 +2039,11 @@ export default function ChatContainer() {
                         )}
                     </Box>
                 </Menu>
-                <List style={{ flexGrow: 1, marginTop: '40px' }}>
+                <List style={{flexGrow: 1, marginTop: '40px'}}>
                     <ListItem>
                         <Button
                             variant="outlined"
-                            endIcon={<AddIcon />}
+                            endIcon={<AddIcon/>}
                             onClick={(e) => {
                                 handleNewChatClick(e);
                                 searchFriends(friendNameQuery);
@@ -2084,25 +2085,25 @@ export default function ChatContainer() {
                             >
                                 {friendSearchMemo}
                                 <Grid container spacing={1}
-                                    sx={{
-                                        marginLeft: "auto",
-                                        marginRight: "auto",
-                                        maxWidth: "320px",
-                                    }}
+                                      sx={{
+                                          marginLeft: "auto",
+                                          marginRight: "auto",
+                                          maxWidth: "320px",
+                                      }}
                                 >
                                     {newChatSelectedFriends.map((friend) => {
                                         return (
                                             <Grid item xs={3}>
                                                 <Tooltip title={friend.user_name + " - Click to Remove"}>
                                                     <Button variant="text"
-                                                        onClick={() => {
-                                                            let z = JSON.parse(JSON.stringify(newChatSelectedFriends));
-                                                            let index = z.findIndex((e: User) => e._id === friend._id);
-                                                            if (index !== -1) {
-                                                                z.splice(index, 1);
-                                                                setNewChatSelectedFriends(z);
-                                                            }
-                                                        }}
+                                                            onClick={() => {
+                                                                let z = JSON.parse(JSON.stringify(newChatSelectedFriends));
+                                                                let index = z.findIndex((e: User) => e._id === friend._id);
+                                                                if (index !== -1) {
+                                                                    z.splice(index, 1);
+                                                                    setNewChatSelectedFriends(z);
+                                                                }
+                                                            }}
                                                     >
                                                         <UserIcon
                                                             userId={friend._id}
@@ -2165,7 +2166,7 @@ export default function ChatContainer() {
                                                     }
                                                 }}>
                                                     <Button
-                                                        sx={{ width: "100%" }}
+                                                        sx={{width: "100%"}}
                                                         onClick={async () => {
                                                             let z = JSON.parse(JSON.stringify(newChatSelectedFriends));
                                                             z.push(option);
@@ -2173,7 +2174,12 @@ export default function ChatContainer() {
                                                         }}
                                                     >
                                                         <div
-                                                            style={{ display: "flex", flexDirection: "row", width: "95%", justifyContent: "left" }}>
+                                                            style={{
+                                                                display: "flex",
+                                                                flexDirection: "row",
+                                                                width: "95%",
+                                                                justifyContent: "left"
+                                                            }}>
                                                             <div>
                                                                 <UserIcon
                                                                     userId={option._id}
@@ -2353,7 +2359,7 @@ export default function ChatContainer() {
                                                 error={newChatName.length > 20}
                                                 helperText={newChatName.length > 15 ? `${newChatName.length}/20` : ""}
                                                 InputProps={{
-                                                    style: { fontSize: '12px', height: '30px' },
+                                                    style: {fontSize: '12px', height: '30px'},
                                                 }}
                                             />
                                         ) : (
@@ -2405,8 +2411,8 @@ export default function ChatContainer() {
                                     justifyContent="center"
                                     alignItems={
                                         chat.last_read_message === null ||
-                                            chat.last_message === null ||
-                                            compareMessageIDs(chat.last_read_message, chat.last_message) < 0 ?
+                                        chat.last_message === null ||
+                                        compareMessageIDs(chat.last_read_message, chat.last_message) < 0 ?
                                             "flex-end" :
                                             "center"
                                     }
@@ -2416,7 +2422,7 @@ export default function ChatContainer() {
                                     <Grid item xs="auto">
                                         <Tooltip
                                             title={chat.last_message_time ? humanReadableDate(new Date(chat.last_message_time)) : ''}>
-                                            <Typography variant="caption" color="textSecondary" sx={{ fontSize: '10px' }}>
+                                            <Typography variant="caption" color="textSecondary" sx={{fontSize: '10px'}}>
                                                 {chat.last_message_time ? formatChatDate(new Date(chat.last_message_time)) : ''}
                                             </Typography>
                                         </Tooltip>
@@ -2705,7 +2711,7 @@ export default function ChatContainer() {
                         onClose={closeNotification}
                         autoHideDuration={3000}
                         key={"chat-notification"}
-                        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                        anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                         style={{
                             position: "fixed",
                             width: window.innerWidth > 1000 ? "fit-content" : undefined,
@@ -2739,7 +2745,7 @@ export default function ChatContainer() {
                 >
                     {renderTopBar()}
                     {renderView()}
-                    <div ref={containerEndRef} />
+                    <div ref={containerEndRef}/>
                 </Paper>
             )}
         </>

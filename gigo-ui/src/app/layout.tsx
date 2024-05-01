@@ -7,6 +7,33 @@ import StoreProvider from "@/app/StoreProvider";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import {WebSocketProvider} from "@/services/websocket";
 import {CtWebSocketProvider} from "@/services/ct_websocket";
+import type { Metadata, Viewport } from 'next'
+
+export const metadata: Metadata = {
+    applicationName: 'GIGO Dev',
+    title: 'GIGO Dev - Learn to Code with Interactive Challenges',
+    description: 'GIGO is a fully integrated learn-to-code platform. Gigo provides cloud development environments, interactive coding challenges, and access to a global community of developers. Join now and start coding!',
+    keywords: ['coding', 'programming', 'learning', 'challenges', 'developers', 'cloud development'],
+    openGraph: {
+        title: 'GIGO Dev - Learn to Code with Interactive Challenges',
+        description: 'GIGO is a fully integrated learn-to-code platform. Gigo provides cloud development environments, interactive coding challenges, and access to a global community of developers. Join now and start coding!',
+        type: 'website',
+        url: 'https://gigo.dev',
+        images: [
+            {
+                url: 'https://gigo.dev/logo192.png',
+                width: 192,
+                height: 192,
+                alt: 'GIGO Dev Logo',
+            },
+        ],
+        siteName: 'GIGO Dev',
+    }
+}
+
+export const viewport: Viewport = {
+    themeColor: '#29C18C',
+}
 
 export default function Layout({
                                    children,
@@ -15,27 +42,6 @@ export default function Layout({
 }>) {
     return (
         <html lang="en">
-        <head>
-        <meta charSet="utf-8"/>
-        <link rel="icon" href="%PUBLIC_URL%/favicon.ico"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1"/>
-        <meta name="theme-color" content="#29C18C"/>
-        <meta name="title" content="GIGO Dev - Learn to Code with Interactive Challenges"/>
-        <meta name="description"
-              content="GIGO is a fully integrated learn-to-code platform. Gigo provides cloud development environments, interactive coding challenges, and access to a global community of developers. Join now and start coding!"/>
-        <meta name="keywords" content="coding, programming, learning, challenges, developers, cloud development"/>
-        <meta property="og:title" content="GIGO Dev - Learn to Code with Interactive Challenges"/>
-        <meta property="og:description"
-              content="GIGO is a fully integrated learn-to-code platform. Gigo provides cloud development environments, interactive coding challenges, and access to a global community of developers. Join now and start coding!"/>
-        <meta property="og:image" content="%PUBLIC_URL%/logo192.png"/>
-        <meta property="og:url" content="https://gigo.dev"/>
-        <meta property="og:type" content="website"/>
-        <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png"/>
-        <link rel="canonical" href="https://gigo.dev"/>
-        <link rel="manifest" href="%PUBLIC_URL%/manifest.json"/>
-        <title>GIGO Dev</title>
-        </head>
-
         <body>
         <AppRouterCacheProvider>
             <StoreProvider>

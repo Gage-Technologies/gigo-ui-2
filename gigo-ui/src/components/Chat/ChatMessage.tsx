@@ -2,13 +2,12 @@
 /* Chat message similar to twitch built in React with MUI */
 
 import {Card, CardContent, createStyles, createTheme, Link, PaletteMode, Typography} from "@mui/material";
-import randomColor from "randomcolor";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import * as React from "react";
 import {withStyles} from "@material-ui/core";
 import moment from 'moment';
 import {getAllTokens} from "../../theme";
-import { makeStyles } from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
     gradientText: {
@@ -199,7 +198,7 @@ export default function ChatMessage(props: IProps) {
     const renderMessage = () => {
         if (props.releaseMem && !isVisible && messageHeight !== null) {
             return (
-                <div style={{ height: `${messageHeight}px` }} />
+                <div style={{height: `${messageHeight}px`}}/>
             );
         }
 
@@ -213,10 +212,13 @@ export default function ChatMessage(props: IProps) {
         return (
             <>
                 <StyledCardContent>
-                    <Typography variant="body2" gutterBottom style={{ textAlign: props.sender ? 'right' : 'left' }}>
+                    <Typography variant="body2" gutterBottom style={{textAlign: props.sender ? 'right' : 'left'}}>
                         {formatName()}
                         {" "}
-                        <span style={{ fontSize: "11px", color: theme.palette.text.secondary }}>{formatDate(props.date)}</span>
+                        <span style={{
+                            fontSize: "11px",
+                            color: theme.palette.text.secondary
+                        }}>{formatDate(props.date)}</span>
                     </Typography>
                     <div
                         style={{
@@ -260,7 +262,8 @@ export default function ChatMessage(props: IProps) {
 
 // default props
 ChatMessage.defaultProps = {
-    onAllMediaLoaded: () => {},
+    onAllMediaLoaded: () => {
+    },
     listRef: null,
     releaseMem: false,
 }

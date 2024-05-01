@@ -55,7 +55,6 @@ import {
     selectVisibility,
     updateSearchParamsState
 } from "@/reducers/searchParams/searchParams";
-import call from "../services/api-call";
 import Tag from "../models/tag";
 import swal from "sweetalert";
 import User from "../models/user";
@@ -511,19 +510,20 @@ export default function TopSearchBar(props: IProps) {
             return
         }
 
-        let res = await call(
-            "/api/search/users",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/users`,
             {
-                query: e.target.value,
-                skip: 0,
-                limit: 5,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: e.target.value,
+                    skip: 0,
+                    limit: 5,
+                })
             }
-        )
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -713,35 +713,38 @@ export default function TopSearchBar(props: IProps) {
         }
 
 
-        let posts = await call(
-            "/api/search/posts",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            params
-        )
+        let posts = fetch(
+            `${config.rootPath}/api/search/posts`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            }
+        ).then(res => res.json())
 
-        let users = await call(
-            "/api/search/users",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            params
-        )
+        let users = fetch(
+            `${config.rootPath}/api/search/users`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params)
+            }
+        ).then(res => res.json())
 
-        let bytes = await call(
-            "/api/search/bytes",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            bytesParams
-        )
+        let bytes = fetch(
+            `${config.rootPath}/api/search/bytes`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(bytesParams)
+            }
+        ).then(res => res.json())
 
         const [res, res2, res3] = await Promise.all([
             posts,
@@ -795,15 +798,16 @@ export default function TopSearchBar(props: IProps) {
                 query: searchParams.query,
             }
 
-            let res = await call(
-                "/api/search/complete",
-                "post",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                params
-            )
+            let res = fetch(
+                `${config.rootPath}/api/search/complete`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params)
+                }
+            ).then(res => res.json())
 
             if (res === undefined) {
                 swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -822,19 +826,20 @@ export default function TopSearchBar(props: IProps) {
             return
         }
 
-        let res = await call(
-            "/api/search/tags",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/tags`,
             {
-                query: e.target.value,
-                skip: 0,
-                limit: 5,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: e.target.value,
+                    skip: 0,
+                    limit: 5,
+                })
             }
-        )
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
