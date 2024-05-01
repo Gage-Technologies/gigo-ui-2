@@ -81,6 +81,11 @@ export default function Tutorial() {
     const [tutorialStepIndex, setTutorialStepIndex] = React.useState(0)
     const [openTooltip, setOpenTooltip] = React.useState(false);
     const [startingByte, setStartingByte] = React.useState(false);
+    const [windowWidth, setWindowWidth] = React.useState(1200);
+
+    React.useEffect(() => {
+        setWindowWidth(window.innerWidth);
+    }, []);
 
     // this enables us to push tutorial restarts from the app wrapper down into this page
     React.useEffect(() => {
@@ -114,8 +119,8 @@ export default function Tutorial() {
             title: (
                 <DialogTitle
                     sx={{
-                        width: window.innerWidth > 1000 ? 450 : undefined,
-                        maxWidth: window.innerWidth > 1000 ? undefined : "90vw",
+                        width: windowWidth > 1000 ? 450 : undefined,
+                        maxWidth: windowWidth > 1000 ? undefined : "90vw",
                         background: "linear-gradient(90deg, #84E8A2, #63a4f8, #84E8A2)",
                         backgroundSize: "200% 200%",
                         animation: `${gradientAnimation} 3s ease infinite`,
@@ -262,7 +267,7 @@ export default function Tutorial() {
         >
             {typeof steps[tutorialStepIndex]["title"] === "string" ? (
                 <DialogTitle
-                    sx={window.innerWidth < 1000 ? {
+                    sx={windowWidth < 1000 ? {
                         maxWidth: "90vw",
                         backgroundColor: "transparent",
                         fontSize: "1.2em",
@@ -286,7 +291,7 @@ export default function Tutorial() {
                 steps[tutorialStepIndex]["title"]
             )}
             <DialogContent
-                sx={window.innerWidth < 1000 ? {
+                sx={windowWidth < 1000 ? {
                     maxWidth: "90vw",
                     backgroundColor: "transparent",
                 } : {
@@ -324,7 +329,7 @@ export default function Tutorial() {
                 )}
                 {tutorialStepIndex === steps.length - 1 ? (
                     <>
-                        {window.innerWidth > 1000 && (
+                        {windowWidth > 1000 && (
                             <Button
                                 onClick={async () => {
                                     setRunTutorial(false)

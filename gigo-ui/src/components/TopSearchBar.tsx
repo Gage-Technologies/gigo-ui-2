@@ -16,7 +16,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import React, { SyntheticEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import Menu from "@mui/material/Menu";
 import { programmingLanguages } from "@/services/vars";
 import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
@@ -340,7 +340,7 @@ export default function TopSearchBar(props: IProps) {
         }
     }
 
-    let navigate = useNavigate();
+    let router = useRouter();
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -431,7 +431,7 @@ export default function TopSearchBar(props: IProps) {
 
         let urlParams = new URLSearchParams(params).toString()
 
-        navigate("/search?" + urlParams)
+        router.push("/search?" + urlParams)
 
     }
 
@@ -1613,7 +1613,7 @@ export default function TopSearchBar(props: IProps) {
                         }}
                         onClick={async () => {
                             // @ts-ignore
-                            navigate("/byte/" + option.content._id)
+                            router.push("/byte/" + option.content._id)
                         }}
                     >
                         <Box
@@ -1689,7 +1689,7 @@ export default function TopSearchBar(props: IProps) {
                                 // @ts-ignore
                                 await handleSearchCompleted(option.content._id)
                                 // @ts-ignore
-                                navigate("/user/" + option.content._id)
+                                router.push("/user/" + option.content._id)
                                 window.location.reload()
                             }}
                         >
@@ -1788,7 +1788,7 @@ export default function TopSearchBar(props: IProps) {
                             // @ts-ignore
                             await handleSearchCompleted(option.content._id)
                             // @ts-ignore
-                            navigate("/challenge/" + option.content._id)
+                            router.push("/challenge/" + option.content._id)
                         }}
                     >
                         <CardMedia
@@ -2040,7 +2040,7 @@ export default function TopSearchBar(props: IProps) {
                                                     // @ts-ignore
                                                     await handleSearchCompleted(option.content._id)
                                                     // @ts-ignore
-                                                    navigate("/challenge/" + option.content._id)
+                                                    router.push("/challenge/" + option.content._id)
                                                 }}
                                             >
                                                 <CardMedia

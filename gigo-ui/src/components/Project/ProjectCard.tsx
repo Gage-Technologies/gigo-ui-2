@@ -34,6 +34,7 @@ import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
+import Image from "next/image";
 
 
 interface IProps {
@@ -320,7 +321,7 @@ export default function ProjectCard(props: IProps) {
                             <Tooltip
                                 title={`Renown ${props.renown + 1}`}
                             >
-                                <img
+                                <Image
                                     style={{
                                         height: "7vh",
                                         width: "auto",
@@ -328,6 +329,7 @@ export default function ProjectCard(props: IProps) {
                                         overflow: "hidden",
                                     }}
                                     src={imgSrc}
+                                    alt={""}
                                 />
                             </Tooltip>
                         </div>

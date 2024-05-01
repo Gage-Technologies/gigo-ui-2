@@ -43,6 +43,7 @@ const GIGOLandingPage: React.FC = () => {
     let userPref = localStorage.getItem('theme');
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+
     const [fireflies, setFireflies] = useState<string[]>([]);
     const leftOpen = useAppSelector(selectAppWrapperSidebarOpen);
     const rightOpen = useAppSelector(selectAppWrapperChatOpen);
