@@ -8,7 +8,6 @@ import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import {getAllTokens} from "@/theme";
-import call from "@/services/api-call";
 import swal from "sweetalert";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 
@@ -26,42 +25,35 @@ export default function RecommendedProjectsScroll() {
     const stopScroll = React.useRef(false)
 
     const infiniteScrollHandler = async () => {
+        console.log("infiniteScrollHandler")
         // we make up to 3 attempts to retrieve the next block of data
         for (let i = 0; i < 3; i++) {
-            let rec = await call(
-                "/api/project/recommended",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
+            let rec = await fetch(
+                `${config.rootPath}/api/project/recommended`,
                 {
-                    skip: recDataPage * 32,
-                },
-                null,
-                config.rootPath
-            )
-
-            if (rec === undefined || rec["projects"] === undefined) {
-                if (i === 2) {
-                    //@ts-ignore
-                    swal("Server Error", "The server is not being cool right now. We're gonna have a talk with it. Try again later!")
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        skip: recDataPage * 32,
+                    })
                 }
+            ).then(async (response) => {
+                let data: { rec_bytes?: any[], message?: string } = await response.json();
+                if (data.rec_bytes !== undefined) {
+                    return data.rec_bytes
+                }
+                return []
+            })
+
+            if (rec.length === 0) {
                 stopScroll.current = true
-                continue
             }
-
-            let newProjects = rec["projects"] as Array<never>
-
-            if (newProjects.length === 0) {
-                stopScroll.current = true
-            }
-
             let localCopy = JSON.parse(JSON.stringify(recData))
             // @ts-ignore
             localCopy = localCopy.concat(newProjects)
             setRecData(localCopy)
-
             setRecDataPage(recDataPage + 1)
 
             break

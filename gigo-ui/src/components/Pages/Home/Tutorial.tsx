@@ -21,10 +21,10 @@ import {
     selectAuthStateTutorialState,
     updateAuthState
 } from "@/reducers/auth/auth";
-import call from "@/services/api-call";
 import {keyframes} from "@mui/system";
 import {useAppSelector} from "@/reducers/hooks";
 import {LoadingButton} from "@mui/lab";
+import config from "@/config";
 
 const gradientAnimation = keyframes`
     0% {
@@ -338,15 +338,16 @@ export default function Tutorial() {
                                     dispatch(updateAuthState(authState))
 
                                     // send api call to backend to mark the challenge tutorial as completed
-                                    await call(
-                                        "/api/user/markTutorial",
-                                        "post",
-                                        null,
-                                        null,
-                                        null,
-                                        // @ts-ignore
+                                    await fetch(
+                                        `${config.rootPath}/api/user/markTutorial`,
                                         {
-                                            tutorial_key: "home"
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json'
+                                            },
+                                            body: JSON.stringify({
+                                                tutorial_key: "home"
+                                            })
                                         }
                                     )
                                 }}
@@ -374,15 +375,16 @@ export default function Tutorial() {
                                 dispatch(updateAuthState(authState))
 
                                 // send api call to backend to mark the challenge tutorial as completed
-                                await call(
-                                    "/api/user/markTutorial",
-                                    "post",
-                                    null,
-                                    null,
-                                    null,
-                                    // @ts-ignore
+                                await fetch(
+                                    `${config.rootPath}/api/user/markTutorial`,
                                     {
-                                        tutorial_key: "home"
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            tutorial_key: "home"
+                                        })
                                     }
                                 )
 

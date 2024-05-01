@@ -13,7 +13,7 @@ export interface IProps {
     activeData: any[];
 }
 
-export default function ActiveChallenges({ activeData }: IProps) {
+function ActiveChallenges({ activeData }: IProps) {
     const authState = useAppSelector(selectAuthState);
     const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
     const chatOpen = useAppSelector(selectAppWrapperChatOpen);
@@ -102,3 +102,5 @@ export default function ActiveChallenges({ activeData }: IProps) {
         </div>
     )
 }
+
+export default ActiveChallenges;

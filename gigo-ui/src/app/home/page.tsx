@@ -1,22 +1,11 @@
 import * as React from "react";
-import {Box, Button, createTheme, CssBaseline, Grid, ThemeProvider, Typography} from "@mui/material";
-import {defaultTheme, getAllTokens, isHoliday} from "@/theme";
-import ProjectCard from "@/components/Project/ProjectCard";
+import {Box, Button, CssBaseline, Grid, Typography} from "@mui/material";
+import {defaultTheme} from "@/theme";
 import config from "@/config";
-import call from "@/services/api-call";
 import Carousel from "../../components/Carousesl";
-import {selectAuthState, selectAuthStateId,} from "@/reducers/auth/auth";
-import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import ReactGA from "react-ga4";
 import GIGOLandingPage from "@/components/LandingPage/Landing";
 import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
-import GIGOLandingPageChristmas from "@/components/LandingPage/LandingChristmas";
-import GIGOLandingPageChristmasMobile from "@/components/LandingPage/LandingChristmasMobile";
-import GIGOLandingPageNewYearsMobile from "@/components/LandingPage/LandingNewYearsMobile";
-import GIGOLandingPageNewYears from "@/components/LandingPage/LandingNewYears";
-import GIGOLandingPageValentines from "@/components/LandingPage/LandingValentines";
-import GIGOLandingPageValentinesMobile from "@/components/LandingPage/LandingValentinesMobile";
 import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";
@@ -99,7 +88,7 @@ async function Home() {
             }
         })
 
-        let detourReq = call(
+        let detourReq = fetch(
             `${config.rootPath}/api/journey/detourStats`,
             {
                 method: 'POST',
@@ -115,7 +104,7 @@ async function Home() {
             }
         })
 
-        let startedJourneyReq = call(
+        let startedJourneyReq = fetch(
             `${config.rootPath}/api/journey/determineStart`,
             {
                 method: 'POST',
@@ -131,7 +120,7 @@ async function Home() {
             }
         })
 
-        let activeReq = call(
+        let activeReq = fetch(
             `${config.rootPath}/api/project/active`,
             {
                 method: 'POST',
@@ -166,10 +155,6 @@ async function Home() {
     );
 
     // let theme = createTheme(getAllTokens('dark'))
-
-    // const authState = useAppSelector(selectAuthState);
-    // const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
-    // const chatOpen = useAppSelector(selectAppWrapperChatOpen);
 
     ReactGA.initialize("G-38KBFJZ6M6");
 
@@ -352,7 +337,10 @@ async function Home() {
                         }}>
                             <div style={{position: "relative", top: "100px", width: '50%'}}>
                                 <Typography variant={"h1"}
-                                            sx={{color: defaultTheme.palette.background.default, textTransform: 'none'}}>
+                                            sx={{
+                                                color: defaultTheme.palette.background.default,
+                                                textTransform: 'none'
+                                            }}>
                                     Embark on your Coding Journey
                                 </Typography>
                             </div>
