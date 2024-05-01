@@ -1,3 +1,4 @@
+'use client'
 import React, {ReactNode, useState} from 'react';
 import {Box, IconButton, MobileStepper, useTheme} from '@mui/material';
 import {KeyboardArrowLeft, KeyboardArrowRight} from '@mui/icons-material';

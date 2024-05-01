@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';

@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from "react";
 import { createTheme, PaletteMode, Dialog, DialogContent } from "@mui/material";
 import { getAllTokens } from "@/theme";

@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react";
 import {createTheme, CssBaseline, PaletteMode, ThemeProvider, Box, Modal} from "@mui/material";
 import {getAllTokens} from "@/theme";

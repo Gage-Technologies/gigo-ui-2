@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import SvgIcon from '@mui/material/SvgIcon';
 import { Icon } from "@material-ui/core";

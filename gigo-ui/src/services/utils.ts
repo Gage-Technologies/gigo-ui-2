@@ -1,3 +1,6 @@
+import {decodeToken} from "react-jwt";
+import {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
+
 /**
  * Returns a promise that when awaited sleeps for the specified time in millis
  * @param millis time in millis to sleep
@@ -23,4 +26,18 @@ export function simpleHash(input: string) {
         hash |= 0; // Convert to 32bit integer
     }
     return hash.toString();
+}
+
+export function checkSessionStatus(sessionCookie: RequestCookie | undefined): boolean {
+    if (sessionCookie === undefined) {
+        return false;
+    }
+
+    let decodedToken: {exp: number} | null = decodeToken(sessionCookie.value);
+    if (decodedToken === null || decodedToken === undefined) {
+        return false;
+    }
+
+    let expires = new Date(decodedToken.exp * 1000);
+    return expires.getTime() >= Date.now();
 }

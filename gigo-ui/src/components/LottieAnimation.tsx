@@ -1,3 +1,4 @@
+'use client'
 import { FC, memo, useState, useRef, useEffect } from "react";
 import { Player } from '@lottiefiles/react-lottie-player';
 import { useInView } from 'react-intersection-observer';

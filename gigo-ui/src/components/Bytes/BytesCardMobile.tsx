@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react"
 import {
     Box,
@@ -23,7 +24,6 @@ import BytesLanguage from "@/icons/Bytes/BytesLanguage";
 
 
 interface IProps {
-    role?: any | null;
     width?: number | string,
     height?: number | string,
     imageWidth: number | string,
@@ -32,7 +32,6 @@ interface IProps {
     bytesTitle: string,
     bytesThumb: string,
     bytesDesc: string,
-    onClick: () => void,
     animate: boolean,
     style?: React.CSSProperties;
     onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -122,7 +121,7 @@ export default function BytesCardMobile(props: IProps) {
             }
             `}
             </style>
-            <ButtonBase href={`/byte/${props.bytesId}`} onClick={props.onClick}>
+            <ButtonBase href={`/byte/${props.bytesId}`}>
                 <Card
                     sx={styles.card}
                     style={props.style}

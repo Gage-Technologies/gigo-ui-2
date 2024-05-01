@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import {alpha, Box, styled, useTheme} from '@mui/material';
 

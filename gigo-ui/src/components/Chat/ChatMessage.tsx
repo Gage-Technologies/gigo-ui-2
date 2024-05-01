@@ -1,3 +1,4 @@
+'use client'
 /* Chat message similar to twitch built in React with MUI */
 
 import {Card, CardContent, createStyles, createTheme, Link, PaletteMode, Typography} from "@mui/material";

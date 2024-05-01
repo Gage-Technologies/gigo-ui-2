@@ -66,14 +66,17 @@ const cacheMiddleware = (store: any) => (next: any) => (action: any) => {
 };
 
 // @ts-ignore
-export const store = configureStore({
-    reducer: persistedReducer,
-    devTools: process.env.NODE_ENV !== 'production',
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(cacheMiddleware),
-});
+export const makeStore = () => {
+    return configureStore({
+        reducer: persistedReducer,
+        devTools: process.env.NODE_ENV !== 'production',
+        middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(cacheMiddleware),
+    });
+}
 
-export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
+export type AppStore = ReturnType<typeof makeStore>
+export type RootState = ReturnType<AppStore['getState']>
+export type AppDispatch = AppStore['dispatch']
 export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,
     RootState,

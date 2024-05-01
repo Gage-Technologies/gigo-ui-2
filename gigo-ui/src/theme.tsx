@@ -1,6 +1,5 @@
-
-
-import {alpha, PaletteMode} from "@mui/material";
+'use client'
+import {createTheme, PaletteMode} from "@mui/material";
 import type * as CSS from 'csstype';
 
 function createFontFamily(fontFamily: CSS.Property.FontFamily) {
@@ -183,7 +182,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#1c1c1a",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: "#1c1c1a",
                         codeEditor: '#18181b',
                         card: '#282826',
@@ -191,7 +190,7 @@ export const getDesignTokens = (mode: PaletteMode) => ({
                         avatar: '#272727'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#fff",
@@ -274,14 +273,14 @@ export const getHalloweenTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#120d17",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: "#261b31",
                         codeEditor: '#261b31',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#feefc8",
@@ -363,14 +362,14 @@ export const getChristmasTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#3d0000",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: '#880205',
                         codeEditor: '#ff7f7f',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#ffffff",
@@ -451,14 +450,14 @@ export const getNewYearsTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#00172e",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: "#002d54",
                         codeEditor: '#261b31',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default:"#70809010"
                     },
                     text: {
                         primary: "#feefc8",
@@ -539,14 +538,14 @@ export const getValentinesTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#671d3e",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: '#6c334a',
                         codeEditor: '#ff7f7f',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#ffffff",
@@ -627,14 +626,14 @@ export const getEasterTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#7fab87",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: '#9fd5a9',
                         codeEditor: '#ff7f7f',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#f6ecab",
@@ -715,14 +714,14 @@ export const getIndependenceTokens = (mode: PaletteMode) => ({
                     divider: "#2a63ac",
                     background: {
                         default: "#0d0d21",
-                        codeEditorSide: alpha("#708090", .1),
+                        codeEditorSide: "#70809010",
                         paper: '#1b1b41',
                         codeEditor: '#ff7f7f',
                         card: '#1e1826',
                         chat: '#1e1826'
                     },
                     background2: {
-                        default: alpha("#708090", .1)
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#ffffff",
@@ -858,3 +857,5 @@ export const themeHelpers = {
         backgroundColor: "rgba(118,4,255,1)",
     },
 }
+
+export const defaultTheme = createTheme(getAllTokens('dark'));

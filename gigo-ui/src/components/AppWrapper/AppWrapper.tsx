@@ -1,3 +1,4 @@
+'use client'
 import * as React from 'react';
 import LoginIcon from '@mui/icons-material/Login';
 import MuiAppBar from '@mui/material/AppBar';
