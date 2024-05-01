@@ -363,25 +363,25 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             duration: theme.transitions.duration.leavingScreen,
         }),
         ...(leftOpen && !rightOpen && {
-            width: `calc(100% - ${drawerWidth + 20}px)`,
-            marginLeft: `${drawerWidth + 20}px`,
+            width: `calc(100% - ${drawerWidth}px)`,
+            marginLeft: `${drawerWidth}px`,
             transition: theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
         }),
         ...(rightOpen && !leftOpen && {
-            width: `calc(100% - ${drawerWidth * 1.5 + 20}px)`,
-            marginRight: `${drawerWidth * 1.5 + 20}px`,
+            width: `calc(100% - ${drawerWidth * 1.5}px)`,
+            marginRight: `${drawerWidth * 1.5}px`,
             transition: theme.transitions.create(['margin', 'width'], {
                 easing: theme.transitions.easing.easeOut,
                 duration: theme.transitions.duration.enteringScreen,
             }),
         }),
         ...(leftOpen && rightOpen && {
-            width: `calc(100% - ${drawerWidth * 2.5 + 40}px)`,
-            marginLeft: `${drawerWidth + 20}px`,
-            marginRight: `${drawerWidth * 1.5 + 20}px`,
+            width: `calc(100% - ${drawerWidth * 2.5}px)`,
+            marginLeft: `${drawerWidth}px`,
+            marginRight: `${drawerWidth * 1.5}px`,
         }),
     }));
 

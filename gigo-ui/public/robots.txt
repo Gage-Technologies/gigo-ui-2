@@ -1,0 +1,25 @@
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Bravebot
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: AhrefSiteAudit
+Allow: /
+
+User-agent: AhrefBot
+Allow: /
+
+User-agent: *
+Disallow: /
+
+Sitemap: /sitemap/sitemap.xml

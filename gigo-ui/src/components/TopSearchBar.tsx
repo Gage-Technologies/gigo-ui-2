@@ -1,29 +1,41 @@
-
-
+'use client'
 import {
     alpha,
     Autocomplete,
     Box,
-    Button, ButtonBase, Card, CardContent, CardMedia,
-    Checkbox, CircularProgress, createTheme, FormControl,
-    FormControlLabel,
+    Button,
+    Card,
+    CardContent,
+    CardMedia,
+    CircularProgress,
+    createTheme,
     Grid,
     IconButton,
-    InputBase, InputLabel, MenuItem, PaletteMode, Paper, Popper, Select,
+    InputBase,
+    InputLabel,
+    MenuItem,
+    PaletteMode,
+    Paper,
+    Popper,
+    Select,
     styled,
-    TextField, Tooltip, Typography,
+    TextField,
+    Tooltip,
+    Typography,
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import React, { SyntheticEvent } from "react";
-import { useRouter } from "next/navigation";
+import React, {SyntheticEvent} from "react";
+import {useRouter} from "next/navigation";
 import Menu from "@mui/material/Menu";
-import { programmingLanguages } from "@/services/vars";
-import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
+import {programmingLanguages} from "@/services/vars";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import UserIcon from "./UserIcon";
 import {
-    clearSearchParamsState, initialSearchStateUpdate,
-    SearchParamsStateUpdate, selectActiveSearch,
+    clearSearchParamsState,
+    initialSearchStateUpdate,
+    SearchParamsStateUpdate,
+    selectActiveSearch,
     selectAttemptsMax,
     selectAttemptsMin,
     selectAuthor,
@@ -34,19 +46,22 @@ import {
     selectLanguage,
     selectQuery,
     selectSearchChallengeType,
-    selectSearchTags, selectSearchTier,
-    selectSince, selectUntil,
+    selectSearchTags,
+    selectSearchTier,
+    selectSince,
+    selectUntil,
     selectViewsMax,
     selectViewsMin,
-    selectVisibility, updateSearchParamsState
+    selectVisibility,
+    updateSearchParamsState
 } from "@/reducers/searchParams/searchParams";
 import call from "../services/api-call";
 import Tag from "../models/tag";
 import swal from "sweetalert";
 import User from "../models/user";
-import { initialAuthStateUpdate, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
+import {selectAuthState} from "@/reducers/auth/auth";
 import config from "../config";
-import { getAllTokens } from "@/theme";
+import {getAllTokens} from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -57,8 +72,9 @@ import renown7 from "../img/renown/renown7.svg"
 import renown8 from "../img/renown/renown8.svg"
 import renown9 from "../img/renown/renown9.svg"
 import renown10 from "../img/renown/renown10.svg"
-import { grey } from "@material-ui/core/colors";
+import {grey} from "@material-ui/core/colors";
 import {debounce} from "lodash";
+import Image from "next/image";
 
 
 interface SearchOption {
@@ -67,7 +83,7 @@ interface SearchOption {
 }
 
 
-const Search = styled('div')(({ theme }) => ({
+const Search = styled('div')(({theme}) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.primary.contrastText, 0.15),
@@ -84,7 +100,7 @@ const Search = styled('div')(({ theme }) => ({
     },
 }));
 
-const SearchIconWrapper = styled('div')(({ theme }) => ({
+const SearchIconWrapper = styled('div')(({theme}) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -95,7 +111,7 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
     color: theme.palette.primary.contrastText
 }));
 
-const FilterIconButton = styled(IconButton)(({ theme }) => ({
+const FilterIconButton = styled(IconButton)(({theme}) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -107,7 +123,7 @@ const FilterIconButton = styled(IconButton)(({ theme }) => ({
     zIndex: 1000,
 }));
 
-const SearchLoading = styled(CircularProgress)(({ theme }) => ({
+const SearchLoading = styled(CircularProgress)(({theme}) => ({
     padding: theme.spacing(0, 2),
     position: 'absolute',
     color: theme.palette.primary.contrastText,
@@ -115,7 +131,7 @@ const SearchLoading = styled(CircularProgress)(({ theme }) => ({
     zIndex: 1000,
 }));
 
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
+const StyledInputBase = styled(InputBase)(({theme}) => ({
     color: theme.palette.primary.contrastText,
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -155,6 +171,7 @@ interface IProps {
     width: number | string
     height: number | string,
 }
+
 // initialize redux states
 export default function TopSearchBar(props: IProps) {
     // retrieve theme from local storage
@@ -470,8 +487,8 @@ export default function TopSearchBar(props: IProps) {
         };
 
         const isClickWithinElement = (event: MouseEvent, element: HTMLElement) => {
-            const { left, top, right, bottom } = element.getBoundingClientRect();
-            const { clientX, clientY } = event;
+            const {left, top, right, bottom} = element.getBoundingClientRect();
+            const {clientX, clientY} = event;
 
             return (
                 clientX >= left &&
@@ -547,8 +564,10 @@ export default function TopSearchBar(props: IProps) {
 
         if (searchParams.tags !== undefined && searchParams.tags !== null && searchParams.tags.length > 0) {
             updateState.tags = [];
-            // @ts-ignore
-            searchParams.tags.forEach((tag) => { updateState.tags.push(tag) })
+            searchParams.tags.forEach((tag) => {
+                // @ts-ignore
+                updateState.tags.push(tag)
+            })
         }
 
 
@@ -576,8 +595,10 @@ export default function TopSearchBar(props: IProps) {
 
             if (searchParams.tags !== undefined && searchParams.tags !== null && searchParams.tags.length > 0) {
                 updateState.tags = [];
-                // @ts-ignore
-                searchParams.tags.forEach((tag) => { updateState.tags.push(tag) })
+                searchParams.tags.forEach((tag) => {
+                    // @ts-ignore
+                    updateState.tags.push(tag)
+                })
             }
 
 
@@ -747,11 +768,11 @@ export default function TopSearchBar(props: IProps) {
 
 
         // @ts-ignore
-        let finalSearchOptions = res3["posts"].map(x => ({ type: "byte", content: x })).
+        let finalSearchOptions = res3["posts"].map(x => ({type: "byte", content: x})).
             // @ts-ignore
-            concat(res["challenges"].map(x => ({ type: "challenge", content: x }))).
+            concat(res["challenges"].map(x => ({type: "challenge", content: x}))).
             // @ts-ignore
-            concat(res2["users"].map(x => ({ type: "user", content: x })))
+            concat(res2["users"].map(x => ({type: "user", content: x})))
         setSearchOptions(JSON.parse(JSON.stringify(finalSearchOptions)))
         setOptionsOpen(true)
         setSearchPending(false)
@@ -793,9 +814,6 @@ export default function TopSearchBar(props: IProps) {
 
         }
     }
-
-
-
 
 
     const [tagOptions, setTagOptions] = React.useState<Tag[]>([])
@@ -871,7 +889,7 @@ export default function TopSearchBar(props: IProps) {
                             }}
                             value={searchParams.languages === null ? [] : searchParams.languages}
                             renderInput={(params) => (
-                                <TextField {...params} placeholder="Select" />
+                                <TextField {...params} placeholder="Select"/>
                             )}
                             sx={{
                                 width: "17vw",
@@ -1099,7 +1117,7 @@ export default function TopSearchBar(props: IProps) {
                                 return option.user_name
                             }}
                             renderInput={(params) => (
-                                <TextField {...params} placeholder="Search" />
+                                <TextField {...params} placeholder="Search"/>
                             )}
                             onInputChange={(e) => {
                                 handleAuthorSearch(e)
@@ -1424,7 +1442,7 @@ export default function TopSearchBar(props: IProps) {
                                 return option.value
                             }}
                             renderInput={(params) => (
-                                <TextField {...params} label="Search" />
+                                <TextField {...params} label="Search"/>
                             )}
                             onInputChange={(e) => {
                                 handleTagSearch(e)
@@ -1693,7 +1711,7 @@ export default function TopSearchBar(props: IProps) {
                                 window.location.reload()
                             }}
                         >
-                            <div style={{ display: "flex", flexDirection: "row", width: "95%", justifyContent: "left" }}>
+                            <div style={{display: "flex", flexDirection: "row", width: "95%", justifyContent: "left"}}>
                                 <div>
                                     <UserIcon
                                         userId={
@@ -1737,13 +1755,14 @@ export default function TopSearchBar(props: IProps) {
                                     //@ts-ignore
                                     option.content.tier + 1}`}
                             >
-                                <img
+                                <Image
                                     style={{
                                         height: "99%",
                                         width: "auto",
                                         opacity: "0.85",
                                         overflow: "hidden",
                                     }}
+                                    alt={""}
                                     src={handleRenownCheck(
                                         //@ts-ignore
                                         option.content.tier)}
@@ -1854,7 +1873,7 @@ export default function TopSearchBar(props: IProps) {
                     }}
                 >
                     <SearchIconWrapper>
-                        <SearchIcon />
+                        <SearchIcon/>
                     </SearchIconWrapper>
                     {searchPending ? (
                         <SearchLoading size={32} sx={{
@@ -1871,7 +1890,7 @@ export default function TopSearchBar(props: IProps) {
                             minWidth: 0,
                             padding: 1,
                         }} onClick={handleClick}>
-                            <FilterListIcon />
+                            <FilterListIcon/>
                         </FilterIconButton>
                     )}
                     <form onSubmit={e => handleSubmit(e)}>
@@ -1879,7 +1898,7 @@ export default function TopSearchBar(props: IProps) {
                             freeSolo
                             id="search-query"
                             ref={autoCompleteRef}
-                            PopperComponent={({ children, ...popperProps }) => (
+                            PopperComponent={({children, ...popperProps}) => (
                                 <Popper {...popperProps} ref={optionsRef}>
                                     {children}
                                 </Popper>
@@ -1927,8 +1946,9 @@ export default function TopSearchBar(props: IProps) {
                                 }
                             }
                             renderInput={(params) => {
-                                const { InputLabelProps, InputProps, ...rest } = params;
-                                return <StyledInputBase {...params.InputProps} {...rest} placeholder="Search for Challenges!" />
+                                const {InputLabelProps, InputProps, ...rest} = params;
+                                return <StyledInputBase {...params.InputProps} {...rest}
+                                                        placeholder="Search for Challenges!"/>
                             }}
                         />
                     </form>
@@ -1980,7 +2000,7 @@ export default function TopSearchBar(props: IProps) {
                     }}
                 >
                     <SearchIconWrapper>
-                        <SearchIcon />
+                        <SearchIcon/>
                     </SearchIconWrapper>
                     {/*TODO: This is the options for search*/}
                     <form onSubmit={e => handleSubmit(e)}>
@@ -1988,7 +2008,7 @@ export default function TopSearchBar(props: IProps) {
                             freeSolo
                             id="search-query"
                             ref={autoCompleteRef}
-                            PopperComponent={({ children, ...popperProps }) => (
+                            PopperComponent={({children, ...popperProps}) => (
                                 <Popper
                                     {...popperProps}
                                     ref={optionsRef}
@@ -2035,7 +2055,7 @@ export default function TopSearchBar(props: IProps) {
                                             }
                                         }}>
                                             <Button
-                                                sx={{ width: "100%" }}
+                                                sx={{width: "100%"}}
                                                 onClick={async () => {
                                                     // @ts-ignore
                                                     await handleSearchCompleted(option.content._id)
@@ -2112,8 +2132,8 @@ export default function TopSearchBar(props: IProps) {
                                 }
                             }
                             renderInput={(params) => {
-                                const { InputLabelProps, InputProps, ...rest } = params;
-                                return <StyledInputBase {...params.InputProps} {...rest} placeholder="Search" />
+                                const {InputLabelProps, InputProps, ...rest} = params;
+                                return <StyledInputBase {...params.InputProps} {...rest} placeholder="Search"/>
                             }}
                         />
                     </form>
