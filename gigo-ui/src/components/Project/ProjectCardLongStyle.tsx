@@ -18,7 +18,6 @@ import {themeHelpers, getAllTokens} from "@/theme";
 import {string} from "prop-types";
 import UserIcon from "@/icons/User/UserIcon";
 import {useEffect} from "react";
-import {useNavigate} from "react-router-dom";
 import HorseIcon from "@/icons/ProjectCard/Horse";
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
 import { QuestionMark } from "@mui/icons-material";
@@ -68,8 +67,6 @@ export default function ProjectCardLongStyle(props: IProps) {
     let userPref = localStorage.getItem('theme')
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    let navigate = useNavigate();
 
     const styles = {
         card: document.documentElement.clientWidth > 1000 ? {

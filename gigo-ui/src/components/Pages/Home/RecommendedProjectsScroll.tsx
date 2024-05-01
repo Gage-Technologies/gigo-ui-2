@@ -12,6 +12,7 @@ import swal from "sweetalert";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 
 export default function RecommendedProjectsScroll() {
+    console.log("RecommendedProjectsScroll")
     // let userPref = localStorage.getItem('theme')
     let userPref = 'dark'
     const [mode, _] = React.useState<PaletteMode>('dark');
@@ -29,7 +30,7 @@ export default function RecommendedProjectsScroll() {
         // we make up to 3 attempts to retrieve the next block of data
         for (let i = 0; i < 3; i++) {
             let rec = await fetch(
-                `${config.rootPath}/api/project/recommended`,
+                `${config.rootPath}/api/home/recommended`,
                 {
                     method: 'POST',
                     headers: {
@@ -40,9 +41,10 @@ export default function RecommendedProjectsScroll() {
                     })
                 }
             ).then(async (response) => {
-                let data: { rec_bytes?: any[], message?: string } = await response.json();
-                if (data.rec_bytes !== undefined) {
-                    return data.rec_bytes
+                let data: { projects?: any[], message?: string } = await response.json();
+                console.log("data: ", data)
+                if (data.projects !== undefined) {
+                    return data.projects
                 }
                 return []
             })
@@ -52,7 +54,8 @@ export default function RecommendedProjectsScroll() {
             }
             let localCopy = JSON.parse(JSON.stringify(recData))
             // @ts-ignore
-            localCopy = localCopy.concat(newProjects)
+            localCopy = localCopy.concat(rec)
+            console.log("localCopy: ", localCopy)
             setRecData(localCopy)
             setRecDataPage(recDataPage + 1)
 
@@ -89,6 +92,7 @@ export default function RecommendedProjectsScroll() {
                     paddingLeft: "10px",
                     paddingTop: "6px",
                     fontSize: "1.2em",
+                    paddingBottom: "20px",
                 }}>
                     Recommended Challenges
                 </Typography>

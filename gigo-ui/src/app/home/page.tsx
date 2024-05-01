@@ -769,7 +769,7 @@ async function Home() {
     return (
         <Layout>
             <CssBaseline>
-                <div>
+                <div style={{overflow: "hidden"}}>
                     <Tutorial/>
                     {renderLanding()}
                     <Typography component={"div"}>

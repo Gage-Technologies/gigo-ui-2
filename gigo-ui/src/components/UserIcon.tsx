@@ -3,7 +3,6 @@
 import React from "react"
 import {ButtonBase} from "@mui/material";
 import Badge from '@mui/material/Badge';
-import {useNavigate} from "react-router-dom";
 import {useEffect} from "react";
 import config from "../config";
 import LottieAnimation from "./LottieAnimation";
@@ -72,9 +71,6 @@ export default function UserIcon(props: IProps) {
         }
     }, [props.backgroundPalette, props.backgroundName])
 
-
-    let navigate = useNavigate();
-
     const scaleSize = (scale: number) => {
         if (typeof props.size === "string") {
             return `calc(${props.size} * ${scale})`
@@ -142,7 +138,7 @@ export default function UserIcon(props: IProps) {
         <div>
             {props.userId !== "n/a" ?
                 <ButtonBase
-                    onClick={() =>  navigate("/user/" + props.userId)}
+                    href={"/user/" + props.userId}
                     style={ window.innerWidth > 1000 ? {
                         position: "relative",
                         //@ts-ignore

@@ -1,27 +1,25 @@
 'use client'
 import * as React from "react"
+import {useEffect} from "react"
 import {
     Button,
     ButtonBase,
-    Card, CardActions,
+    Card,
     CardContent,
     CardMedia,
     Chip,
-    createTheme, Dialog, Grid,
-    Icon,
+    createTheme,
+    Dialog,
+    Grid,
     PaletteMode,
-    SvgIcon,
     Tooltip,
     Typography
 } from "@mui/material";
-import { themeHelpers, getAllTokens } from "@/theme";
-import { string } from "prop-types";
+import {getAllTokens} from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import HorseIcon from "@/icons/ProjectCard/Horse"
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
-import { QuestionMark } from "@mui/icons-material";
+import {QuestionMark} from "@mui/icons-material";
 import TrophyIcon from "@/icons/ProjectCard/Trophy";
 import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -70,8 +68,6 @@ export default function ProjectCard(props: IProps) {
     let userPref = localStorage.getItem('theme')
     const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    let navigate = useNavigate();
 
     const styles = {
         card: {
@@ -175,27 +171,27 @@ export default function ProjectCard(props: IProps) {
         switch (projectType) {
             case "Playground":
                 return (
-                    <HorseIcon sx={{ width: "24px", height: "24px" }} />
+                    <HorseIcon sx={{width: "24px", height: "24px"}}/>
                 )
             case "Casual":
                 return (
-                    <HoodieIcon sx={{ width: "20px", height: "20px" }} />
+                    <HoodieIcon sx={{width: "20px", height: "20px"}}/>
                 )
             case "Competitive":
                 return (
-                    <TrophyIcon sx={{ width: "18px", height: "18px" }} />
+                    <TrophyIcon sx={{width: "18px", height: "18px"}}/>
                 )
             case "Interactive":
                 return (
-                    <GraduationIcon sx={{ width: "20px", height: "20px" }} />
+                    <GraduationIcon sx={{width: "20px", height: "20px"}}/>
                 )
             case "Debug":
                 return (
-                    <DebugIcon sx={{width: "20px", height: "20px"}} />
+                    <DebugIcon sx={{width: "20px", height: "20px"}}/>
                 )
             default:
                 return (
-                    <QuestionMark sx={{ width: "20px", height: "20px" }} />
+                    <QuestionMark sx={{width: "20px", height: "20px"}}/>
                 )
         }
     }
@@ -365,21 +361,21 @@ export default function ProjectCard(props: IProps) {
                             </Grid>
                             <Grid item xs={9}>
                                 <Chip
-                                    sx={{ float: "left" }}
+                                    sx={{float: "left"}}
                                     icon={getProjectIcon(props.projectType)}
                                     color="primary"
                                     label={props.projectType}
                                     variant="outlined"
                                 />
                                 {props.exclusive !== null && props.exclusive !== undefined && props.exclusive ? (
-                                    <AttachMoneyIcon />
+                                    <AttachMoneyIcon/>
                                 ) : null}
                             </Grid>
                             {props.estimatedTime !== null && props.estimatedTime > 0 ? (
                                 <Grid item xs={3}>
                                     <Tooltip title={"Estimated Tutorial Time"}>
                                         <Typography
-                                            sx={{ color: "grey"}}
+                                            sx={{color: "grey"}}
                                             color="primary"
                                             variant="caption"
                                         >{millisToTime(props.estimatedTime)}</Typography>

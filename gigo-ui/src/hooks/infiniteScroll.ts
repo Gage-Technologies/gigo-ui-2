@@ -23,7 +23,9 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
   }
 
   useEffect(() => {
+    console.log("useInfiniteScroll - hook")
     if (initialize && !isFetching && (disableInfiniteScroll !== null && !disableInfiniteScroll.current)) {
+      console.log("useInfiniteScroll - initializing")
       setIsFetching(true);
     }
     loop();
@@ -33,10 +35,12 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
   }, []);
 
   useEffect(() => {
-    if (!isFetching || (disableInfiniteScroll !== null && disableInfiniteScroll.current)) {
+    if (/*!isFetching || */(disableInfiniteScroll !== null && disableInfiniteScroll.current)) {
+      console.log("useInfiniteScroll - exiting: ", isFetching, disableInfiniteScroll)
       setIsFetching(false);
       return;
     }
+    console.log("useInfiniteScroll - executing callback")
     // execute the callback function
     callback().then(() => setIsFetching(false));
   }, [isFetching, callback]);

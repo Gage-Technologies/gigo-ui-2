@@ -1,25 +1,7 @@
 'use client'
 import * as React from "react"
-import {
-    Box,
-    Button,
-    ButtonBase,
-    Card, CardActions,
-    CardContent,
-    CardMedia,
-    Chip,
-    createTheme, Dialog, Grid,
-    Icon,
-    PaletteMode,
-    SvgIcon,
-    Tooltip,
-    Typography
-} from "@mui/material";
-import { themeHelpers, getAllTokens } from "@/theme";
-import { string } from "prop-types";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Image from 'next/image';
+import {Box, ButtonBase, Card, CardContent, createTheme, PaletteMode, Typography} from "@mui/material";
+import {getAllTokens} from "@/theme";
 
 
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
@@ -159,15 +141,15 @@ export default function BytesCard(props: IProps) {
                     onMouseEnter={props.onMouseEnter}
                     onMouseLeave={props.onMouseLeave}
                 >
-                    <div style={{ position: 'relative' }}>
+                    <div style={{position: 'relative'}}>
                         {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
-                        <Box 
+                        <img style={styles.image} src={props.bytesThumb} loading="lazy"/>
+                        <Box
                             display={"flex"}
                             flexDirection={"column"}
-                            style={{ 
-                                position: 'absolute', 
-                                top: '0px', 
+                            style={{
+                                position: 'absolute',
+                                top: '0px',
                                 left: '0px',
                                 height: "100%",
                                 width: "fit-content",
@@ -182,24 +164,24 @@ export default function BytesCard(props: IProps) {
                                 finished={props.completedMedium === undefined ? false : props.completedMedium}
                                 inByte={props.inByte}
                             />
-                            <BytesEasyBadge 
+                            <BytesEasyBadge
                                 finished={props.completedEasy === undefined ? false : props.completedEasy}
                                 inByte={props.inByte}
                             />
                         </Box>
-                        <Box 
+                        <Box
                             display={"flex"}
                             flexDirection={"column"}
-                            style={{ 
-                                position: 'absolute', 
-                                bottom: '10px', 
+                            style={{
+                                position: 'absolute',
+                                bottom: '10px',
                                 right: '10px',
                                 height: "fit-content",
                                 width: "fit-content",
                                 gap: '10px',
                             }}
                         >
-                            <BytesLanguage language={props.language === undefined ? "Python" : props.language} />
+                            <BytesLanguage language={props.language === undefined ? "Python" : props.language}/>
                         </Box>
                     </div>
                     <CardContent sx={styles.content}>
