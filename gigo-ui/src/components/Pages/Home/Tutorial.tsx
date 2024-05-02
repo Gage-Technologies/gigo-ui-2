@@ -14,7 +14,7 @@ import {
 import TutorialClaimTrialButton from "@/components/Pages/Home/TutorialClaimTrialButton";
 import CheckIcon from "@mui/icons-material/CheckCircleOutline";
 import StarIcon from "@mui/icons-material/Star";
-import {getAllTokens, themeHelpers} from "@/theme";
+import {getAllTokens, theme, themeHelpers} from "@/theme";
 import {
     initialAuthStateUpdate,
     selectAuthState,
@@ -70,11 +70,6 @@ const StartCodingButton = styled(LoadingButton)`
 `;
 
 export default function Tutorial() {
-    // let userPref = localStorage.getItem('theme')
-    let userPref = 'dark'
-    const [mode, _] = React.useState<PaletteMode>('dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const authState = useAppSelector(selectAuthState);
     const tutorialState = useAppSelector(selectAuthStateTutorialState);
     const [runTutorial, setRunTutorial] = React.useState(!tutorialState.home && authState.authenticated)

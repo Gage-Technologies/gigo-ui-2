@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react";
 import {createTheme, CssBaseline, PaletteMode, ThemeProvider, Box, Modal} from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import { useEffect} from "react";
 import Lottie from "react-lottie";
 import freeze from "@/img/streak/freeze.svg"
@@ -17,10 +17,6 @@ interface IProps {
 }
 
 const LootPopup = (props: IProps) => {
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [steps, setSteps] = React.useState(0)
     const [winnings, setWinnings] = React.useState(props.reward)
     const [pause, setPause] = React.useState(false)

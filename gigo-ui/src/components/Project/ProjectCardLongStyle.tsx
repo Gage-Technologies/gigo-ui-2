@@ -11,7 +11,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
 import {useEffect} from "react";
 import HorseIcon from "@/icons/ProjectCard/Horse";
@@ -61,10 +61,6 @@ interface IProps {
 }
 
 export default function ProjectCardLongStyle(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const styles = {
         card: document.documentElement.clientWidth > 1000 ? {
             width: props.width,

@@ -3,7 +3,7 @@ import {Box, createTheme, Dialog, IconButton, PaletteMode, Typography} from '@mu
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
 import {LoadingButton} from '@mui/lab';
 import premiumGorilla from "../img/pro-pop-up-icon-plain.svg";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import config from "../config";
 import proBackground from "../img/popu-up-backgraound-plain.svg";
 import {useAppSelector} from "@/reducers/hooks";
@@ -16,10 +16,6 @@ interface GoProPopupProps {
 }
 
 const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const authState = useAppSelector(selectAuthState);
 
     const [proUrlsLoading, setProUrlsLoading] = useState(false);

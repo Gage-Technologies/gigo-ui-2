@@ -3,7 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 import backgroundImageWebP from "@/img/landing/gigo-landing-valentines-mobile.webp";
-import { getAllTokens, themeHelpers } from '@/theme';
+import {getAllTokens, theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
@@ -39,11 +39,6 @@ const HeroContent = styled(Box)({
 });
 
 const GIGOLandingPageValentinesMobile: React.FC = () => {
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [hearts, setHearts] = useState<string[]>([]);
     const endRef = useRef<HTMLDivElement | null>(null);
 
@@ -146,7 +141,7 @@ const GIGOLandingPageValentinesMobile: React.FC = () => {
                             network="discord"
                             url="https://discord.gg/279hECYrfX"
                             bgColor={"transparent"}
-                            fgColor={mode === 'dark' ? "white" : "black"}
+                            fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                             style={{
                                 height: "32px",
                                 width: "32px",

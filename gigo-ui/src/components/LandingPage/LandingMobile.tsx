@@ -5,7 +5,7 @@ import { styled } from '@mui/system';
 import Image from 'next/image';
 
 import backgroundImageWebP from "@/img/landing/gigo-landing-mobile.webp";
-import { getAllTokens, themeHelpers } from '@/theme';
+import {getAllTokens, theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
@@ -37,10 +37,6 @@ const HeroContent = styled(Box)({
 });
 
 const GIGOLandingPageMobile: React.FC = () => {
-    let userPref = localStorage.getItem('theme');
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [fireflies, setFireflies] = useState<string[]>([]);
     const endRef = useRef<HTMLDivElement | null>(null);
 
@@ -149,7 +145,7 @@ const GIGOLandingPageMobile: React.FC = () => {
                             network="discord"
                             url="https://discord.gg/279hECYrfX"
                             bgColor={"transparent"}
-                            fgColor={mode === 'dark' ? "white" : "black"}
+                            fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                             style={{
                                 height: "32px",
                                 width: "32px",

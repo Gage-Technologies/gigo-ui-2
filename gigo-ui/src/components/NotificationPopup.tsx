@@ -19,7 +19,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import config from "../config";
 import swal from "sweetalert";
 import {useNavigate} from "react-router-dom";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import NotificationsPausedIcon from '@mui/icons-material/NotificationsPaused';
 
 
@@ -40,10 +40,6 @@ const NotificationPopup: React.FC<IProps> = ({
     const [open, setOpen] = useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
     let navigate = useNavigate();
-
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const acknowledgeNotification = async (notification_id: string) => {
         let res = await fetch(

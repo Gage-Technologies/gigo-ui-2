@@ -60,7 +60,7 @@ import swal from "sweetalert";
 import User from "../models/user";
 import {selectAuthState} from "@/reducers/auth/auth";
 import config from "../config";
-import {getAllTokens, themeHelpers} from "@/theme";
+import {getAllTokens, theme, themeHelpers} from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -174,11 +174,6 @@ interface IProps {
 
 // initialize redux states
 export default function TopSearchBar(props: IProps) {
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     // redux states for search params
     const dispatch = useAppDispatch();
     const reduxActiveSearchState = useAppSelector(selectActiveSearch);
@@ -1560,7 +1555,7 @@ export default function TopSearchBar(props: IProps) {
         // this is important if we are using gradients
         // @ts-ignore
         let textColor = params.group.toLowerCase() === "challenge" ? theme.palette.primary.light : params.group.toLowerCase() === "user" ? theme.palette.secondary.light : grey[300];
-        if (mode === "light")
+        if (theme.palette.mode === "light")
             // @ts-ignore
             textColor = params.group.toLowerCase() === "challenge" ? theme.palette.primary.dark : params.group.toLowerCase() === "user" ? theme.palette.secondary.dark : grey[900];
 
@@ -1610,7 +1605,7 @@ export default function TopSearchBar(props: IProps) {
         if (option.type === "byte") {
             // @ts-ignore
             let textColor = grey[300];
-            if (mode === "light")
+            if (theme.palette.mode === "light")
                 // @ts-ignore
                 textColor = grey[900];
 

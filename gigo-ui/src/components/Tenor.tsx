@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from "react";
 import {createTheme, PaletteMode, TextField, Grid, Card, CardMedia, Dialog, DialogContent, Box} from "@mui/material";
-import { getAllTokens } from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 
 interface MediaItem {
     dims: [number, number];
@@ -77,9 +77,6 @@ type TenorProps = {
 };
 
 export default function Tenor({ open, closeCallback, addGif }: TenorProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [query, setQuery] = useState<string>("");
     const [gifs, setGifs] = useState<Gif[]>([]);
     const [selectedGif, setSelectedGif] = useState<Gif | null>(null);

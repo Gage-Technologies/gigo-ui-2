@@ -53,7 +53,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import FolderIcon from '@mui/icons-material/Folder';
 import UserIcon from "@/icons/User/UserIcon";
-import {getAllTokens, Holiday, holiday, themeHelpers} from "@/theme";
+import {getAllTokens, Holiday, holiday, theme, themeHelpers} from "@/theme";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import TopSearchBar from "../TopSearchBar";
@@ -123,8 +123,6 @@ interface IProps {
 
 export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const drawerWidth = 200;
-
-    let userPref = localStorage.getItem('theme')
     let router = useRouter();
     let query = useSearchParams();
     let pathname = usePathname();
@@ -147,19 +145,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     // Check if the current page is ByteMobile
     const isByteMobilePage = pathname.startsWith('/byte/') && window.innerWidth < 1000;
 
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const colorMode = React.useMemo(
-        () => ({
-            // The dark mode switch would invoke this method
-            toggleColorMode: () => {
-                setMode((prevMode: PaletteMode) =>
-                    prevMode === 'light' ? 'dark' : 'light',
-                );
-            },
-        }),
-        [mode],
-    );
-
     const dispatch = useAppDispatch();
 
     let loggedIn = false
@@ -174,12 +159,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     )
 
     let homePageLockedDrawer = loggedIn && onHomePage && window.innerWidth > 1000
-
-    const handleTheme = () => {
-        colorMode.toggleColorMode();
-        localStorage.setItem('theme', mode === 'light' ? "dark" : 'light')
-        router.refresh()
-    };
 
     const thumbnail = useAppSelector(selectAuthStateThumbnail);
     const exclusiveAgreement = useAppSelector(selectAuthStateExclusiveAgreement);
@@ -198,7 +177,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const [reportPopup, setReportPopup] = React.useState(false)
 
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const textFieldRef = React.useRef();
     const [notifications, setNotifications] = React.useState<Notification[]>([]);
     const [notificationCount, setNotificationCount] = React.useState<number>(0);
@@ -244,7 +222,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     if (holiday !== null) {
         switch (holiday) {
             case Holiday.Christmas:
-                if (mode === 'light') {
+                if (theme.palette.mode === 'light') {
                     gigoColor = theme.palette.text.primary
                     break
                 }
@@ -819,7 +797,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     backgroundImage: `conic-gradient(from 0deg at 50% 50%, #FEDC5A20 0deg, #FFFCAB20 73.13deg, #29C18C20 155.62deg, #3D8EF720 249.37deg, #84E8A220 339.37deg, #FEDC5A20 360deg)`,
                     zIndex: 999,
                     border: "none",
-                    boxShadow: (mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
+                    boxShadow: (theme.palette.mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
                         "0px 3px 5px -1px #00000020, 0px 5px 8px 0px #00000014, 0px 1px 14px 0px #00000012",
                 }}
             >
@@ -1217,7 +1195,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     backgroundImage: `conic-gradient(from 0deg at 50% 50%, #FEDC5A20 0deg, #FFFCAB20 73.13deg, #29C18C20 155.62deg, #3D8EF720 249.37deg, #84E8A220 339.37deg, #FEDC5A20 360deg)`,
                     zIndex: 1000,
                     border: "none",
-                    boxShadow: (mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
+                    boxShadow: (theme.palette.mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
                         "0px 3px 5px -1px #00000020, 0px 5px 8px 0px #00000014, 0px 1px 14px 0px #00000012",
                 }}
             >
@@ -1439,7 +1417,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         backgroundImage: `conic-gradient(from 0deg at 50% 50%, #FEDC5A20 0deg, #FFFCAB20 73.13deg, #29C18C20 155.62deg, #3D8EF720 249.37deg, #84E8A220 339.37deg, #FEDC5A20 360deg)`,
                         zIndex: 1000,
                         border: "none",
-                        boxShadow: (mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
+                        boxShadow: (theme.palette.mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
                             "0px 3px 5px -1px #00000020, 0px 5px 8px 0px #00000014, 0px 1px 14px 0px #00000012",
                     }}
                 >
@@ -1596,7 +1574,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 padding: '10px',
                                 borderRadius: '10px',
                                 // add a glowing box shadow all around the box
-                                boxShadow: (mode === 'dark') ?
+                                boxShadow: (theme.palette.mode === 'dark') ?
                                     `0px 3px 15px -1px #ffffff40, 0px 5px 18px 0px #ffffff24, 0px 1px 24px 0px #ffffff22` :
                                     "0px 3px 5px -1px #00000020, 0px 5px 8px 0px #00000014, 0px 1px 14px 0px #00000012",
                                 ...themeHelpers.frostedGlass,
@@ -1729,7 +1707,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         network="github"
                         url="https://github.com/Gage-Technologies/gigo.dev"
                         bgColor={"transparent"}
-                        fgColor={mode === 'dark' ? "white" : "black"}
+                        fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                         style={{
                             height: "32px",
                             width: "32px",
@@ -1739,7 +1717,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         network="discord"
                         url="https://discord.gg/279hECYrfX"
                         bgColor={"transparent"}
-                        fgColor={mode === 'dark' ? "white" : "black"}
+                        fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                         style={{
                             height: "32px",
                             width: "32px",
@@ -1749,7 +1727,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         network="x"
                         url="https://twitter.com/gigo_dev"
                         bgColor={"transparent"}
-                        fgColor={mode === 'dark' ? "white" : "black"}
+                        fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                         style={{
                             height: "32px",
                             width: "32px",
@@ -1759,7 +1737,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         network="medium"
                         url="https://medium.com/@gigo_dev"
                         bgColor={"transparent"}
-                        fgColor={mode === 'dark' ? "white" : "black"}
+                        fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                         style={{
                             height: "32px",
                             width: "32px",
@@ -1769,7 +1747,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         network="reddit"
                         url="https://www.reddit.com/r/gigodev"
                         bgColor={"transparent"}
-                        fgColor={mode === 'dark' ? "white" : "black"}
+                        fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                         style={{
                             height: "32px",
                             width: "32px",
@@ -2059,16 +2037,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             <Modal open={reportPopup} onClose={() => setReportPopup(false)}>
                                 {reportIssueMemo}
                             </Modal>
-                            <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
-                                <Button sx={{ml: 1, mb: 1}} size={"small"} onClick={handleTheme} color="primary"
-                                        variant="text">
-                                    <Typography sx={{textTransform: "capitalize", fontSize: "1.0em", mr: 1}}>
-                                        {theme.palette.mode} mode
-                                    </Typography>
-                                    {theme.palette.mode === 'dark' ? <Brightness7Icon/> :
-                                        <Brightness4Icon/>}
-                                </Button>
-                            </div>
                             {renderSocials()}
                         </div>
                     </DrawerFooter>

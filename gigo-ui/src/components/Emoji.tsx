@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from "react";
 import { createTheme, PaletteMode, Dialog, DialogContent } from "@mui/material";
-import { getAllTokens } from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import Picker from '@emoji-mart/react';
 
 type EmojiProps = {
@@ -11,10 +11,6 @@ type EmojiProps = {
 };
 
 export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: EmojiProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const addEmoji = (emoji: any) => {
         onEmojiSelect(emoji);
     };
@@ -67,7 +63,7 @@ export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: Emoj
                         return response.json()
                     }}
                     onEmojiSelect={addEmoji}
-                    theme={userPref === 'light' ? 'light' : 'dark'}
+                    theme={theme.palette.mode}
                     autoFocus={true}
                     emojiSize={window.innerWidth > 1000 ? 24 : 20}
                     emojiButtonSize={window.innerWidth > 1000 ? 47 : 36}

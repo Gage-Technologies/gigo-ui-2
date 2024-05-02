@@ -7,7 +7,7 @@ import backgroundImageWebP from "@/img/landing/gigo-landing-valentines.webp"
 import backgroundImageLargeWebP from "@/img/landing/gigo-landing-valentines-large.webp"
 import { useAppSelector } from '@/reducers/hooks';
 import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
-import { getAllTokens, themeHelpers } from '@/theme';
+import {getAllTokens, theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
@@ -45,11 +45,6 @@ const HeroContent = styled(Box)({
 });
 
 const GIGOLandingPageValentines: React.FC = () => {
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [hearts, setHearts] = useState<string[]>([]);
     const leftOpen = useAppSelector(selectAppWrapperSidebarOpen)
     const rightOpen = useAppSelector(selectAppWrapperChatOpen)
@@ -167,7 +162,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                             network="discord"
                             url="https://discord.gg/279hECYrfX"
                             bgColor={"transparent"}
-                            fgColor={mode === 'dark' ? "white" : "black"}
+                            fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
                             target="_blank"
                             style={{
                                 height: "32px",

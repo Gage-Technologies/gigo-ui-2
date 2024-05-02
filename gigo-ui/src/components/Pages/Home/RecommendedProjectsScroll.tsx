@@ -7,16 +7,10 @@ import MoonLoader from "react-spinners/MoonLoader";
 import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
-import {getAllTokens} from "@/theme";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
+import {theme} from "@/theme";
 
 export default function RecommendedProjectsScroll() {
-    console.log("RecommendedProjectsScroll")
-    // let userPref = localStorage.getItem('theme')
-    let userPref = 'dark'
-    const [mode, _] = React.useState<PaletteMode>('dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const chatOpen = useAppSelector(selectAppWrapperChatOpen);
     const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
 

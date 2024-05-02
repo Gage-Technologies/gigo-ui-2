@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react"
 import {Box, ButtonBase, Card, CardContent, createTheme, PaletteMode, Typography} from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
@@ -30,12 +30,6 @@ interface IProps {
 }
 
 export default function BytesCard(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    // let navigate = useNavigate();
-
     const styles = {
         card: {
             width: props.width,

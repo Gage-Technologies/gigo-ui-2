@@ -7,7 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {darkSyntaxTheme, lightSyntaxTheme} from './SyntaxHighlights';
 import {alpha, Box, createTheme, IconButton, Tooltip, Typography} from '@mui/material';
-import {getAllTokens} from '@/theme';
+import {getAllTokens, theme} from '@/theme';
 import merge from 'deepmerge';
 import {Check, ContentCopy} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
@@ -24,10 +24,6 @@ const syntaxHighlightingSchema = merge(defaultSchema, {
 });
 
 const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPlugins, rehypePlugins, goToCallback}) => {
-  let userPref = localStorage.getItem('theme');
-  const [mode, _] = useState(userPref === 'light' ? 'light' : 'dark');
-  const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
   const CopyCode = styled('code')(() => ({
     cursor: 'pointer',
 
@@ -49,12 +45,12 @@ const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPl
   const [portals, setPortals] = useState([])
 
   useEffect(() => {
-    if (mode === 'light') {
+    if (theme.palette.mode === 'light') {
       require('./css/github-markdown-light.css');
     } else {
       require('./css/github-markdown-dark.css');
     }
-  }, [mode]);
+  }, [theme.palette.mode]);
 
   useEffect(() => {
     if (mediaCount === loadedMediaCount && mediaCount > 0) {
@@ -226,7 +222,7 @@ const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPl
                     </Box>
                     <ErrorBoundary>
                       <SyntaxHighlighter
-                        style={mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
+                        style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
                         language={match[1]}
                         PreTag="div"
                         className="notranslate"

@@ -6,7 +6,7 @@ import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import * as React from "react";
 import {withStyles} from "@material-ui/core";
 import moment from 'moment';
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({
@@ -41,10 +41,6 @@ interface IProps {
 }
 
 export default function ChatMessage(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const messageRef = React.useRef<HTMLDivElement>(null);
     const [isVisible, setIsVisible] = React.useState(true);
     const [messageHeight, setMessageHeight] = React.useState<number | null>(null);

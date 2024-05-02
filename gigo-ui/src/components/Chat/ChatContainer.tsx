@@ -27,7 +27,7 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import {getAllTokens, themeHelpers} from "@/theme";
+import {getAllTokens, theme, themeHelpers} from "@/theme";
 import {ArrowDownward, Delete, EmojiEmotions, Gif} from "@material-ui/icons";
 import Tenor from "../Tenor";
 import Emoji from "../Emoji";
@@ -170,10 +170,6 @@ function compareMessageIDs(id1: string, id2: string) {
 }
 
 export default function ChatContainer() {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const SearchIconWrapper = styled('div')(() => ({
         padding: theme.spacing(0, 2),
         height: '100%',

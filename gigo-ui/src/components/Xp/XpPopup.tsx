@@ -13,7 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 import {styled} from "@mui/material/styles";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import {keyframes} from "@emotion/react";
 import LinearProgress from "@mui/material/LinearProgress";
 import {Fade} from "react-awesome-reveal"
@@ -41,15 +41,6 @@ interface IProps {
 }
 
 const XpPopup = (props: IProps) => {
-    let userPref = localStorage.getItem("theme");
-    // const [mode, _] = React.useState<PaletteMode>(
-    //     userPref === "light" ? "light" : "dark"
-    // );
-    // const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [showConfetti, setShowConfetti] = React.useState(false);
 
     const [startXP, setStartXP] = React.useState(props.oldXP);

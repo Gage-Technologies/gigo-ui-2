@@ -4,7 +4,7 @@ import {useGlobalWebSocket} from '@/services/websocket';
 import {WsMessage, WsMessageType} from '@/models/websocket';
 import LinearProgress from '@mui/material/LinearProgress';
 import {Box, Button, createTheme, Grid, IconButton, PaletteMode, Paper, Tooltip, Typography} from '@mui/material';
-import {getAllTokens} from '@/theme';
+import {getAllTokens, theme} from '@/theme';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StopIcon from '@mui/icons-material/Stop';
@@ -27,10 +27,6 @@ interface IProps {
 
 
 const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const dispatch = useAppDispatch();
 
     const usageCache = useAppSelector(selectDevSpaceCacheState);
