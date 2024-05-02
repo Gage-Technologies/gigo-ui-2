@@ -693,7 +693,6 @@ async function Home() {
                     overflowX: "auto",
                     marginLeft: "1%",
                 }}>
-                    {/*TODO mobile => make carousel 1 for mobile*/}
                     <Carousel itemsShown={(isMobile ? 1 : 5)} infiniteLoop={true}
                               itemsToSlide={isMobile ? 1 : 5}>
                         {
@@ -703,10 +702,10 @@ async function Home() {
                                         <Box display={"flex"} justifyContent={"center"} style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
                                             <BytesCard
                                                 height={"52vh"}
-                                                imageHeight={"43vh"}
+                                                imageHeight={400}
                                                 // TODO mobile => make width 'fit-content'
                                                 width={'100%'}
-                                                imageWidth={"100%"}
+                                                imageWidth={225}
                                                 bytesId={project["_id"]}
                                                 bytesTitle={project["name"]}
                                                 bytesDesc={project["description_medium"]}

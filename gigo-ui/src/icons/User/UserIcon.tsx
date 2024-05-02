@@ -11,7 +11,7 @@ import { Buffer } from 'buffer';
 import Image from "next/image";
 
 interface IProps {
-    size: number | string,
+    size: number,
     userTier: string | number,
     userThumb: string,
     userId: string,
@@ -103,7 +103,7 @@ export default function UserIcon(props: IProps) {
                         zIndex: 1 // Adjust as needed
                     }}
                 >
-                    <Image alt={""} src={svgData} style={{
+                    <Image alt={""} src={svgData} height={props.size} width={props.size} style={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
@@ -179,9 +179,7 @@ export default function UserIcon(props: IProps) {
                 >
                     {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
                     <div style={{position: "relative", width: props.size, height: props.size}}>
-                        <Image alt={""} src={props.userThumb}
-                            //@ts-ignore
-                             style={styles.imageTop} width={props.size} height={props.size}></Image>
+                        <Image alt={""} src={props.userThumb} width={props.size} height={props.size}></Image>
                     </div>
                 </Badge>
             }

@@ -12,8 +12,8 @@ import Image from "next/image";
 interface IProps {
     width?: number | string,
     height?: number | string,
-    imageWidth: number | string,
-    imageHeight: number | string,
+    imageWidth: number,
+    imageHeight: number,
     bytesId: string,
     bytesTitle: string,
     bytesThumb: string,
@@ -49,14 +49,15 @@ export default function BytesCard(props: IProps) {
             animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
         },
-        imageContainer: {
-            height: props.imageHeight,
-            width: props.imageWidth,
-            minWidth: 200,
-            objectFit: "cover",
-        },
         image: {
             borderRadius: "10px",
+        },
+        imageContainer: {
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            position: "relative",
         },
         title: {
             textOverflow: "ellipsis",
@@ -64,18 +65,18 @@ export default function BytesCard(props: IProps) {
             display: '-webkit-box',
             // WebkitLineClamp: 1,
             WebkitBoxOrient: 'vertical',
-            textAlign: "left",
+            textAlign: "center",
             fontSize: "1em",
             margin: 0,
             paddingLeft: 0,
             minWidth: 200,
-            ...(props.width ? {width: props.width} : {width: props.imageWidth})
+            width: "100%"
         },
         content: {
             paddingBottom: "4px",
             paddingLeft: 0,
             paddingRight: "8px",
-            width: props.width
+            width: "100%"
         },
         badgesContainer: {
             display: 'flex',
@@ -87,14 +88,9 @@ export default function BytesCard(props: IProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
+            width: '100%',
         },
     };
-
-    const cardStyle = {
-        ...styles.card,
-        ...props.style, // Include custom styles if provided
-    };
-    let [exit, setExit] = React.useState<boolean>(false);
 
     /**
      * Convert millis duration to a well formatted time string with a min precision of minutes (ex: 1h2m)
@@ -134,7 +130,7 @@ export default function BytesCard(props: IProps) {
             }
             `}
             </style>
-            <ButtonBase href={`/byte/${props.bytesId}`}>
+            <ButtonBase href={`/byte/${props.bytesId}`} style={{width: "100%"}}>
                 <Card
                     sx={styles.card}
                     style={props.style}
@@ -142,48 +138,55 @@ export default function BytesCard(props: IProps) {
                     onMouseLeave={props.onMouseLeave}
                 >
                     <div style={{position: 'relative'}}>
-                        <div style={styles.imageContainer as React.CSSProperties}>
-                            <Image alt={""} fill={true} src={props.bytesThumb} style={styles.image as React.CSSProperties} loading="lazy"/>
+                        <div style={styles.imageContainer as React.CSSProperties} >
+                            <Image
+                                alt={""}
+                                src={props.bytesThumb}
+                                style={styles.image as React.CSSProperties}
+                                loading="lazy"
+                                width={props.imageWidth}
+                                height={props.imageHeight}
+                            />
+                            <Box
+                                display={"flex"}
+                                flexDirection={"column"}
+                                style={{
+                                    position: 'absolute',
+                                    top: '0px',
+                                    left: '0px',
+                                    height: "100%",
+                                    width: "fit-content",
+                                    gap: '10px',
+                                }}
+                            >
+                                <BytesHardBadge
+                                    finished={props.completedHard === undefined ? false : props.completedHard}
+                                    inByte={props.inByte}
+                                />
+                                <BytesMediumBadge
+                                    finished={props.completedMedium === undefined ? false : props.completedMedium}
+                                    inByte={props.inByte}
+                                />
+                                <BytesEasyBadge
+                                    finished={props.completedEasy === undefined ? false : props.completedEasy}
+                                    inByte={props.inByte}
+                                />
+                            </Box>
+                            <Box
+                                display={"flex"}
+                                flexDirection={"column"}
+                                style={{
+                                    position: 'absolute',
+                                    bottom: '20px',
+                                    right: '50px',
+                                    height: "fit-content",
+                                    width: "fit-content",
+                                    gap: '10px',
+                                }}
+                            >
+                                <BytesLanguage language={props.language === undefined ? "Python" : props.language}/>
+                            </Box>
                         </div>
-                        <Box
-                            display={"flex"}
-                            flexDirection={"column"}
-                            style={{
-                                position: 'absolute',
-                                top: '0px',
-                                left: '0px',
-                                height: "100%",
-                                width: "fit-content",
-                                gap: '10px',
-                            }}
-                        >
-                            <BytesHardBadge
-                                finished={props.completedHard === undefined ? false : props.completedHard}
-                                inByte={props.inByte}
-                            />
-                            <BytesMediumBadge
-                                finished={props.completedMedium === undefined ? false : props.completedMedium}
-                                inByte={props.inByte}
-                            />
-                            <BytesEasyBadge
-                                finished={props.completedEasy === undefined ? false : props.completedEasy}
-                                inByte={props.inByte}
-                            />
-                        </Box>
-                        <Box
-                            display={"flex"}
-                            flexDirection={"column"}
-                            style={{
-                                position: 'absolute',
-                                bottom: '10px',
-                                right: '10px',
-                                height: "fit-content",
-                                width: "fit-content",
-                                gap: '10px',
-                            }}
-                        >
-                            <BytesLanguage language={props.language === undefined ? "Python" : props.language}/>
-                        </Box>
                     </div>
                     <CardContent sx={styles.content}>
                         <div style={styles.container}>
