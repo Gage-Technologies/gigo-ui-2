@@ -1,9 +1,8 @@
 'use client'
-import React, {Suspense, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {Box, Card, CardMedia, Dialog, DialogContent, Grid, TextField} from "@mui/material";
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface MediaItem {
     dims: [number, number];
@@ -163,7 +162,7 @@ export default function Tenor({open, closeCallback, addGif}: TenorProps) {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <Dialog
                 open={open}
                 onClose={closeCallback}
@@ -235,6 +234,6 @@ export default function Tenor({open, closeCallback, addGif}: TenorProps) {
                     <div ref={loaderRef}></div>
                 </DialogContent>
             </Dialog>
-        </Suspense>
+        </>
     );
 }

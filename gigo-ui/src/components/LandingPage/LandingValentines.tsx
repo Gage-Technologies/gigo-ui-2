@@ -116,7 +116,7 @@ const GIGOLandingPageValentines: React.FC = () => {
     return (
         <>
             <HeroContainer sx={{width: width}}>
-                {heartsMemo}
+                {hearts.length > 0 && heartsMemo}
                 <HeroContent>
                     <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                         <GigoCircleIcon sx={{

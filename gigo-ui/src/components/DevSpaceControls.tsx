@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {Suspense, useRef, useState} from 'react';
+import {useRef, useState} from 'react';
 import {useGlobalWebSocket} from '@/services/websocket';
 import {WsMessage, WsMessageType} from '@/models/websocket';
 import LinearProgress from '@mui/material/LinearProgress';
-import {Box, Button, createTheme, Grid, IconButton, PaletteMode, Paper, Tooltip, Typography} from '@mui/material';
-import {getAllTokens, theme} from '@/theme';
+import {Box, Button, Grid, IconButton, Paper, Tooltip, Typography} from '@mui/material';
+import {theme} from '@/theme';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StopIcon from '@mui/icons-material/Stop';
@@ -21,7 +21,6 @@ import GoProDisplay from "./GoProDisplay";
 import config from "@/config";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     wsId: string;
@@ -31,12 +30,11 @@ interface IProps {
 const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
-    let isBrowser = typeof window !== 'undefined';
     const [isClient, setIsClient] = useState(false)
     React.useEffect(() => {
         setIsClient(true)
     }, [])
-    
+
     const dispatch = useAppDispatch();
 
     const usageCache = useAppSelector(selectDevSpaceCacheState);
@@ -66,8 +64,8 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
 
     let globalWs = useGlobalWebSocket();
 
-    const handleWsMessage = (message: WsMessage<any>) => {
-        if (!isBrowser) {
+    const handleWsMessage = React.useCallback((message: WsMessage<any>) => {
+        if (!isClient) {
             return
         }
 
@@ -114,18 +112,20 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                 }));
             }
         }
-    }
+    }, [isClient, props.wsId])
 
-    globalWs.registerCallback(
-        WsMessageType.WorkspaceStatusUpdate,
-        `workspace:usage:${props.wsId}`,
-        handleWsMessage
-    );
+    React.useEffect(() => {
+        globalWs.registerCallback(
+            WsMessageType.WorkspaceStatusUpdate,
+            `workspace:usage:${props.wsId}`,
+            handleWsMessage
+        );
+    }, [handleWsMessage])
 
     const containerRef = useRef(null)
 
     const stopWorkspace = async () => {
-        if (!isBrowser) {
+        if (!isClient) {
             return
         }
 
@@ -216,7 +216,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <style>
                 {`
                         @keyframes glitch {
@@ -424,7 +424,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                 </Paper>
             )}
             <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
-        </Suspense>
+        </>
     )
 };
 

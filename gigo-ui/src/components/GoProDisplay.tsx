@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Box, Dialog, IconButton, Typography} from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
 import {LoadingButton} from '@mui/lab';
@@ -10,7 +10,6 @@ import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth"; // Adjust import based on actual location
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface GoProPopupProps {
     open: boolean;
@@ -62,7 +61,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
     }, [authState.authenticated])
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <Dialog open={open} onClose={onClose} maxWidth="md"
                     PaperProps={{sx: {borderRadius: 7, overflow: "hidden"}}}>
                 <Box style={{
@@ -214,7 +213,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                     </div>
                 </Box>
             </Dialog>
-        </Suspense>
+        </>
     );
 };
 

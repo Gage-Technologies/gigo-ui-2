@@ -1,22 +1,12 @@
 'use client'
 import * as React from "react"
-import {
-    Button,
-    ButtonBase,
-    Card, CardContent,
-    CardMedia,
-    Chip,
-    createTheme, Dialog, Grid,
-    PaletteMode,
-    Tooltip,
-    Typography
-} from "@mui/material";
-import {getAllTokens, theme} from "@/theme";
+import {useEffect} from "react"
+import {Button, ButtonBase, Card, CardContent, CardMedia, Chip, Dialog, Grid, Tooltip, Typography} from "@mui/material";
+import {theme} from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
-import {Suspense, useEffect} from "react";
 import HorseIcon from "@/icons/ProjectCard/Horse";
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
-import { QuestionMark } from "@mui/icons-material";
+import {QuestionMark} from "@mui/icons-material";
 import TrophyIcon from "@/icons/ProjectCard/Trophy";
 import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -33,7 +23,6 @@ import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     role: any | null;
@@ -65,7 +54,7 @@ interface IProps {
 export default function ProjectCardLongStyle(props: IProps) {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
-    
+
     const styles = {
         card: !isMobile ? {
             width: props.width,
@@ -186,27 +175,27 @@ export default function ProjectCardLongStyle(props: IProps) {
         switch (projectType) {
             case "Playground":
                 return (
-                    <HorseIcon sx={{width: "24px", height: "24px"}} />
+                    <HorseIcon sx={{width: "24px", height: "24px"}}/>
                 )
             case "Casual":
                 return (
-                    <HoodieIcon sx={{width: "20px", height: "20px"}} />
+                    <HoodieIcon sx={{width: "20px", height: "20px"}}/>
                 )
             case "Competitive":
                 return (
-                    <TrophyIcon sx={{width: "18px", height: "18px"}} />
+                    <TrophyIcon sx={{width: "18px", height: "18px"}}/>
                 )
             case "Interactive":
                 return (
-                    <GraduationIcon sx={{width: "20px", height: "20px"}} />
+                    <GraduationIcon sx={{width: "20px", height: "20px"}}/>
                 )
             case "Debug":
                 return (
-                    <DebugIcon sx={{width: "20px", height: "20px"}} />
+                    <DebugIcon sx={{width: "20px", height: "20px"}}/>
                 )
             default:
                 return (
-                    <QuestionMark sx={{width: "20px", height: "20px"}} />
+                    <QuestionMark sx={{width: "20px", height: "20px"}}/>
                 )
         }
     }
@@ -261,7 +250,7 @@ export default function ProjectCardLongStyle(props: IProps) {
 
     // @ts-ignore
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <style>
                 {`
             @keyframes auraEffect {
@@ -289,9 +278,10 @@ export default function ProjectCardLongStyle(props: IProps) {
                     <Card sx={styles.card}>
                         <Grid container>
                             <Grid item xs={8}>
-                                <CardMedia component="div" sx={styles.image} />
+                                <CardMedia component="div" sx={styles.image}/>
                             </Grid>
-                            <Grid item xs={4} style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                            <Grid item xs={4}
+                                  style={{display: 'flex', flexDirection: 'column', justifyContent: 'space-between'}}>
                                 <CardContent
                                     sx={{
                                         paddingBottom: "4px",
@@ -305,12 +295,12 @@ export default function ProjectCardLongStyle(props: IProps) {
                                     <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
                                         {props.projectTitle}
                                     </Typography>
-                                    <div style={{ maxHeight: '55%', overflowY: 'auto', paddingTop: "2%" }}>
+                                    <div style={{maxHeight: '55%', overflowY: 'auto', paddingTop: "2%"}}>
                                         <Typography gutterBottom variant="body2" component="div">
                                             {props.projectDesc}
                                         </Typography>
                                     </div>
-                                    <div style={{ position: 'absolute', bottom: "1%", left: "4%" }}>
+                                    <div style={{position: 'absolute', bottom: "1%", left: "4%"}}>
                                         <UserIcon
                                             size={40}
                                             userId={props.userId}
@@ -324,13 +314,14 @@ export default function ProjectCardLongStyle(props: IProps) {
                                         <Tooltip
                                             title={`@${props.username}`}
                                         >
-                                            <Typography gutterBottom variant="caption" component="div" sx={styles.username}>
+                                            <Typography gutterBottom variant="caption" component="div"
+                                                        sx={styles.username}>
                                                 @{props.username}
                                             </Typography>
                                         </Tooltip>
                                     </div>
                                     <Chip
-                                        style={{ position: 'absolute', bottom: "2%", right: "3%" }}
+                                        style={{position: 'absolute', bottom: "2%", right: "3%"}}
                                         icon={getProjectIcon(props.projectType)}
                                         color="primary"
                                         label={props.projectType}
@@ -414,7 +405,7 @@ export default function ProjectCardLongStyle(props: IProps) {
                                         label={props.projectType}
                                         variant="outlined"
                                     />
-                                    {props.exclusive !== null && props.exclusive !== undefined && props.exclusive? (
+                                    {props.exclusive !== null && props.exclusive !== undefined && props.exclusive ? (
                                         <AttachMoneyIcon/>
                                     ) : null}
                                 </Grid>
@@ -423,7 +414,7 @@ export default function ProjectCardLongStyle(props: IProps) {
                     </Card>
                 )}
             </ButtonBase>
-        </Suspense>
+        </>
     )
 }
 

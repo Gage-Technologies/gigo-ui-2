@@ -109,8 +109,6 @@ import {sleep} from '@/services/utils';
 import {decodeToken} from 'react-jwt';
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import Image from "next/image";
-import SuspenseFallback from "@/components/SuspenseFallback";
-import {Suspense} from "react";
 
 
 interface IProps {
@@ -123,7 +121,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let query = useSearchParams();
     let pathname = usePathname();
     let isMobile = query.get("viewport") === "mobile";
-    let isBrowser = typeof window !== 'undefined';
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)
@@ -545,8 +542,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         })
     }
 
-    const handleLogout = async () => {
-        if (!isBrowser) {
+    const handleLogout = React.useCallback(async () => {
+        if (!isClient) {
             return
         }
 
@@ -585,7 +582,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             const persistOptions = {};
             // persistStore(store, persistOptions).purge()
         })
-    }
+    }, [isClient])
 
     const getNotifications = async () => {
         if (!authState) {
@@ -633,8 +630,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }, []);
 
 
-    const handleExclusiveContent = () => {
-        if (!isBrowser) {
+    const handleExclusiveContent = React.useCallback(() => {
+        if (!isClient) {
             return
         }
 
@@ -645,7 +642,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         } else {
             router.push("/aboutExclusive")
         }
-    };
+    }, [isClient])
 
     const handleCurateContent = () => {
         setAnchorEl(null);
@@ -739,8 +736,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         )
     }
 
-    const copyToClipboard = async () => {
-        if (!isBrowser) {
+    const copyToClipboard = React.useCallback(async () => {
+        if (!isClient) {
             return
         }
 
@@ -756,7 +753,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         } catch (err) {
             console.log('Failed to copy text: ', err);
         }
-    }
+    }, [isClient])
 
 
     const userIconMemoLarge = React.useMemo(() => {
@@ -2338,10 +2335,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <ThemeProvider theme={theme}>
-                {renderChristmasSnow()}
-                {renderNewYearConfetti()}
+                {/*{renderChristmasSnow()}*/}
+                {/*{renderNewYearConfetti()}*/}
                 <CssBaseline>
                     <Box sx={{
                         mb: "0px",
@@ -2358,6 +2355,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     </Box>
                 </CssBaseline>
             </ThemeProvider>
-        </Suspense>
+        </>
     );
 }

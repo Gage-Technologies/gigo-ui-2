@@ -17,7 +17,6 @@ interface IProps {
 }
 
 const LootPopup = (props: IProps) => {
-    let isBrowser = typeof window !== 'undefined';
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)

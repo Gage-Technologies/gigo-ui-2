@@ -76,7 +76,7 @@ const GIGOLandingPage: React.FC = () => {
     const fireflyMemo = useMemo(() => {
         return (
             <>
-                <style>
+                <style suppressHydrationWarning>
                     {fireflies.join(' ')}
                     {glowAnimation}
                 </style>
@@ -126,7 +126,7 @@ const GIGOLandingPage: React.FC = () => {
                     objectPosition="center"
                     priority={true}
                 />
-                {fireflyMemo}
+                {fireflies.length > 0 && fireflyMemo}
                 <HeroContent>
                     <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
                         <GigoCircleIcon sx={{

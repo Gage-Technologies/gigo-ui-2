@@ -1,4 +1,5 @@
 import * as React from "react";
+import {Suspense} from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import config from "@/config";
 import Carousel from "../../components/Carousesl";
@@ -19,6 +20,7 @@ import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjec
 import ActiveChallenges from "@/components/Pages/Home/ActiveChallenges";
 import JourneyBanner from "@/components/Pages/Home/JourneyBanner";
 import JourneyBannerMobile from "@/components/Pages/Home/JourneyBannerMobile";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 
 async function Home({
@@ -188,33 +190,37 @@ async function Home({
                     overflowX: "auto",
                     paddingLeft: "5%"
                 }}>
-                    <Carousel itemsShown={1} infiniteLoop={true} itemsToSlide={1}>
-                        {
-                            byteContent && byteContent.length > 0 ?
-                                byteContent.map((project, index) => (
-                                    <Box display={"flex"} justifyContent={"center"} key={index}
-                                         style={{width: "100%", padding: "0 5%"}}>
-                                        <BytesCardMobile
-                                            height={"550px"}
-                                            imageHeight={500}
-                                            width="100%"
-                                            imageWidth={281}
-                                            bytesId={project["_id"]}
-                                            bytesTitle={project["name"]}
-                                            bytesDesc={project["description_medium"]}
-                                            bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
-                                            completedEasy={project["completed_easy"]}
-                                            completedMedium={project["completed_medium"]}
-                                            completedHard={project["completed_hard"]}
-                                            language={programmingLanguages[project["lang"]]}
-                                            isHome={false}
-                                        />
-                                    </Box>
-                                )) : (
-                                    <SheenPlaceholder height={"40vh"} width={"100%"}/>
-                                )
-                        }
-                    </Carousel>
+                    <Suspense fallback={<SheenPlaceholder height={500} width={"100%"}/>}>
+                        <Carousel itemsShown={1} infiniteLoop={true} itemsToSlide={1}>
+                            {
+                                byteContent && byteContent.length > 0 ?
+                                    byteContent.map((project, index) => (
+                                        <Box display={"flex"} justifyContent={"center"} key={index}
+                                             style={{width: "100%", padding: "0 5%"}}>
+                                            <Suspense fallback={<SheenPlaceholder height={500} width={281}/>}>
+                                                <BytesCardMobile
+                                                    height={"550px"}
+                                                    imageHeight={500}
+                                                    width="100%"
+                                                    imageWidth={281}
+                                                    bytesId={project["_id"]}
+                                                    bytesTitle={project["name"]}
+                                                    bytesDesc={project["description_medium"]}
+                                                    bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
+                                                    completedEasy={project["completed_easy"]}
+                                                    completedMedium={project["completed_medium"]}
+                                                    completedHard={project["completed_hard"]}
+                                                    language={programmingLanguages[project["lang"]]}
+                                                    isHome={false}
+                                                />
+                                            </Suspense>
+                                        </Box>
+                                    )) : (
+                                        <SheenPlaceholder height={"40vh"} width={"100%"}/>
+                                    )
+                            }
+                        </Carousel>
+                    </Suspense>
                 </div>
             </div>
         )
@@ -276,38 +282,42 @@ async function Home({
                     overflowX: "auto",
                     marginLeft: "1%",
                 }}>
-                    <Carousel itemsShown={(isMobile ? 1 : 5)} infiniteLoop={true}
-                              itemsToSlide={isMobile ? 1 : 5}>
-                        {
-                            byteContent && byteContent.length > 0 ?
-                                byteContent.map((project, index) => {
-                                    return (
-                                        <Box display={"flex"} justifyContent={"center"}
-                                             style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
-                                            <BytesCard
-                                                height={"475px"}
-                                                imageHeight={400}
-                                                // TODO mobile => make width 'fit-content'
-                                                width={'100%'}
-                                                imageWidth={225}
-                                                bytesId={project["_id"]}
-                                                bytesTitle={project["name"]}
-                                                bytesDesc={project["description_medium"]}
-                                                bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
-                                                completedEasy={project["completed_easy"]}
-                                                completedMedium={project["completed_medium"]}
-                                                completedHard={project["completed_hard"]}
-                                                language={programmingLanguages[project["lang"]]}
-                                            />
-                                        </Box>
-                                    )
-                                }) :
-                                Array.from({length: 15}, (_, index) => (
-                                    <SheenPlaceholder height={"43vh"} width={"calc(43vh * 0.5625)"}
-                                                      key={`placeholder-${index}`}/>
-                                ))
-                        }
-                    </Carousel>
+                    <Suspense fallback={<SheenPlaceholder height={400} width={"100%"}/>}>
+                        <Carousel itemsShown={(isMobile ? 1 : 5)} infiniteLoop={true}
+                                  itemsToSlide={isMobile ? 1 : 5}>
+                            {
+                                byteContent && byteContent.length > 0 ?
+                                    byteContent.map((project, index) => {
+                                        return (
+                                            <Box display={"flex"} justifyContent={"center"}
+                                                 style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
+                                                <Suspense fallback={<SheenPlaceholder height={400} width={225}/>}>
+                                                    <BytesCard
+                                                        height={"475px"}
+                                                        imageHeight={400}
+                                                        // TODO mobile => make width 'fit-content'
+                                                        width={'100%'}
+                                                        imageWidth={225}
+                                                        bytesId={project["_id"]}
+                                                        bytesTitle={project["name"]}
+                                                        bytesDesc={project["description_medium"]}
+                                                        bytesThumb={config.rootPath + "/static/bytes/t/" + project["_id"]}
+                                                        completedEasy={project["completed_easy"]}
+                                                        completedMedium={project["completed_medium"]}
+                                                        completedHard={project["completed_hard"]}
+                                                        language={programmingLanguages[project["lang"]]}
+                                                    />
+                                                </Suspense>
+                                            </Box>
+                                        )
+                                    }) :
+                                    Array.from({length: 15}, (_, index) => (
+                                        <SheenPlaceholder height={"43vh"} width={"calc(43vh * 0.5625)"}
+                                                          key={`placeholder-${index}`}/>
+                                    ))
+                            }
+                        </Carousel>
+                    </Suspense>
                 </div>
             </div>
         )
@@ -350,23 +360,25 @@ async function Home({
                             color: 'text.primary',
                         }}
                     >
-                        {(isMobile) ? (
-                            <JourneyBannerMobile
-                                startedJourney={startedJourney}
-                                completedJourneyTasks={completedJourneyTasks}
-                                completedJourneyUnits={completedJourneyUnits}
-                                detourCount={detourCount}
-                                incompletedJourneyTasks={incompletedJourneyTasks}
-                            />
-                        ) : (
-                            <JourneyBanner
-                                startedJourney={startedJourney}
-                                completedJourneyTasks={completedJourneyTasks}
-                                completedJourneyUnits={completedJourneyUnits}
-                                detourCount={detourCount}
-                                incompletedJourneyTasks={incompletedJourneyTasks}
-                            />
-                        )}
+                        <Suspense fallback={<SuspenseFallback/>}>
+                            {(isMobile) ? (
+                                <JourneyBannerMobile
+                                    startedJourney={startedJourney}
+                                    completedJourneyTasks={completedJourneyTasks}
+                                    completedJourneyUnits={completedJourneyUnits}
+                                    detourCount={detourCount}
+                                    incompletedJourneyTasks={incompletedJourneyTasks}
+                                />
+                            ) : (
+                                <JourneyBanner
+                                    startedJourney={startedJourney}
+                                    completedJourneyTasks={completedJourneyTasks}
+                                    completedJourneyUnits={completedJourneyUnits}
+                                    detourCount={detourCount}
+                                    incompletedJourneyTasks={incompletedJourneyTasks}
+                                />
+                            )}
+                        </Suspense>
                     </Box>
                     <Box
                         sx={{
@@ -392,7 +404,11 @@ async function Home({
                             color: 'text.primary',
                         }}
                     >
-                        {(isMobile && loggedIn) ? <ActiveChallenges activeData={activeData}/> : null}
+                        {(isMobile && loggedIn) ? (
+                            <Suspense fallback={<SuspenseFallback/>}>
+                                <ActiveChallenges activeData={activeData}/>
+                            </Suspense>
+                        ) : null}
                     </Box>
 
                     <Box
@@ -406,7 +422,9 @@ async function Home({
                             color: 'text.primary',
                         }}
                     >
-                        <RecommendedProjectsScroll/>
+                        <Suspense fallback={<SuspenseFallback/>}>
+                            <RecommendedProjectsScroll/>
+                        </Suspense>
                     </Box>
                 </Grid>
             </div>

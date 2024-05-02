@@ -7,7 +7,10 @@ import config from "@/config";
 
 
 export default function TutorialClaimTrialButton() {
-    let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = React.useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
 
     const [proMonthlyLink, setProMonthlyLink] = useState("");
     const [proYearlyLink, setProYearlyLink] = useState("");
@@ -37,8 +40,8 @@ export default function TutorialClaimTrialButton() {
         })
     }
 
-    const handleClaimButtonClick = async () => {
-        if (!isBrowser) {
+    const handleClaimButtonClick = React.useCallback(async () => {
+        if (!isClient) {
             return
         }
 
@@ -61,7 +64,7 @@ export default function TutorialClaimTrialButton() {
         window.open(mlink, "_blank");
 
         setLoadingProLinks(false)
-    }
+    }, [isClient])
 
     return (
         <LoadingButton loading={loadingProLinks} variant="contained"

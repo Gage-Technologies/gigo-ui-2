@@ -1542,8 +1542,7 @@ export default function TopSearchBar(props: IProps) {
     const renderGroup = (params: any) => {
         let color = !isMobile
             ?
-            // @ts-ignore
-            params.group.toLowerCase() === "challenge" ? theme.palette.primary.main : params.group.toLowerCase() === "user" ? theme.palette.secondary.main : mode === "light" ? grey[900] : grey[300]
+            params.group.toLowerCase() === "challenge" ? theme.palette.primary.main : params.group.toLowerCase() === "user" ? theme.palette.secondary.main : theme.palette.mode === "light" ? grey[900] : grey[300]
             :
             null;
 

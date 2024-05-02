@@ -1,6 +1,6 @@
 'use client'
 import * as React from "react";
-import {Suspense, useEffect} from "react";
+import {useEffect} from "react";
 import {Box, Button, CssBaseline, IconButton, Modal, ThemeProvider, Typography,} from "@mui/material";
 import {styled} from "@mui/material/styles";
 import {theme} from "@/theme";
@@ -17,7 +17,6 @@ import {Close} from "@material-ui/icons";
 import {LoadingButton} from "@mui/lab";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     oldXP: number;
@@ -35,7 +34,10 @@ interface IProps {
 const XpPopup = (props: IProps) => {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
-    let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = React.useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
 
     const [showConfetti, setShowConfetti] = React.useState(false);
 
@@ -108,8 +110,8 @@ const XpPopup = (props: IProps) => {
         },
     }));
 
-    const confirmButton = () => {
-        if (!isBrowser) {
+    const confirmButton = React.useCallback(() => {
+        if (!isClient) {
             return null
         }
 
@@ -128,7 +130,7 @@ const XpPopup = (props: IProps) => {
             window.sessionStorage.setItem("loginXP", "undefined")
             window.sessionStorage.setItem("attemptXP", "undefined")
         }
-    }
+    }, [isClient])
 
     const retrieveProUrls = async (): Promise<{ monthly: string, yearly: string } | null> => {
         setProUrlsLoading(true)
@@ -158,8 +160,8 @@ const XpPopup = (props: IProps) => {
         return null
     }
 
-    const closePopupLoot = () => {
-        if (!isBrowser) {
+    const closePopupLoot = React.useCallback(() => {
+        if (!isClient) {
             return
         }
 
@@ -169,7 +171,7 @@ const XpPopup = (props: IProps) => {
         }
         window.sessionStorage.setItem("loginXP", "undefined")
         window.sessionStorage.setItem("attemptXP", "undefined")
-    }
+    }, [isClient])
 
     const xpBarMemo = React.useMemo(() => (
         <Box sx={{width: "75%"}}>
@@ -205,7 +207,7 @@ const XpPopup = (props: IProps) => {
                                     setShowLoot(true);
                                     setShowPro(false);
                                 } else {
-                                    if (!isBrowser) {
+                                    if (!isClient) {
                                         return
                                     }
 
@@ -412,7 +414,7 @@ const XpPopup = (props: IProps) => {
 
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <ThemeProvider theme={theme}>
                 <CssBaseline>
                     <Modal open={open} style={{display: 'flex', justifyContent: "center", alignItems: "center"}}>
@@ -453,7 +455,7 @@ const XpPopup = (props: IProps) => {
                     </Modal>
                 </CssBaseline>
             </ThemeProvider>
-        </Suspense>
+        </>
     );
 };
 

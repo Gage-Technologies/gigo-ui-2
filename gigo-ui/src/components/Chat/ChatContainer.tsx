@@ -1,5 +1,5 @@
 'use client'
-import React, {Suspense, useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import ChatMessage from "./ChatMessage";
 import {
     alpha,
@@ -8,7 +8,6 @@ import {
     Button,
     Card,
     CircularProgress,
-    createTheme,
     Grid,
     IconButton,
     InputAdornment,
@@ -18,7 +17,6 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
-    PaletteMode,
     Paper,
     Popover,
     Popper,
@@ -27,7 +25,7 @@ import {
     Tooltip,
     Typography
 } from '@mui/material';
-import {getAllTokens, theme, themeHelpers} from "@/theme";
+import {theme, themeHelpers} from "@/theme";
 import {ArrowDownward, Delete, EmojiEmotions, Gif} from "@material-ui/icons";
 import Tenor from "../Tenor";
 import Emoji from "../Emoji";
@@ -90,7 +88,6 @@ import {
 import Menu from "@mui/material/Menu";
 import Image from "next/image";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
@@ -176,12 +173,11 @@ export default function ChatContainer() {
     let pathname = usePathname();
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
-    let isBrowser = typeof window !== 'undefined';
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)
     }, [])
-    
+
     const SearchIconWrapper = styled('div')(() => ({
         padding: theme.spacing(0, 2),
         height: '100%',
@@ -1361,7 +1357,9 @@ export default function ChatContainer() {
                             <List>
                                 {renderEverythingOption && (
                                     <ListItem
-                                        ref={(el) => {listItemRefs.current.set("everyone", el)}}
+                                        ref={(el) => {
+                                            listItemRefs.current.set("everyone", el)
+                                        }}
                                         style={{
                                             paddingBottom: '10px',
                                             paddingLeft: '10px',
@@ -1420,7 +1418,9 @@ export default function ChatContainer() {
                                     return a.user_name.toLowerCase().localeCompare(b.user_name.toLowerCase());
                                 }).map((option, index) => (
                                     <ListItem
-                                        ref={(el) => {listItemRefs.current.set(option._id, el)}}
+                                        ref={(el) => {
+                                            listItemRefs.current.set(option._id, el)
+                                        }}
                                         key={option._id}
                                         style={{
                                             paddingBottom: '10px',
@@ -2722,8 +2722,8 @@ export default function ChatContainer() {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
-            {typeof document !== 'undefined' && ReactDOM.createPortal(
+        <>
+            {isClient && ReactDOM.createPortal(
                 (
                     <Snackbar
                         open={notification !== null}
@@ -2767,6 +2767,6 @@ export default function ChatContainer() {
                     <div ref={containerEndRef}/>
                 </Paper>
             )}
-        </Suspense>
+        </>
     );
 }

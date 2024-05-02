@@ -9,8 +9,6 @@ import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
-import {Suspense} from "react";
 
 export interface IProps {
     activeData: any[];
@@ -25,7 +23,7 @@ function ActiveChallenges({activeData}: IProps) {
     const chatOpen = useAppSelector(selectAppWrapperChatOpen);
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -109,7 +107,7 @@ function ActiveChallenges({activeData}: IProps) {
                     </Carousel>
                 </div>
             </div>
-        </Suspense>
+        </>
     )
 }
 

@@ -1,10 +1,9 @@
 'use client'
 import * as React from "react";
-import {FC, memo, Suspense, useEffect, useRef, useState} from "react";
+import {FC, memo, useEffect, useRef, useState} from "react";
 import {Player} from '@lottiefiles/react-lottie-player';
 import {useInView} from 'react-intersection-observer';
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface LottieAnimationProps {
     animationData: any;
@@ -69,7 +68,7 @@ const LottieAnimation: FC<LottieAnimationProps> = memo(({animationData, mouseMov
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <div ref={inViewRef}>
                 <div ref={containerRef}>
                     {isCursorNear && (
@@ -81,7 +80,7 @@ const LottieAnimation: FC<LottieAnimationProps> = memo(({animationData, mouseMov
                     )}
                 </div>
             </div>
-        </Suspense>
+        </>
     );
 });
 

@@ -10,8 +10,6 @@ import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
-import {Suspense} from "react";
 
 export default function RecommendedProjectsScroll() {
     let query = useSearchParams();
@@ -71,7 +69,7 @@ export default function RecommendedProjectsScroll() {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <div style={{
                 display: "flex",
                 flexDirection: "column",
@@ -156,6 +154,6 @@ export default function RecommendedProjectsScroll() {
                     ) : (<></>)
                 }
             </div>
-        </Suspense>
+        </>
     )
 }

@@ -1,4 +1,4 @@
-import React, {Suspense, useEffect} from "react"
+import React, {useEffect} from "react"
 import {ButtonBase} from "@mui/material";
 import Badge from '@mui/material/Badge';
 import config from "../../config";
@@ -7,7 +7,6 @@ import ProBannerCircle from "@/components/Pro/ProBannerCircle";
 import {Buffer} from 'buffer';
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     size: number,
@@ -138,7 +137,7 @@ export default function UserIcon(props: IProps) {
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <div>
                 {props.userId !== "n/a" ?
                     <ButtonBase
@@ -187,7 +186,7 @@ export default function UserIcon(props: IProps) {
                     </Badge>
                 }
             </div>
-        </Suspense>
+        </>
     )
 }
 

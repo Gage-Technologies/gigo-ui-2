@@ -1,10 +1,9 @@
 'use client'
-import React, {Suspense} from "react";
+import React from "react";
 import {Dialog, DialogContent} from "@mui/material";
 import {theme} from "@/theme";
 import Picker from '@emoji-mart/react';
 import {useSearchParams} from "next/navigation";
-import SuspenseFallback from "@/components/SuspenseFallback";
 
 type EmojiProps = {
     open: boolean; // Prop to control dialog visibility
@@ -36,7 +35,7 @@ export default function EmojiPicker({open, closeCallback, onEmojiSelect}: EmojiP
     }
 
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <>
             <Dialog
                 open={open} // Controlled by prop
                 onClose={closeCallback} // Callback function to close dialog
@@ -78,6 +77,6 @@ export default function EmojiPicker({open, closeCallback, onEmojiSelect}: EmojiP
                     />
                 </DialogContent>
             </Dialog>
-        </Suspense>
+        </>
     );
 }

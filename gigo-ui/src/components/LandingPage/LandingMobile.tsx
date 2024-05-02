@@ -106,7 +106,7 @@ const GIGOLandingPageMobile: React.FC = () => {
                     objectPosition="center"
                     priority={true}
                 />
-                {fireflyMemo}
+                {fireflies.length > 0 && fireflyMemo}
                 <HeroContent>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         <GigoCircleIcon sx={{ height: '60px', width: '60px', color: "#fff" }}/>
