@@ -1,21 +1,20 @@
 'use client'
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
-import { styled } from '@mui/system';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Box, Button, Link, Typography} from '@mui/material';
+import {styled} from '@mui/system';
 
 import backgroundImageWebP from "@/img/landing/gigo-landing-valentines.webp"
-import backgroundImageLargeWebP from "@/img/landing/gigo-landing-valentines-large.webp"
-import { useAppSelector } from '@/reducers/hooks';
-import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
-import {getAllTokens, theme, themeHelpers} from '@/theme';
+import {useAppSelector} from '@/reducers/hooks';
+import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from '@/reducers/appWrapper/appWrapper';
+import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
-import { SocialIcon } from 'react-social-icons';
+import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import HeartIcon from '@/icons/GIGO/Heart';
 
 
 // Hero container with jungle-themed background
-const HeroContainer = styled(Box)(({ theme }) => ({
+const HeroContainer = styled(Box)(({theme}) => ({
     position: 'relative',
     height: '100vh',
     width: '100vw', // Adjust for the sidebar width
@@ -25,7 +24,7 @@ const HeroContainer = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundImage: `
-        url(${window.innerWidth > 2000 ? backgroundImageLargeWebP : backgroundImageWebP})
+        url(${backgroundImageWebP})
     `,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -53,7 +52,7 @@ const GIGOLandingPageValentines: React.FC = () => {
     // Define the move animation
     useEffect(() => {
         // Generate unique keyframes for each heart
-        setHearts(Array.from({ length: 30 }, (_, index) => {
+        setHearts(Array.from({length: 30}, (_, index) => {
             let moveX = Math.random() * window.innerWidth * (Math.random() > .5 ? -1 : 1);
             while (Math.abs(moveX) < 100) {
                 moveX = Math.random() * window.innerWidth * (Math.random() > .5 ? -1 : 1);
@@ -116,21 +115,29 @@ const GIGOLandingPageValentines: React.FC = () => {
 
     return (
         <>
-            <HeroContainer sx={{ width: width }}>
+            <HeroContainer sx={{width: width}}>
                 {heartsMemo}
                 <HeroContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <GigoCircleIcon sx={{ height: '90px', width: '90px', marginRight: "20px", marginBottom: "20px", color: "white" }}/>
+                    <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <GigoCircleIcon sx={{
+                            height: '90px',
+                            width: '90px',
+                            marginRight: "20px",
+                            marginBottom: "20px",
+                            color: "white"
+                        }}/>
                         <Typography variant="h3" gutterBottom>
                             Welcome to GIGO
                         </Typography>
                     </Box>
-                    <Typography variant="h5" gutterBottom sx={{ maxWidth: "40vw" }}>
+                    <Typography variant="h5" gutterBottom sx={{maxWidth: "40vw"}}>
                         GIGO is the best place to learn how to code
                     </Typography>
-                    <Typography variant="body1" gutterBottom sx={{ maxWidth: "40vw" }}>
-                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
-                        Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
+                    <Typography variant="body1" gutterBottom sx={{maxWidth: "40vw"}}>
+                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of
+                        development.
+                        Code in the cloud, work on real projects, and learn the latest technologies from any machine,
+                        even a tablet!
                         Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
@@ -154,8 +161,15 @@ const GIGOLandingPageValentines: React.FC = () => {
                     >
                         Fall In Love With GIGO
                     </Button>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank" > {/* Change typography variant */}
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 2
+                    }}>
+                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
+                              target="_blank"> {/* Change typography variant */}
                             Join us on Discord!
                         </Link>
                         <SocialIcon
@@ -173,7 +187,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                     </Box>
                 </HeroContent>
             </HeroContainer>
-            <div ref={endRef} id="end-landing" />
+            <div ref={endRef} id="end-landing"/>
         </>
     );
 };

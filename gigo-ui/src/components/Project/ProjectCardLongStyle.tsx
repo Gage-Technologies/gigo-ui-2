@@ -32,6 +32,7 @@ import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
 
 interface IProps {
     role: any | null;
@@ -61,8 +62,11 @@ interface IProps {
 }
 
 export default function ProjectCardLongStyle(props: IProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    
     const styles = {
-        card: document.documentElement.clientWidth > 1000 ? {
+        card: !isMobile ? {
             width: props.width,
             height: props.height,
             // boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
@@ -84,7 +88,7 @@ export default function ProjectCardLongStyle(props: IProps) {
             animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
         },
-        image: document.documentElement.clientWidth > 1000 ? {
+        image: !isMobile ? {
             borderRadius: "10px",
             height: props.imageHeight,
             minWidth: 200,
@@ -280,7 +284,7 @@ export default function ProjectCardLongStyle(props: IProps) {
                     hoverStartRef.current = null;
                 }}
             >
-                {document.documentElement.clientWidth > 1000 ? (
+                {!isMobile ? (
                     <Card sx={styles.card}>
                         <Grid container>
                             <Grid item xs={8}>

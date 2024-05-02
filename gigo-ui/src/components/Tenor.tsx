@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import {createTheme, PaletteMode, TextField, Grid, Card, CardMedia, Dialog, DialogContent, Box} from "@mui/material";
 import {getAllTokens, theme} from "@/theme";
+import {useSearchParams} from "next/navigation";
 
 interface MediaItem {
     dims: [number, number];
@@ -77,6 +78,9 @@ type TenorProps = {
 };
 
 export default function Tenor({ open, closeCallback, addGif }: TenorProps) {
+    let urlQueryParams = useSearchParams();
+    let isMobile = urlQueryParams.get("viewport") === "mobile";
+
     const [query, setQuery] = useState<string>("");
     const [gifs, setGifs] = useState<Gif[]>([]);
     const [selectedGif, setSelectedGif] = useState<Gif | null>(null);
@@ -138,7 +142,7 @@ export default function Tenor({ open, closeCallback, addGif }: TenorProps) {
         width: "450px",
         height: "550px",
     }
-    if (window.innerWidth < 1000) {
+    if (isMobile) {
         dialogPosition = {
             bottom: 120,
             // right: "5vw",

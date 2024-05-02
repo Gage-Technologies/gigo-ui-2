@@ -8,12 +8,16 @@ import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
+import {useSearchParams} from "next/navigation";
 
 export interface IProps {
     activeData: any[];
 }
 
 function ActiveChallenges({ activeData }: IProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
     const authState = useAppSelector(selectAuthState);
     const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
     const chatOpen = useAppSelector(selectAppWrapperChatOpen);
@@ -56,8 +60,8 @@ function ActiveChallenges({ activeData }: IProps) {
                 marginLeft: "1%",
             }}>
                 {/*TODO mobile => make carousel 1 for mobile*/}
-                <Carousel itemsShown={(document.documentElement.clientWidth < 1000 ? 1 : 4)} infiniteLoop={true}
-                          itemsToSlide={(window.innerWidth < 1000 ? 1 : 4)}>
+                <Carousel itemsShown={(isMobile ? 1 : 4)} infiniteLoop={true}
+                          itemsToSlide={(isMobile ? 1 : 4)}>
                     {
                         activeData && activeData.length > 0 ?
                             activeData.map((project, index) => {
@@ -67,7 +71,7 @@ function ActiveChallenges({ activeData }: IProps) {
                                             height={"23vh"}
                                             imageHeight={"23vh"}
                                             // TODO mobile => make width 'fit-content'
-                                            width={(chatOpen || sidebarOpen) ? "16vw" : (document.documentElement.clientWidth < 1000 ? 'fit-content' : '20vw')}
+                                            width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? 'fit-content' : '20vw')}
                                             imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}
                                             projectId={project["_id"]}
                                             projectTitle={project["title"] !== null ? project["title"] : project["post_title"]}

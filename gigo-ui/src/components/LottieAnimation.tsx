@@ -2,6 +2,7 @@
 import { FC, memo, useState, useRef, useEffect } from "react";
 import { Player } from '@lottiefiles/react-lottie-player';
 import { useInView } from 'react-intersection-observer';
+import {useSearchParams} from "next/navigation";
 
 interface LottieAnimationProps {
     animationData: any;
@@ -10,7 +11,10 @@ interface LottieAnimationProps {
 }
 
 const LottieAnimation: FC<LottieAnimationProps> = memo(({ animationData, mouseMove, ...props }) => {
-    if (window.innerWidth < 1000) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
+    if (isMobile) {
         mouseMove = false
         props.autoplay = true
     }

@@ -125,7 +125,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let query = useSearchParams();
     let pathname = usePathname();
     let isMobile = query.get("viewport") === "mobile";
-    console.log("isMobile: ", query)
+    let isBrowser = typeof window !== 'undefined';
 
     const {trackEvent} = useTracking({}, {
         dispatch: (data: any) => {
@@ -544,6 +544,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const handleLogout = async () => {
+        if (!isBrowser) {
+            return
+        }
+
         const forwardPath = encodeURIComponent(pathname);
         clearReducers()
 
@@ -628,6 +632,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
 
     const handleExclusiveContent = () => {
+        if (!isBrowser) {
+            return
+        }
+
         setAnchorEl(null);
         if (exclusiveAgreement || window.sessionStorage.getItem('exclusiveAgreement') === "true") {
             window.sessionStorage.setItem("exclusiveProject", "true")
@@ -729,16 +737,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         )
     }
 
-    //todo: change the url to have the correct info for production
-    const urlLink = window.location.href
-    const regex = /https?:\/\/[^\/]+/;
-    const referralLink =
-        //@ts-ignore
-        urlLink.match(regex)[0] + "/referral/" + encodeURIComponent(username)
-
-    // const referralLink = "https://ui-dev.gigo.dev:33000/referral/" + username;
-
     const copyToClipboard = async () => {
+        if (!isBrowser) {
+            return
+        }
+
+        const urlLink = window.location.href
+        const regex = /https?:\/\/[^\/]+/;
+        const referralLink =
+            //@ts-ignore
+            urlLink.match(regex)[0] + "/referral/" + encodeURIComponent(username)
+
         try {
             await navigator.clipboard.writeText(referralLink);
             console.log('Text copied to clipboard');
@@ -785,6 +794,16 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const renderAppBar = () => {
         if (isByteMobilePage) return null;
+
+        let referralLink = ""
+        if (isBrowser) {
+            const urlLink = window.location.href
+            const regex = /https?:\/\/[^\/]+/;
+            referralLink =
+                //@ts-ignore
+                urlLink.match(regex)[0] + "/referral/" + encodeURIComponent(username)
+        }
+
         return (
             <AppBar
                 position="fixed"
@@ -1162,6 +1181,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderDevSpaceControls = () => {
+        if (!isBrowser) {
+            return null
+        }
+
         return (
             <>
                 <div style={{
@@ -1404,6 +1427,15 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const mobileAppBar = () => {
         // Do not render AppBar if it's the byteMobile page
         if (isByteMobilePage) return null;
+
+        let referralLink = ""
+        if (isBrowser) {
+            const urlLink = window.location.href
+            const regex = /https?:\/\/[^\/]+/;
+            referralLink =
+                //@ts-ignore
+                urlLink.match(regex)[0] + "/referral/" + encodeURIComponent(username)
+        }
 
         return (
             <>

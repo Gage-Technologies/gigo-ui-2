@@ -1,6 +1,5 @@
 import * as React from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
-import {theme} from "@/theme";
 import config from "@/config";
 import Carousel from "../../components/Carousesl";
 import ReactGA from "react-ga4";
@@ -9,13 +8,11 @@ import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
 import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";
-import {AwesomeButton} from "react-awesome-button";
 import "react-awesome-button/dist/styles.css"
-import JourneyIcon from "@/icons/Journey/JourneyIcon";
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import Layout from "@/app/layout";
-import {cookies, headers} from "next/headers";
+import {cookies} from "next/headers";
 import Tutorial from "@/components/Pages/Home/Tutorial";
 import {checkSessionStatus} from "@/services/utils";
 import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjectsScroll";
@@ -24,7 +21,11 @@ import JourneyBanner from "@/components/Pages/Home/JourneyBanner";
 import JourneyBannerMobile from "@/components/Pages/Home/JourneyBannerMobile";
 
 
-async function Home() {
+async function Home({
+                        searchParams,
+                    }: {
+    searchParams?: { [key: string]: string | string[] | undefined };
+}) {
     ///////////// Server Side Data Loading /////////////
     const byteContent = await fetch(
         `${config.rootPath}/api/bytes/getRecommendedBytes`,
@@ -148,13 +149,7 @@ async function Home() {
     }
     ////////////////////////////////////////////////////
 
-    const headersList = headers();
-    const userAgent = headersList.get('user-agent');
-
-    // Let's check if the device is a mobile device
-    let isMobile = userAgent!.match(
-        /Android|BlackBerry|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-    );
+    let isMobile = searchParams?.viewport === "mobile";
 
     // let theme = createTheme(getAllTokens('dark'))
 
@@ -197,7 +192,8 @@ async function Home() {
                         {
                             byteContent && byteContent.length > 0 ?
                                 byteContent.map((project, index) => (
-                                    <Box display={"flex"} justifyContent={"center"} key={index} style={{width: "100%", padding: "0 5%"}}>
+                                    <Box display={"flex"} justifyContent={"center"} key={index}
+                                         style={{width: "100%", padding: "0 5%"}}>
                                         <BytesCardMobile
                                             height={"550px"}
                                             imageHeight={500}
@@ -286,7 +282,8 @@ async function Home() {
                             byteContent && byteContent.length > 0 ?
                                 byteContent.map((project, index) => {
                                     return (
-                                        <Box display={"flex"} justifyContent={"center"} style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
+                                        <Box display={"flex"} justifyContent={"center"}
+                                             style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
                                             <BytesCard
                                                 height={"475px"}
                                                 imageHeight={400}

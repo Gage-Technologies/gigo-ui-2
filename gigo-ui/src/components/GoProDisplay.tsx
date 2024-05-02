@@ -9,6 +9,7 @@ import proBackground from "../img/popu-up-backgraound-plain.svg";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth"; // Adjust import based on actual location
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
 
 interface GoProPopupProps {
     open: boolean;
@@ -16,14 +17,15 @@ interface GoProPopupProps {
 }
 
 const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    let isBrowser = typeof window !== 'undefined';
+    
     const authState = useAppSelector(selectAuthState);
 
     const [proUrlsLoading, setProUrlsLoading] = useState(false);
     const [proMonthlyLink, setProMonthlyLink] = useState('');
     const [proYearlyLink, setProYearlyLink] = useState('');
-
-    // Determine if it's a mobile view
-    const isMobile = window.innerWidth < 1000;
 
     const retrieveProUrls = async (): Promise<{ monthly: string, yearly: string } | null> => {
         setProUrlsLoading(true)
@@ -62,8 +64,8 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" PaperProps={{sx: {borderRadius: 7, overflow: "hidden"}}}>
             <Box style={{
-                width: window.innerWidth < 1000 ? "80vw" : "28vw",
-                height: window.innerWidth < 1000 || window.innerHeight < 900 ? "78vh" : "70vh",
+                width: isMobile ? "80vw" : "28vw",
+                height: isMobile ? "78vh" : "70vh",
                 minHeight: "420px",
                 // justifyContent: "center",
                 // marginLeft: "25vw",
@@ -89,7 +91,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                         size="small"
                         onClick={onClose}
 
-                        sx={window.innerWidth < 1000 ? {
+                        sx={isMobile ? {
                             position: "absolute",
                             top: '3vh',
                             right: '3vw',
@@ -102,17 +104,17 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                     >
                         <Close/>
                     </IconButton>
-                    <Image alt={""} src={premiumGorilla} style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
+                    <Image alt={""} src={premiumGorilla} style={isMobile ? {width: "20%", marginBottom: "5px"} : {
                         width: "30%",
                         marginBottom: "20px"
                     }}/>
-                    <Typography variant={window.innerHeight < 1000 ? "h5" : "h4"}
+                    <Typography variant={isMobile ? "h5" : "h4"}
                                 style={{marginBottom: "10px", color: "white"}} align={"center"}>GIGO Pro</Typography>
-                    <Typography variant={window.innerHeight < 900 ? "body2" : "body1"}
+                    <Typography variant={isMobile ? "body2" : "body1"}
                                 style={{marginLeft: "20px", marginRight: "20px", color: "white"}} align={"center"}>
                         Learn faster with a smarter Code Teacher!
                     </Typography>
-                    <Typography variant={window.innerHeight < 900 ? "body2" : "body1"}
+                    <Typography variant={isMobile ? "body2" : "body1"}
                                 style={{marginBottom: "20px", marginLeft: "20px", marginRight: "20px", color: "white"}}
                                 align={"center"}>
                         Do more with larger DevSpaces!
@@ -124,7 +126,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                         flexDirection: "row",
                         width: "100%"
                     }}>
-                        <div style={window.innerHeight < 900 ? {
+                        <div style={isMobile ? {
                             backgroundColor: "#070D0D",
                             borderRadius: "10px",
                             padding: "20px",
@@ -141,21 +143,22 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                             textAlign: "center",
                             width: "200px"
                         }}>
-                            <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
+                            <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
                                         style={{marginBottom: "10px", color: "white"}}
                                         align={"center"}>Monthly</Typography>
-                            <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
+                            <Typography variant={isMobile ? "h6" : "h5"}
                                         style={{marginBottom: "10px", color: "white"}} align={"center"}>$8</Typography>
                             <LoadingButton
                                 loading={proUrlsLoading}
                                 variant="contained"
-                                onClick={() => window.open(proMonthlyLink, "_blank")}
+                                href={proMonthlyLink}
+                                target="_blank"
                                 style={{backgroundColor: theme.palette.secondary.dark}}
                             >
                                 Select
                             </LoadingButton>
                         </div>
-                        <div style={window.innerHeight < 900 ? {
+                        <div style={isMobile ? {
                             backgroundColor: "#070D0D",
                             borderRadius: "10px",
                             padding: "20px",
@@ -172,15 +175,16 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                             textAlign: "center",
                             width: "200px"
                         }}>
-                            <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
+                            <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
                                         style={{marginBottom: "10px", color: "white"}}
                                         align={"center"}>Yearly</Typography>
-                            <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
+                            <Typography variant={isMobile ? "h6" : "h5"}
                                         style={{marginBottom: "10px", color: "white"}} align={"center"}>$80</Typography>
                             <LoadingButton
                                 loading={proUrlsLoading}
                                 variant="contained"
-                                onClick={() => window.open(proYearlyLink, "_blank")}
+                                href={proYearlyLink}
+                                target="_blank"
                                 style={{backgroundColor: theme.palette.secondary.dark}}
                             >
                                 Select
@@ -193,10 +197,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                         align="center"
                         component="a" // Render the Typography as an <a> tag
                         href="/premium" // Specify the target URL
-                        onClick={(e) => {
-                            e.preventDefault(); // Prevent default to stop navigation (optional)
-                            window.open("/premium", "_blank"); // Open in new tab
-                        }}
+                        target="_blank"
                     >
                         Learn More About Pro
                     </Typography>

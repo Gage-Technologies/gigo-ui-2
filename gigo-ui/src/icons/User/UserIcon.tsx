@@ -9,6 +9,7 @@ import LottieAnimation from "../../components/LottieAnimation";
 import ProBannerCircle from "@/components/Pro/ProBannerCircle";
 import { Buffer } from 'buffer';
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
 
 interface IProps {
     size: number,
@@ -25,6 +26,9 @@ interface IProps {
 }
 
 export default function UserIcon(props: IProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
     let styles = {
         lottie: {
             zIndex: 4,
@@ -140,7 +144,7 @@ export default function UserIcon(props: IProps) {
             {props.userId !== "n/a" ?
                 <ButtonBase
                     href={"/user/" + props.userId}
-                    style={ window.innerWidth > 1000 ? {
+                    style={ !isMobile ? {
                         position: "relative",
                         //@ts-ignore
                         width: scaleSize(1.5),

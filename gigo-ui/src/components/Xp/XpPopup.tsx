@@ -26,6 +26,7 @@ import config from "../../config";
 import {Close} from "@material-ui/icons";
 import {LoadingButton} from "@mui/lab";
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
 
 interface IProps {
     oldXP: number;
@@ -41,6 +42,10 @@ interface IProps {
 }
 
 const XpPopup = (props: IProps) => {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    let isBrowser = typeof window !== 'undefined';
+    
     const [showConfetti, setShowConfetti] = React.useState(false);
 
     const [startXP, setStartXP] = React.useState(props.oldXP);
@@ -113,6 +118,10 @@ const XpPopup = (props: IProps) => {
     }));
 
     const confirmButton = () => {
+        if (!isBrowser) {
+            return null
+        }
+        
         let premium = authState.role.toString()
         // //remove
         // premium = "0"
@@ -159,6 +168,10 @@ const XpPopup = (props: IProps) => {
     }
 
     const closePopupLoot = () => {
+        if (!isBrowser) {
+            return
+        }
+
         setOpen(false)
         if (props.popupClose !== null) {
             props.popupClose();
@@ -201,6 +214,10 @@ const XpPopup = (props: IProps) => {
                                     setShowLoot(true);
                                     setShowPro(false);
                                 } else {
+                                    if (!isBrowser) {
+                                        return
+                                    }
+
                                     setOpen(false);
                                     if (props.popupClose !== null) {
                                         props.popupClose();
@@ -210,7 +227,7 @@ const XpPopup = (props: IProps) => {
                                 }
                             }}
 
-                            sx={window.innerWidth < 1000 ? {
+                            sx={isMobile ? {
                                 position: "absolute",
                                 top: '20vh',
                                 right: '15vw',
@@ -224,18 +241,18 @@ const XpPopup = (props: IProps) => {
                             <Close/>
                         </IconButton>
                         <Image alt={""} src={premiumGorilla}
-                             style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
+                             style={isMobile ? {width: "20%", marginBottom: "5px"} : {
                                  width: "30%",
                                  marginBottom: "20px"
                              }}/>
-                        <Typography variant={window.innerHeight < 1000 ? "h5" : "h4"}
+                        <Typography variant={isMobile ? "h5" : "h4"}
                                     style={{marginBottom: "10px", color: "white"}} align={"center"}>GIGO
                             Pro</Typography>
-                        <Typography variant={window.innerHeight < 900 ? "body2" : "body1"}
+                        <Typography variant={isMobile ? "body2" : "body1"}
                                     style={{marginLeft: "20px", marginRight: "20px", color: "white"}} align={"center"}>
                             Learn faster with a smarter Code Teacher!
                         </Typography>
-                        <Typography variant={window.innerHeight < 900 ? "body2" : "body1"}
+                        <Typography variant={isMobile ? "body2" : "body1"}
                                     style={{
                                         marginBottom: "20px",
                                         marginLeft: "20px",
@@ -252,7 +269,7 @@ const XpPopup = (props: IProps) => {
                             flexDirection: "row",
                             width: "100%"
                         }}>
-                            <div style={window.innerHeight < 900 ? {
+                            <div style={isMobile ? {
                                 backgroundColor: "#070D0D",
                                 borderRadius: "10px",
                                 padding: "20px",
@@ -269,22 +286,23 @@ const XpPopup = (props: IProps) => {
                                 textAlign: "center",
                                 width: "200px"
                             }}>
-                                <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
+                                <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
                                             style={{marginBottom: "10px", color: "white"}}
                                             align={"center"}>Monthly</Typography>
-                                <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
+                                <Typography variant={isMobile ? "h6" : "h5"}
                                             style={{marginBottom: "10px", color: "white"}}
                                             align={"center"}>$8</Typography>
                                 <LoadingButton
                                     loading={proUrlsLoading}
                                     variant="contained"
-                                    onClick={() => window.open(proMonthlyLink, "_blank")}
+                                    href={proMonthlyLink}
+                                    target="_blank"
                                     style={{backgroundColor: theme.palette.secondary.dark}}
                                 >
                                     Select
                                 </LoadingButton>
                             </div>
-                            <div style={window.innerHeight < 900 ? {
+                            <div style={isMobile ? {
                                 backgroundColor: "#070D0D",
                                 borderRadius: "10px",
                                 padding: "20px",
@@ -301,16 +319,17 @@ const XpPopup = (props: IProps) => {
                                 textAlign: "center",
                                 width: "200px"
                             }}>
-                                <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
+                                <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
                                             style={{marginBottom: "10px", color: "white"}}
                                             align={"center"}>Yearly</Typography>
-                                <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
+                                <Typography variant={isMobile ? "h6" : "h5"}
                                             style={{marginBottom: "10px", color: "white"}}
                                             align={"center"}>$80</Typography>
                                 <LoadingButton
                                     loading={proUrlsLoading}
                                     variant="contained"
-                                    onClick={() => window.open(proYearlyLink, "_blank")}
+                                    href={proYearlyLink}
+                                    target="_blank"
                                     style={{backgroundColor: theme.palette.secondary.dark}}
                                 >
                                     Select
@@ -323,10 +342,7 @@ const XpPopup = (props: IProps) => {
                             align="center"
                             component="a" // Render the Typography as an <a> tag
                             href="/premium" // Specify the target URL
-                            onClick={(e) => {
-                                e.preventDefault(); // Prevent default to stop navigation (optional)
-                                window.open("/premium", "_blank"); // Open in new tab
-                            }}
+                            target="_blank"
                         >
                             Learn More About Pro
                         </Typography>
@@ -410,8 +426,8 @@ const XpPopup = (props: IProps) => {
                 <Modal open={open} style={{display: 'flex', justifyContent: "center", alignItems: "center"}}>
                     <Box
                         sx={showPro ? {
-                            width: window.innerWidth < 1000 ? "90vw" : "28vw",
-                            height: window.innerWidth < 1000 || window.innerHeight < 900 ? "78vh" : "70vh",
+                            width: isMobile ? "90vw" : "28vw",
+                            height: isMobile || isMobile ? "78vh" : "70vh",
                             minHeight: "420px",
                             // justifyContent: "center",
                             // marginLeft: "25vw",

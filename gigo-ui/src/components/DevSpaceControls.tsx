@@ -20,6 +20,7 @@ import goProGorilla from "../img/pro-pop-up-icon-plain.svg"
 import GoProDisplay from "./GoProDisplay";
 import config from "@/config";
 import Image from "next/image";
+import {useSearchParams} from "next/navigation";
 
 interface IProps {
     wsId: string;
@@ -27,6 +28,10 @@ interface IProps {
 
 
 const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    let isBrowser = typeof window !== 'undefined';
+    
     const dispatch = useAppDispatch();
 
     const usageCache = useAppSelector(selectDevSpaceCacheState);
@@ -57,6 +62,10 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     let globalWs = useGlobalWebSocket();
 
     const handleWsMessage = (message: WsMessage<any>) => {
+        if (!isBrowser) {
+            return
+        }
+
         // attempt to parse json message
         let jsonMessage: any | null = null
         try {
@@ -111,6 +120,10 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     const containerRef = useRef(null)
 
     const stopWorkspace = async () => {
+        if (!isBrowser) {
+            return
+        }
+
         let res = await fetch(
             `${config.rootPath}/api/workspace/stopWorkspace`,
             {
@@ -193,6 +206,10 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
         </>
     ), [cpuUsage, cpuUsagePercentage, cpuLimit, memoryUsage, memoryUsagePercentage, memoryLimit])
 
+    if (!isBrowser) {
+        return null
+    }
+
     return (
         <>
             <style>
@@ -263,9 +280,9 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                     top: '70%',
                     left: "50%",
                     transform: 'translate(-50%, 0)',
-                    width: window.innerWidth < 1000 ? "90vw" : '30vw',
+                    width: isMobile ? "90vw" : '30vw',
                     minWidth: "150px",
-                    maxWidth: window.innerWidth < 1000 ? "99vw" : "400px"
+                    maxWidth: isMobile ? "99vw" : "400px"
                 }}>
                     <Box sx={{display: "flex", width: "100%", flexDirection: "row", justifyContent: "center"}}>
                         <Tooltip title="Go Back">

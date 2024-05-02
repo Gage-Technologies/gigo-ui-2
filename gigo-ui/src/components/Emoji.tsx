@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { createTheme, PaletteMode, Dialog, DialogContent } from "@mui/material";
 import {getAllTokens, theme} from "@/theme";
 import Picker from '@emoji-mart/react';
+import {useSearchParams} from "next/navigation";
 
 type EmojiProps = {
     open: boolean; // Prop to control dialog visibility
@@ -11,6 +12,9 @@ type EmojiProps = {
 };
 
 export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: EmojiProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
     const addEmoji = (emoji: any) => {
         onEmojiSelect(emoji);
     };
@@ -21,7 +25,7 @@ export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: Emoj
         width: "450px",
         height: "435px",
     }
-    if (window.innerWidth < 1000) {
+    if (isMobile) {
         dialogPosition = {
             bottom: 120,
             // right: "5vw",
@@ -65,8 +69,8 @@ export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: Emoj
                     onEmojiSelect={addEmoji}
                     theme={theme.palette.mode}
                     autoFocus={true}
-                    emojiSize={window.innerWidth > 1000 ? 24 : 20}
-                    emojiButtonSize={window.innerWidth > 1000 ? 47 : 36}
+                    emojiSize={!isMobile ? 24 : 20}
+                    emojiButtonSize={!isMobile ? 47 : 36}
                     perline={12}
                     style={{ flex: 1 }}
                 />

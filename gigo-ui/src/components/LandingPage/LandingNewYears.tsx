@@ -1,20 +1,19 @@
 'use client'
-import React, { useRef } from 'react';
-import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
-import { styled } from '@mui/system';
+import React, {useRef} from 'react';
+import {Box, Button, Link, Typography} from '@mui/material';
+import {styled} from '@mui/system';
 
 import backgroundImageWebP from "@/img/landing/gigo-landing-new-years.webp"
-import backgroundImageLargeWebP from "@/img/landing/gigo-landing-new-years-large.webp"
-import { useAppSelector } from '@/reducers/hooks';
-import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
-import {getAllTokens, theme, themeHelpers} from '@/theme';
-import { SocialIcon } from 'react-social-icons';
+import {useAppSelector} from '@/reducers/hooks';
+import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from '@/reducers/appWrapper/appWrapper';
+import {theme, themeHelpers} from '@/theme';
+import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Confetti from "react-confetti";
 
 
 // Hero container with jungle-themed background
-const HeroContainer = styled(Box)(({ theme }) => ({
+const HeroContainer = styled(Box)(({theme}) => ({
     position: 'relative',
     height: '100vh',
     width: '100vw', // Adjust for the sidebar width
@@ -24,7 +23,7 @@ const HeroContainer = styled(Box)(({ theme }) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundImage: `
-        url(${window.innerWidth > 2000 ? backgroundImageLargeWebP : backgroundImageWebP})
+        url(${backgroundImageWebP})
     `,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -63,21 +62,30 @@ const GIGOLandingPageNewYears: React.FC = () => {
 
     return (
         <>
-            <HeroContainer sx={{ width: width }}>
-                <Confetti gravity={0.035} numberOfPieces={100} wind={0.001} colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1} />
+            <HeroContainer sx={{width: width}}>
+                <Confetti gravity={0.035} numberOfPieces={100} wind={0.001}
+                          colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1}/>
                 <HeroContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
-                        <GigoCircleIcon sx={{ height: '90px', width: '90px', marginRight: "20px", marginBottom: "20px", color: "white" }}/>
+                    <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <GigoCircleIcon sx={{
+                            height: '90px',
+                            width: '90px',
+                            marginRight: "20px",
+                            marginBottom: "20px",
+                            color: "white"
+                        }}/>
                         <Typography variant="h3" gutterBottom>
                             Welcome to GIGO
                         </Typography>
                     </Box>
-                    <Typography variant="h5" gutterBottom sx={{ maxWidth: "40vw" }}>
+                    <Typography variant="h5" gutterBottom sx={{maxWidth: "40vw"}}>
                         GIGO is the best place to learn how to code
                     </Typography>
-                    <Typography variant="body1" gutterBottom sx={{ maxWidth: "40vw" }}>
-                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
-                        Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
+                    <Typography variant="body1" gutterBottom sx={{maxWidth: "40vw"}}>
+                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of
+                        development.
+                        Code in the cloud, work on real projects, and learn the latest technologies from any machine,
+                        even a tablet!
                         Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
@@ -103,8 +111,15 @@ const GIGOLandingPageNewYears: React.FC = () => {
                     >
                         Explore The New Year
                     </Button>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank" > {/* Change typography variant */}
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 2
+                    }}>
+                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
+                              target="_blank"> {/* Change typography variant */}
                             Join us on Discord!
                         </Link>
                         <SocialIcon
@@ -122,7 +137,7 @@ const GIGOLandingPageNewYears: React.FC = () => {
                     </Box>
                 </HeroContent>
             </HeroContainer>
-            <div ref={endRef} id="end-landing" />
+            <div ref={endRef} id="end-landing"/>
         </>
     );
 };

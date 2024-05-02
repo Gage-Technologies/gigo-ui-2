@@ -25,6 +25,7 @@ import {keyframes} from "@mui/system";
 import {useAppSelector} from "@/reducers/hooks";
 import {LoadingButton} from "@mui/lab";
 import config from "@/config";
+import {useRouter} from "next/navigation";
 
 const gradientAnimation = keyframes`
     0% {
@@ -70,6 +71,8 @@ const StartCodingButton = styled(LoadingButton)`
 `;
 
 export default function Tutorial() {
+    let router = useRouter();
+
     const authState = useAppSelector(selectAuthState);
     const tutorialState = useAppSelector(selectAuthStateTutorialState);
     const [runTutorial, setRunTutorial] = React.useState(!tutorialState.home && authState.authenticated)
@@ -391,7 +394,7 @@ export default function Tutorial() {
                                 setStartingByte(false)
                                 setRunTutorial(false)
 
-                                window.location.assign("/byte/1750943457427324928")
+                                router.push("/byte/1750943457427324928")
                             }}
                             variant="contained"
                             color="success"

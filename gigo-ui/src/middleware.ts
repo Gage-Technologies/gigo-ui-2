@@ -17,8 +17,12 @@ export function middleware(request: NextRequest) {
     const url = request.nextUrl
     const { device } = userAgent(request)
     const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
+    let redirecting = false;
     if (url.searchParams.get('viewport') !== viewport) {
         url.searchParams.set('viewport', viewport)
+        redirecting = true
+    }
+    if (redirecting) {
         return NextResponse.redirect(url)
     }
     return NextResponse.next()

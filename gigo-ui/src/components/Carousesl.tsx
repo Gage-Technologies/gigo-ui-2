@@ -1,8 +1,10 @@
 'use client'
 import React, {ReactNode, useState} from 'react';
-import {Box, IconButton, MobileStepper, useTheme} from '@mui/material';
+import {Box, IconButton, MobileStepper} from '@mui/material';
 import {KeyboardArrowLeft, KeyboardArrowRight} from '@mui/icons-material';
 import SwipeableViews from 'react-swipeable-views';
+import {theme} from "@/theme";
+import {useSearchParams} from "next/navigation";
 
 interface CarouselProps {
     children: ReactNode;
@@ -19,7 +21,9 @@ const Carousel: React.FC<CarouselProps> = ({
                                                infiniteLoop,
                                                detour,
                                            }) => {
-    const theme = useTheme();
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
     const [activeStep, setActiveStep] = useState(0);
     const childrenArray = React.Children.toArray(children);
     const maxSteps = Math.ceil(childrenArray.length / itemsShown);
@@ -76,7 +80,7 @@ const Carousel: React.FC<CarouselProps> = ({
                         </Box>
                     ))}
                 </SwipeableViews>
-                {maxSteps > 1 && window.innerWidth >= 1000 && (
+                {maxSteps > 1 && !isMobile && (
                     <>
                         <IconButton
                             onClick={handleBack}
@@ -139,25 +143,25 @@ const Carousel: React.FC<CarouselProps> = ({
                 )}
                 {
                     detour
-                ?
-                    <MobileStepper
-                        steps={maxSteps}
-                        variant="dots"
-                        activeStep={activeStep}
-                        sx={{
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            width: '100%',
-                            justifyContent: 'center',
-                            backgroundColor: 'transparent',
-                        }}
-                        backButton={null}
-                        nextButton={null}
-                    />
-                :
-                    null
+                        ?
+                        <MobileStepper
+                            steps={maxSteps}
+                            variant="dots"
+                            activeStep={activeStep}
+                            sx={{
+                                position: "absolute",
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                width: '100%',
+                                justifyContent: 'center',
+                                backgroundColor: 'transparent',
+                            }}
+                            backButton={null}
+                            nextButton={null}
+                        />
+                        :
+                        null
                 }
             </Box>
         </>

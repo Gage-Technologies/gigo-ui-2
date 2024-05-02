@@ -145,8 +145,10 @@ async function chunkFile(
     // handle final chunk logic
     if (offset === fileSize) {
       // remove upload flag
-      window.localStorage.setItem("upload", JSON.stringify(false));
-      window.dispatchEvent(new Event("upload"));
+      if (typeof window !== 'undefined') {
+        window.localStorage.setItem("upload", JSON.stringify(false));
+        window.dispatchEvent(new Event("upload"));
+      }
 
       if (completionCallback === null) {
         // check upload success
@@ -286,7 +288,9 @@ async function apiCall(
       clearReducers()
       // we have to wait a bit before the redirect so the reducers really clear
       await sleep(100)
-      window.location.href = "/login"
+      if (typeof window !== 'undefined') {
+        window.location.href = "/login"
+      }
       res = {
         "message": "Your session has expired. Please login again!"
       }

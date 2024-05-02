@@ -17,6 +17,8 @@ interface IProps {
 }
 
 const LootPopup = (props: IProps) => {
+    let isBrowser = typeof window !== 'undefined';
+
     const [steps, setSteps] = React.useState(0)
     const [winnings, setWinnings] = React.useState(props.reward)
     const [pause, setPause] = React.useState(false)
@@ -156,6 +158,10 @@ const LootPopup = (props: IProps) => {
     }
 
     const RenderFinalPage = () => {
+        if (!isBrowser) {
+            return null
+        }
+
         switch(
             //@ts-ignore
             winnings["reward_type"]) {
@@ -276,6 +282,9 @@ const LootPopup = (props: IProps) => {
         }
     }
 
+    if (!isBrowser) {
+        return null
+    }
 
     return (
         <ThemeProvider theme={theme}>

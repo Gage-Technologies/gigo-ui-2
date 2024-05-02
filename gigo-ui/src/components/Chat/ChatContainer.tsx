@@ -89,6 +89,7 @@ import {
 } from "@/reducers/appWrapper/appWrapper";
 import Menu from "@mui/material/Menu";
 import Image from "next/image";
+import {usePathname, useRouter, useSearchParams} from "next/navigation";
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
@@ -170,6 +171,12 @@ function compareMessageIDs(id1: string, id2: string) {
 }
 
 export default function ChatContainer() {
+    let router = useRouter();
+    let pathname = usePathname();
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    let isBrowser = typeof window !== 'undefined';
+    
     const SearchIconWrapper = styled('div')(() => ({
         padding: theme.spacing(0, 2),
         height: '100%',
@@ -576,13 +583,13 @@ export default function ChatContainer() {
         if (tab === "Challenge") {
             // validate the url is a challenge url and if so retrieve the id from the url
             let challengeId = "";
-            if (!window.location.pathname.includes("/challenge/")) {
+            if (!pathname.includes("/challenge/")) {
                 switchTab("Global");
                 return;
             }
 
             // manually parse id from url
-            let id = window.location.pathname.split("/")[2];
+            let id = pathname.split("/")[2];
             id = id.split("?")[0];
             id = id.split("#")[0];
             if (id === "") {
@@ -936,7 +943,7 @@ export default function ChatContainer() {
             }
 
             // set scroll threshold for desktop and mobile
-            let scrollThresholdDesktop = window.innerWidth > 1000 ? 100 : 80;
+            let scrollThresholdDesktop = !isMobile ? 100 : 80;
 
             // Determine if the user has scrolled up
             const scrolledUp = container.scrollTop < container.scrollHeight - container.clientHeight - scrollThresholdDesktop;
@@ -1092,6 +1099,10 @@ export default function ChatContainer() {
     }
 
     const renderTopBar = () => {
+        if (!isBrowser) {
+            return null
+        }
+
         // Initialize with the Global tab
         let tabs = ["Global"];
 
@@ -1101,7 +1112,7 @@ export default function ChatContainer() {
         }
 
         // Prepend the Challenge tab if we are on the /challenge page
-        if (window.location.pathname.includes("/challenge")) {
+        if (pathname.includes("/challenge")) {
             tabs.unshift("Challenge");
         }
 
@@ -1116,7 +1127,7 @@ export default function ChatContainer() {
         }
 
         // Container width
-        const containerWidth = window.innerWidth > 1000 ? 300 : window.innerWidth;
+        const containerWidth = !isMobile ? 300 : window.innerWidth;
         // Space between tabs
         const space = 10;
         // Calculate the width of each tab
@@ -1126,7 +1137,7 @@ export default function ChatContainer() {
             <Paper
                 sx={{
                     position: 'fixed',
-                    top: window.innerWidth > 1000 ? '64px' : '56px',
+                    top: !isMobile ? '64px' : '56px',
                     height: '48px',
                     zIndex: 1000,
                     width: `${containerWidth}px`,
@@ -1243,7 +1254,7 @@ export default function ChatContainer() {
                                 }
 
                                 // on mobile close the chat when we send the message
-                                if (window.innerWidth <= 1000 && document.activeElement instanceof HTMLElement) {
+                                if (isMobile && typeof document !== 'undefined' && document.activeElement instanceof HTMLElement) {
                                     document.activeElement.blur();
                                 }
                             }
@@ -1301,13 +1312,13 @@ export default function ChatContainer() {
                         ),
                     }}
                     sx={{
-                        mb: window.innerWidth > 1000 ? 1 : "50px", // Add margin bottom
+                        mb: !isMobile ? 1 : "50px", // Add margin bottom
                     }}
                 />
                 <Popper
                     open={mentionSelectionPopperOpen && mentionSearchOptions.length > 0}
                     anchorEl={messageInputContainerRef.current}
-                    placement={window.innerWidth > 1000 ? "right-start" : "top"}
+                    placement={!isMobile ? "right-start" : "top"}
                     sx={{
                         zIndex: 6000,
                     }}
@@ -1339,7 +1350,7 @@ export default function ChatContainer() {
                                 boxShadow: 'none',
                                 maxHeight: "200px",
                                 overflowY: "auto",
-                                width: window.innerWidth > 1000 ? undefined : "90vw"
+                                width: !isMobile ? undefined : "90vw"
                             }}
                         >
                             <List>
@@ -1532,7 +1543,7 @@ export default function ChatContainer() {
         if (loggedIn) {
             marginBottom = '88px'
         }
-        if (window.innerWidth <= 1000) {
+        if (isMobile) {
             marginBottom = '130px'
         }
 
@@ -1560,7 +1571,7 @@ export default function ChatContainer() {
                             onClick={scrollToBottom}
                             style={{
                                 position: 'fixed',
-                                bottom: window.innerWidth > 1000 ? '108px' : '172px',
+                                bottom: !isMobile ? '108px' : '172px',
                                 right: '20px',
                                 backgroundColor: theme.palette.background.default, // Match the background color
                                 color: theme.palette.text.primary, // Match the text color
@@ -1597,7 +1608,7 @@ export default function ChatContainer() {
                         sx={{
                             position: 'fixed',
                             bottom: '0px',
-                            width: window.innerWidth < 1000 ? "100%" : undefined,
+                            width: isMobile ? "100%" : undefined,
                             zIndex: 6000,
                             // @ts-ignore
                             backgroundColor: theme.palette.background.chat,
@@ -2707,7 +2718,7 @@ export default function ChatContainer() {
 
     return (
         <>
-            {ReactDOM.createPortal(
+            {typeof document !== 'undefined' && ReactDOM.createPortal(
                 (
                     <Snackbar
                         open={notification !== null}
@@ -2717,9 +2728,9 @@ export default function ChatContainer() {
                         anchorOrigin={{vertical: 'top', horizontal: 'right'}}
                         style={{
                             position: "fixed",
-                            width: window.innerWidth > 1000 ? "fit-content" : undefined,
+                            width: !isMobile ? "fit-content" : undefined,
                             top: '80px',
-                            right: window.innerWidth < 1000 ? undefined : chatOpen ? '340px' : '40px'
+                            right: isMobile ? undefined : chatOpen ? '340px' : '40px'
                         }}
                     >
                         {renderNotificationContent()}
@@ -2727,11 +2738,11 @@ export default function ChatContainer() {
                 ),
                 document.body
             )}
-            {chatOpen && (
+            {chatOpen && isBrowser && (
                 <Paper
                     elevation={3}
                     style={{
-                        height: window.innerWidth > 1000 ? "100vh" : (window.innerHeight > 600 ? "89vh" : "80vh"),
+                        height: !isMobile ? "100vh" : (window.innerHeight > 600 ? "89vh" : "80vh"),
                         display: 'flex',
                         flexDirection: 'column',
                         borderRadius: '0px',

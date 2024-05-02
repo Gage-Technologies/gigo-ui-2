@@ -7,6 +7,8 @@ import config from "@/config";
 
 
 export default function TutorialClaimTrialButton() {
+    let isBrowser = typeof window !== 'undefined';
+
     const [proMonthlyLink, setProMonthlyLink] = useState("");
     const [proYearlyLink, setProYearlyLink] = useState("");
     const [loadingProLinks, setLoadingProLinks] = useState(false)
@@ -36,6 +38,10 @@ export default function TutorialClaimTrialButton() {
     }
 
     const handleClaimButtonClick = async () => {
+        if (!isBrowser) {
+            return
+        }
+
         setLoadingProLinks(true)
 
         // first let's check if we have a cached session - we hope so cause it'll be way faster

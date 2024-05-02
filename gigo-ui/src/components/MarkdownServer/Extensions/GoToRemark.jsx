@@ -41,6 +41,10 @@ const createGoToRemark = (instanceId, callback) => {
     };
 
     const renderer = () => {
+        if (typeof document === 'undefined') {
+          return [];
+        }
+
         let portals = [];
         document.querySelectorAll(`[id^="gtc-${instanceId}"]`).forEach((element) => {
             const id = element.id;

@@ -26,7 +26,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import React, {SyntheticEvent} from "react";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 import Menu from "@mui/material/Menu";
 import {programmingLanguages} from "@/services/vars";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
@@ -174,6 +174,9 @@ interface IProps {
 
 // initialize redux states
 export default function TopSearchBar(props: IProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    
     // redux states for search params
     const dispatch = useAppDispatch();
     const reduxActiveSearchState = useAppSelector(selectActiveSearch);
@@ -1538,14 +1541,14 @@ export default function TopSearchBar(props: IProps) {
     }
 
     const renderGroup = (params: any) => {
-        let color = window.innerWidth > 1000
+        let color = !isMobile
             ?
             // @ts-ignore
             params.group.toLowerCase() === "challenge" ? theme.palette.primary.main : params.group.toLowerCase() === "user" ? theme.palette.secondary.main : mode === "light" ? grey[900] : grey[300]
             :
             null;
 
-        let text = window.innerWidth > 1000
+        let text = !isMobile
             ?
             params.group
             :
@@ -1705,9 +1708,8 @@ export default function TopSearchBar(props: IProps) {
                             onClick={async () => {
                                 // @ts-ignore
                                 await handleSearchCompleted(option.content._id)
-                                // @ts-ignore
                                 router.push("/user/" + option.content._id)
-                                window.location.reload()
+                                router.refresh()
                             }}
                         >
                             <div style={{display: "flex", flexDirection: "row", width: "95%", justifyContent: "left"}}>
@@ -2176,7 +2178,7 @@ export default function TopSearchBar(props: IProps) {
     }
     return (
         <div>
-            {window.innerWidth > 1000 ? fullSizedSearch() : mobileSearch()}
+            {!isMobile ? fullSizedSearch() : mobileSearch()}
         </div>
     )
 }

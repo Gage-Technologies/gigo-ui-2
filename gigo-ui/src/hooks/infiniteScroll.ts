@@ -45,6 +45,10 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
   }, [isFetching, callback]);
 
   function handleScroll() {
+    if (typeof window === 'undefined') {
+      return
+    }
+
     if (
         window.innerHeight + document.documentElement.scrollTop < document.documentElement.scrollHeight - buffer ||
         isFetching ||
