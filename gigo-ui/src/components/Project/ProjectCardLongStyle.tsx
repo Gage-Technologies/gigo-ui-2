@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import {getAllTokens, theme} from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
-import {useEffect} from "react";
+import {Suspense, useEffect} from "react";
 import HorseIcon from "@/icons/ProjectCard/Horse";
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
 import { QuestionMark } from "@mui/icons-material";
@@ -33,6 +33,7 @@ import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     role: any | null;
@@ -260,7 +261,7 @@ export default function ProjectCardLongStyle(props: IProps) {
 
     // @ts-ignore
     return (
-        <>
+        <Suspense fallback={<SuspenseFallback/>}>
             <style>
                 {`
             @keyframes auraEffect {
@@ -422,7 +423,7 @@ export default function ProjectCardLongStyle(props: IProps) {
                     </Card>
                 )}
             </ButtonBase>
-        </>
+        </Suspense>
     )
 }
 

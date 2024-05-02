@@ -1,19 +1,9 @@
 'use client'
 import * as React from "react";
-import {useEffect} from "react";
-import {
-    Box,
-    Button,
-    createTheme,
-    CssBaseline,
-    IconButton,
-    Modal,
-    PaletteMode,
-    ThemeProvider,
-    Typography,
-} from "@mui/material";
+import {Suspense, useEffect} from "react";
+import {Box, Button, CssBaseline, IconButton, Modal, ThemeProvider, Typography,} from "@mui/material";
 import {styled} from "@mui/material/styles";
-import {getAllTokens, theme} from "@/theme";
+import {theme} from "@/theme";
 import {keyframes} from "@emotion/react";
 import LinearProgress from "@mui/material/LinearProgress";
 import {Fade} from "react-awesome-reveal"
@@ -27,6 +17,7 @@ import {Close} from "@material-ui/icons";
 import {LoadingButton} from "@mui/lab";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     oldXP: number;
@@ -45,7 +36,7 @@ const XpPopup = (props: IProps) => {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
     let isBrowser = typeof window !== 'undefined';
-    
+
     const [showConfetti, setShowConfetti] = React.useState(false);
 
     const [startXP, setStartXP] = React.useState(props.oldXP);
@@ -121,7 +112,7 @@ const XpPopup = (props: IProps) => {
         if (!isBrowser) {
             return null
         }
-        
+
         let premium = authState.role.toString()
         // //remove
         // premium = "0"
@@ -241,10 +232,10 @@ const XpPopup = (props: IProps) => {
                             <Close/>
                         </IconButton>
                         <Image alt={""} src={premiumGorilla}
-                             style={isMobile ? {width: "20%", marginBottom: "5px"} : {
-                                 width: "30%",
-                                 marginBottom: "20px"
-                             }}/>
+                               style={isMobile ? {width: "20%", marginBottom: "5px"} : {
+                                   width: "30%",
+                                   marginBottom: "20px"
+                               }}/>
                         <Typography variant={isMobile ? "h5" : "h4"}
                                     style={{marginBottom: "10px", color: "white"}} align={"center"}>GIGO
                             Pro</Typography>
@@ -421,46 +412,48 @@ const XpPopup = (props: IProps) => {
 
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline>
-                <Modal open={open} style={{display: 'flex', justifyContent: "center", alignItems: "center"}}>
-                    <Box
-                        sx={showPro ? {
-                            width: isMobile ? "90vw" : "28vw",
-                            height: isMobile || isMobile ? "78vh" : "70vh",
-                            minHeight: "420px",
-                            // justifyContent: "center",
-                            // marginLeft: "25vw",
-                            // marginTop: "5vh",
-                            outlineColor: "black",
-                            borderRadius: 7,
-                            boxShadow:
-                                "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            // backgroundColor: theme.palette.background.default,
-                            backgroundImage: `url(${proBackground})`,
-                            backgroundSize: "cover",
-                            backgroundRepeat: "no-repeat",
-                            backgroundPosition: "center center"
-                            // ...themeHelpers.frostedGlass
-                        } : {
-                            width: "40vw",
-                            height: "45vh",
-                            minHeight: "420px",
-                            // justifyContent: "center",
-                            // marginLeft: "25vw",
-                            // marginTop: "5vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            boxShadow:
-                                "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        {renderXPPopup()}
-                    </Box>
-                </Modal>
-            </CssBaseline>
-        </ThemeProvider>
+        <Suspense fallback={<SuspenseFallback/>}>
+            <ThemeProvider theme={theme}>
+                <CssBaseline>
+                    <Modal open={open} style={{display: 'flex', justifyContent: "center", alignItems: "center"}}>
+                        <Box
+                            sx={showPro ? {
+                                width: isMobile ? "90vw" : "28vw",
+                                height: isMobile || isMobile ? "78vh" : "70vh",
+                                minHeight: "420px",
+                                // justifyContent: "center",
+                                // marginLeft: "25vw",
+                                // marginTop: "5vh",
+                                outlineColor: "black",
+                                borderRadius: 7,
+                                boxShadow:
+                                    "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
+                                // backgroundColor: theme.palette.background.default,
+                                backgroundImage: `url(${proBackground})`,
+                                backgroundSize: "cover",
+                                backgroundRepeat: "no-repeat",
+                                backgroundPosition: "center center"
+                                // ...themeHelpers.frostedGlass
+                            } : {
+                                width: "40vw",
+                                height: "45vh",
+                                minHeight: "420px",
+                                // justifyContent: "center",
+                                // marginLeft: "25vw",
+                                // marginTop: "5vh",
+                                outlineColor: "black",
+                                borderRadius: 1,
+                                boxShadow:
+                                    "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
+                                backgroundColor: theme.palette.background.default,
+                            }}
+                        >
+                            {renderXPPopup()}
+                        </Box>
+                    </Modal>
+                </CssBaseline>
+            </ThemeProvider>
+        </Suspense>
     );
 };
 

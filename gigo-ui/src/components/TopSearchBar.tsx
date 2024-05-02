@@ -8,13 +8,11 @@ import {
     CardContent,
     CardMedia,
     CircularProgress,
-    createTheme,
     Grid,
     IconButton,
     InputBase,
     InputLabel,
     MenuItem,
-    PaletteMode,
     Paper,
     Popper,
     Select,
@@ -25,7 +23,7 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import React, {SyntheticEvent} from "react";
+import React, {Suspense, SyntheticEvent} from "react";
 import {useRouter, useSearchParams} from "next/navigation";
 import Menu from "@mui/material/Menu";
 import {programmingLanguages} from "@/services/vars";
@@ -60,7 +58,7 @@ import swal from "sweetalert";
 import User from "../models/user";
 import {selectAuthState} from "@/reducers/auth/auth";
 import config from "../config";
-import {getAllTokens, theme, themeHelpers} from "@/theme";
+import {theme} from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -74,6 +72,7 @@ import renown10 from "../img/renown/renown10.svg"
 import {grey} from "@material-ui/core/colors";
 import {debounce} from "lodash";
 import Image from "next/image";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 
 interface SearchOption {
@@ -176,7 +175,7 @@ interface IProps {
 export default function TopSearchBar(props: IProps) {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
-    
+
     // redux states for search params
     const dispatch = useAppDispatch();
     const reduxActiveSearchState = useAppSelector(selectActiveSearch);
@@ -2177,9 +2176,11 @@ export default function TopSearchBar(props: IProps) {
         )
     }
     return (
-        <div>
-            {!isMobile ? fullSizedSearch() : mobileSearch()}
-        </div>
+        <Suspense fallback={<SuspenseFallback/>}>
+            <div>
+                {!isMobile ? fullSizedSearch() : mobileSearch()}
+            </div>
+        </Suspense>
     )
 }
 

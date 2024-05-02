@@ -1,5 +1,5 @@
 'use client'
-import {createTheme, Grid, PaletteMode, Typography} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import LazyLoad from "react-lazyload";
 import ProjectCard from "@/components/Project/ProjectCard";
 import config from "@/config";
@@ -10,6 +10,8 @@ import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
+import {Suspense} from "react";
 
 export default function RecommendedProjectsScroll() {
     let query = useSearchParams();
@@ -69,89 +71,91 @@ export default function RecommendedProjectsScroll() {
     }
 
     return (
-        <div style={{
-            display: "flex",
-            flexDirection: "column",
-            paddingLeft: "auto",
-            paddingRight: "auto",
-            justifyContent: "center",
-            width: "103%",
-            paddingBottom: "10px",
-            marginLeft: "1%",
-        }}>
-            <div style={{display: "inline-flex"}}>
-                <Typography variant="h6" gutterBottom sx={{
-                    paddingLeft: "10px",
-                    paddingTop: "6px",
-                    fontSize: "1.2em",
-                    paddingBottom: "20px",
-                }}>
-                    Recommended Challenges
-                </Typography>
-            </div>
-            <Grid container spacing={4}
-                  sx={{
-                      paddingRight: "10px",
-                      paddingLeft: "10px"
-                  }}
-            >
+        <Suspense fallback={<SuspenseFallback/>}>
+            <div style={{
+                display: "flex",
+                flexDirection: "column",
+                paddingLeft: "auto",
+                paddingRight: "auto",
+                justifyContent: "center",
+                width: "103%",
+                paddingBottom: "10px",
+                marginLeft: "1%",
+            }}>
+                <div style={{display: "inline-flex"}}>
+                    <Typography variant="h6" gutterBottom sx={{
+                        paddingLeft: "10px",
+                        paddingTop: "6px",
+                        fontSize: "1.2em",
+                        paddingBottom: "20px",
+                    }}>
+                        Recommended Challenges
+                    </Typography>
+                </div>
+                <Grid container spacing={4}
+                      sx={{
+                          paddingRight: "10px",
+                          paddingLeft: "10px"
+                      }}
+                >
+                    {
+                        recData.map((project, index) => {
+                            return (
+                                <Grid item xs={12} sm={6} md={4} lg={3} key={"rec-" + project["_id"]}>
+                                    <LazyLoad once scroll unmountIfInvisible>
+                                        <ProjectCard
+                                            height={"20vh"}
+                                            imageHeight={"20vh"}
+                                            // TODO mobile => make width 'fit-content'
+                                            width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? 'fit-content' : '20vw')}
+                                            imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}
+                                            projectId={project["_id"]}
+                                            projectTitle={project["title"]}
+                                            projectDesc={project["description"]}
+                                            projectThumb={config.rootPath + project["thumbnail"]}
+                                            projectDate={project["updated_at"]}
+                                            projectType={project["post_type"]}
+                                            renown={project["tier"]}
+                                            onClick={() => console.log("navigate")}
+                                            userTier={project["user_tier"]}
+                                            userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
+                                            userId={project["author_id"]}
+                                            username={project["author"]}
+                                            backgroundName={project["background_name"]}
+                                            backgroundPalette={project["background_palette"]}
+                                            backgroundRender={project["background_render"]}
+                                            exclusive={project["challenge_cost"] !== null}
+                                            hover={false}
+                                            role={project["user_status"]}
+                                            estimatedTime={project["estimated_tutorial_time_millis"]}
+                                        />
+                                    </LazyLoad>
+                                </Grid>
+                            )
+                        })
+                    }
+                </Grid>
                 {
-                    recData.map((project, index) => {
-                        return (
-                            <Grid item xs={12} sm={6} md={4} lg={3} key={"rec-" + project["_id"]}>
-                                <LazyLoad once scroll unmountIfInvisible>
-                                    <ProjectCard
-                                        height={"20vh"}
-                                        imageHeight={"20vh"}
-                                        // TODO mobile => make width 'fit-content'
-                                        width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? 'fit-content' : '20vw')}
-                                        imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}
-                                        projectId={project["_id"]}
-                                        projectTitle={project["title"]}
-                                        projectDesc={project["description"]}
-                                        projectThumb={config.rootPath + project["thumbnail"]}
-                                        projectDate={project["updated_at"]}
-                                        projectType={project["post_type"]}
-                                        renown={project["tier"]}
-                                        onClick={() => console.log("navigate")}
-                                        userTier={project["user_tier"]}
-                                        userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
-                                        userId={project["author_id"]}
-                                        username={project["author"]}
-                                        backgroundName={project["background_name"]}
-                                        backgroundPalette={project["background_palette"]}
-                                        backgroundRender={project["background_render"]}
-                                        exclusive={project["challenge_cost"] !== null}
-                                        hover={false}
-                                        role={project["user_status"]}
-                                        estimatedTime={project["estimated_tutorial_time_millis"]}
-                                    />
-                                </LazyLoad>
+                    isFetching ? (
+                        <Grid container spacing={2} justifyContent="center" alignItems="center"
+                              style={{marginTop: "10px"}}
+                        >
+                            <Grid item xs={12}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        width: "100%"
+                                    }}
+                                >
+                                    <MoonLoader color={theme.palette.primary.main} loading={true} size={35}/>
+                                </div>
                             </Grid>
-                        )
-                    })
-                }
-            </Grid>
-            {
-                isFetching ? (
-                    <Grid container spacing={2} justifyContent="center" alignItems="center"
-                          style={{marginTop: "10px"}}
-                    >
-                        <Grid item xs={12}>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    width: "100%"
-                                }}
-                            >
-                                <MoonLoader color={theme.palette.primary.main} loading={true} size={35}/>
-                            </div>
                         </Grid>
-                    </Grid>
-                ) : (<></>)
-            }
-        </div>
+                    ) : (<></>)
+                }
+            </div>
+        </Suspense>
     )
 }

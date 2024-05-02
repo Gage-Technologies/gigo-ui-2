@@ -1,9 +1,10 @@
 'use client'
-import React, { useState } from "react";
-import { createTheme, PaletteMode, Dialog, DialogContent } from "@mui/material";
-import {getAllTokens, theme} from "@/theme";
+import React, {Suspense} from "react";
+import {Dialog, DialogContent} from "@mui/material";
+import {theme} from "@/theme";
 import Picker from '@emoji-mart/react';
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 type EmojiProps = {
     open: boolean; // Prop to control dialog visibility
@@ -11,7 +12,7 @@ type EmojiProps = {
     onEmojiSelect: (emoji: any) => void; // Callback function when an emoji is selected
 };
 
-export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: EmojiProps) {
+export default function EmojiPicker({open, closeCallback, onEmojiSelect}: EmojiProps) {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
@@ -35,46 +36,48 @@ export default function EmojiPicker({ open, closeCallback, onEmojiSelect }: Emoj
     }
 
     return (
-        <Dialog
-            open={open} // Controlled by prop
-            onClose={closeCallback} // Callback function to close dialog
-            BackdropProps={{ style: { backgroundColor: "transparent" } }}
-            PaperProps={{
-                style: {
-                    position: "absolute",
-                    borderRadius: "10px",
-                    // @ts-ignore
-                    backgroundColor: theme.palette.background.chat,
-                    ...dialogPosition,
-                },
-            }}
-        >
-            <DialogContent
-                style={{
-                    padding: 0,
-                    height: '100%',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    overflowX: 'hidden',
+        <Suspense fallback={<SuspenseFallback/>}>
+            <Dialog
+                open={open} // Controlled by prop
+                onClose={closeCallback} // Callback function to close dialog
+                BackdropProps={{style: {backgroundColor: "transparent"}}}
+                PaperProps={{
+                    style: {
+                        position: "absolute",
+                        borderRadius: "10px",
+                        // @ts-ignore
+                        backgroundColor: theme.palette.background.chat,
+                        ...dialogPosition,
+                    },
                 }}
             >
-                <Picker
-                    data={async () => {
-                        const response = await fetch(
-                        'https://cdn.jsdelivr.net/npm/@emoji-mart/data',
-                        )
-
-                        return response.json()
+                <DialogContent
+                    style={{
+                        padding: 0,
+                        height: '100%',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        overflowX: 'hidden',
                     }}
-                    onEmojiSelect={addEmoji}
-                    theme={theme.palette.mode}
-                    autoFocus={true}
-                    emojiSize={!isMobile ? 24 : 20}
-                    emojiButtonSize={!isMobile ? 47 : 36}
-                    perline={12}
-                    style={{ flex: 1 }}
-                />
-            </DialogContent>
-        </Dialog>
+                >
+                    <Picker
+                        data={async () => {
+                            const response = await fetch(
+                                'https://cdn.jsdelivr.net/npm/@emoji-mart/data',
+                            )
+
+                            return response.json()
+                        }}
+                        onEmojiSelect={addEmoji}
+                        theme={theme.palette.mode}
+                        autoFocus={true}
+                        emojiSize={!isMobile ? 24 : 20}
+                        emojiButtonSize={!isMobile ? 47 : 36}
+                        perline={12}
+                        style={{flex: 1}}
+                    />
+                </DialogContent>
+            </Dialog>
+        </Suspense>
     );
 }

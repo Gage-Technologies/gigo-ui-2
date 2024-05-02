@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {useRef, useState} from 'react';
+import {Suspense, useRef, useState} from 'react';
 import {useGlobalWebSocket} from '@/services/websocket';
 import {WsMessage, WsMessageType} from '@/models/websocket';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -21,6 +21,7 @@ import GoProDisplay from "./GoProDisplay";
 import config from "@/config";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     wsId: string;
@@ -31,6 +32,10 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
     let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
     
     const dispatch = useAppDispatch();
 
@@ -206,12 +211,12 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
         </>
     ), [cpuUsage, cpuUsagePercentage, cpuLimit, memoryUsage, memoryUsagePercentage, memoryLimit])
 
-    if (!isBrowser) {
+    if (!isClient) {
         return null
     }
 
     return (
-        <>
+        <Suspense fallback={<SuspenseFallback/>}>
             <style>
                 {`
                         @keyframes glitch {
@@ -419,7 +424,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                 </Paper>
             )}
             <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
-        </>
+        </Suspense>
     )
 };
 

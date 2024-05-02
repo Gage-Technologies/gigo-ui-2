@@ -34,13 +34,11 @@ import {
     Button,
     Card,
     CardContent,
-    createTheme,
     CssBaseline,
     Link,
     ListItemButton,
     Menu,
     Modal,
-    PaletteMode,
     SpeedDial,
     SpeedDialAction,
     TextField,
@@ -53,9 +51,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import FolderIcon from '@mui/icons-material/Folder';
 import UserIcon from "@/icons/User/UserIcon";
-import {getAllTokens, Holiday, holiday, theme, themeHelpers} from "@/theme";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
+import {Holiday, holiday, theme, themeHelpers} from "@/theme";
 import TopSearchBar from "../TopSearchBar";
 import config from "@/config";
 import swal from "sweetalert";
@@ -113,6 +109,8 @@ import {sleep} from '@/services/utils';
 import {decodeToken} from 'react-jwt';
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import Image from "next/image";
+import SuspenseFallback from "@/components/SuspenseFallback";
+import {Suspense} from "react";
 
 
 interface IProps {
@@ -126,6 +124,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let pathname = usePathname();
     let isMobile = query.get("viewport") === "mobile";
     let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = React.useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
 
     const {trackEvent} = useTracking({}, {
         dispatch: (data: any) => {
@@ -796,7 +798,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         if (isByteMobilePage) return null;
 
         let referralLink = ""
-        if (isBrowser) {
+        if (isClient) {
             const urlLink = window.location.href
             const regex = /https?:\/\/[^\/]+/;
             referralLink =
@@ -1181,7 +1183,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderDevSpaceControls = () => {
-        if (!isBrowser) {
+        if (!isClient) {
             return null
         }
 
@@ -1429,7 +1431,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         if (isByteMobilePage) return null;
 
         let referralLink = ""
-        if (isBrowser) {
+        if (isClient) {
             const urlLink = window.location.href
             const regex = /https?:\/\/[^\/]+/;
             referralLink =
@@ -2336,24 +2338,26 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            {renderChristmasSnow()}
-            {renderNewYearConfetti()}
-            <CssBaseline>
-                <Box sx={{
-                    mb: "0px",
-                    // height: "64px",
-                }}>
-                    {!isByteMobilePage ? appBarRenderer() : null}
-                    {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
-                    {renderChatSideBar()}
-                    {
-                        // we only render the children on mobile if the chat bar is not open
-                        !(isMobile && rightOpen) ?
-                            memoizedChildren : null
-                    }
-                </Box>
-            </CssBaseline>
-        </ThemeProvider>
+        <Suspense fallback={<SuspenseFallback/>}>
+            <ThemeProvider theme={theme}>
+                {renderChristmasSnow()}
+                {renderNewYearConfetti()}
+                <CssBaseline>
+                    <Box sx={{
+                        mb: "0px",
+                        // height: "64px",
+                    }}>
+                        {!isByteMobilePage ? appBarRenderer() : null}
+                        {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
+                        {renderChatSideBar()}
+                        {
+                            // we only render the children on mobile if the chat bar is not open
+                            !(isMobile && rightOpen) ?
+                                memoizedChildren : null
+                        }
+                    </Box>
+                </CssBaseline>
+            </ThemeProvider>
+        </Suspense>
     );
 }

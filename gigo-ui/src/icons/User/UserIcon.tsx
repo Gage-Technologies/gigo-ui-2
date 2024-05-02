@@ -1,15 +1,13 @@
-
-
-import React from "react"
+import React, {Suspense, useEffect} from "react"
 import {ButtonBase} from "@mui/material";
 import Badge from '@mui/material/Badge';
-import {useEffect} from "react";
 import config from "../../config";
 import LottieAnimation from "../../components/LottieAnimation";
 import ProBannerCircle from "@/components/Pro/ProBannerCircle";
-import { Buffer } from 'buffer';
+import {Buffer} from 'buffer';
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface IProps {
     size: number,
@@ -85,7 +83,7 @@ export default function UserIcon(props: IProps) {
 
     const internalContent = () => {
         return (
-            <div style={{ position: "relative" }}> {/* Common Parent */}
+            <div style={{position: "relative"}}> {/* Common Parent */}
                 {props.pro && (
                     <ProBannerCircle
                         style={{
@@ -140,54 +138,56 @@ export default function UserIcon(props: IProps) {
     }
 
     return (
-        <div>
-            {props.userId !== "n/a" ?
-                <ButtonBase
-                    href={"/user/" + props.userId}
-                    style={ !isMobile ? {
-                        position: "relative",
-                        //@ts-ignore
-                        width: scaleSize(1.5),
-                        //@ts-ignore
-                        height: scaleSize(1.5),
-                        display: "flex", // Add Flexbox
-                        justifyContent: "center", // Center horizontally
-                        alignItems: "center" // Center vertically
-                    } : {
-                        position: "relative",
-                        //@ts-ignore
-                        width: scaleSize(1.5),
-                        //@ts-ignore
-                        height: scaleSize(1.2),
-                        display: "flex", // Add Flexbox
-                        justifyContent: "center", // Center horizontally
-                        alignItems: "center" // Center vertically
-                    }}
-                    disabled={!props.profileButton}
-                >
-                    {/* bound content to the center of the button */}
-                    <div style={{
-                        // position: "absolute",
-                        // top: scaleSize(.25),  // Center vertically
-                        // left: scaleSize(.25),  // Center horizontally
-                        display: "flex", // Add Flexbox
-                    }}>
-                        {internalContent()}
-                    </div>
-                </ButtonBase>
-                :
-                <Badge
-                    overlap="circular"
-                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-                    variant="dot"
-                >
-                    {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
-                    <div style={{position: "relative", width: props.size, height: props.size}}>
-                        <Image alt={""} src={props.userThumb} width={props.size} height={props.size}></Image>
-                    </div>
-                </Badge>
-            }
-        </div>
+        <Suspense fallback={<SuspenseFallback/>}>
+            <div>
+                {props.userId !== "n/a" ?
+                    <ButtonBase
+                        href={"/user/" + props.userId}
+                        style={!isMobile ? {
+                            position: "relative",
+                            //@ts-ignore
+                            width: scaleSize(1.5),
+                            //@ts-ignore
+                            height: scaleSize(1.5),
+                            display: "flex", // Add Flexbox
+                            justifyContent: "center", // Center horizontally
+                            alignItems: "center" // Center vertically
+                        } : {
+                            position: "relative",
+                            //@ts-ignore
+                            width: scaleSize(1.5),
+                            //@ts-ignore
+                            height: scaleSize(1.2),
+                            display: "flex", // Add Flexbox
+                            justifyContent: "center", // Center horizontally
+                            alignItems: "center" // Center vertically
+                        }}
+                        disabled={!props.profileButton}
+                    >
+                        {/* bound content to the center of the button */}
+                        <div style={{
+                            // position: "absolute",
+                            // top: scaleSize(.25),  // Center vertically
+                            // left: scaleSize(.25),  // Center horizontally
+                            display: "flex", // Add Flexbox
+                        }}>
+                            {internalContent()}
+                        </div>
+                    </ButtonBase>
+                    :
+                    <Badge
+                        overlap="circular"
+                        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                        variant="dot"
+                    >
+                        {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
+                        <div style={{position: "relative", width: props.size, height: props.size}}>
+                            <Image alt={""} src={props.userThumb} width={props.size} height={props.size}></Image>
+                        </div>
+                    </Badge>
+                }
+            </div>
+        </Suspense>
     )
 }
 

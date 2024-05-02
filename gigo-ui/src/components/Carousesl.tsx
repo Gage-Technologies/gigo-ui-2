@@ -1,10 +1,11 @@
 'use client'
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode, Suspense, useState} from 'react';
 import {Box, IconButton, MobileStepper} from '@mui/material';
 import {KeyboardArrowLeft, KeyboardArrowRight} from '@mui/icons-material';
 import SwipeableViews from 'react-swipeable-views';
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface CarouselProps {
     children: ReactNode;
@@ -49,7 +50,7 @@ const Carousel: React.FC<CarouselProps> = ({
     };
 
     return (
-        <>
+        <Suspense fallback={<SuspenseFallback/>}>
             <style>{`
                 div[aria-hidden="false"][data-swipeable="true"][style] {
                     overflow: hidden !important;
@@ -164,7 +165,7 @@ const Carousel: React.FC<CarouselProps> = ({
                         null
                 }
             </Box>
-        </>
+        </Suspense>
     );
 };
 

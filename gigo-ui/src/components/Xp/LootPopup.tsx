@@ -18,6 +18,10 @@ interface IProps {
 
 const LootPopup = (props: IProps) => {
     let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = React.useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
 
     const [steps, setSteps] = React.useState(0)
     const [winnings, setWinnings] = React.useState(props.reward)
@@ -158,7 +162,7 @@ const LootPopup = (props: IProps) => {
     }
 
     const RenderFinalPage = () => {
-        if (!isBrowser) {
+        if (!isClient) {
             return null
         }
 
@@ -282,7 +286,7 @@ const LootPopup = (props: IProps) => {
         }
     }
 
-    if (!isBrowser) {
+    if (!isClient) {
         return null
     }
 

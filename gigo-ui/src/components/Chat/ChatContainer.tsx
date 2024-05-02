@@ -1,5 +1,5 @@
 'use client'
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {Suspense, useCallback, useEffect, useState} from 'react';
 import ChatMessage from "./ChatMessage";
 import {
     alpha,
@@ -90,6 +90,7 @@ import {
 import Menu from "@mui/material/Menu";
 import Image from "next/image";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
@@ -176,6 +177,10 @@ export default function ChatContainer() {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
     let isBrowser = typeof window !== 'undefined';
+    const [isClient, setIsClient] = React.useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
     
     const SearchIconWrapper = styled('div')(() => ({
         padding: theme.spacing(0, 2),
@@ -1099,7 +1104,7 @@ export default function ChatContainer() {
     }
 
     const renderTopBar = () => {
-        if (!isBrowser) {
+        if (!isClient) {
             return null
         }
 
@@ -2717,7 +2722,7 @@ export default function ChatContainer() {
     }
 
     return (
-        <>
+        <Suspense fallback={<SuspenseFallback/>}>
             {typeof document !== 'undefined' && ReactDOM.createPortal(
                 (
                     <Snackbar
@@ -2738,7 +2743,7 @@ export default function ChatContainer() {
                 ),
                 document.body
             )}
-            {chatOpen && isBrowser && (
+            {chatOpen && isClient && (
                 <Paper
                     elevation={3}
                     style={{
@@ -2762,6 +2767,6 @@ export default function ChatContainer() {
                     <div ref={containerEndRef}/>
                 </Paper>
             )}
-        </>
+        </Suspense>
     );
 }

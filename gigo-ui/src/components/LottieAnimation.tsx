@@ -1,16 +1,19 @@
 'use client'
-import { FC, memo, useState, useRef, useEffect } from "react";
-import { Player } from '@lottiefiles/react-lottie-player';
-import { useInView } from 'react-intersection-observer';
+import * as React from "react";
+import {FC, memo, Suspense, useEffect, useRef, useState} from "react";
+import {Player} from '@lottiefiles/react-lottie-player';
+import {useInView} from 'react-intersection-observer';
 import {useSearchParams} from "next/navigation";
+import SuspenseFallback from "@/components/SuspenseFallback";
 
 interface LottieAnimationProps {
     animationData: any;
     mouseMove?: boolean;
+
     [x: string]: any;
 }
 
-const LottieAnimation: FC<LottieAnimationProps> = memo(({ animationData, mouseMove, ...props }) => {
+const LottieAnimation: FC<LottieAnimationProps> = memo(({animationData, mouseMove, ...props}) => {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
@@ -22,7 +25,7 @@ const LottieAnimation: FC<LottieAnimationProps> = memo(({ animationData, mouseMo
     const containerRef = useRef<HTMLDivElement>(null);
     const [isCursorNear, setIsCursorNear] = useState(mouseMove === undefined ? true : !mouseMove);
 
-    
+
     const [inViewRef, inView] = useInView({
         threshold: 0.1, // Adjust this value based on when you want the animation to play/pause
     });
@@ -66,17 +69,19 @@ const LottieAnimation: FC<LottieAnimationProps> = memo(({ animationData, mouseMo
     }
 
     return (
-        <div ref={inViewRef}>
-            <div ref={containerRef}>
-                {isCursorNear && (
-                    <Player
-                        ref={animationRef}
-                        src={animationData}
-                        {...props}
-                    />
-                )}
+        <Suspense fallback={<SuspenseFallback/>}>
+            <div ref={inViewRef}>
+                <div ref={containerRef}>
+                    {isCursorNear && (
+                        <Player
+                            ref={animationRef}
+                            src={animationData}
+                            {...props}
+                        />
+                    )}
+                </div>
             </div>
-        </div>
+        </Suspense>
     );
 });
 
