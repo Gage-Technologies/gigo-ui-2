@@ -1,0 +1,333 @@
+import * as React from "react";
+import { useEffect } from "react";
+import {
+    Box, Button,
+    Card,
+    Container,
+    createTheme,
+    CssBaseline,
+    Grid,
+    PaletteMode,
+    ThemeProvider,
+    Typography
+} from "@mui/material";
+import {theme, isHoliday} from "@/theme";
+import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
+import { initialAuthState, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
+import config from "@/config";
+import swal from "sweetalert";
+import { AwesomeButton } from "react-awesome-button";
+import 'react-awesome-button/dist/styles.css';
+import Image from "next/image";
+
+import premiumImage from "@/img/croppedPremium.png";
+import premiumGorilla from "@/img/pro/premiumGorilla.png";
+import codeTeacher from "@/img/premiumPageIcons/graduation-cap.svg"
+import streakFreeze from "@/img/premiumPageIcons/ice-cube.svg"
+import workspaces from "@/img/premiumPageIcons/settings.svg"
+import resources from "@/img/premiumPageIcons/technology.svg"
+import privateWorkspace from "@/img/premiumPageIcons/padlock.svg"
+import vscodeTheme from "@/img/premiumPageIcons/coding.svg"
+import {redirect} from "next/navigation";
+
+async function AboutPagePremium() {
+    // load auth state from storage
+    let loggedIn = false
+    const authState = useAppSelector(selectAuthState);
+    if (authState.authenticated) {
+        loggedIn = true
+    }
+    let dispatch = useAppDispatch();
+
+    let loading = false;
+    let inTrial = false;
+    let membership = 0;
+    let membershipDates = {start: 0, last: 0, upcoming: 0}
+
+    const stripeNavigate = async () => {
+        const endpoint = `${config.rootPath}/api/stripe/premiumMembershipSession`;
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: '{}'
+        };
+        try {
+            const response = await fetch(endpoint, options);
+            const data = await response.json();
+
+            if (data.return_url) {
+                redirect(data.return_url);
+            } else if (data.message === "You must be logged in to access the GIGO system.") {
+                const authState = Object.assign({}, initialAuthState);
+                dispatch(updateAuthState(authState));
+                redirect(`/login?forward=${encodeURIComponent(window.location.pathname)}`);
+            }
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    }
+
+
+    const getSubData = async () => {
+        const endpoint = `${config.rootPath}/api/user/subscription`;
+        const options = {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: '{}'
+        };
+
+        try {
+            const response = await fetch(endpoint, options);
+            if (!response.ok) {
+                throw new Error("Failed to fetch subscription data.");
+            }
+
+            let data: {
+                membershipStart?: number,
+                lastPayment?: number,
+                upcomingPayment?: number,
+                inTrial?: boolean,
+                subscription?: number
+            }  = await response.json();
+
+            if (!data) {
+                swal("There has been an issue loading data. Please try again later.");
+                return;
+            }
+
+            if (data.membershipStart && data.lastPayment && data.upcomingPayment) {
+                membershipDates = {
+                    start: data.membershipStart,
+                    last: data.lastPayment,
+                    upcoming: data.upcomingPayment
+                };
+            }
+
+            if (data.inTrial !== undefined) {
+                inTrial = data.inTrial;
+            }
+
+            if (data.subscription !== undefined) {
+                membership = data.subscription;
+            }
+        } catch (error) {
+            console.error('Error fetching subscription data:', error);
+            swal("An error occurred while fetching data. Please try again later.");
+        }
+    }
+
+    const getCountdown = (upcomingDateInSeconds: number) => {
+        const upcomingDate = upcomingDateInSeconds * 1000; // Convert to milliseconds
+        const now = new Date().getTime();
+        const differenceInMilliseconds = upcomingDate - now;
+
+        if (differenceInMilliseconds <= 0) {
+            return "Expired";
+        }
+
+        const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
+
+        return `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+
+    if (authState.authenticated) {
+        getSubData()
+    }
+
+    let height = "200px"
+    let width = "200px"
+
+    if (window.innerWidth <= 1000) {
+        height = "180px"
+        width = "180px"
+    }
+
+    let textWidth = "250px"
+
+    if (window.innerWidth <= 1000) {
+        if (window.innerWidth <= 280) {
+            textWidth = "150px"
+        } else {
+            textWidth = "200px"
+        }
+    }
+
+    return (
+        <CssBaseline>
+            <div>
+                <Box style={window.innerWidth > 1000 ? { width: "100%", height: "500px", backgroundColor: theme.palette.primary.light } : { width: "100%", height: "850px", backgroundColor: theme.palette.primary.light }}>
+                    <div style={window.innerWidth > 1000 ? { width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly" } : { width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
+                        <div style={window.innerWidth > 1000 ? { position: "relative", top: "150px" } : { position: "relative", height: "100%", top: "50px" }}>
+                            {inTrial ? (
+                                <div style={window.innerWidth > 1000 ? {} : { left: "20px", position: "relative", width: "90%", lineHeight: 1.5 }}>
+                                    <h1 style={{ top: '1%' }}>
+                                        1 Month Trial Expires in{' '}
+                                        {window.innerWidth > 1000 ? (
+                                            <span style={window.innerWidth > 1000 ? {
+                                                backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
+                                                padding: '10px',
+                                                borderRadius: '15px',
+                                                marginLeft: '10px', // adjust the space between the text and the date
+                                            } : {
+                                                backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
+                                                padding: '10px',
+                                                borderRadius: '15px',
+                                                marginLeft: '10px', // adjust the space between the text and the date
+                                                fontSize: "18px"
+                                            }}>
+                                                {getCountdown(membershipDates.upcoming)}
+                                            </span>
+                                        ) : (
+                                            <div style={window.innerWidth > 1000 ? {} : { marginTop: "20px" }}>
+                                                <span style={window.innerWidth > 1000 ? {
+                                                    backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
+                                                    padding: '10px',
+                                                    borderRadius: '15px',
+                                                    marginLeft: '10px', // adjust the space between the text and the date
+                                                } : {
+                                                    backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
+                                                    padding: '10px',
+                                                    borderRadius: '15px',
+                                                    marginLeft: '10px', // adjust the space between the text and the date
+                                                    fontSize: "18px"
+                                                }}>
+                                                    {getCountdown(membershipDates.upcoming)}
+                                                </span>
+                                            </div>
+                                        )}
+                                    </h1>
+                                    {/*<h4> Dont want To see it go?</h4>*/}
+
+
+                                    <h4>Don't want to see it go? Only $8/mo. Cancel anytime.</h4>
+                                    <AwesomeButton style={{
+                                        width: "auto",
+                                        '--button-primary-color': theme.palette.primary.main,
+                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color-light': theme.palette.text.primary,
+                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        fontSize: "14px"
+                                    }} type="primary" onPress={() => stripeNavigate()}>
+                                        <Image src={premiumImage} alt={""}/>
+                                    </AwesomeButton>
+                                </div>
+                            ) : membership !== 1 ? (
+                                <div style={window.innerWidth > 1000 ? {} : { left: "20px", position: "relative", width: "90%" }}>
+                                    <h1>Become a Pro</h1>
+                                    <h4>Only $8/mo. Cancel anytime.</h4>
+                                    <AwesomeButton style={{
+                                        width: "auto",
+                                        '--button-primary-color': theme.palette.primary.main,
+                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color-light': theme.palette.text.primary,
+                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        fontSize: "14px"
+                                    }} type="primary" onPress={() => stripeNavigate()}>
+                                        <Image src={premiumImage} alt={""}/>
+                                    </AwesomeButton>
+                                </div>
+                            ) : (
+                                <div style={window.innerWidth > 1000 ? {} : { position: "relative", left: "20px", width: "90%", lineHeight: 1.5 }}>
+                                    <h1>
+                                        It Feels Good to Be A Pro
+                                    </h1>
+                                    <h4>No Limits. No Restrictions. True Freedom.</h4>
+                                    <AwesomeButton style={{
+                                        width: "auto",
+                                        '--button-primary-color': theme.palette.primary.main,
+                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color-light': theme.palette.text.primary,
+                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        fontSize: "14px"
+                                    }} type="primary" href={"/settings"} onPress={() => {
+                                        window.sessionStorage.setItem("accountsPage", "membership");
+                                    }}>
+                                        <span>Manage Plan</span>
+                                    </AwesomeButton>
+                                </div>
+                            )
+                            }
+
+                        </div>
+                        <div>
+                            <Image src={premiumGorilla} alt={""} />
+                        </div>
+                    </div>
+                </Box>
+                <div style={window.innerWidth > 1000 ? { height: "200px" } : { height: "100px" }} />
+                <Box>
+                    <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={codeTeacher} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>Access to Code Teacher</h4>
+                                <body>Your personal Magic tutor. Code Teacher works along side you to help you learn to code and solve problems.</body>
+                            </div>
+                        </div>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={privateWorkspace} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>Private Workspaces</h4>
+                                <body>Keep your code personal. Work on projects privately, developing your skills in stealth mode.</body>
+                            </div>
+                        </div>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={resources} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>More Workspace Resources</h4>
+                                <body>Get Access to 8 cpu cores, 8GB ram and 50GB disk. Run projects faster, reduce build times, and get the best experience.</body>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{ height: "100px" }} />
+                    <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={workspaces} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>Three Concurrent DevSpaces</h4>
+                                <body>Run all the code you need, as much as you need. Work on multiple projects at the same time or with up to three concurrent DevSpaces.</body>
+                            </div>
+                        </div>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={streakFreeze} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>Two Streak Freezes a Week</h4>
+                                <body>Keep your streak longer. Don't let a bad week kill your awesome streak! Streak freezes preserve your streak on days that you can't find the time.</body>
+                            </div>
+                        </div>
+                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
+                                <img src={vscodeTheme} width={width} height={height} />
+                            </Button>
+                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                                <h4>Premium VsCode Theme</h4>
+                                <body>A unique code theme to help you see the errors faster. Code the GIGO way with the custom GIGO editor theme!</body>
+                            </div>
+                        </div>
+                    </div>
+                </Box>
+                <div style={window.innerWidth > 1000 ? { height: "200px" } : { height: "100px" }} />
+            </div>
+        </CssBaseline>
+    );
+}
+
+export default AboutPagePremium;
