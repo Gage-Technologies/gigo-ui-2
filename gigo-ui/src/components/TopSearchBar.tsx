@@ -60,7 +60,7 @@ import swal from "sweetalert";
 import User from "../models/user";
 import {selectAuthState} from "@/reducers/auth/auth";
 import config from "../config";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, themeHelpers} from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -93,6 +93,7 @@ const Search = styled('div')(({theme}) => ({
     // marginTop: 10,
     marginLeft: 0,
     width: '100%',
+    backdropFilter: "blur(3px)",
     [theme.breakpoints.up('sm')]: {
         marginLeft: theme.spacing(3),
         width: 'auto',

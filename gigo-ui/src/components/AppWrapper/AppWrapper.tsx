@@ -82,8 +82,6 @@ import {LocalFireDepartment, Quiz} from "@mui/icons-material";
 import {Icon as IconifyIcon} from "@iconify/react";
 // import {persistStore} from "redux-persist";
 // import {store} from "@/reducers/store"
-import candycane from "../../img/candycane.svg"
-import usflag from "../../img/us_flag.svg"
 import Snowfall from "react-snowfall";
 import Confetti from "react-confetti";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -225,7 +223,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         christmas: {
             zIndex: 999,
             border: "none",
-            backgroundImage: `url(${candycane})`,
+            backgroundImage: `url(/img/candycane.svg)`,
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
@@ -233,7 +231,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         independence: {
             zIndex: 999,
             border: "none",
-            backgroundImage: `url(${usflag})`,
+            backgroundImage: `url(/img/us_flag.svg)`,
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
@@ -243,24 +241,26 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let holidayStyle: any = styles.regular;
     let gigoColor = theme.palette.primary.contrastText
 
-    switch (holiday) {
-        case Holiday.Christmas:
-            if (mode === 'light') {
-                gigoColor = theme.palette.text.primary
-                break
-            }
-            holidayStyle = styles.christmas;
-            break;
-        case Holiday.Independence:
-            holidayStyle = styles.independence;
-            gigoColor = "white"
-            break;
-        case null:
-            holidayStyle = styles.regular;
-            break;
-        default:
-            holidayStyle = styles.holiday;
+    if (holiday !== null) {
+        switch (holiday) {
+            case Holiday.Christmas:
+                if (mode === 'light') {
+                    gigoColor = theme.palette.text.primary
+                    break
+                }
+                holidayStyle = styles.christmas;
+                break;
+            case Holiday.Independence:
+                console.log("Independence Set")
+                holidayStyle = styles.independence;
+                gigoColor = "white"
+                break;
+            default:
+                holidayStyle = styles.holiday;
+        }
     }
+
+    console.log("holiday: ", holidayStyle)
 
 
     const DrawerHeader = styled('div')(({theme}) => ({
@@ -835,7 +835,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             sx={{mr: 2}}
                             onClick={() => leftOpen ? handleDrawerClose() : handleDrawerOpen()}
                         >
-                            <MenuIcon style={{color: theme.palette.primary.contrastText}}/>
+                            <MenuIcon style={{color: gigoColor}}/>
                         </IconButton>
                     ) : (
                         <div/>
@@ -1134,6 +1134,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     sx={{
                                         color: theme.palette.primary.contrastText,
                                         borderColor: theme.palette.primary.contrastText,
+                                        backdropFilter: "blur(3px)",
                                     }}
                                 >
                                     Signup / Login
@@ -1232,7 +1233,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             sx={{mr: 2}}
                             onClick={() => leftOpen ? handleDrawerClose() : handleDrawerOpen()}
                         >
-                            <MenuIcon style={{color: theme.palette.primary.contrastText}}/>
+                            <MenuIcon style={{color: gigoColor}}/>
                         </IconButton>
                     ) : (
                         <div/>

@@ -27,7 +27,7 @@ const HeroContent = styled(Box)({
     position: 'relative',
     textAlign: 'center',
     width: "90vw", // Adjust width for mobile
-    zIndex: 999,
+    zIndex: 100,
     color: '#fff',
     borderRadius: "10px",
     padding: "10px", // Adjust padding for mobile

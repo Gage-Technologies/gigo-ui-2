@@ -735,7 +735,7 @@ export const isHoliday = (): Holiday | null => {
         // Independence
         return Holiday.Independence
     }
-
+    
     return null
 }
 

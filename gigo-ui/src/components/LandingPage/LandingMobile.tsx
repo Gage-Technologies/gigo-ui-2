@@ -26,7 +26,7 @@ const HeroContent = styled(Box)({
     position: 'relative',
     textAlign: 'center',
     width: "90vw",
-    zIndex: 999,
+    zIndex: 100,
     color: '#fff',
     borderRadius: "10px",
     padding: "10px",
