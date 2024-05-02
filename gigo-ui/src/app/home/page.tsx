@@ -701,7 +701,7 @@ async function Home() {
                                     return (
                                         <Box display={"flex"} justifyContent={"center"} style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
                                             <BytesCard
-                                                height={"52vh"}
+                                                height={"475px"}
                                                 imageHeight={400}
                                                 // TODO mobile => make width 'fit-content'
                                                 width={'100%'}

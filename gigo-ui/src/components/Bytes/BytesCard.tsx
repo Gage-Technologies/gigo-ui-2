@@ -137,8 +137,8 @@ export default function BytesCard(props: IProps) {
                     onMouseEnter={props.onMouseEnter}
                     onMouseLeave={props.onMouseLeave}
                 >
-                    <div style={{position: 'relative'}}>
-                        <div style={styles.imageContainer as React.CSSProperties} >
+                    <div style={styles.imageContainer as React.CSSProperties}>
+                        <div style={{position: "relative", width: "fit-content", height: "fit-content"}} >
                             <Image
                                 alt={""}
                                 src={props.bytesThumb}
@@ -178,7 +178,7 @@ export default function BytesCard(props: IProps) {
                                 style={{
                                     position: 'absolute',
                                     bottom: '20px',
-                                    right: '50px',
+                                    right: '10px',
                                     height: "fit-content",
                                     width: "fit-content",
                                     gap: '10px',
