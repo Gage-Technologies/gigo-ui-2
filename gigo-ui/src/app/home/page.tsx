@@ -20,6 +20,8 @@ import Tutorial from "@/components/Pages/Home/Tutorial";
 import {checkSessionStatus} from "@/services/utils";
 import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjectsScroll";
 import ActiveChallenges from "@/components/Pages/Home/ActiveChallenges";
+import JourneyBanner from "@/components/Pages/Home/JourneyBanner";
+import JourneyBannerMobile from "@/components/Pages/Home/JourneyBannerMobile";
 
 
 async function Home() {
@@ -158,421 +160,6 @@ async function Home() {
 
     ReactGA.initialize("G-38KBFJZ6M6");
 
-    const JourneyHeader = () => {
-
-        if (startedJourney) {
-            return (
-                // TODO journey - change the color to the primary color in the theme provider
-                <>
-                    <Grid item xs={8} sx={{height: "100%", overflow: 'auto'}}>
-                        <Grid container sx={{height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                            <Grid item xs={5} sx={{
-                                height: '25%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: "30px",
-                                border: "solid #dfce53 3px",
-                                m: 1,
-                                backgroundColor: "#dfce53"
-                            }}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexGrow: 1,
-                                }}>
-                                    <Typography variant="h2" sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                    }}>
-                                        {completedJourneyTasks}
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h5" sx={{
-                                    color: theme.palette.background.default,
-                                    textTransform: 'none',
-                                    width: '100%',
-                                    textAlign: 'center',
-
-                                }}>
-                                    Completed Stops
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={1}/>
-                            <Grid item xs={5} sx={{
-                                height: '25%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: "30px",
-                                border: "solid #dfce53 3px",
-                                m: 1,
-                                backgroundColor: "#dfce53"
-                            }}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexGrow: 1,
-                                }}>
-                                    <Typography variant="h2" sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                    }}>
-                                        {completedJourneyUnits}
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h5" sx={{
-                                    color: theme.palette.background.default,
-                                    textTransform: 'none',
-                                    width: '100%',
-                                    textAlign: 'center',
-
-                                }}>
-                                    Units Completed
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={5} sx={{
-                                height: '25%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: "30px",
-                                border: "solid #dfce53 3px",
-                                m: 1,
-                                backgroundColor: "#dfce53"
-                            }}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexGrow: 1,
-                                }}>
-                                    <Typography variant="h2" sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                    }}>
-                                        {detourCount}
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h5" sx={{
-                                    color: theme.palette.background.default,
-                                    textTransform: 'none',
-                                    width: '100%',
-                                    textAlign: 'center',
-
-                                }}>
-                                    Detours Taken
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={1}/>
-                            <Grid item xs={5} sx={{
-                                height: '25%',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                borderRadius: "30px",
-                                border: "solid #dfce53 3px",
-                                m: 1,
-                                backgroundColor: "#dfce53"
-                            }}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    flexGrow: 1,
-                                }}>
-                                    <Typography variant="h2" sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                    }}>
-                                        {incompletedJourneyTasks}
-                                    </Typography>
-                                </Box>
-                                <Typography variant="h5" sx={{
-                                    color: theme.palette.background.default,
-                                    textTransform: 'none',
-                                    width: '100%',
-                                    textAlign: 'center',
-                                }}>
-                                    Stops Remaining
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={4} sx={{height: "100%", overflow: 'auto'}}>
-                        <JourneyIcon style={{height: "375px", width: "375px"}}/>
-                        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                            <AwesomeButton style={{
-                                width: "auto",
-                                height: "50px",
-                                '--button-primary-color': '#29c18c',
-                                '--button-primary-color-dark': '#1c8762',
-                                '--button-primary-color-light': "white",
-                                '--button-primary-color-hover': '#29c18c',
-                                '--button-default-border-radius': "12px",
-                                fontSize: "28px",
-                            }} type="primary" href={"/journey/main"}>
-                                <span>Continue Your Journey</span>
-                            </AwesomeButton>
-                        </Box>
-                    </Grid>
-                </>
-            )
-        } else {
-            return (
-                // TODO check if User has an active journey -- change for mobile --
-                <>
-                    <Box sx={{width: "100%", height: "500px", zIndex: 3, m: 2, borderRadius: "12px"}}>
-                        <div style={{
-                            width: "100%",
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "space-evenly"
-                        }}>
-                            <div style={{position: "relative", top: "100px", width: '50%'}}>
-                                <Typography variant={"h1"}
-                                            sx={{
-                                                color: theme.palette.background.default,
-                                                textTransform: 'none'
-                                            }}>
-                                    Embark on your Coding Journey
-                                </Typography>
-                            </div>
-                            <div>
-                                <JourneyIcon style={{height: "400px", width: "400px", paddingTop: "40px"}}/>
-                            </div>
-                        </div>
-                        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                            <AwesomeButton style={{
-                                width: "auto",
-                                height: "50px",
-                                '--button-primary-color': theme.palette.primary.main,
-                                '--button-primary-color-dark': theme.palette.primary.dark,
-                                '--button-primary-color-light': "white",
-                                '--button-primary-color-hover': theme.palette.primary.main,
-                                '--button-default-border-radius': "12px",
-                                fontSize: "28px"
-                            }} type="primary" href={"/journey/main"}>
-                                <span>Start Your Journey</span>
-                            </AwesomeButton>
-                        </Box>
-                    </Box>
-                </>
-            )
-        }
-    }
-
-    const JourneyHeaderMobile = () => {
-        if (startedJourney) {
-            return (
-                <Box sx={{p: 2}}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: '30px',
-                                    border: 'solid #dfce53 3px',
-                                    p: 2,
-                                    backgroundColor: '#dfce53',
-                                }}
-                            >
-                                <Typography
-                                    variant="h4"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                        mb: 1,
-                                    }}
-                                >
-                                    {completedJourneyTasks}
-                                </Typography>
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Completed Stops
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: '30px',
-                                    border: 'solid #dfce53 3px',
-                                    p: 2,
-                                    backgroundColor: '#dfce53',
-                                }}
-                            >
-                                <Typography
-                                    variant="h4"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                        mb: 1,
-                                    }}
-                                >
-                                    {completedJourneyUnits}
-                                </Typography>
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Units Completed
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: '30px',
-                                    border: 'solid #dfce53 3px',
-                                    p: 2,
-                                    backgroundColor: '#dfce53',
-                                }}
-                            >
-                                <Typography
-                                    variant="h4"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                        mb: 1,
-                                    }}
-                                >
-                                    {detourCount}
-                                </Typography>
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Detours Taken
-                                </Typography>
-                            </Box>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    borderRadius: '30px',
-                                    border: 'solid #dfce53 3px',
-                                    p: 2,
-                                    backgroundColor: '#dfce53',
-                                }}
-                            >
-                                <Typography
-                                    variant="h4"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                        mb: 1,
-                                    }}
-                                >
-                                    {incompletedJourneyTasks}
-                                </Typography>
-                                <Typography
-                                    variant="subtitle1"
-                                    sx={{
-                                        color: theme.palette.background.default,
-                                        textTransform: 'none',
-                                        textAlign: 'center',
-                                    }}
-                                >
-                                    Stops Remaining
-                                </Typography>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                    <Box sx={{mt: 4, display: 'flex', justifyContent: 'center'}}>
-                        <JourneyIcon style={{height: '200px', width: '200px'}}/>
-                    </Box>
-                    <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
-                        <AwesomeButton style={{
-                            width: "auto",
-                            '--button-primary-color': theme.palette.primary.main,
-                            '--button-primary-color-dark': theme.palette.primary.dark,
-                            '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': theme.palette.primary.light,
-                            '--button-default-border-radius': "12px",
-                            fontSize: "28px",
-                            height: "80px",
-                        }} type="primary" href={"/journey/main"}>
-                            <span>Continue Your Journey</span>
-                        </AwesomeButton>
-                    </Box>
-                </Box>
-            );
-        } else {
-            return (
-                <Box sx={{p: 2}}>
-                    <Typography
-                        variant="h4"
-                        sx={{
-                            color: theme.palette.background.default,
-                            textTransform: 'none',
-                            textAlign: 'center',
-                            mb: 2,
-                        }}
-                    >
-                        Embark on your Coding Journey
-                    </Typography>
-                    <Box sx={{display: 'flex', justifyContent: 'center', mb: 2}}>
-                        <JourneyIcon style={{height: '200px', width: '200px'}}/>
-                    </Box>
-                    <Box sx={{display: 'flex', justifyContent: 'center'}}>
-                        <AwesomeButton style={{
-                            width: "auto",
-                            height: "80px",
-                            '--button-primary-color': theme.palette.primary.main,
-                            '--button-primary-color-dark': theme.palette.primary.dark,
-                            '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': theme.palette.primary.main,
-                            '--button-default-border-radius': "12px",
-                            fontSize: "28px"
-                        }} type="primary" href={"/journey/main"}>
-                            <span>Start Your Journey</span>
-                        </AwesomeButton>
-                    </Box>
-                </Box>
-            );
-        }
-    };
-
     const BytesMobile = () => {
 
         // @ts-ignore
@@ -610,12 +197,12 @@ async function Home() {
                         {
                             byteContent && byteContent.length > 0 ?
                                 byteContent.map((project, index) => (
-                                    <div key={index} style={{width: "100%", padding: "0 5%"}}>
+                                    <Box display={"flex"} justifyContent={"center"} key={index} style={{width: "100%", padding: "0 5%"}}>
                                         <BytesCardMobile
-                                            height="auto"
-                                            imageHeight="40vh"
+                                            height={"550px"}
+                                            imageHeight={500}
                                             width="100%"
-                                            imageWidth="100%"
+                                            imageWidth={281}
                                             bytesId={project["_id"]}
                                             bytesTitle={project["name"]}
                                             bytesDesc={project["description_medium"]}
@@ -626,7 +213,7 @@ async function Home() {
                                             language={programmingLanguages[project["lang"]]}
                                             isHome={false}
                                         />
-                                    </div>
+                                    </Box>
                                 )) : (
                                     <SheenPlaceholder height={"40vh"} width={"100%"}/>
                                 )
@@ -729,30 +316,6 @@ async function Home() {
         )
     }
 
-    const headerMobile = () => {
-        let project: any = undefined;
-        if (byteContent.length > 0) {
-            const randomIndex = Math.floor(Math.random() * byteContent.length);
-        }
-
-        return (
-            <Box sx={{
-                width: "100%",
-                height: "auto",
-                backgroundColor: "#ffef62",
-                zIndex: 3,
-                m: 1,
-                borderRadius: "12px",
-                position: "relative",
-                padding: "20px",
-                marginTop: "2%"
-            }}>
-                {JourneyHeaderMobile()}
-            </Box>
-        );
-
-    }
-
     const renderLanding = () => {
         if (loggedIn) {
             return null
@@ -790,20 +353,23 @@ async function Home() {
                             color: 'text.primary',
                         }}
                     >
-                        {(isMobile) && (
-                            <Grid container spacing={2} sx={{
-                                width: "100%",
-                                height: "500px",
-                                backgroundColor: "#ffef62",
-                                zIndex: 3,
-                                m: 2,
-                                borderRadius: "12px",
-                                position: "relative"
-                            }}>
-                                {JourneyHeader()}
-                            </Grid>
+                        {(isMobile) ? (
+                            <JourneyBannerMobile
+                                startedJourney={startedJourney}
+                                completedJourneyTasks={completedJourneyTasks}
+                                completedJourneyUnits={completedJourneyUnits}
+                                detourCount={detourCount}
+                                incompletedJourneyTasks={incompletedJourneyTasks}
+                            />
+                        ) : (
+                            <JourneyBanner
+                                startedJourney={startedJourney}
+                                completedJourneyTasks={completedJourneyTasks}
+                                completedJourneyUnits={completedJourneyUnits}
+                                detourCount={detourCount}
+                                incompletedJourneyTasks={incompletedJourneyTasks}
+                            />
                         )}
-                        {(isMobile) && headerMobile()}
                     </Box>
                     <Box
                         sx={{
