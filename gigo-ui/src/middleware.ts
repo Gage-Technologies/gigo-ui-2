@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse, userAgent } from 'next/server'
+import {handleDocumentationRedirect} from "@/app/documentation/middleware";
 
 export const config = {
     matcher: [
@@ -15,6 +16,14 @@ export const config = {
 
 export function middleware(request: NextRequest) {
     const url = request.nextUrl
+
+    // handle middleware for documentation path
+    let docOut = handleDocumentationRedirect(url)
+    if (docOut) {
+        return docOut
+    }
+
+    // Handle device redirects
     const { device } = userAgent(request)
     const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
     let redirecting = false;
@@ -25,5 +34,7 @@ export function middleware(request: NextRequest) {
     if (redirecting) {
         return NextResponse.redirect(url)
     }
+    ////
+
     return NextResponse.next()
 }
