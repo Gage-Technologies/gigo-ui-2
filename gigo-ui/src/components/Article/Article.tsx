@@ -21,7 +21,7 @@ const ArticlePage = ({ markdownContents, articleName }) => {
     };
 
     return (
-        <>
+        <Box sx={{backgroundColor: "#1c1c1a"}}>
             <style>{`
                 .markdown-body img {
                     background-color: transparent !important;
@@ -60,7 +60,7 @@ const ArticlePage = ({ markdownContents, articleName }) => {
                     </Link>
                 </Box>
             </Box>
-        </>
+        </Box>
     );
 };
 
