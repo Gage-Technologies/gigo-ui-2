@@ -128,7 +128,8 @@ export default async function DocumentationUI({markdownContent, selectedNode}: a
                             overflowY: 'hidden',
                             overflowX: 'hidden',
                             // borderRight: '1px solid grey',
-                            position: 'fixed'
+                            position: 'fixed',
+                            backgroundColor: "#1c1c1a"
                         }}>
                         <StyledTreeItem
                             id={"1"}
@@ -297,8 +298,13 @@ export default async function DocumentationUI({markdownContent, selectedNode}: a
                     </SimpleTreeView>
                 </Grid>
                 <Grid item xs={9.5}>
-                    <div>
-                        <MarkdownRenderer markdown={markdownContent}/>
+                    <div style={{backgroundColor: "#1c1c1a"}}>
+                        <MarkdownRenderer markdown={markdownContent} style={{
+                            overflowWrap: 'break-word',
+                            borderRadius: '10px',
+                            paddingBottom: '10px',
+                            backgroundColor: "#1c1c1a"
+                        }}/>
                     </div>
                 </Grid>
             </Grid>
