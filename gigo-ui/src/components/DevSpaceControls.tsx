@@ -4,7 +4,7 @@ import {useGlobalWebSocket} from '@/services/websocket';
 import {WsMessage, WsMessageType} from '@/models/websocket';
 import LinearProgress from '@mui/material/LinearProgress';
 import {Box, Button, createTheme, Grid, IconButton, PaletteMode, Paper, Tooltip, Typography} from '@mui/material';
-import {getAllTokens, isHoliday} from '@/theme';
+import {getAllTokens} from '@/theme';
 
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import StopIcon from '@mui/icons-material/Stop';
@@ -32,7 +32,6 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const dispatch = useAppDispatch();
-    const holiday = isHoliday();
 
     const usageCache = useAppSelector(selectDevSpaceCacheState);
     let cachedValues = (

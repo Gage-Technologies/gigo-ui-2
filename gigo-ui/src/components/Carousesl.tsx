@@ -130,6 +130,7 @@ const Carousel: React.FC<CarouselProps> = ({
                                 width: '100%',
                                 justifyContent: 'center',
                                 backgroundColor: 'transparent',
+                                zIndex: 100
                             }}
                             backButton={null}
                             nextButton={null}

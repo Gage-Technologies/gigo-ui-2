@@ -16,7 +16,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import ExploreIcon from "@mui/icons-material/Explore";
 import Drawer from "@mui/material/Drawer";
 import {styled} from "@mui/material/styles";
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import {AppBarProps as MuiAppBarProps} from "@mui/material/AppBar/AppBar";
 import {BoxProps as MuiBoxProps} from "@mui/material/Box/Box";
 import {AwesomeButton} from "react-awesome-button";
@@ -53,7 +53,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import FolderIcon from '@mui/icons-material/Folder';
 import UserIcon from "@/icons/User/UserIcon";
-import {getAllTokens, isHoliday, themeHelpers} from "@/theme";
+import {getAllTokens, Holiday, holiday, themeHelpers} from "@/theme";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import TopSearchBar from "../TopSearchBar";
@@ -202,7 +202,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const textFieldRef = React.useRef();
-    const holiday = isHoliday()
     const [notifications, setNotifications] = React.useState<Notification[]>([]);
     const [notificationCount, setNotificationCount] = React.useState<number>(0);
     const [showReferPopup, setShowReferPopup] = React.useState(false)
@@ -245,18 +244,18 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let gigoColor = theme.palette.primary.contrastText
 
     switch (holiday) {
-        case "Christmas":
+        case Holiday.Christmas:
             if (mode === 'light') {
                 gigoColor = theme.palette.text.primary
                 break
             }
             holidayStyle = styles.christmas;
             break;
-        case "Independence":
+        case Holiday.Independence:
             holidayStyle = styles.independence;
             gigoColor = "white"
             break;
-        case "Regular":
+        case null:
             holidayStyle = styles.regular;
             break;
         default:
@@ -818,7 +817,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 style={{
                     height: "64px",
                     backgroundImage: `conic-gradient(from 0deg at 50% 50%, #FEDC5A20 0deg, #FFFCAB20 73.13deg, #29C18C20 155.62deg, #3D8EF720 249.37deg, #84E8A220 339.37deg, #FEDC5A20 360deg)`,
-                    zIndex: 1000,
+                    zIndex: 999,
                     border: "none",
                     boxShadow: (mode === 'dark') ? "0px 3px 5px -1px #ffffff20, 0px 5px 8px 0px #ffffff14, 0px 1px 14px 0px #ffffff12" :
                         "0px 3px 5px -1px #00000020, 0px 5px 8px 0px #00000014, 0px 1px 14px 0px #00000012",
@@ -2318,7 +2317,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             return null
         }
 
-        if (holiday === "Christmas" && (!onHomePage || loggedIn)) {
+        if (holiday === Holiday.Christmas && (!onHomePage || loggedIn)) {
             return (<Snowfall/>)
         }
         return null
@@ -2329,7 +2328,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             return null
         }
 
-        if (holiday === "New Years" && (!onHomePage || loggedIn)) {
+        if (holiday === Holiday.NewYears && (!onHomePage || loggedIn)) {
             return (<Confetti gravity={0.01} numberOfPieces={100} wind={0.001}
                               colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1}/>)
         }
