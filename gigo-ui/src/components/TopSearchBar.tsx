@@ -1648,12 +1648,10 @@ export default function TopSearchBar(props: IProps) {
                                 // @ts-ignore
                                 src={config.rootPath + "/static/bytes/t/" + option.content._id}
                                 alt="No Image"
+                                height={120}
+                                width={70}
                                 style={{
                                     borderRadius: "10px",
-                                    height: 120,
-                                    width: 70,
-                                    minWidth: 60,
-                                    // paddingLeft: "-10px",
                                 }}
                             />
                             <Typography
