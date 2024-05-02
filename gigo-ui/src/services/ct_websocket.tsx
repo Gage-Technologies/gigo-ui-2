@@ -1,10 +1,10 @@
 'use client'
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import config from "../config";
-import * as models from "../models/ct_websocket";
+import React, {createContext, ReactNode, useContext, useEffect} from 'react';
+import config from "@/config";
+import * as models from "@/models/ct_websocket";
 import useWebSocket from "react-use-websocket";
-import { useAppSelector } from '@/reducers/hooks';
-import { selectAuthState } from '../reducers/auth/auth';
+import {useAppSelector} from '@/reducers/hooks';
+import {selectAuthState} from '@/reducers/auth/auth';
 
 interface WebSocketContextProps {
     sendWebsocketMessage: (msg: models.CtMessage<any>, callback: WebSocketResponseCallback | null) => Promise<void>;
@@ -47,7 +47,8 @@ class Mutex {
     private mutex = Promise.resolve();
 
     lock(): PromiseLike<() => void> {
-        let begin: (unlock: () => void) => void = unlock => { };
+        let begin: (unlock: () => void) => void = unlock => {
+        };
 
         this.mutex = this.mutex.then(() => {
             return new Promise(begin);
@@ -61,14 +62,14 @@ class Mutex {
     async dispatch<T>(fn: (() => T) | (() => PromiseLike<T>)): Promise<T> {
         const unlock = await this.lock();
         try {
-            return await Promise.resolve(fn());
+            return Promise.resolve(fn());
         } finally {
             unlock();
         }
     }
 }
 
-export const CtWebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }) => {
+export const CtWebSocketProvider: React.FC<WebSocketProviderProps> = ({children}) => {
     // load auth state from storage
     const authState = useAppSelector(selectAuthState);
 
@@ -98,7 +99,7 @@ export const CtWebSocketProvider: React.FC<WebSocketProviderProps> = ({ children
 
     // establish websocket connection
     let websocketRoot = config.ctPath.replace("https://", "wss://").replace("http://", "ws://");
-    const { sendMessage } = useWebSocket(
+    const {sendMessage} = useWebSocket(
         `${websocketRoot}/api/v1/ws`, {
             // Will attempt to reconnect on all close events, such as server shutting down
             shouldReconnect: (closeEvent) => authState.authenticated,
@@ -178,7 +179,7 @@ export const CtWebSocketProvider: React.FC<WebSocketProviderProps> = ({ children
         });
     }, []);
 
-    const WrappedApp = React.useMemo(() => {
+    return React.useMemo(() => {
         const value = {
             sendWebsocketMessage,
             registerCallback,
@@ -190,6 +191,4 @@ export const CtWebSocketProvider: React.FC<WebSocketProviderProps> = ({ children
             </WebSocketContext.Provider>
         )
     }, [children, sendWebsocketMessage, registerCallback])
-
-    return WrappedApp
 };

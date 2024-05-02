@@ -1,9 +1,8 @@
 
 
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
+import {RootState} from '@/reducers/store';
 import User from "../../models/user";
-import Post from "../../models/post";
 
 export interface SearchParamsState {
     activeSearch: boolean,
@@ -201,26 +200,26 @@ export const searchParamsSlice = createSlice({
 
 export const {updateSearchParamsState, clearSearchParamsState} = searchParamsSlice.actions;
 
-export const selectSearch = (state: RootState) => state.searchParams;
-export const selectActiveSearch = (state: RootState) => state.searchParams.activeSearch;
-export const selectQuery = (state: RootState) => state.searchParams.query;
-export const selectLanguage = (state: RootState) => state.searchParams.languages
-export const selectAuthor = (state: RootState) => state.searchParams.author
-export const selectAttemptsMin = (state: RootState) => state.searchParams.attemptsMin
-export const selectAttemptsMax = (state: RootState) => state.searchParams.attemptsMax
-export const selectCompletionsMin = (state: RootState) => state.searchParams.completionsMin
-export const selectCompletionsMax = (state: RootState) => state.searchParams.completionsMax
-export const selectCoffeeMin = (state: RootState) => state.searchParams.coffeeMin
-export const selectCoffeeMax = (state: RootState) => state.searchParams.coffeeMax
-export const selectViewsMin = (state: RootState) => state.searchParams.viewsMin
-export const selectViewsMax = (state: RootState) => state.searchParams.viewsMax
-export const selectSearchTags = (state: RootState) => state.searchParams.tags
-export const selectSearchChallengeType = (state: RootState) => state.searchParams.challengeType
-export const selectVisibility = (state: RootState) => state.searchParams.visibility
-export const selectSince = (state: RootState) => state.searchParams.since
-export const selectUntil = (state: RootState) => state.searchParams.until
-export const selectPublished = (state: RootState) => state.searchParams.published
-export const selectSearchTier = (state: RootState) => state.searchParams.tier
+export const selectSearch = (state: RootState) => state.searchParams || initialSearchState;
+export const selectActiveSearch = (state: RootState) => state.searchParams ? state.searchParams.activeSearch : initialSearchState.activeSearch;
+export const selectQuery = (state: RootState) => state.searchParams ? state.searchParams.query : initialSearchState.query;
+export const selectLanguage = (state: RootState) => state.searchParams ? state.searchParams.languages : initialSearchState.languages
+export const selectAuthor = (state: RootState) => state.searchParams ? state.searchParams.author : initialSearchState.author
+export const selectAttemptsMin = (state: RootState) => state.searchParams ? state.searchParams.attemptsMin : initialSearchState.attemptsMin
+export const selectAttemptsMax = (state: RootState) => state.searchParams ? state.searchParams.attemptsMax : initialSearchState.attemptsMax
+export const selectCompletionsMin = (state: RootState) => state.searchParams ? state.searchParams.completionsMin : initialSearchState.completionsMin
+export const selectCompletionsMax = (state: RootState) => state.searchParams ? state.searchParams.completionsMax : initialSearchState.completionsMax
+export const selectCoffeeMin = (state: RootState) => state.searchParams ? state.searchParams.coffeeMin : initialSearchState.coffeeMin
+export const selectCoffeeMax = (state: RootState) => state.searchParams ? state.searchParams.coffeeMax : initialSearchState.coffeeMax
+export const selectViewsMin = (state: RootState) => state.searchParams ? state.searchParams.viewsMin : initialSearchState.viewsMin
+export const selectViewsMax = (state: RootState) => state.searchParams ? state.searchParams.viewsMax : initialSearchState.viewsMax
+export const selectSearchTags = (state: RootState) => state.searchParams ? state.searchParams.tags : initialSearchState.tags
+export const selectSearchChallengeType = (state: RootState) => state.searchParams ? state.searchParams.challengeType : initialSearchState.challengeType
+export const selectVisibility = (state: RootState) => state.searchParams ? state.searchParams.visibility : initialSearchState.visibility
+export const selectSince = (state: RootState) => state.searchParams ? state.searchParams.since : initialSearchState.since
+export const selectUntil = (state: RootState) => state.searchParams ? state.searchParams.until : initialSearchState.until
+export const selectPublished = (state: RootState) => state.searchParams ? state.searchParams.published : initialSearchState.published
+export const selectSearchTier = (state: RootState) => state.searchParams ? state.searchParams.tier : initialSearchState.tier
 
 export default searchParamsSlice.reducer;
 

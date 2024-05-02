@@ -1,21 +1,21 @@
 import React, {useEffect, useState} from 'react';
-import {Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Button} from '@mui/material';
+import {Box, createTheme, Dialog, IconButton, PaletteMode, Typography} from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
-import { LoadingButton } from '@mui/lab';
+import {LoadingButton} from '@mui/lab';
 import premiumGorilla from "../img/pro-pop-up-icon-plain.svg";
 import {getAllTokens} from "@/theme";
-import call from "../services/api-call";
 import config from "../config";
 import proBackground from "../img/popu-up-backgraound-plain.svg";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth"; // Adjust import based on actual location
+import Image from "next/image";
 
 interface GoProPopupProps {
     open: boolean;
     onClose: () => void;
 }
 
-const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
+const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
     let userPref = localStorage.getItem('theme')
     const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
@@ -31,17 +31,17 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
 
     const retrieveProUrls = async (): Promise<{ monthly: string, yearly: string } | null> => {
         setProUrlsLoading(true)
-        let res = await call(
-            "/api/stripe/premiumMembershipSession",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/stripe/premiumMembershipSession`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}',
+                cache: "no-cache"
+            }
+        ).then(async (response) => response.json())
 
         setProUrlsLoading(false)
 
@@ -67,7 +67,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
         <Dialog open={open} onClose={onClose} maxWidth="md" PaperProps={{sx: {borderRadius: 7, overflow: "hidden"}}}>
             <Box style={{
                 width: window.innerWidth < 1000 ? "80vw" : "28vw",
-                height: window.innerWidth < 1000 || window.innerHeight < 900 ? "78vh": "70vh",
+                height: window.innerWidth < 1000 || window.innerHeight < 900 ? "78vh" : "70vh",
                 minHeight: "420px",
                 // justifyContent: "center",
                 // marginLeft: "25vw",
@@ -106,7 +106,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                     >
                         <Close/>
                     </IconButton>
-                    <img src={premiumGorilla} style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
+                    <Image alt={""} src={premiumGorilla} style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
                         width: "30%",
                         marginBottom: "20px"
                     }}/>
@@ -146,7 +146,8 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                             width: "200px"
                         }}>
                             <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
-                                        style={{marginBottom: "10px", color: "white"}} align={"center"}>Monthly</Typography>
+                                        style={{marginBottom: "10px", color: "white"}}
+                                        align={"center"}>Monthly</Typography>
                             <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
                                         style={{marginBottom: "10px", color: "white"}} align={"center"}>$8</Typography>
                             <LoadingButton
@@ -176,7 +177,8 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                             width: "200px"
                         }}>
                             <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
-                                        style={{marginBottom: "10px", color: "white"}} align={"center"}>Yearly</Typography>
+                                        style={{marginBottom: "10px", color: "white"}}
+                                        align={"center"}>Yearly</Typography>
                             <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
                                         style={{marginBottom: "10px", color: "white"}} align={"center"}>$80</Typography>
                             <LoadingButton
@@ -191,7 +193,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                     </div>
                     <Typography
                         variant="body1"
-                        style={{ marginTop: "20px", color: "white", cursor: "pointer" }}
+                        style={{marginTop: "20px", color: "white", cursor: "pointer"}}
                         align="center"
                         component="a" // Render the Typography as an <a> tag
                         href="/premium" // Specify the target URL

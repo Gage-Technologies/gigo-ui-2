@@ -71,8 +71,8 @@ export const {updateChatState, clearChatState} = chatSlice.actions;
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectChatState = (state: RootState) => state.chat;
-export const selectChatStateSelectedTab = (state: RootState) => state.chat.selectedTab;
-export const selectChatStatePrivateChatView = (state: RootState) => state.chat.privateChatView;
-export const selectChatStateSelectedChat = (state: RootState) => state.chat.selectedChat;
+export const selectChatStateSelectedTab = (state: RootState) => state.chat ? state.chat.selectedTab : initialChatState.selectedTab;
+export const selectChatStatePrivateChatView = (state: RootState) => state.chat ? state.chat.privateChatView : initialChatState.privateChatView;
+export const selectChatStateSelectedChat = (state: RootState) => state.chat ? state.chat.selectedChat : initialChatState.selectedChat;
 
 export default chatSlice.reducer;

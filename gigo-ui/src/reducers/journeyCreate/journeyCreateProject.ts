@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../../app/store";
+import {RootState} from "@/reducers/store";
 
 export interface JourneyCreateProjectState {
     title: string;
@@ -88,12 +88,12 @@ export const journeyCreateProjectSlice = createSlice({
 
 export const {updateJourneyCreateProjectState, clearJourneyCreateProjectState} = journeyCreateProjectSlice.actions;
 
-export const selectProjectTitle = (state: RootState) => state.journeyCreateProject.title;
-export const selectParentUnit = (state: RootState) => state.journeyCreateProject.parentUnit;
-export const selectWorkingDirectory = (state: RootState) => state.journeyCreateProject.workingDirectory;
-export const selectLanguage = (state: RootState) => state.journeyCreateProject.language;
-export const selectDependencies = (state: RootState) => state.journeyCreateProject.dependencies;
-export const selectProjectDescription = (state: RootState) => state.journeyCreateProject.description;
-export const selectProjectTags = (state: RootState) => state.journeyCreateProject.tags;
+export const selectProjectTitle = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.title : initialJourneyCreateProjectState.title;
+export const selectParentUnit = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.parentUnit : initialJourneyCreateProjectState.parentUnit;
+export const selectWorkingDirectory = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.workingDirectory : initialJourneyCreateProjectState.workingDirectory;
+export const selectLanguage = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.language : initialJourneyCreateProjectState.language;
+export const selectDependencies = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.dependencies : initialJourneyCreateProjectState.dependencies;
+export const selectProjectDescription = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.description : initialJourneyCreateProjectState.description;
+export const selectProjectTags = (state: RootState) => state.journeyCreateProject ? state.journeyCreateProject.tags : initialJourneyCreateProjectState.tags;
 
 export default journeyCreateProjectSlice.reducer;

@@ -1,6 +1,5 @@
 
 import ArticlesPage from "@/components/Articles/Articles";
-import ArticlePage from "@/components/Article/Article";
 
 function parseCustomDate(dateStr: any) {
     // Assuming dateStr is in M-D-YY format
@@ -14,7 +13,7 @@ export default async function Articles(context: any) {
     const repo = 'blogs-gigo.dev';
     const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
 
-    const data = await fetch(apiUrl).then((response) => response.json());
+    const data = await fetch(apiUrl, {next: {revalidate: 86400}}).then((response) => response.json());
     try {
         const articles = (await Promise.all(
             data.filter((file: { name: string; }) => file.name.endsWith('.md') && file.name !== 'README.md')

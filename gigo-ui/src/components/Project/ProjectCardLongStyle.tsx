@@ -3,19 +3,15 @@ import * as React from "react"
 import {
     Button,
     ButtonBase,
-    Card, CardActions,
-    CardContent,
+    Card, CardContent,
     CardMedia,
     Chip,
     createTheme, Dialog, Grid,
-    Icon,
     PaletteMode,
-    SvgIcon,
     Tooltip,
     Typography
 } from "@mui/material";
-import {themeHelpers, getAllTokens} from "@/theme";
-import {string} from "prop-types";
+import {getAllTokens} from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
 import {useEffect} from "react";
 import HorseIcon from "@/icons/ProjectCard/Horse";
@@ -35,6 +31,7 @@ import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
+import Image from "next/image";
 
 interface IProps {
     role: any | null;
@@ -368,7 +365,8 @@ export default function ProjectCardLongStyle(props: IProps) {
                                 <Tooltip
                                     title={`Renown ${props.renown + 1}`}
                                 >
-                                    <img
+                                    <Image
+                                        alt={""}
                                         style={{
                                             height: "7vh",
                                             width: "auto",

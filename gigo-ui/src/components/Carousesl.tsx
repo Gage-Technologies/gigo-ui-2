@@ -63,8 +63,13 @@ const Carousel: React.FC<CarouselProps> = ({
                             {childrenArray
                                 .slice(idx * itemsShown, idx * itemsShown + itemsShown)
                                 .map((child, index) => (
-                                    <Box key={index} p={1}
-                                         width={`${100 / Math.min(itemsShown, childrenArray.length)}%`}>
+                                    <Box
+                                        key={index}
+                                        p={1}
+                                        width={`${100 / Math.min(itemsShown, childrenArray.length)}%`}
+                                        display="flex"
+                                        justifyContent="center"
+                                    >
                                         {child}
                                     </Box>
                                 ))}

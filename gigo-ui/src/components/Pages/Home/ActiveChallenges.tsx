@@ -62,7 +62,7 @@ function ActiveChallenges({ activeData }: IProps) {
                         activeData && activeData.length > 0 ?
                             activeData.map((project, index) => {
                                 return (
-                                    <div style={{paddingBottom: "10px"}}>
+                                    <div style={{paddingBottom: "10px"}} key={`challenge-${project["_id"]}-${index}`}>
                                         <ProjectCard
                                             height={"23vh"}
                                             imageHeight={"23vh"}
@@ -94,7 +94,7 @@ function ActiveChallenges({ activeData }: IProps) {
                             }) :
                             Array.from({length: 4}, (_, index) => (
                                 <SheenPlaceholder height={"23vh"}
-                                                  width={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}/>
+                                                  width={(chatOpen || sidebarOpen) ? "16vw" : "23vw"} key={`placeholder-${index}`}/>
                             ))
                     }
                 </Carousel>

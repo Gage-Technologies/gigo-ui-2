@@ -87,7 +87,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                 {hearts.map((_, index) => {
                     let size = Math.max(Math.random() * 12, 5);
                     return (
-                        <LazyLoad once scroll unmountIfInvisible>
+                        <LazyLoad once scroll unmountIfInvisible key={index}>
                             <HeartIcon
                                 key={index}
                                 sx={{

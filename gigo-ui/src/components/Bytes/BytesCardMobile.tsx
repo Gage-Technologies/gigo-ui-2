@@ -1,25 +1,12 @@
 'use client'
 import * as React from "react"
-import {
-    Box,
-    Button,
-    ButtonBase,
-    Card, CardActions,
-    CardContent,
-    CardMedia,
-    Chip,
-    createTheme, Dialog, Grid,
-    Icon,
-    PaletteMode,
-    SvgIcon,
-    Tooltip,
-    Typography
-} from "@mui/material";
-import { themeHelpers, getAllTokens } from "@/theme";
+import {Box, ButtonBase, Card, CardContent, createTheme, PaletteMode, Typography} from "@mui/material";
+import {getAllTokens} from "@/theme";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
+import Image from "next/image";
 
 
 interface IProps {
@@ -125,9 +112,10 @@ export default function BytesCardMobile(props: IProps) {
                     onMouseEnter={props.onMouseEnter}
                     onMouseLeave={props.onMouseLeave}
                 >
-                    <div style={{ position: 'relative' }}>
-                        {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
+                    <div style={{position: 'relative'}}>
+                        <div style={styles.image as React.CSSProperties}>
+                            <Image alt={""} fill={true} src={props.bytesThumb} loading="lazy"/>
+                        </div>
                         {!props.isHome && (
                             <Box
                                 display={"flex"}
@@ -170,12 +158,12 @@ export default function BytesCardMobile(props: IProps) {
                                 gap: '10px',
                             }}
                         >
-                            <BytesLanguage language={props.language === undefined ? "Python" : props.language} />
+                            <BytesLanguage language={props.language === undefined ? "Python" : props.language}/>
                         </Box>
                     </div>
                     <CardContent sx={styles.content}>
                         <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
-                            {props.bytesTitle}
+                        {props.bytesTitle}
                         </Typography>
                     </CardContent>
                 </Card>

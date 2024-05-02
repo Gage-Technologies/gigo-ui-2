@@ -1,7 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
-import Post from "../../models/post";
-import {DefaultWorkspaceConfig, WorkspaceConfig} from "../../models/workspace";
+import {RootState} from '@/reducers/store';
 
 export interface BytesState {
     initialized: boolean;
@@ -79,12 +77,11 @@ export const {updateBytesState, clearBytesState, setHelpPopupClosedByUser} = byt
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 export const selectBytesState = (state: RootState) => state.bytes;
-export const selectBytesInitialized = (state: RootState) => state.bytes.initialized;
-export const selectBytesDifficulty = (state: RootState) => state.bytes.byteDifficulty;
-export const selectBytesExplanationSuggestion = (state: RootState) => state.bytes.acceptedExplanationSuggestion;
-export const selectBytesNextStepsPopupClosedByUser = (state: RootState) => state.bytes.nextStepsPopupClosedByUser;
-export const selectBytesHandoutClosedByUser = (state: RootState) => state.bytes.handoutClosedByUser;
-
-export const selectHelpPopupClosedByUser = (state: RootState) => state.bytes.helpPopupClosedByUser;
+export const selectBytesInitialized = (state: RootState) => state.bytes ? state.bytes.initialized : initialBytesState.initialized;
+export const selectBytesDifficulty = (state: RootState) => state.bytes ? state.bytes.byteDifficulty : initialBytesState.byteDifficulty;
+export const selectBytesExplanationSuggestion = (state: RootState) => state.bytes ? state.bytes.acceptedExplanationSuggestion : initialBytesState.acceptedExplanationSuggestion;
+export const selectBytesNextStepsPopupClosedByUser = (state: RootState) => state.bytes ? state.bytes.nextStepsPopupClosedByUser : initialBytesState.nextStepsPopupClosedByUser;
+export const selectBytesHandoutClosedByUser = (state: RootState) => state.bytes ? state.bytes.handoutClosedByUser : initialBytesState.handoutClosedByUser;
+export const selectHelpPopupClosedByUser = (state: RootState) => state.bytes ? state.bytes.helpPopupClosedByUser : initialBytesState.helpPopupClosedByUser;
 
 export default bytesSlice.reducer;

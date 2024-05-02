@@ -1,12 +1,13 @@
 'use client'
 import React from 'react';
-import SvgIcon from '@mui/material/SvgIcon';
 import { Icon } from "@material-ui/core";
 import ProBanner from '@/img/pro/pro-background-profile.svg'
+import Image from "next/image";
+
 function ProBackgroundProfile(props: any) {
     return (
         <Icon style={{width: "100%", height: "100%"}}>
-            <img alt="" src={ProBanner} height={props.height} width={props.width} style={props.style}/>
+            <Image alt="" src={ProBanner} height={props.height} width={props.width} style={props.style}/>
         </Icon>
     );
 }

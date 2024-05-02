@@ -2,12 +2,11 @@
 import * as React from "react"
 import {Box, ButtonBase, Card, CardContent, createTheme, PaletteMode, Typography} from "@mui/material";
 import {getAllTokens} from "@/theme";
-
-
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
+import Image from "next/image";
 
 
 interface IProps {
@@ -50,13 +49,14 @@ export default function BytesCard(props: IProps) {
             animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
         },
-        image: {
-            borderRadius: "10px",
-            // width: props.imageWidth,
+        imageContainer: {
             height: props.imageHeight,
             width: props.imageWidth,
             minWidth: 200,
             objectFit: "cover",
+        },
+        image: {
+            borderRadius: "10px",
         },
         title: {
             textOverflow: "ellipsis",
@@ -142,8 +142,9 @@ export default function BytesCard(props: IProps) {
                     onMouseLeave={props.onMouseLeave}
                 >
                     <div style={{position: 'relative'}}>
-                        {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy"/>
+                        <div style={styles.imageContainer as React.CSSProperties}>
+                            <Image alt={""} fill={true} src={props.bytesThumb} style={styles.image as React.CSSProperties} loading="lazy"/>
+                        </div>
                         <Box
                             display={"flex"}
                             flexDirection={"column"}

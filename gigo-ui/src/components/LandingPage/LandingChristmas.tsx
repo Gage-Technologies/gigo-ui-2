@@ -8,7 +8,6 @@ import backgroundImageLargeWebP from "@/img/landing/gigo-landing-christmas-large
 import { useAppSelector } from '@/reducers/hooks';
 import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
 import { getAllTokens, themeHelpers } from '@/theme';
-import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Snowfall from 'react-snowfall';

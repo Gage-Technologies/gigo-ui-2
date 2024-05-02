@@ -5,9 +5,6 @@ import rehypeRaw from 'rehype-raw';
 import { defaultSchema } from 'rehype-sanitize';
 import merge from 'deepmerge';
 import { visit } from 'unist-util-visit';
-import { Typography, Box } from '@mui/material';
-import { styled } from '@mui/system';
-import {defaultTheme} from "@/theme";
 
 const syntaxHighlightingSchema = merge(defaultSchema, {
   attributes: {

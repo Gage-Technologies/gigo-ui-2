@@ -6,7 +6,7 @@ import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import * as React from "react";
 import {withStyles} from "@material-ui/core";
 import moment from 'moment';
-import {getAllTokens} from "../../theme";
+import {getAllTokens} from "@/theme";
 import {makeStyles} from "@material-ui/core/styles";
 
 const useStyles = makeStyles({

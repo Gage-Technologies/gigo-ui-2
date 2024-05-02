@@ -1,9 +1,5 @@
-
-
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
-import Post from "../../models/post";
-import {DefaultWorkspaceConfig, WorkspaceConfig} from "../../models/workspace";
+import {RootState} from '@/reducers/store';
 
 export interface JourneyFormState {
     section: number;
@@ -70,7 +66,7 @@ export const journeyFormSlice = createSlice({
             state.triedProgrammingOnline = ''
         },
         updateJourneyFormState: (state, update: PayloadAction<JourneyFormStateUpdate>) => {
-            if (update.payload.section!== state.section) {
+            if (update.payload.section !== state.section) {
                 state.section = update.payload.section
             }
 
@@ -115,14 +111,14 @@ export const {updateJourneyFormState, clearJourneyFormState} = journeyFormSlice.
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
 
-export const selectSection = (state: RootState) => state.journeyForm.section
-
-export const selectLearningGoal = (state: RootState) => state.journeyForm.learningGoal;
-export const selectLanguageInterest = (state: RootState) => state.journeyForm.languageInterest;
-export const selectEndGoal = (state: RootState) => state.journeyForm.endGoal;
-export const selectExperienceLevel = (state: RootState) => state.journeyForm.experienceLevel;
-export const selectFamiliarityIDE = (state: RootState) => state.journeyForm.familiarityIDE;
-export const selectFamiliarityLinux = (state: RootState) => state.journeyForm.familiarityLinux;
-export const selectTriedProgramming = (state: RootState) => state.journeyForm.triedProgramming;
-export const selectTriedProgrammingOnline = (state: RootState) => state.journeyForm.triedProgrammingOnline;
+export const selectSection = (state: RootState) => state.journeyForm ? state.journeyForm.section : initialJourneyFormState.section;
+export const selectLearningGoal = (state: RootState) => state.journeyForm ? state.journeyForm.learningGoal : initialJourneyFormState.learningGoal;
+export const selectLanguageInterest = (state: RootState) => state.journeyForm ? state.journeyForm.languageInterest : initialJourneyFormState.languageInterest;
+export const selectEndGoal = (state: RootState) => state.journeyForm ? state.journeyForm.endGoal : initialJourneyFormState.endGoal;
+export const selectExperienceLevel = (state: RootState) => state.journeyForm ? state.journeyForm.experienceLevel : initialJourneyFormState.experienceLevel;
+export const selectFamiliarityIDE = (state: RootState) => state.journeyForm ? state.journeyForm.familiarityIDE : initialJourneyFormState.familiarityIDE;
+export const selectFamiliarityLinux = (state: RootState) => state.journeyForm ? state.journeyForm.familiarityLinux : initialJourneyFormState.familiarityLinux;
+export const selectTriedProgramming = (state: RootState) => state.journeyForm ? state.journeyForm.triedProgramming : initialJourneyFormState.triedProgramming;
+export const selectTriedProgrammingOnline = (state: RootState) => state.journeyForm ? state.journeyForm.triedProgrammingOnline : initialJourneyFormState.triedProgrammingOnline;
 export default journeyFormSlice.reducer;
+

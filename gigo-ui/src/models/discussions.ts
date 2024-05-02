@@ -1,5 +1,3 @@
-import Notification from "./notification";
-
 export interface Discussion {
     _id: string;
     body: string;

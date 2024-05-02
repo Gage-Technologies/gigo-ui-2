@@ -65,7 +65,6 @@ const cacheMiddleware = (store: any) => (next: any) => (action: any) => {
     }, cacheTimeout);
 };
 
-// @ts-ignore
 export const makeStore = () => {
     return configureStore({
         reducer: persistedReducer,
@@ -81,5 +80,5 @@ export type AppThunk<ReturnType = void> = ThunkAction<
     ReturnType,
     RootState,
     unknown,
-    Action<string>
+    Action
 >;

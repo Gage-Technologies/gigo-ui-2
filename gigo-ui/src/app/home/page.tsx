@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Box, Button, CssBaseline, Grid, Typography} from "@mui/material";
+import {Box, Button, Grid, Typography} from "@mui/material";
 import {defaultTheme} from "@/theme";
 import config from "@/config";
 import Carousel from "../../components/Carousesl";
@@ -700,13 +700,13 @@ async function Home() {
                             byteContent && byteContent.length > 0 ?
                                 byteContent.map((project, index) => {
                                     return (
-                                        <div style={{paddingBottom: "10px", width: "16vw"}}>
+                                        <Box display={"flex"} justifyContent={"center"} style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
                                             <BytesCard
                                                 height={"52vh"}
                                                 imageHeight={"43vh"}
                                                 // TODO mobile => make width 'fit-content'
-                                                width={'auto'}
-                                                imageWidth={"auto"}
+                                                width={'100%'}
+                                                imageWidth={"100%"}
                                                 bytesId={project["_id"]}
                                                 bytesTitle={project["name"]}
                                                 bytesDesc={project["description_medium"]}
@@ -716,11 +716,12 @@ async function Home() {
                                                 completedHard={project["completed_hard"]}
                                                 language={programmingLanguages[project["lang"]]}
                                             />
-                                        </div>
+                                        </Box>
                                     )
                                 }) :
                                 Array.from({length: 15}, (_, index) => (
-                                    <SheenPlaceholder height={"43vh"} width={"calc(43vh * 0.5625)"}/>
+                                    <SheenPlaceholder height={"43vh"} width={"calc(43vh * 0.5625)"}
+                                                      key={`placeholder-${index}`}/>
                                 ))
                         }
                     </Carousel>
@@ -733,7 +734,6 @@ async function Home() {
         let project: any = undefined;
         if (byteContent.length > 0) {
             const randomIndex = Math.floor(Math.random() * byteContent.length);
-            project = byteContent[randomIndex];
         }
 
         return (
@@ -768,88 +768,86 @@ async function Home() {
 
     return (
         <Layout>
-            <CssBaseline>
-                <div style={{overflow: "hidden"}}>
-                    <Tutorial/>
-                    {renderLanding()}
-                    <Typography component={"div"}>
-                    </Typography>
-                    <Grid container sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "1",
-                        // paddingLeft: "50px"
-                    }}>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: "wrap",
+            <div style={{overflow: "hidden"}}>
+                <Tutorial/>
+                {renderLanding()}
+                <Typography component={"div"}>
+                </Typography>
+                <Grid container sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: "1",
+                    // paddingLeft: "50px"
+                }}>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: "wrap",
+                            width: "100%",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'background.default',
+                            color: 'text.primary',
+                        }}
+                    >
+                        {(isMobile) && (
+                            <Grid container spacing={2} sx={{
                                 width: "100%",
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: 'background.default',
-                                color: 'text.primary',
-                            }}
-                        >
-                            {(isMobile) && (
-                                <Grid container spacing={2} sx={{
-                                    width: "100%",
-                                    height: "500px",
-                                    backgroundColor: "#ffef62",
-                                    zIndex: 3,
-                                    m: 2,
-                                    borderRadius: "12px",
-                                    position: "relative"
-                                }}>
-                                    {JourneyHeader()}
-                                </Grid>
-                            )}
-                            {(isMobile) && headerMobile()}
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: "wrap",
-                                width: "100%",
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: 'background.default',
-                                color: 'text.primary',
-                            }}
-                        >
-                            {Bytes()}
-                        </Box>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: "wrap",
-                                width: "100%",
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: 'background.default',
-                                color: 'text.primary',
-                            }}
-                        >
-                            {(isMobile && loggedIn) ? <ActiveChallenges activeData={activeData}/> : null}
-                        </Box>
+                                height: "500px",
+                                backgroundColor: "#ffef62",
+                                zIndex: 3,
+                                m: 2,
+                                borderRadius: "12px",
+                                position: "relative"
+                            }}>
+                                {JourneyHeader()}
+                            </Grid>
+                        )}
+                        {(isMobile) && headerMobile()}
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: "wrap",
+                            width: "100%",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'background.default',
+                            color: 'text.primary',
+                        }}
+                    >
+                        {Bytes()}
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: "wrap",
+                            width: "100%",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'background.default',
+                            color: 'text.primary',
+                        }}
+                    >
+                        {(isMobile && loggedIn) ? <ActiveChallenges activeData={activeData}/> : null}
+                    </Box>
 
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                flexWrap: "wrap",
-                                width: "100%",
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                bgcolor: 'background.default',
-                                color: 'text.primary',
-                            }}
-                        >
-                            <RecommendedProjectsScroll/>
-                        </Box>
-                    </Grid>
-                </div>
-            </CssBaseline>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            flexWrap: "wrap",
+                            width: "100%",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            bgcolor: 'background.default',
+                            color: 'text.primary',
+                        }}
+                    >
+                        <RecommendedProjectsScroll/>
+                    </Box>
+                </Grid>
+            </div>
         </Layout>
     );
 }

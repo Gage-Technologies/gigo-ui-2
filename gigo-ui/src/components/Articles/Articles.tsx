@@ -1,7 +1,17 @@
 import React from 'react';
 import { Grid, Card, CardActionArea, CardContent, Typography, Box } from '@mui/material';
+import Image from "next/image";
 
-const ArticlesPage = ({ articles }) => {
+interface IProps {
+    articles: {
+       name: string;
+       imageUrl: string;
+       date: string;
+       content: string;
+    }[];
+}
+
+const ArticlesPage = ({ articles }: IProps) => {
     return (
         <>
             <style>{`
@@ -30,7 +40,7 @@ const ArticlesPage = ({ articles }) => {
                                             pr: 1
                                         }}
                                     >
-                                        <img
+                                        <Image
                                             src={article.imageUrl}
                                             style={{
                                                 maxHeight: 242,

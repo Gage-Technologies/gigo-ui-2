@@ -189,23 +189,21 @@ export const {updateCreateProjectState, clearProjectState} = createProjectSlice.
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.counter.value)`
-export const selectActiveState = (state: RootState) => state.createProject.active;
-export const selectName = (state: RootState) => state.createProject.name;
-export const selectDescription = (state: RootState) => state.createProject.description;
-export const selectLanguage = (state: RootState) => state.createProject.languages;
-export const selectChallengeType = (state: RootState) => state.createProject.challengeType
-export const selectTier = (state: RootState) => state.createProject.tier;
-export const selectTags = (state: RootState) => state.createProject.tags;
-export const selectSection = (state: RootState) => state.createProject.section;
-export const selectProject = (state: RootState) => state.createProject.project;
-export const selectWorkspaceConfig = (state: RootState) => state.createProject.workspaceConfig
-export const selectCustomWorkspaceConfigContent = (state: RootState) => state.createProject.customWorkspaceConfigContent
-export const selectCreateWorkspaceConfig = (state: RootState) => state.createProject.createWorkspaceConfig
-export const selectEvaluation = (state: RootState) => state.createProject.evaluation;
-export const selectPrice = (state: RootState) => state.createProject.price;
-
-export const selectExclusiveDescription = (state: RootState) => state.createProject.exclusiveDescription;
-
-export const selectVisibility = (state: RootState) => state.createProject.visibility;
+export const selectActiveState = (state: RootState) => state.createProject ? state.createProject.active : initialCreateProjectState.active;
+export const selectName = (state: RootState) => state.createProject ? state.createProject.name : initialCreateProjectState.name;
+export const selectDescription = (state: RootState) => state.createProject ? state.createProject.description : initialCreateProjectState.description;
+export const selectLanguage = (state: RootState) => state.createProject ? state.createProject.languages : initialCreateProjectState.languages;
+export const selectChallengeType = (state: RootState) => state.createProject ? state.createProject.challengeType : initialCreateProjectState.challengeType
+export const selectTier = (state: RootState) => state.createProject ? state.createProject.tier : initialCreateProjectState.tier;
+export const selectTags = (state: RootState) => state.createProject ? state.createProject.tags : initialCreateProjectState.tags;
+export const selectSection = (state: RootState) => state.createProject ? state.createProject.section : initialCreateProjectState.section;
+export const selectProject = (state: RootState) => state.createProject ? state.createProject.project : initialCreateProjectState.project;
+export const selectWorkspaceConfig = (state: RootState) => state.createProject ? state.createProject.workspaceConfig : initialCreateProjectState.workspaceConfig
+export const selectCustomWorkspaceConfigContent = (state: RootState) => state.createProject ? state.createProject.customWorkspaceConfigContent : initialCreateProjectState.customWorkspaceConfigContent
+export const selectCreateWorkspaceConfig = (state: RootState) => state.createProject ? state.createProject.createWorkspaceConfig : initialCreateProjectState.createWorkspaceConfig
+export const selectEvaluation = (state: RootState) => state.createProject ? state.createProject.evaluation : initialCreateProjectState.evaluation;
+export const selectPrice = (state: RootState) => state.createProject ? state.createProject.price : initialCreateProjectState.price;
+export const selectExclusiveDescription = (state: RootState) => state.createProject ? state.createProject.exclusiveDescription : initialCreateProjectState.exclusiveDescription;
+export const selectVisibility = (state: RootState) => state.createProject ? state.createProject.visibility : initialCreateProjectState.visibility;
 
 export default createProjectSlice.reducer;

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef } from "react";
 import {createTheme, PaletteMode, TextField, Grid, Card, CardMedia, Dialog, DialogContent, Box} from "@mui/material";
-import { getAllTokens } from "../theme";
+import { getAllTokens } from "@/theme";
 
 interface MediaItem {
     dims: [number, number];

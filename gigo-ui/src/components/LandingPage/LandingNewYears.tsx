@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useEffect, useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
 import { styled } from '@mui/system';
 
@@ -8,7 +8,6 @@ import backgroundImageLargeWebP from "@/img/landing/gigo-landing-new-years-large
 import { useAppSelector } from '@/reducers/hooks';
 import { selectAppWrapperChatOpen, selectAppWrapperSidebarOpen } from '@/reducers/appWrapper/appWrapper';
 import { getAllTokens, themeHelpers } from '@/theme';
-import LazyLoad from 'react-lazyload';
 import { SocialIcon } from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Confetti from "react-confetti";

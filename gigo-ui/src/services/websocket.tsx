@@ -1,5 +1,5 @@
 'use client'
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, ReactNode } from 'react';
 import config from "../config";
 import * as models from "../models/websocket";
 import useWebSocket from "react-use-websocket";
@@ -69,7 +69,7 @@ class Mutex {
     async dispatch<T>(fn: (() => T) | (() => PromiseLike<T>)): Promise<T> {
         const unlock = await this.lock();
         try {
-            return await Promise.resolve(fn());
+            return Promise.resolve(fn());
         } finally {
             unlock();
         }
@@ -125,7 +125,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
                 if (c[msg.sequence_id]) {
                     // call the callback and delete it from the map
                     const remove = c[msg.sequence_id].callback(msg);
-                    if (remove === undefined || remove === true) {
+                    if (remove === undefined || remove) {
                         delete c[msg.sequence_id];
                     }
                     messageCallbacks.current = c;
@@ -184,7 +184,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
         });
     }, []);
 
-    const WrappedApp = React.useMemo(() => {
+    return React.useMemo(() => {
         const value = {
             sendWebsocketMessage,
             registerCallback,
@@ -196,6 +196,4 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
             </WebSocketContext.Provider>
         )
     }, [children, sendWebsocketMessage, registerCallback])
-
-    return WrappedApp
 };

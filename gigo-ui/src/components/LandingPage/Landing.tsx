@@ -110,7 +110,7 @@ const GIGOLandingPage: React.FC = () => {
         )
     }, [fireflies]);
 
-    let width = '100vw';
+    let width: string;
     let widthSub = 0;
     if (leftOpen) {
         widthSub += 200;

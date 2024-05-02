@@ -1,5 +1,4 @@
 import {useState, useEffect, useRef, RefObject} from 'react';
-import {debounce} from "@mui/material";
 
 type FetchCallback = () => Promise<void>;
 

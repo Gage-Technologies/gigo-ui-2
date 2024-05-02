@@ -76,4 +76,6 @@ const LottieAnimation: FC<LottieAnimationProps> = memo(({ animationData, mouseMo
     );
 });
 
+LottieAnimation.displayName = "LottieAnimation";  // Set the display name for the component
+
 export default LottieAnimation;

@@ -1,31 +1,31 @@
 'use client'
 import * as React from "react";
+import {useEffect} from "react";
 import {
+    Box,
+    Button,
     createTheme,
     CssBaseline,
+    IconButton,
+    Modal,
     PaletteMode,
     ThemeProvider,
-    Box,
-    Modal,
-    IconButton,
     Typography,
 } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import {getAllTokens} from "../../theme";
-import { keyframes } from "@emotion/react";
+import {styled} from "@mui/material/styles";
+import {getAllTokens} from "@/theme";
+import {keyframes} from "@emotion/react";
 import LinearProgress from "@mui/material/LinearProgress";
-import {useEffect} from "react";
-import { Button } from "@mui/material"
 import {Fade} from "react-awesome-reveal"
 import LootPopup from "./LootPopup";
-import { selectAuthState } from "@/reducers/auth/auth";
-import { useAppSelector } from "@/reducers/hooks";
+import {selectAuthState} from "@/reducers/auth/auth";
+import {useAppSelector} from "@/reducers/hooks";
 import premiumGorilla from "@/img/pro/pro-pop-up-icon-plain.svg"
 import proBackground from "@/img/pro/popu-up-backgraound-plain.svg"
-import call from "../../services/api-call";
 import config from "../../config";
-import { Close } from "@material-ui/icons";
-import { LoadingButton } from "@mui/lab";
+import {Close} from "@material-ui/icons";
+import {LoadingButton} from "@mui/lab";
+import Image from "next/image";
 
 interface IProps {
     oldXP: number;
@@ -56,7 +56,7 @@ const XpPopup = (props: IProps) => {
     const [extraXP, setExtraXP] = React.useState(props.newXP - props.oldXP);
     const [totalXP, setTotalXP] = React.useState(props.maxXP);
     const [currentLevel, setCurrentLevel] = React.useState(props.nextLevel);
-    const [nextLevel, setNextLevel] = React.useState(props.nextLevel+1);
+    const [nextLevel, setNextLevel] = React.useState(props.nextLevel + 1);
     const [xpTitle, setXpTitle] = React.useState(props.gainedXP);
     const [open, setOpen] = React.useState(true);
     const [lootBox, setLootBox] = React.useState(false);
@@ -69,23 +69,23 @@ const XpPopup = (props: IProps) => {
     const [proUrlsLoading, setProUrlsLoading] = React.useState(false);
 
     const [steps, setSteps] = React.useState([{
-        content: <h2>Let's begin our journey!</h2>,
-        locale: { skip: <strong aria-label="skip">Skip</strong> },
+        content: <h2>Let&#39;s begin our journey!</h2>,
+        locale: {skip: <strong aria-label="skip">Skip</strong>},
         placement: 'center',
         target: 'body',
-    },{content: <h2>You earn XP by doing activities on the platform.</h2>, target: '.button', placement: 'bottom'}]);
+    }, {content: <h2>You earn XP by doing activities on the platform.</h2>, target: '.button', placement: 'bottom'}]);
 
     const [run, setRun] = React.useState(props.homePage)
 
 
     const progressKeyframes = keyframes`
-    0% {
-      width: ${0}%;
-    }
-    100% {
-      width: ${startXP + extraXP}%;
-    }
-  `;
+        0% {
+            width: ${0}%;
+        }
+        100% {
+            width: ${startXP + extraXP}%;
+        }
+    `;
 
     const authState = useAppSelector(selectAuthState);
 
@@ -98,18 +98,18 @@ const XpPopup = (props: IProps) => {
             retrieveProUrls()
         }
         if (props.levelUp) {
-            setTimeout(function(){
+            setTimeout(function () {
                 setLootBox(true)
                 setShowConfetti(true);
                 setStartXP(0);
                 setExtraXP(0);
                 setCurrentLevel(currentLevel);
                 setNextLevel(nextLevel);
-            },1800)
+            }, 1800)
         }
     }, [])
 
-    const StyledLinearProgress = styled(LinearProgress)(({ theme }) => ({
+    const StyledLinearProgress = styled(LinearProgress)(({theme}) => ({
         height: 50,
         borderRadius: 25,
         outline: "solid 5px grey",
@@ -131,7 +131,7 @@ const XpPopup = (props: IProps) => {
             setShowLoot(true);
         } else {
             setOpen(false);
-            if (props.popupClose !== null){
+            if (props.popupClose !== null) {
                 props.popupClose();
             }
             window.sessionStorage.setItem("loginXP", "undefined")
@@ -141,17 +141,17 @@ const XpPopup = (props: IProps) => {
 
     const retrieveProUrls = async (): Promise<{ monthly: string, yearly: string } | null> => {
         setProUrlsLoading(true)
-        let res = await call(
-            "/api/stripe/premiumMembershipSession",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/stripe/premiumMembershipSession`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}',
+                cache: "no-cache"
+            }
+        ).then(async (response) => response.json())
 
         setProUrlsLoading(false)
 
@@ -169,7 +169,7 @@ const XpPopup = (props: IProps) => {
 
     const closePopupLoot = () => {
         setOpen(false)
-        if (props.popupClose !== null){
+        if (props.popupClose !== null) {
             props.popupClose();
         }
         window.sessionStorage.setItem("loginXP", "undefined")
@@ -224,7 +224,7 @@ const XpPopup = (props: IProps) => {
                                 top: '20vh',
                                 right: '15vw',
                                 color: "white"
-                            } :{
+                            } : {
                                 position: "absolute",
                                 top: '20vh',
                                 right: '38vw', color: "white"
@@ -232,7 +232,7 @@ const XpPopup = (props: IProps) => {
                         >
                             <Close/>
                         </IconButton>
-                        <img src={premiumGorilla}
+                        <Image alt={""} src={premiumGorilla}
                              style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
                                  width: "30%",
                                  marginBottom: "20px"
@@ -279,9 +279,11 @@ const XpPopup = (props: IProps) => {
                                 width: "200px"
                             }}>
                                 <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
-                                            style={{marginBottom: "10px", color: "white"}} align={"center"}>Monthly</Typography>
+                                            style={{marginBottom: "10px", color: "white"}}
+                                            align={"center"}>Monthly</Typography>
                                 <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
-                                            style={{marginBottom: "10px", color: "white"}} align={"center"}>$8</Typography>
+                                            style={{marginBottom: "10px", color: "white"}}
+                                            align={"center"}>$8</Typography>
                                 <LoadingButton
                                     loading={proUrlsLoading}
                                     variant="contained"
@@ -309,9 +311,11 @@ const XpPopup = (props: IProps) => {
                                 width: "200px"
                             }}>
                                 <Typography variant={window.innerHeight < 900 ? "subtitle2" : "subtitle1"}
-                                            style={{marginBottom: "10px", color: "white"}} align={"center"}>Yearly</Typography>
+                                            style={{marginBottom: "10px", color: "white"}}
+                                            align={"center"}>Yearly</Typography>
                                 <Typography variant={window.innerHeight < 900 ? "h6" : "h5"}
-                                            style={{marginBottom: "10px", color: "white"}} align={"center"}>$80</Typography>
+                                            style={{marginBottom: "10px", color: "white"}}
+                                            align={"center"}>$80</Typography>
                                 <LoadingButton
                                     loading={proUrlsLoading}
                                     variant="contained"

@@ -69,6 +69,6 @@ const chatMessageCacheReducer = (state = initialState, action: CacheActionTypes)
     }
 };
 
-export const selectMessageCacheState = (state: RootState) => state.chatMessageCache;
+export const selectMessageCacheState = (state: RootState) => state.chatMessageCache ? state.chatMessageCache : initialState;
 
 export default chatMessageCacheReducer;

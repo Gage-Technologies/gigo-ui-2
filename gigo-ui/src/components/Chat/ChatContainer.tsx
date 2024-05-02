@@ -66,7 +66,7 @@ import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 import {ArrowForward, Check, Close, VolumeOff, VolumeUp} from '@mui/icons-material';
 import User from '../../models/user';
-import UserIcon from '../UserIcon';
+import UserIcon from "@/icons/User/UserIcon";
 import renown1 from "../../img/renown/renown1.svg"
 import renown2 from "../../img/renown/renown2.svg"
 import renown3 from "../../img/renown/renown3.svg"
@@ -88,6 +88,7 @@ import {
     updateAppWrapper
 } from "@/reducers/appWrapper/appWrapper";
 import Menu from "@mui/material/Menu";
+import Image from "next/image";
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
@@ -229,7 +230,7 @@ export default function ChatContainer() {
 
     let loggedIn = false
     const authState = useAppSelector(selectAuthState);
-    if (authState.authenticated !== false) {
+    if (authState.authenticated) {
         loggedIn = true
     }
 
@@ -1408,6 +1409,7 @@ export default function ChatContainer() {
                                 }).map((option, index) => (
                                     <ListItem
                                         ref={(el) => {listItemRefs.current.set(option._id, el)}}
+                                        key={option._id}
                                         style={{
                                             paddingBottom: '10px',
                                             paddingLeft: '10px',
@@ -1487,7 +1489,8 @@ export default function ChatContainer() {
                                                         //@ts-ignore
                                                         option.tier + 1}`}
                                                 >
-                                                    <img
+                                                    <Image
+                                                        alt={""}
                                                         style={{
                                                             height: "99%",
                                                             width: "auto",
@@ -2040,7 +2043,9 @@ export default function ChatContainer() {
                     </Box>
                 </Menu>
                 <List style={{flexGrow: 1, marginTop: '40px'}}>
-                    <ListItem>
+                    <ListItem
+                        key="new-chat-button"
+                    >
                         <Button
                             variant="outlined"
                             endIcon={<AddIcon/>}
@@ -2093,7 +2098,7 @@ export default function ChatContainer() {
                                 >
                                     {newChatSelectedFriends.map((friend) => {
                                         return (
-                                            <Grid item xs={3}>
+                                            <Grid item xs={3} key={friend._id}>
                                                 <Tooltip title={friend.user_name + " - Click to Remove"}>
                                                     <Button variant="text"
                                                             onClick={() => {
@@ -2143,6 +2148,7 @@ export default function ChatContainer() {
                                             return a.user_name.toLowerCase().localeCompare(b.user_name.toLowerCase());
                                         }).map((option) => (
                                             <ListItem
+                                                key={option._id}
                                                 style={{
                                                     paddingBottom: '10px',
                                                     paddingLeft: '10px',
@@ -2210,7 +2216,8 @@ export default function ChatContainer() {
                                                                 //@ts-ignore
                                                                 option.tier + 1}`}
                                                         >
-                                                            <img
+                                                            <Image
+                                                                alt={""}
                                                                 style={{
                                                                     height: "99%",
                                                                     width: "auto",

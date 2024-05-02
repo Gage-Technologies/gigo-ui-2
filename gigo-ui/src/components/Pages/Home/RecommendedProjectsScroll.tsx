@@ -8,7 +8,6 @@ import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import {getAllTokens} from "@/theme";
-import swal from "sweetalert";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 
 export default function RecommendedProjectsScroll() {
@@ -27,40 +26,35 @@ export default function RecommendedProjectsScroll() {
 
     const infiniteScrollHandler = async () => {
         console.log("infiniteScrollHandler")
-        // we make up to 3 attempts to retrieve the next block of data
-        for (let i = 0; i < 3; i++) {
-            let rec = await fetch(
-                `${config.rootPath}/api/home/recommended`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        skip: recDataPage * 32,
-                    })
-                }
-            ).then(async (response) => {
-                let data: { projects?: any[], message?: string } = await response.json();
-                console.log("data: ", data)
-                if (data.projects !== undefined) {
-                    return data.projects
-                }
-                return []
-            })
-
-            if (rec.length === 0) {
-                stopScroll.current = true
+        let rec = await fetch(
+            `${config.rootPath}/api/home/recommended`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    skip: recDataPage * 32,
+                })
             }
-            let localCopy = JSON.parse(JSON.stringify(recData))
-            // @ts-ignore
-            localCopy = localCopy.concat(rec)
-            console.log("localCopy: ", localCopy)
-            setRecData(localCopy)
-            setRecDataPage(recDataPage + 1)
+        ).then(async (response) => {
+            let data: { projects?: any[], message?: string } = await response.json();
+            console.log("data: ", data)
+            if (data.projects !== undefined) {
+                return data.projects
+            }
+            return []
+        })
 
-            break
+        if (rec.length === 0) {
+            stopScroll.current = true
         }
+        let localCopy = JSON.parse(JSON.stringify(recData))
+        // @ts-ignore
+        localCopy = localCopy.concat(rec)
+        console.log("localCopy: ", localCopy)
+        setRecData(localCopy)
+        setRecDataPage(recDataPage + 1)
     }
 
     const [isFetching, setIsFetching] = useInfiniteScroll(infiniteScrollHandler, true, 1440, stopScroll)
@@ -129,7 +123,7 @@ export default function RecommendedProjectsScroll() {
                                         backgroundName={project["background_name"]}
                                         backgroundPalette={project["background_palette"]}
                                         backgroundRender={project["background_render"]}
-                                        exclusive={project["challenge_cost"] === null ? false : true}
+                                        exclusive={project["challenge_cost"] !== null}
                                         hover={false}
                                         role={project["user_status"]}
                                         estimatedTime={project["estimated_tutorial_time_millis"]}

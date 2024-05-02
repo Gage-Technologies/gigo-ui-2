@@ -49,7 +49,6 @@ export default function TutorialClaimTrialButton() {
                 return
             }
             mlink = links.monthly
-            ylink = links.yearly
         }
 
         // open the monthly link in a new tab

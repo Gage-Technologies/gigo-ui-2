@@ -9,6 +9,7 @@ import {Rotate, Slide} from "react-awesome-reveal"
 import Button from '@mui/material/Button';
 import config from "@/config";
 import {Close} from "@material-ui/icons";
+import Image from "next/image";
 
 interface IProps {
     closePopup: () => void;
@@ -158,14 +159,6 @@ const LootPopup = (props: IProps) => {
         setOpen(false)
     }
 
-    function reformat(str: string) {
-        let words = str.split("_");
-        for (let i = 0; i < words.length; i++) {
-            words[i] = words[i][0].toUpperCase() + words[i].substr(1).toLowerCase();
-        }
-        return words.join(" ");
-    }
-
     const RenderFinalPage = () => {
         switch(
             //@ts-ignore
@@ -177,13 +170,8 @@ const LootPopup = (props: IProps) => {
                             <h1>You Won A Streak Freeze</h1>
                         </div>
                         <div style={{zIndex: 4}}>
-                            {/*<Slide direction={"up"} triggerOnce={true}>*/}
-                            {/*    <Rotate triggerOnce={true} cascade={true} damping={0.1}>*/}
-                            {/*        <img src={freeze} alt="freeze" style={{zIndex: 4}}/>*/}
-                            {/*    </Rotate>*/}
-                            {/*</Slide>*/}
                             <Slide triggerOnce={true}>
-                                <img src={freeze} alt="freeze" style={{zIndex: 4}}/>
+                                <Image src={freeze} alt="freeze" style={{zIndex: 4}}/>
                             </Slide>
                         </div>
                         <div style={{height: "100px"}}/>

@@ -30,7 +30,7 @@ import {useRouter} from "next/navigation";
 import Menu from "@mui/material/Menu";
 import {programmingLanguages} from "@/services/vars";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
-import UserIcon from "./UserIcon";
+import UserIcon from "@/icons/User/UserIcon";
 import {
     clearSearchParamsState,
     initialSearchStateUpdate,
@@ -787,7 +787,7 @@ export default function TopSearchBar(props: IProps) {
 
     let loggedIn = false
     const authState = useAppSelector(selectAuthState);
-    if (authState.authenticated !== false) {
+    if (authState.authenticated) {
         loggedIn = true
     }
 
@@ -1644,7 +1644,7 @@ export default function TopSearchBar(props: IProps) {
                             justifyContent={'center'}
                             flexDirection={'column'}
                         >
-                            <img
+                            <Image
                                 // @ts-ignore
                                 src={config.rootPath + "/static/bytes/t/" + option.content._id}
                                 alt="No Image"

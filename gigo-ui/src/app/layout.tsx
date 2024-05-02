@@ -8,6 +8,8 @@ import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import {WebSocketProvider} from "@/services/websocket";
 import {CtWebSocketProvider} from "@/services/ct_websocket";
 import type { Metadata, Viewport } from 'next'
+import React from "react";
+import {CssBaseline} from "@mui/material";
 
 export const metadata: Metadata = {
     applicationName: 'GIGO Dev',
@@ -48,9 +50,11 @@ export default function Layout({
                 <WebSocketProvider>
                     <CtWebSocketProvider>
                         <ThemeProvider theme={defaultTheme}>
-                            <AppWrapper>
-                                {children}
-                            </AppWrapper>
+                            <CssBaseline>
+                                <AppWrapper>
+                                    {children}
+                                </AppWrapper>
+                            </CssBaseline>
                         </ThemeProvider>
                     </CtWebSocketProvider>
                 </WebSocketProvider>

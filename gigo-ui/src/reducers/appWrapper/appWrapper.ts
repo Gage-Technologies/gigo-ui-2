@@ -1,9 +1,7 @@
 
 
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../app/store';
-import User from "../../models/user";
-import Post from "../../models/post";
+import { RootState } from '@/reducers/store';
 
 export interface AppWrapperState {
     sidebarOpen: boolean,
@@ -54,9 +52,9 @@ export const appWrapperSlice = createSlice({
 
 export const { resetAppWrapper, updateAppWrapper } = appWrapperSlice.actions;
 
-export const selectAppWrapperSidebarOpen = (state: RootState) => state.appWrapper.sidebarOpen;
-export const selectAppWrapperChatOpen = (state: RootState) => state.appWrapper.chatOpen;
-export const selectAppWrapperClosedMobileWelcomeBanner = (state: RootState) => state.appWrapper.closedMobileWelcomeBanner;
+export const selectAppWrapperSidebarOpen = (state: RootState) => state.appWrapper ? state.appWrapper.sidebarOpen : initialAppWrapperState.sidebarOpen;
+export const selectAppWrapperChatOpen = (state: RootState) => state.appWrapper ? state.appWrapper.chatOpen : initialAppWrapperState.chatOpen;
+export const selectAppWrapperClosedMobileWelcomeBanner = (state: RootState) => state.appWrapper ? state.appWrapper.closedMobileWelcomeBanner : initialAppWrapperState.closedMobileWelcomeBanner;
 
 export default appWrapperSlice.reducer;
 

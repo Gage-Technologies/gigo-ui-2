@@ -1,5 +1,5 @@
-import {RootState} from '../../app/store';
-import { Workspace } from '../../models/workspace';
+import {RootState} from '@/reducers/store';
+import { Workspace } from '@/models/workspace';
 
 
 export const SET_DEVSPACE_CACHE = 'SET_DEVSPACE_CACHE';
@@ -81,6 +81,6 @@ const devSpaceCacheReducer = (state = initialState, action: CacheActionTypes): D
     }
 };
 
-export const selectDevSpaceCacheState = (state: RootState) => state.devSpaceCache;
+export const selectDevSpaceCacheState = (state: RootState) => state.devSpaceCache ? state.devSpaceCache : initialState;
 
 export default devSpaceCacheReducer;

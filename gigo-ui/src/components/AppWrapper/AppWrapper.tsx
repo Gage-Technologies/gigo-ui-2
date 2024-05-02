@@ -52,7 +52,7 @@ import FeedIcon from '@mui/icons-material/Feed';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import FolderIcon from '@mui/icons-material/Folder';
-import UserIcon from "../UserIcon";
+import UserIcon from "@/icons/User/UserIcon";
 import {getAllTokens, isHoliday, themeHelpers} from "@/theme";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -120,7 +120,7 @@ import Image from "next/image";
 
 
 interface IProps {
-};
+}
 
 
 export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
@@ -166,7 +166,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     let loggedIn = false
     const authState = useAppSelector(selectAuthState);
-    if (authState.authenticated !== false) {
+    if (authState.authenticated) {
         loggedIn = true
     }
 
@@ -653,7 +653,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const handleExclusiveContent = () => {
         setAnchorEl(null);
-        if (exclusiveAgreement === true || window.sessionStorage.getItem('exclusiveAgreement') === "true") {
+        if (exclusiveAgreement || window.sessionStorage.getItem('exclusiveAgreement') === "true") {
             window.sessionStorage.setItem("exclusiveProject", "true")
             router.push("/create-challenge")
         } else {
@@ -991,7 +991,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         </Button>
                                     </Box>
                                     <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-                                        <img src={proGorilla} width={170} height={130}/>
+                                        <Image alt={""} src={proGorilla} width={170} height={130}/>
                                         <div style={{
                                             display: "flex",
                                             flexDirection: "column",
@@ -1032,7 +1032,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             }}>
                                                 <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
                                                     {/* Replace with actual icon */}
-                                                    <img src={codeTeacher} width={50} height={50}/>
+                                                    <Image alt={""} src={codeTeacher} width={50} height={50}/>
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"
@@ -1057,7 +1057,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             }}>
                                                 <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
                                                     {/* Replace with actual icon */}
-                                                    <img src={resources} width={50} height={50}/>
+                                                    <Image alt={""} src={resources} width={50} height={50}/>
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"
@@ -1082,7 +1082,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             }}>
                                                 <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
                                                     {/* Replace with actual icon */}
-                                                    <img src={privateWorkspace} width={50} height={50}/>
+                                                    <Image alt={""} src={privateWorkspace} width={50} height={50}/>
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"

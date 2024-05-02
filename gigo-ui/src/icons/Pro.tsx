@@ -1,5 +1,4 @@
 import React from 'react';
-import SvgIcon from '@mui/material/SvgIcon';
 import { Icon } from "@material-ui/core";
 import pro from '@/img/pro/premium_gorilla_pro.svg';
 import Image from "next/image";

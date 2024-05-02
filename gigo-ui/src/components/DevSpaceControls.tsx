@@ -18,10 +18,12 @@ import {Workspace} from '@/models/workspace';
 import {selectAuthState} from "@/reducers/auth/auth";
 import goProGorilla from "../img/pro-pop-up-icon-plain.svg"
 import GoProDisplay from "./GoProDisplay";
+import config from "@/config";
+import Image from "next/image";
 
 interface IProps {
     wsId: string;
-};
+}
 
 
 const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
@@ -358,7 +360,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                                     setIsOpen(false)
                                 }}>Go Pro</Button>
                             </div>
-                            <img src={goProGorilla} alt={"Go Pro"} height={"50px"}/>
+                            <Image src={goProGorilla} alt={"Go Pro"} height={50} width={50}/>
                         </div>
                     )}
                     {usageMemo}
@@ -379,7 +381,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                                 disabled: boolean
                             }, index: any) => {
                                 return (
-                                    <Grid item xs={"auto"}>
+                                    <Grid item xs={"auto"} key={`port-${port.port}-${index}`}>
                                         <Button
                                             href={port.url}
                                             target="_blank"

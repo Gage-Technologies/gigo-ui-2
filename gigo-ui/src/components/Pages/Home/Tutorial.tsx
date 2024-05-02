@@ -142,7 +142,7 @@ export default function Tutorial() {
                     {authState.role != 1 && (
                         <>
                             <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
-                                You've received a free month of GIGO Pro!
+                                You&#39;ve received a free month of GIGO Pro!
                             </Typography>
                             <Box sx={{
                                 display: 'flex',

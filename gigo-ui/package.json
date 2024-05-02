@@ -177,6 +177,7 @@
     "remark-code-blocks": "^2.0.1",
     "remark-gfm": "^3.0.1",
     "rss-parser": "^3.13.0",
+    "sharp": "^0.33.3",
     "shiki": "^0.12.1",
     "simple-git": "^3.19.0",
     "space-separated-tokens": "^2.0.2",

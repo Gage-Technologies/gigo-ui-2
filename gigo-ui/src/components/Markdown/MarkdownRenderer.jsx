@@ -6,7 +6,7 @@ import remarkCodeBlock from 'remark-code-blocks';
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {darkSyntaxTheme, lightSyntaxTheme} from './SyntaxHighlights';
-import {alpha, Box, Button, createTheme, IconButton, Tooltip, Typography} from '@mui/material';
+import {alpha, Box, createTheme, IconButton, Tooltip, Typography} from '@mui/material';
 import {getAllTokens} from '@/theme';
 import merge from 'deepmerge';
 import {Check, ContentCopy} from "@mui/icons-material";
@@ -111,7 +111,7 @@ const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPl
 
         if (node.tagName === 'video') {
           // retrieve the first source in the children if it exists
-          let src = "";
+          let src;
           if (node.children.length > 0) {
             src = node.children[0].properties.src;
           } else {
@@ -226,13 +226,14 @@ const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPl
                     </Box>
                     <ErrorBoundary>
                       <SyntaxHighlighter
-                        children={t}
                         style={mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
                         language={match[1]}
                         PreTag="div"
                         className="notranslate"
                         {...props}
-                      />
+                      >
+                        {t}
+                      </SyntaxHighlighter>
                     </ErrorBoundary>
                   </div>
                 );

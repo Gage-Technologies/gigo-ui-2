@@ -1,6 +1,6 @@
-import {DefaultWorkspaceConfig, WorkspaceConfig} from "../../models/workspace";
+import {DefaultWorkspaceConfig, WorkspaceConfig} from "@/models/workspace";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {RootState} from "../../app/store";
+import {RootState} from "@/reducers/store";
 
 export interface JourneyCreateUnitState {
     title: string;
@@ -132,15 +132,15 @@ export const journeyCreateUnitSlice = createSlice({
 
 export const {updateJourneyCreateUnitState, clearJourneyCreateUnitState} = journeyCreateUnitSlice.actions;
 
-export const selectUnitTitle = (state: RootState) => state.journeyCreateUnit.title;
-export const selectUnitFocus = (state: RootState) => state.journeyCreateUnit.unitFocus;
-export const selectLanguages = (state: RootState) => state.journeyCreateUnit.languages;
-export const selectUnitTags = (state: RootState) => state.journeyCreateUnit.tags;
-export const selectTier = (state: RootState) => state.journeyCreateUnit.tier;
-export const selectUnitDescription = (state: RootState) => state.journeyCreateUnit.description;
-export const selectCost = (state: RootState) => state.journeyCreateUnit.cost;
-export const selectWorkspaceConfig = (state: RootState) => state.journeyCreateUnit.workspaceConfig;
-export const selectCustomWorkspaceConfigContent = (state: RootState) => state.journeyCreateUnit.customWorkspaceConfigContent;
-export const selectCreateWorkspaceConfig = (state: RootState) => state.journeyCreateUnit.createWorkspaceConfig;
+export const selectUnitTitle = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.title : initialJourneyCreateUnitState.title;
+export const selectUnitFocus = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.unitFocus : initialJourneyCreateUnitState.unitFocus;
+export const selectLanguages = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.languages : initialJourneyCreateUnitState.languages;
+export const selectUnitTags = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.tags : initialJourneyCreateUnitState.tags;
+export const selectTier = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.tier : initialJourneyCreateUnitState.tier;
+export const selectUnitDescription = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.description : initialJourneyCreateUnitState.description;
+export const selectCost = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.cost : initialJourneyCreateUnitState.cost;
+export const selectWorkspaceConfig = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.workspaceConfig : initialJourneyCreateUnitState.workspaceConfig;
+export const selectCustomWorkspaceConfigContent = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.customWorkspaceConfigContent : initialJourneyCreateUnitState.customWorkspaceConfigContent;
+export const selectCreateWorkspaceConfig = (state: RootState) => state.journeyCreateUnit ? state.journeyCreateUnit.createWorkspaceConfig : initialJourneyCreateUnitState.createWorkspaceConfig;
 
 export default journeyCreateUnitSlice.reducer;

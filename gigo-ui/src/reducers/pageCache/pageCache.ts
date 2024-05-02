@@ -1,5 +1,4 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from '../../app/store';
+import {RootState} from '@/reducers/store';
 
 export const SET_CACHE = 'SET_CACHE';
 export const DELETE_CACHE = 'DELETE_CACHE';
@@ -71,6 +70,6 @@ const pageCacheReducer = (state = initialState, action: CacheActionTypes): Cache
     }
 };
 
-export const selectCacheState = (state: RootState) => state.pageCache;
+export const selectCacheState = (state: RootState) => state.pageCache ? state.pageCache : initialState;
 
 export default pageCacheReducer;

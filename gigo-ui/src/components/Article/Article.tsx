@@ -3,8 +3,7 @@ import React from 'react';
 import {
     Typography,
     Button,
-    Box,
-    createTheme
+    Box
 } from '@mui/material';
 import MarkdownRenderer from "@/components/MarkdownServer/MarkdownRenderer";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
