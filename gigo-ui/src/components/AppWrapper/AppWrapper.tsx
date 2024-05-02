@@ -80,8 +80,6 @@ import {
 import {isChrome} from "react-device-detect";
 import {LocalFireDepartment, Quiz} from "@mui/icons-material";
 import {Icon as IconifyIcon} from "@iconify/react";
-// import {persistStore} from "redux-persist";
-// import {store} from "@/reducers/store"
 import Snowfall from "react-snowfall";
 import Confetti from "react-confetti";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
@@ -126,6 +124,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let router = useRouter();
     let query = useSearchParams();
     let pathname = usePathname();
+    let isMobile = query.get("viewport") === "mobile";
+    console.log("isMobile: ", query)
 
     const {trackEvent} = useTracking({}, {
         dispatch: (data: any) => {
@@ -143,7 +143,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     });
 
     // Check if the current page is ByteMobile
-    const isByteMobilePage = pathname.startsWith('/byte/') && window.innerWidth < 1000;
+    const isByteMobilePage = pathname.startsWith('/byte/') && isMobile;
 
     const dispatch = useAppDispatch();
 
@@ -158,7 +158,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             pathname === '' || pathname === '/')
     )
 
-    let homePageLockedDrawer = loggedIn && onHomePage && window.innerWidth > 1000
+    let homePageLockedDrawer = loggedIn && onHomePage && !isMobile
 
     const thumbnail = useAppSelector(selectAuthStateThumbnail);
     const exclusiveAgreement = useAppSelector(selectAuthStateExclusiveAgreement);
@@ -371,7 +371,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     ? "0px"
                     : pathname.startsWith("/launchpad/") && query.get("editor") === "true"
                         ? "28px"
-                        : window.innerWidth > 1000
+                        : !isMobile
                             ? "65px"
                             : "56px"
             }}
@@ -578,7 +578,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             }
             const persistOptions = {};
             // persistStore(store, persistOptions).purge()
-            window.sessionStorage.setItem("homeIndex", "undefined")
         })
     }
 
@@ -1466,7 +1465,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         restartTutorialClick()
                                         handleClose()
                                     }}>Restart Tutorial</MenuItem>
-                                    {window.innerWidth > 1000 ? (
+                                    {!isMobile ? (
                                         <MenuItem onClick={handleSettings}>Account Settings</MenuItem>
                                     ) : null}
                                     <MenuItem onClick={async () => {
@@ -2193,7 +2192,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
         return (
             <>
-                {window.innerWidth > 1000 && (
+                {!isMobile && (
                     <IconButton
                         onClick={() => handleChatButton()}
                         sx={{
@@ -2236,7 +2235,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         flexShrink: 0,
                         zIndex: 998,
                         '& .MuiDrawer-paper': {
-                            width: window.innerWidth > 1000 ? drawerWidth * 1.5 : '100vw',
+                            width: !isMobile ? drawerWidth * 1.5 : '100vw',
                             border: "none",
                             opacity: 1,
                             color: theme.palette.text.primary,
@@ -2260,7 +2259,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     if (pathname.startsWith("/launchpad/") && query.get("editor") === "true") {
         appBarRenderer = renderWorkspaceAppBar
-    } else if (window.innerWidth < 1000) {
+    } else if (isMobile) {
         appBarRenderer = mobileAppBar
     }
 
@@ -2318,7 +2317,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     {renderChatSideBar()}
                     {
                         // we only render the children on mobile if the chat bar is not open
-                        !(window.innerWidth <= 1000 && rightOpen) ?
+                        !(isMobile && rightOpen) ?
                             memoizedChildren : null
                     }
                 </Box>
