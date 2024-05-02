@@ -2,7 +2,7 @@ import 'typeface-poppins';
 import "./home/globals.css";
 import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
 import {ThemeProvider} from '@mui/material/styles';
-import {defaultTheme} from "@/theme";
+import {theme} from "@/theme";
 import StoreProvider from "@/app/StoreProvider";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
 import {WebSocketProvider} from "@/services/websocket";
@@ -49,7 +49,7 @@ export default function Layout({
             <StoreProvider>
                 <WebSocketProvider>
                     <CtWebSocketProvider>
-                        <ThemeProvider theme={defaultTheme}>
+                        <ThemeProvider theme={theme}>
                             <CssBaseline>
                                 <AppWrapper>
                                     {children}

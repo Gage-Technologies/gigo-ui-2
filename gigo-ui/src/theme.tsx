@@ -2,6 +2,15 @@
 import {createTheme, PaletteMode} from "@mui/material";
 import type * as CSS from 'csstype';
 
+export enum Holiday {
+    Halloween = "Halloween",
+    NewYears = "New Years",
+    Christmas = "Christmas",
+    Valentines = "Valentines",
+    Easter = "Easter",
+    Independence = "Independence"
+}
+
 function createFontFamily(fontFamily: CSS.Property.FontFamily) {
     return {
         h1: {
@@ -119,93 +128,48 @@ export const baseColors = [
 export const getDesignTokens = (mode: PaletteMode) => ({
     palette: {
         mode,
-        ...(mode === 'light'
-                ? {
-                    // palette values for light mode
-                    primary: {
-                        light: '#84E8A2',
-                        main: '#29C18C',
-                        dark: '#1c8762',
-                        contrastText: '#fff',
-                    },
-                    secondary: {
-                        light: '#63a4f8',
-                        main: '#3D8EF7',
-                        dark: '#2a63ac',
-                        contrastText: '#fff',
-                    },
-                    tertiary: {
-                        light: '#fffcbb',
-                        main: '#FFFCAB',
-                        dark: '#ffef62',
-                        contrastText: '#1c1c1a',
-                    },
-                    divider: "#2a63ac",
-                    background: {
-                        default: "#FFFAFA",
-                        codeEditorSide: "#9B9B9B",
-                        paper: "#fff",
-                        codeEditor: "#fff",
-                        card: '#FFFAFA',
-                        chat: '#fff',
-                        avatar: '#e5e5e5'
-                    },
-                    background2: {
-                        default: "#D5D5D5"
-                    },
-                    text: {
-                        primary: "#1c1c1a",
-                        secondary: "#9B9B9B",
-                        codeEditor: "#1D1D1B"
-                    }
-                }
-                :
-                {
-                    primary: {
-                        light: '#63a4f8',
-                        main: '#3D8EF7',
-                        dark: '#2a63ac',
-                        contrastText: '#fff',
-                    },
-                    secondary: {
-                        light: '#84E8A2',
-                        main: '#29C18C',
-                        dark: '#1c8762',
-                        contrastText: '#fff',
-                    },
-                    tertiary: {
-                        light: '#fffcbb',
-                        main: '#FFFCAB',
-                        dark: '#ffef62',
-                        contrastText: '#1c1c1a',
-                    },
-                    divider: "#2a63ac",
-                    background: {
-                        default: "#1c1c1a",
-                        codeEditorSide: "#70809010",
-                        paper: "#1c1c1a",
-                        codeEditor: '#18181b',
-                        card: '#282826',
-                        chat: '#131312',
-                        avatar: '#272727'
-                    },
-                    background2: {
-                        default: "#70809010"
-                    },
-                    text: {
-                        primary: "#fff",
-                        secondary: "#9B9B9B",
-                        codeEditor: "#fff"
-                    },
-                }
-        ),
+        primary: {
+            light: '#84E8A2',
+            main: '#29C18C',
+            dark: '#1c8762',
+            contrastText: '#fff',
+        },
+        secondary: {
+            light: '#63a4f8',
+            main: '#3D8EF7',
+            dark: '#2a63ac',
+            contrastText: '#fff',
+        },
+        tertiary: {
+            light: '#fffcbb',
+            main: '#FFFCAB',
+            dark: '#ffef62',
+            contrastText: '#1c1c1a',
+        },
+        divider: "#2a63ac",
+        background: {
+            default: "#1c1c1a",
+            codeEditorSide: "#70809010",
+            paper: "#1c1c1a",
+            codeEditor: '#18181b',
+            card: '#282826',
+            chat: '#131312',
+            avatar: '#272727'
+        },
+        background2: {
+            default: "#70809010"
+        },
+        text: {
+            primary: "#fff",
+            secondary: "#9B9B9B",
+            codeEditor: "#fff"
+        },
     },
     typography: createFontFamily("Poppins"),
     shape: {
         borderRadius: 10
     }
 });
-
 
 
 export const getHalloweenTokens = (mode: PaletteMode) => ({
@@ -457,7 +421,7 @@ export const getNewYearsTokens = (mode: PaletteMode) => ({
                         chat: '#1e1826'
                     },
                     background2: {
-                        default:"#70809010"
+                        default: "#70809010"
                     },
                     text: {
                         primary: "#feefc8",
@@ -737,58 +701,75 @@ export const getIndependenceTokens = (mode: PaletteMode) => ({
     }
 });
 
-let holiday = "Regular"
-
-export const getAllTokens = (mode: PaletteMode) => {
+export const isHoliday = (): Holiday | null => {
     const today = new Date();
 
-    if (today.getMonth() === 9){
+    if (today.getMonth() === 9) {
         // Halloween
-        holiday = "Halloween"
-        return getHalloweenTokens(mode);
+        return Holiday.Halloween
     }
 
-    if ((today.getMonth() === 11 && today.getDate() >= 26) || (today.getMonth() === 0 && today.getDate() <= 2)){
+    if ((today.getMonth() === 11 && today.getDate() >= 26) || (today.getMonth() === 0 && today.getDate() <= 2)) {
         // New Years
-        holiday = "New Years"
-        return getNewYearsTokens(mode);
+        return Holiday.NewYears
     }
 
-    if (today.getMonth() === 11){
+    if (today.getMonth() === 11) {
         // Christmas
-        holiday = "Christmas"
-        return getChristmasTokens(mode);
+        return Holiday.Christmas
     }
 
     if (today.getMonth() === 1 && today.getDate() < 14) {
         // Valentines
-        holiday = "Valentines"
+        return Holiday.Valentines
+    }
+
+    let easterMonth = gaussEaster(today.getFullYear());
+     // Set Easter Range Each Year
+     if (today.getMonth() === easterMonth){
+         // Easter
+         return Holiday.Easter
+     }
+
+    if ((today.getMonth() === 6 && today.getDate() >= 1) && (today.getMonth() === 6 && today.getDate() <= 7)) {
+        // Independence
+        return Holiday.Independence
+    }
+
+    return null
+}
+
+export const getAllTokens = (mode: PaletteMode) => {
+    const holiday = isHoliday()
+
+    if (holiday === Holiday.Halloween) {
+        return getHalloweenTokens(mode);
+    }
+
+    if (holiday === Holiday.NewYears) {
+        return getNewYearsTokens(mode);
+    }
+
+    if (holiday === Holiday.Christmas) {
+        return getChristmasTokens(mode);
+    }
+
+    if (holiday === Holiday.Valentines) {
         return getValentinesTokens(mode);
     }
 
-    // let easterMonth = gaussEaster(today.getFullYear());
-    //  // Set Easter Range Each Year
-    //  if (today.getMonth() === easterMonth){
-    //      // Easter
-    //      holiday = "Easter"
-    //      return getEasterTokens(mode);
-    //  }
+     // if (holiday === Holiday.Easter) {
+     //     return getEasterTokens(mode);
+     // }
 
-    if ((today.getMonth() === 6 && today.getDate() >= 1)  && (today.getMonth() === 6 && today.getDate() <= 7)){
-        // Independence
-        holiday = "Independence"
+    if (holiday === Holiday.Independence) {
         return getIndependenceTokens(mode)
     }
 
     return getDesignTokens(mode);
 }
 
-export const isHoliday = () => {
-    return holiday
-}
-
-function gaussEaster(Y: any)
-{
+function gaussEaster(Y: any) {
     let A, B, C, P, Q, M, N, D, E;
 
     // All calculations done
@@ -817,14 +798,12 @@ function gaussEaster(Y: any)
     else if ((D === 28) && (E === 6)) {
         process.stdout.write(Y + "-04-18");
         return 3;
-    }
-    else {
+    } else {
         // If days > 31, move to April
         // April = 4th Month
         if (days > 31) {
             return 3;
-        }
-        else {
+        } else {
             // Otherwise, stay on March
             // March = 3rd Month
             return 2;
@@ -858,4 +837,5 @@ export const themeHelpers = {
     },
 }
 
-export const defaultTheme = createTheme(getAllTokens('dark'));
+export const theme = createTheme(getDesignTokens('dark'));
+export const holiday = isHoliday();

@@ -1,6 +1,6 @@
 import * as React from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
-import {defaultTheme} from "@/theme";
+import {theme} from "@/theme";
 import config from "@/config";
 import Carousel from "../../components/Carousesl";
 import ReactGA from "react-ga4";
@@ -184,14 +184,14 @@ async function Home() {
                                     flexGrow: 1,
                                 }}>
                                     <Typography variant="h2" sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                     }}>
                                         {completedJourneyTasks}
                                     </Typography>
                                 </Box>
                                 <Typography variant="h5" sx={{
-                                    color: defaultTheme.palette.background.default,
+                                    color: theme.palette.background.default,
                                     textTransform: 'none',
                                     width: '100%',
                                     textAlign: 'center',
@@ -219,14 +219,14 @@ async function Home() {
                                     flexGrow: 1,
                                 }}>
                                     <Typography variant="h2" sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                     }}>
                                         {completedJourneyUnits}
                                     </Typography>
                                 </Box>
                                 <Typography variant="h5" sx={{
-                                    color: defaultTheme.palette.background.default,
+                                    color: theme.palette.background.default,
                                     textTransform: 'none',
                                     width: '100%',
                                     textAlign: 'center',
@@ -253,14 +253,14 @@ async function Home() {
                                     flexGrow: 1,
                                 }}>
                                     <Typography variant="h2" sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                     }}>
                                         {detourCount}
                                     </Typography>
                                 </Box>
                                 <Typography variant="h5" sx={{
-                                    color: defaultTheme.palette.background.default,
+                                    color: theme.palette.background.default,
                                     textTransform: 'none',
                                     width: '100%',
                                     textAlign: 'center',
@@ -288,14 +288,14 @@ async function Home() {
                                     flexGrow: 1,
                                 }}>
                                     <Typography variant="h2" sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                     }}>
                                         {incompletedJourneyTasks}
                                     </Typography>
                                 </Box>
                                 <Typography variant="h5" sx={{
-                                    color: defaultTheme.palette.background.default,
+                                    color: theme.palette.background.default,
                                     textTransform: 'none',
                                     width: '100%',
                                     textAlign: 'center',
@@ -338,7 +338,7 @@ async function Home() {
                             <div style={{position: "relative", top: "100px", width: '50%'}}>
                                 <Typography variant={"h1"}
                                             sx={{
-                                                color: defaultTheme.palette.background.default,
+                                                color: theme.palette.background.default,
                                                 textTransform: 'none'
                                             }}>
                                     Embark on your Coding Journey
@@ -352,10 +352,10 @@ async function Home() {
                             <AwesomeButton style={{
                                 width: "auto",
                                 height: "50px",
-                                '--button-primary-color': defaultTheme.palette.primary.main,
-                                '--button-primary-color-dark': defaultTheme.palette.primary.dark,
+                                '--button-primary-color': theme.palette.primary.main,
+                                '--button-primary-color-dark': theme.palette.primary.dark,
                                 '--button-primary-color-light': "white",
-                                '--button-primary-color-hover': defaultTheme.palette.primary.main,
+                                '--button-primary-color-hover': theme.palette.primary.main,
                                 '--button-default-border-radius': "12px",
                                 fontSize: "28px"
                             }} type="primary" href={"/journey/main"}>
@@ -389,7 +389,7 @@ async function Home() {
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                         mb: 1,
@@ -400,7 +400,7 @@ async function Home() {
                                 <Typography
                                     variant="subtitle1"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                     }}
@@ -425,7 +425,7 @@ async function Home() {
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                         mb: 1,
@@ -436,7 +436,7 @@ async function Home() {
                                 <Typography
                                     variant="subtitle1"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                     }}
@@ -461,7 +461,7 @@ async function Home() {
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                         mb: 1,
@@ -472,7 +472,7 @@ async function Home() {
                                 <Typography
                                     variant="subtitle1"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                     }}
@@ -497,7 +497,7 @@ async function Home() {
                                 <Typography
                                     variant="h4"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                         mb: 1,
@@ -508,7 +508,7 @@ async function Home() {
                                 <Typography
                                     variant="subtitle1"
                                     sx={{
-                                        color: defaultTheme.palette.background.default,
+                                        color: theme.palette.background.default,
                                         textTransform: 'none',
                                         textAlign: 'center',
                                     }}
@@ -524,10 +524,10 @@ async function Home() {
                     <Box sx={{mt: 2, display: 'flex', justifyContent: 'center'}}>
                         <AwesomeButton style={{
                             width: "auto",
-                            '--button-primary-color': defaultTheme.palette.primary.main,
-                            '--button-primary-color-dark': defaultTheme.palette.primary.dark,
+                            '--button-primary-color': theme.palette.primary.main,
+                            '--button-primary-color-dark': theme.palette.primary.dark,
                             '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': defaultTheme.palette.primary.light,
+                            '--button-primary-color-hover': theme.palette.primary.light,
                             '--button-default-border-radius': "12px",
                             fontSize: "28px",
                             height: "80px",
@@ -543,7 +543,7 @@ async function Home() {
                     <Typography
                         variant="h4"
                         sx={{
-                            color: defaultTheme.palette.background.default,
+                            color: theme.palette.background.default,
                             textTransform: 'none',
                             textAlign: 'center',
                             mb: 2,
@@ -558,10 +558,10 @@ async function Home() {
                         <AwesomeButton style={{
                             width: "auto",
                             height: "80px",
-                            '--button-primary-color': defaultTheme.palette.primary.main,
-                            '--button-primary-color-dark': defaultTheme.palette.primary.dark,
+                            '--button-primary-color': theme.palette.primary.main,
+                            '--button-primary-color-dark': theme.palette.primary.dark,
                             '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': defaultTheme.palette.primary.main,
+                            '--button-primary-color-hover': theme.palette.primary.main,
                             '--button-default-border-radius': "12px",
                             fontSize: "28px"
                         }} type="primary" href={"/journey/main"}>
