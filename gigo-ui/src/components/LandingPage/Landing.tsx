@@ -2,15 +2,14 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Box, Button, Link, Typography} from '@mui/material';
 import {styled} from '@mui/system';
-import Image from 'next/image';
 
-import backgroundImageWebP from "@/img/landing/gigo-landing.webp";
-import {useAppSelector} from '@/reducers/hooks';
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import {useSearchParams} from "next/navigation";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import config from "@/config";
 
 
 // Hero container with jungle-themed background
@@ -23,6 +22,11 @@ const HeroContainer = styled(Box)(({theme}) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundImage: `
+        url(${config.rootPath + "/cloudstore/images/gigo-landing.webp"})
+    `,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
     overflow: 'hidden',
 }));
 
@@ -119,16 +123,6 @@ const GIGOLandingPage: React.FC = () => {
     return (
         <>
             <HeroContainer sx={{width}}>
-                <Image
-                    src={backgroundImageWebP}
-                    alt="Landing background"
-                    fill={true}
-                    style={{
-                        objectFit: "cover",
-                        objectPosition: "center",
-                    }}
-                    priority={true}
-                />
                 {fireflies.length > 0 && fireflyMemo}
                 <HeroContent>
                     <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
@@ -137,14 +131,14 @@ const GIGOLandingPage: React.FC = () => {
                             width: '90px',
                             marginRight: "20px",
                             marginBottom: "20px",
-                            color: "#208562"
+                            color: "white"
                         }}/>
                         <Typography variant="h3" gutterBottom>
                             Welcome to GIGO
                         </Typography>
                     </Box>
                     <Typography variant="h5" gutterBottom sx={{maxWidth: "40vw"}}>
-                        GIGO is the best place to learn how to code
+                        Learn to code for free with thousands of lessons!
                     </Typography>
                     <Typography variant="body1" gutterBottom sx={{maxWidth: "40vw"}}>
                         Code in the cloud, learn from thousands of lessons, and work with the latest technologies from
@@ -160,6 +154,7 @@ const GIGOLandingPage: React.FC = () => {
                             mt: 2,
                             color: "white",
                             backgroundColor: theme.palette.primary.main + "50",
+                            // highlight on hover
                             '&:hover': {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
@@ -175,22 +170,42 @@ const GIGOLandingPage: React.FC = () => {
                         justifyContent: 'center',
                         mt: 2
                     }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
-                              target="_blank">
-                            Join us on Discord!
-                        </Link>
-                        <SocialIcon
-                            network="discord"
-                            url="https://discord.gg/279hECYrfX"
-                            bgColor={"transparent"}
-                            fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
-                            target="_blank"
-                            style={{
-                                height: "32px",
-                                width: "32px",
-                                marginBottom: "5px"
-                            }}
-                        />
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            mr: 3
+                        }}>
+                            <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
+                                  target="_blank"> {/* Change typography variant */}
+                                Join us on Discord!
+                            </Link>
+                            <SocialIcon
+                                network="discord"
+                                url="https://discord.gg/279hECYrfX"
+                                bgColor={"transparent"}
+                                fgColor={theme.palette.mode === 'dark' ? "white" : "black"}
+                                target="_blank"
+                                style={{
+                                    height: "32px",
+                                    width: "32px",
+                                    marginBottom: "5px"
+                                }}
+                            />
+                        </Box>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}>
+                            <Link variant="caption" href="/about" gutterBottom
+                                  color="#ffffff"> {/* Change typography variant */}
+                                Learn more about GIGO
+                            </Link>
+                            <InfoOutlinedIcon style={{fontSize: "18px", marginBottom: "5px", marginLeft: "5px"}}/>
+                        </Box>
                     </Box>
                 </HeroContent>
             </HeroContainer>

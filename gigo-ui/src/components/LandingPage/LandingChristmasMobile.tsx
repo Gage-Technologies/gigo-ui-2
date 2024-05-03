@@ -1,15 +1,15 @@
 'use client'
-import React, { useRef } from 'react';
-import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
-import { styled } from '@mui/system';
-import backgroundImageWebP from "@/img/landing/gigo-landing-christmas-mobile.webp";
-import {getAllTokens, theme, themeHelpers} from '@/theme';
-import { SocialIcon } from 'react-social-icons';
+import React, {useRef} from 'react';
+import {Box, Button, Link, Typography} from '@mui/material';
+import {styled} from '@mui/system';
+import {theme, themeHelpers} from '@/theme';
+import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import Snowfall from 'react-snowfall';
+import config from "@/config";
 
 // Responsive Hero container for mobile
-const HeroContainer = styled(Box)(({ theme }) => ({
+const HeroContainer = styled(Box)(({theme}) => ({
     position: 'relative',
     height: 'calc(100vh - 56px)',
     width: '100vw',
@@ -17,7 +17,7 @@ const HeroContainer = styled(Box)(({ theme }) => ({
     flexDirection: 'column', // Change to column for mobile
     alignItems: 'center',
     justifyContent: 'flex-start', // Change alignment for mobile
-    backgroundImage: `url(${backgroundImageWebP})`,
+    backgroundImage: `url(${config.rootPath + "/cloudstore/images/gigo-landing-christmas-mobile.webp"})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     overflow: 'hidden',
@@ -42,21 +42,26 @@ const GIGOLandingPageChristmasMobile: React.FC = () => {
 
     return (
         <>
-            <HeroContainer sx={{ width: "100vw" }}>
+            <HeroContainer sx={{width: "100vw"}}>
                 <Snowfall snowflakeCount={15}/>
                 <HeroContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                        <GigoCircleIcon sx={{ height: '60px', width: '60px', color: "#fff" }}/>
+                    <Box
+                        sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <GigoCircleIcon sx={{height: '60px', width: '60px', color: "#fff"}}/>
                         <Typography variant="h4" gutterBottom> {/* Change typography variant */}
                             Welcome to GIGO
                         </Typography>
                     </Box>
-                    <Typography variant="h6" gutterBottom sx={{ maxWidth: "80vw" }}> {/* Change typography variant and max width */}
+                    <Typography variant="h6" gutterBottom
+                                sx={{maxWidth: "80vw"}}> {/* Change typography variant and max width */}
                         GIGO is the best place to learn how to code
                     </Typography>
-                    <Typography variant="body2" gutterBottom sx={{ maxWidth: "80vw" }}> {/* Change typography variant and max width */}
-                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
-                        Code in the cloud, work on real projects, and learn the latest technologies from any machine, even a tablet!
+                    <Typography variant="body2" gutterBottom
+                                sx={{maxWidth: "80vw"}}> {/* Change typography variant and max width */}
+                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of
+                        development.
+                        Code in the cloud, work on real projects, and learn the latest technologies from any machine,
+                        even a tablet!
                         Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
@@ -82,8 +87,15 @@ const GIGOLandingPageChristmasMobile: React.FC = () => {
                     >
                         Explore The North Pole
                     </Button>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank"> {/* Change typography variant */}
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 2
+                    }}>
+                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
+                              target="_blank"> {/* Change typography variant */}
                             Join us on Discord!
                         </Link>
                         <SocialIcon
@@ -100,7 +112,7 @@ const GIGOLandingPageChristmasMobile: React.FC = () => {
                     </Box>
                 </HeroContent>
             </HeroContainer>
-            <div ref={endRef} id="end-landing" />
+            <div ref={endRef} id="end-landing"/>
         </>
     );
 };

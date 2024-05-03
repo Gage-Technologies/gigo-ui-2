@@ -15,26 +15,34 @@ export const config = {
 }
 
 export function middleware(request: NextRequest) {
-    const url = request.nextUrl
+    let url = request.nextUrl
+    let redirect = false;
+
+    // handle root redirect to home page
+    if (url.pathname === "/") {
+        url.pathname = "/home"
+        redirect = true
+    }
 
     // handle middleware for documentation path
-    let docOut = handleDocumentationRedirect(url)
-    if (docOut) {
-        return docOut
+    let docOut = handleDocumentationRedirect(url);
+    if (docOut.redirect) {
+        url = docOut.url
+        redirect = true
     }
 
     // Handle device redirects
     const { device } = userAgent(request)
     const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
-    let redirecting = false;
     if (url.searchParams.get('viewport') !== viewport) {
         url.searchParams.set('viewport', viewport)
-        redirecting = true
-    }
-    if (redirecting) {
-        return NextResponse.redirect(url)
+        redirect = true
     }
     ////
+
+    if (redirect) {
+        return NextResponse.redirect(url)
+    }
 
     return NextResponse.next()
 }

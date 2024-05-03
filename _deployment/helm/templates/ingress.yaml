@@ -1,0 +1,62 @@
+{{- if .Values.ui.ingress.enable }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ui-ingress
+  labels:
+    {{- include "ui.labels" . | nindent 4 }}
+  annotations:
+    {{- toYaml .Values.ui.ingress.annotations | nindent 4 }}
+spec:
+  {{- if .Values.ui.ingress.className }}
+  {{/* If this is set to an empty string it fails validation on K8s */}}
+  ingressClassName: {{ .Values.ui.ingress.className | quote }}
+  {{- end }}
+
+  rules:
+    - host: {{ .Values.ui.ingress.apiHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-ui-service
+                port:
+                  name: "http"
+
+    - host: {{ .Values.ui.ingress.wsHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-ui-service
+                port:
+                  name: "http"
+
+    - host: {{ .Values.ui.ingress.wsWildcardHost | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: gigo-ui-service
+                port:
+                  name: "http"
+
+  {{- if .Values.ui.ingress.tls.enable }}
+  tls:
+    - hosts:
+        - {{ .Values.ui.ingress.host | quote }}
+      secretName: {{ .Values.ui.ingress.tls.secretName | quote}}
+    {{- if .Values.ui.ingress.tls.wildcardSecretName }}
+    - hosts:
+        - {{ include "ui.ingressWildcardHost" . | quote }}
+      secretName: {{ .Values.ui.ingress.tls.wildcardSecretName | quote}}
+    {{- end }}
+  {{- end }}
+{{- end }}

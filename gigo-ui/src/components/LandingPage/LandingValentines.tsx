@@ -2,15 +2,13 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Box, Button, Link, Typography} from '@mui/material';
 import {styled} from '@mui/system';
-
-import backgroundImageWebP from "@/img/landing/gigo-landing-valentines.webp"
-import {useAppSelector} from '@/reducers/hooks';
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import HeartIcon from '@/icons/GIGO/Heart';
 import {useSearchParams} from "next/navigation";
+import config from "@/config";
 
 
 // Hero container with jungle-themed background
@@ -24,7 +22,7 @@ const HeroContainer = styled(Box)(({theme}) => ({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundImage: `
-        url(${backgroundImageWebP})
+        url(${config.rootPath + "/cloudstore/images/gigo-landing-valentines.webp"})
     `,
     backgroundSize: 'cover',
     backgroundPosition: 'center',

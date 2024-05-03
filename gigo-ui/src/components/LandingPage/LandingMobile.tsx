@@ -1,38 +1,41 @@
 'use client'
-import React, { useState, useEffect, useMemo, useRef } from 'react';
-import { Button, Typography, Box, PaletteMode, createTheme, Link } from '@mui/material';
-import { styled } from '@mui/system';
-import Image from 'next/image';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Box, Button, Link, Typography} from '@mui/material';
+import {styled} from '@mui/system';
 
-import backgroundImageWebP from "@/img/landing/gigo-landing-mobile.webp";
-import {getAllTokens, theme, themeHelpers} from '@/theme';
+import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
-import { SocialIcon } from 'react-social-icons';
+import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
+import config from "@/config";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 // Responsive Hero container for mobile
-const HeroContainer = styled(Box)(({ theme }) => ({
+const HeroContainer = styled(Box)(({theme}) => ({
     position: 'relative',
-    height: 'calc(100vh - 56px)', // Account for mobile status bars/navigation
+    height: 'calc(100vh - 56px)',
     width: '100vw',
     display: 'flex',
-    flexDirection: 'column', // Layout direction for mobile
+    flexDirection: 'column', // Change to column for mobile
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'flex-start', // Change alignment for mobile
+    backgroundImage: `url(${config.rootPath + "/cloudstore/images/gigo-landing-mobile.webp"})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
     overflow: 'hidden',
 }));
 
 const HeroContent = styled(Box)({
     position: 'relative',
     textAlign: 'center',
-    width: "90vw",
+    width: "90vw", // Adjust width for mobile
     zIndex: 100,
     color: '#fff',
     borderRadius: "10px",
-    padding: "10px",
+    padding: "10px", // Adjust padding for mobile
     ...themeHelpers.frostedGlass,
-    backgroundColor: "#1D1D1D25",
-    marginTop: 'auto',
+    backgroundColor: "#1d1d1d50",
+    marginTop: 'auto', // Adjust margin for mobile layout
     marginBottom: 'auto'
 });
 
@@ -41,7 +44,7 @@ const GIGOLandingPageMobile: React.FC = () => {
     const endRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
-        setFireflies(Array.from({ length: 15 }, (_, index) => {
+        setFireflies(Array.from({length: 15}, (_, index) => {
             let moveX = Math.random() * window.innerWidth * (Math.random() > .5 ? -1 : 1);
             while (Math.abs(moveX) < 100) {
                 moveX = Math.random() * window.innerWidth * (Math.random() > .5 ? -1 : 1);
@@ -74,23 +77,26 @@ const GIGOLandingPageMobile: React.FC = () => {
                     {fireflies.join(' ')}
                     {glowAnimation}
                 </style>
-                {fireflies.map((_, index) => (
-                    <LazyLoad key={index} once scroll unmountIfInvisible>
-                        <Box
-                            className="firefly"
-                            sx={{
-                                position: 'absolute',
-                                borderRadius: '50%',
-                                width: `${Math.max(Math.random() * 12, 5)}px`,
-                                height: `${Math.max(Math.random() * 12, 5)}px`,
-                                background: "#FFFCAB",
-                                top: `${Math.random() * 100}%`,
-                                left: `${Math.random() * 100}%`,
-                                animation: `move_${index} ${Math.max(Math.random() * 120, 15)}s ease-in-out infinite, glow 3s ease-in-out infinite`,
-                            }}
-                        />
-                    </LazyLoad>
-                ))}
+                {fireflies.map((_, index) => {
+                    let size = Math.max(Math.random() * 12, 5)
+                    return (
+                        <LazyLoad key={index} once scroll unmountIfInvisible>
+                            <Box
+                                className="firefly"
+                                sx={{
+                                    position: 'absolute',
+                                    borderRadius: '50%',
+                                    width: `${size}px`,
+                                    height: `${size}px`,
+                                    background: "#FFFCAB",
+                                    top: `${Math.random() * 100}%`,
+                                    left: `${Math.random() * 100}%`,
+                                    animation: `move_${index} ${Math.max(Math.random() * 120, 15)}s ease-in-out infinite, glow 3s ease-in-out infinite`,
+                                }}
+                            />
+                        </LazyLoad>
+                    )
+                })}
             </>
         )
     }, [fireflies]);
@@ -98,30 +104,25 @@ const GIGOLandingPageMobile: React.FC = () => {
     return (
         <>
             <HeroContainer>
-                <Image
-                    src={backgroundImageWebP}
-                    alt="Mobile landing background"
-                    fill={true}
-                    style={{
-                        objectFit: "cover",
-                        objectPosition: "center",
-                    }}
-                    priority={true}
-                />
                 {fireflies.length > 0 && fireflyMemo}
                 <HeroContent>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                        <GigoCircleIcon sx={{ height: '60px', width: '60px', color: "#fff" }}/>
-                        <Typography variant="h4" gutterBottom>
+                    <Box
+                        sx={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+                        <GigoCircleIcon sx={{height: '60px', width: '60px', color: "#fff"}}/>
+                        <Typography variant="h4" gutterBottom> {/* Change typography variant */}
                             Welcome to GIGO
                         </Typography>
                     </Box>
-                    <Typography variant="h6" gutterBottom sx={{ maxWidth: "80vw" }}>
-                        GIGO is the best place to learn how to code
+                    <Typography variant="h6" gutterBottom
+                                sx={{maxWidth: "80vw"}}> {/* Change typography variant and max width */}
+                        Learn to code for free with thousands of lessons!
                     </Typography>
-                    <Typography variant="body2" gutterBottom sx={{ maxWidth: "80vw" }}>
-                        Code in the cloud, learn from thousands of lessons, and work with the latest technologies from any machine, even a tablet!
-                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of development.
+                    <Typography variant="body2" gutterBottom
+                                sx={{maxWidth: "80vw"}}> {/* Change typography variant and max width */}
+                        Code in the cloud, learn from thousands of lessons, and work with the latest technologies from
+                        any machine, even a tablet!
+                        Built by self-taught developers, GIGO focuses on aligning learning with the real world of
+                        development.
                         Click Start Your Journey to start learning now!
                     </Typography>
                     <Button
@@ -139,8 +140,15 @@ const GIGOLandingPageMobile: React.FC = () => {
                     >
                         Start Your Journey
                     </Button>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', mt: 2 }}>
-                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff" target="_blank">
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        mt: 2
+                    }}>
+                        <Link variant="caption" href="https://discord.gg/279hECYrfX" gutterBottom color="#ffffff"
+                              target="_blank"> {/* Change typography variant */}
                             Join us on Discord!
                         </Link>
                         <SocialIcon
@@ -155,9 +163,16 @@ const GIGOLandingPageMobile: React.FC = () => {
                             }}
                         />
                     </Box>
+                    <Box sx={{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <Link variant="caption" href="/about" gutterBottom
+                              color="#ffffff"> {/* Change typography variant */}
+                            Learn more about GIGO
+                        </Link>
+                        <InfoOutlinedIcon style={{fontSize: "18px", marginBottom: "5px", marginLeft: "5px"}}/>
+                    </Box>
                 </HeroContent>
             </HeroContainer>
-            <div ref={endRef} id="end-landing" />
+            <div ref={endRef} id="end-landing"/>
         </>
     );
 };

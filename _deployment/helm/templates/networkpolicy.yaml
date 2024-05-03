@@ -1,0 +1,21 @@
+---
+# used for the gigo-ui system
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: ui
+spec:
+  podSelector:
+    matchLabels:
+      gigo/component: ui
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - ipBlock:
+        cidr: "0.0.0.0/0"
+  egress:
+  - to:
+    - ipBlock:
+        cidr: "0.0.0.0/0"
