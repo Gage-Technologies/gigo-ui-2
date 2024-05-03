@@ -1,6 +1,6 @@
+'use client'
 import * as React from "react";
 import {theme} from "@/theme";
-import {useEffect, useState} from "react";
 import {
     Box, CircularProgress,
     CssBaseline,
@@ -16,18 +16,32 @@ import DetourSignIcon from "@/icons/Journey/DetourSign";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import Image from 'next/image';
 import {useSearchParams} from "next/navigation";
+import {useState} from "react";
 
 function AboutGIGO() {
+    const query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     //@ts-ignore
     const DesktopVideo = ({ videoSrc }) => {
-        let loading = true;
+        const [loading, setLoading] = useState(true);
 
         const handleLoadedData = () => {
-            loading = false
+            setLoading(false);
         };
 
         return (
             <Box sx={{position: 'relative', height: "auto", width: "40vw"}}>
+                {loading && (
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 100
+                    }}>
+                        <CircularProgress color="inherit" />
+                    </Box>
+                )}
                 <video
                     src={videoSrc}
                     autoPlay
@@ -35,6 +49,7 @@ function AboutGIGO() {
                     muted
                     playsInline
                     preload="auto"
+                    onLoadedData={handleLoadedData}
                     style={{width: '100%', height: 'auto', borderRadius: "10px", border: "solid 2px #008664"}}
                 >
                     Your browser does not support the video tag.
@@ -45,15 +60,26 @@ function AboutGIGO() {
 
     //@ts-ignore
     const MobileVideo = ({ videoSrc }) => {
-        let loading = true;
+        const [loading, setLoading] = useState(true);
 
         const handleLoadedData = () => {
-            loading = false
+            setLoading(false);
         };
 
 
         return (
             <Box sx={{position: 'relative', height: "auto", width: "100vw", p: 2}}>
+                {loading && (
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 100
+                    }}>
+                        <CircularProgress color="inherit" />
+                    </Box>
+                )}
                 <video
                     src={videoSrc}
                     autoPlay
@@ -61,6 +87,7 @@ function AboutGIGO() {
                     muted
                     playsInline
                     preload="auto"
+                    onLoadedData={handleLoadedData}
                     style={{width: '100%', height: 'auto', borderRadius: "10px", border: "solid 2px #008664"}}
                 >
                     Your browser does not support the video tag.
@@ -290,7 +317,7 @@ function AboutGIGO() {
         <ThemeProvider theme={theme}>
             <CssBaseline>
                 <div>
-                    {renderDesktop()}
+                    {isMobile ? renderMobile() : renderDesktop()}
                 </div>
             </CssBaseline>
         </ThemeProvider>

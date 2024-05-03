@@ -2,11 +2,8 @@
 import * as React from "react";
 import {
     Box, CircularProgress,
-    createTheme,
     CssBaseline,
     Grid,
-    PaletteMode,
-    ThemeProvider,
     Typography
 } from "@mui/material";
 import {theme, isHoliday} from "@/theme";
@@ -22,8 +19,11 @@ import ByteMediumSelectionIcon from "@/icons/Bytes/ByteMediumSelection";
 import ByteHardSelectionIcon from "@/icons/Bytes/ByteHardSelection";
 import config from "@/config";
 import {useState} from "react";
+import {useSearchParams} from "next/navigation";
 
 function AboutBytes() {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     //@ts-ignore
     const DesktopVideo = ({ videoSrc }) => {
         const [loading, setLoading] = useState(true);
@@ -364,7 +364,7 @@ function AboutBytes() {
     return (
         <CssBaseline>
             <div>
-                {window.innerWidth > 1000 ? renderDesktop() : renderMobile()}
+                {!isMobile ? renderDesktop() : renderMobile()}
             </div>
         </CssBaseline>
     );

@@ -1,4 +1,5 @@
-import {Box, Button, createTheme, CssBaseline, Grid, PaletteMode, ThemeProvider} from "@mui/material";
+'use client'
+import {Box, CssBaseline, Grid} from "@mui/material";
 import * as React from "react";
 import CTIcon from "@/img/bytes/ct-logo.svg";
 import {theme} from "@/theme";
@@ -73,7 +74,7 @@ const titleStyle = {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <Image alt={""} src={JourneyUnit} style={{borderRadius: "25px", width: "60%", padding: "10px"}}/>
+                            <Image alt={""} src={JourneyUnit} style={{borderRadius: "25px", width: "80%", padding: "10px"}}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Mapped Learning</h2>
                         <p style={textStyle as React.CSSProperties}>
@@ -102,7 +103,7 @@ const titleStyle = {
                                 mt: 1,
                                 gap: "20px"
                             }}>
-                               <DetourSign width={"60vw"} />
+                               <DetourSign width={"100vw"} />
                             </Box>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Let&#39;s Get Sidetracked</h2>
@@ -148,7 +149,7 @@ const titleStyle = {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <Image alt={""} src={JourneyHandout} style={{borderRadius: "25px", width: "50%", padding: "10px"}}/>
+                            <Image alt={""} src={JourneyHandout} style={{borderRadius: "25px", width: "100%", padding: "10px"}}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Educational Resources</h2>
                         <p style={textStyle as React.CSSProperties}>

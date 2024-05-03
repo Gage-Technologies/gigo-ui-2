@@ -19,7 +19,7 @@ import resources from "@/img/premiumPageIcons/technology.svg"
 import privateWorkspace from "@/img/premiumPageIcons/padlock.svg"
 import vscodeTheme from "@/img/premiumPageIcons/coding.svg"
 import Image from "next/image";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 function AboutPagePremium() {
     let userPref = localStorage.getItem('theme')
@@ -135,26 +135,29 @@ function AboutPagePremium() {
         }
     }
 
+    const query = useSearchParams();
+    const isMobile = query.get("viewport") === "mobile";
+
     return (
         <CssBaseline>
             <div>
-                <Box style={window.innerWidth > 1000 ? {
+                <Box style={!isMobile ? {
                     width: "100%",
                     height: "500px",
                     backgroundColor: theme.palette.secondary.light
                 } : {width: "100%", height: "850px", backgroundColor: theme.palette.secondary.light}}>
-                    <div style={window.innerWidth > 1000 ? {
+                    <div style={!isMobile ? {
                         width: "100%",
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-evenly"
                     } : {width: "100%", display: "flex", flexDirection: "column", height: "100%"}}>
-                        <div style={window.innerWidth > 1000 ? {
+                        <div style={!isMobile ? {
                             position: "relative",
                             top: "150px"
                         } : {position: "relative", height: "100%", top: "50px"}}>
                             {inTrial ? (
-                                <div style={window.innerWidth > 1000 ? {} : {
+                                <div style={!isMobile ? {} : {
                                     left: "20px",
                                     position: "relative",
                                     width: "90%",
@@ -162,8 +165,8 @@ function AboutPagePremium() {
                                 }}>
                                     <h1 style={{top: '1%'}}>
                                         1 Month Trial Expires in{' '}
-                                        {window.innerWidth > 1000 ? (
-                                            <span style={window.innerWidth > 1000 ? {
+                                        {!isMobile ? (
+                                            <span style={!isMobile ? {
                                                 backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
                                                 padding: '10px',
                                                 borderRadius: '15px',
@@ -178,8 +181,8 @@ function AboutPagePremium() {
                                                 {getCountdown(membershipDates.upcoming)}
                                             </span>
                                         ) : (
-                                            <div style={window.innerWidth > 1000 ? {} : {marginTop: "20px"}}>
-                                                <span style={window.innerWidth > 1000 ? {
+                                            <div style={!isMobile ? {} : {marginTop: "20px"}}>
+                                                <span style={!isMobile ? {
                                                     backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
                                                     padding: '10px',
                                                     borderRadius: '15px',
@@ -212,7 +215,7 @@ function AboutPagePremium() {
                                     </AwesomeButton>
                                 </div>
                             ) : membership !== 1 ? (
-                                <div style={window.innerWidth > 1000 ? {} : {
+                                <div style={!isMobile ? {} : {
                                     left: "20px",
                                     position: "relative",
                                     width: "90%"
@@ -231,7 +234,7 @@ function AboutPagePremium() {
                                     </AwesomeButton>
                                 </div>
                             ) : (
-                                <div style={window.innerWidth > 1000 ? {} : {
+                                <div style={!isMobile ? {} : {
                                     position: "relative",
                                     left: "20px",
                                     width: "90%",
@@ -263,19 +266,19 @@ function AboutPagePremium() {
                         </div>
                     </div>
                 </Box>
-                <div style={window.innerWidth > 1000 ? {height: "200px"} : {height: "100px"}}/>
+                <div style={!isMobile ? {height: "200px"} : {height: "100px"}}/>
                 <Box>
-                    <div style={window.innerWidth > 1000 ? {
+                    <div style={!isMobile ? {
                         display: "flex",
                         flexDirection: "row",
                         width: "100%",
                         justifyContent: "space-evenly"
                     } : {display: "flex", flexDirection: "column", width: "100%", alignItems: "center"}}>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={codeTeacher} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -285,11 +288,11 @@ function AboutPagePremium() {
                                 </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={privateWorkspace} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -299,11 +302,11 @@ function AboutPagePremium() {
                                 </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={resources} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -315,17 +318,17 @@ function AboutPagePremium() {
                         </div>
                     </div>
                     <div style={{height: "100px"}}/>
-                    <div style={window.innerWidth > 1000 ? {
+                    <div style={!isMobile ? {
                         display: "flex",
                         flexDirection: "row",
                         width: "100%",
                         justifyContent: "space-evenly"
                     } : {display: "flex", flexDirection: "column", width: "100%", alignItems: "center"}}>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={workspaces} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -335,11 +338,11 @@ function AboutPagePremium() {
                                 </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={streakFreeze} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -349,11 +352,11 @@ function AboutPagePremium() {
                                 </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                        <div style={!isMobile ? {} : {marginBottom: "50px"}}>
                             <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
                                 <Image alt="" src={vscodeTheme} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                            <div style={!isMobile ? {width: textWidth} : {
                                 width: textWidth,
                                 wordWrap: "break-word"
                             }}>
@@ -365,7 +368,7 @@ function AboutPagePremium() {
                         </div>
                     </div>
                 </Box>
-                <div style={window.innerWidth > 1000 ? {height: "200px"} : {height: "100px"}}/>
+                <div style={!isMobile ? {height: "200px"} : {height: "100px"}}/>
             </div>
         </CssBaseline>
     );
