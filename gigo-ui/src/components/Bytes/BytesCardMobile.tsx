@@ -136,7 +136,6 @@ export default function BytesCardMobile({
                                 alt={""}
                                 src={bytesThumb}
                                 style={styles.image as React.CSSProperties}
-                                loading="lazy"
                                 width={imageWidth}
                                 height={imageHeight}
                             />

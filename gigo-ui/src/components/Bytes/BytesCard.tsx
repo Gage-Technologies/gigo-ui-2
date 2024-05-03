@@ -155,7 +155,6 @@ export default function BytesCard({
                                 alt={""}
                                 src={bytesThumb}
                                 style={styles.image as React.CSSProperties}
-                                loading="lazy"
                                 width={imageWidth}
                                 height={imageHeight}
                             />

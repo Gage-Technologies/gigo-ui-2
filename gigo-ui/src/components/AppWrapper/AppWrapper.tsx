@@ -182,6 +182,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const [openSetup, setOpenSetup] = React.useState(false)
     const toggleButtonRef = React.useRef(null);
 
+    const [renderDevelopment, setRenderDevelopment] = React.useState(config.development)
+
     const styles = {
         regular: {
             ...themeHelpers.frostedGlass,
@@ -2340,6 +2342,60 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         return null
     }
 
+    const renderDevelopmentMarker = () => {
+        return (
+            <Card
+                sx={{
+                    position: 'fixed',
+                    bottom: '20px',
+                    left: '20px',
+                    zIndex: 200,
+                    p: 2,
+                    color: theme.palette.error.main,
+                    backgroundColor: theme.palette.error.main,
+                    borderRadius: "10px",
+                    fontSize: "0.8em",
+                    border: `1px solid ${theme.palette.error.dark}`,
+                    marginRight: '20px'
+                }}
+            >
+                <IconButton
+                    onClick={() => setRenderDevelopment(false)}
+                    sx={{
+                        position: 'absolute',
+                        top: '5px',
+                        right: '5px',
+                        color: theme.palette.text.primary,
+                        '&:hover': {
+                            backgroundColor: theme.palette.text.primary + "25",
+                        }
+                    }}
+                >
+                    <CloseIcon/>
+                </IconButton>
+                <Typography variant="h6" color="text.primary">
+                    Development Site
+                </Typography>
+                <Typography variant="body2" color="text.primary">
+                    This is a development version of GIGO. It is not recommended for production use.
+                </Typography>
+                <Typography variant="body2" color="text.primary">
+                    Check out the production version of GIGO at
+                    <Link
+                        href="https://www.gigo.dev"
+                        color="secondary"
+                        sx={{
+                            fontWeight: "bold",
+                            marginLeft: "5px",
+                        }}
+                    >
+                        gigo.dev
+                    </Link>.
+                </Typography>
+            </Card>
+        )
+    }
+
     return (
         <>
             <ThemeProvider theme={theme}>
@@ -2354,6 +2410,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         !(isMobile && rightOpen) ?
                             memoizedChildren : null
                     }
+                    {renderDevelopment && renderDevelopmentMarker()}
                 </CssBaseline>
             </ThemeProvider>
         </>
