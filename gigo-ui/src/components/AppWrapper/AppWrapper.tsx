@@ -381,10 +381,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 marginTop: isByteMobilePage
                     ? "0px"
                     : pathname.startsWith("/launchpad/") && query.get("editor") === "true"
-                        ? "28px"
-                        : !isMobile
-                            ? "65px"
-                            : "56px"
+                        ? "14px"
+                        : "32px"
             }}
             id={"contentContainer"}
         >
@@ -2348,19 +2346,14 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 {/*{renderChristmasSnow()}*/}
                 {/*{renderNewYearConfetti()}*/}
                 <CssBaseline>
-                    <Box sx={{
-                        mb: "0px",
-                        // height: "64px",
-                    }}>
-                        {!isByteMobilePage ? appBarRenderer() : null}
-                        {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
-                        {renderChatSideBar()}
-                        {
-                            // we only render the children on mobile if the chat bar is not open
-                            !(isMobile && rightOpen) ?
-                                memoizedChildren : null
-                        }
-                    </Box>
+                    {!isByteMobilePage ? appBarRenderer() : null}
+                    {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
+                    {renderChatSideBar()}
+                    {
+                        // we only render the children on mobile if the chat bar is not open
+                        !(isMobile && rightOpen) ?
+                            memoizedChildren : null
+                    }
                 </CssBaseline>
             </ThemeProvider>
         </>

@@ -21,7 +21,7 @@ const ArticlePage = ({ markdownContents, articleName }) => {
     };
 
     return (
-        <Box sx={{backgroundColor: "#1c1c1a"}}>
+        <Box sx={{backgroundColor: "#1c1c1a", marginTop: "24px"}}>
             <style>{`
                 .markdown-body img {
                     background-color: transparent !important;
@@ -47,6 +47,7 @@ const ArticlePage = ({ markdownContents, articleName }) => {
                                 overflowWrap: 'break-word',
                                 borderRadius: '10px',
                                 padding: '0px',
+                                lineHeight: "1.7",
                             }}
                         />
                     ) : (
