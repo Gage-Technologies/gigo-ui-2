@@ -13,15 +13,14 @@ import {
     Typography
 } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
-import {getAllTokens, isHoliday} from "@/theme";
-import {useNavigate} from "react-router-dom";
-import { useSearchParams } from 'next/navigation';
+import {getAllTokens, isHoliday, theme} from "@/theme";
+import {usePathname, useRouter, useSearchParams} from 'next/navigation';
 import call from "@/services/api-call";
 import config from "@/config";
 import {authorize, authorizeGithub, authorizeGoogle} from "@/services/auth";
 import {gapi} from "gapi-script";
 //@ts-ignore
-import {GoogleLogin, useGoogleLogin} from "@react-oauth/google";
+import {useGoogleLogin} from "@react-oauth/google";
 import {useAppDispatch} from "@/reducers/hooks";
 import {initialAuthStateUpdate, TutorialState, updateAuthState} from "@/reducers/auth/auth";
 import githubNameLight from "@/img/github/gh_name_light.png"
@@ -32,46 +31,47 @@ import LoginGithub from "@/components/Login/Github/LoginGithub";
 import googleDark from "@/img/login/google-logo-white.png"
 import googleLight from "@/img/login/google_light.png"
 import googleLogo from "@/img/login/google_g.png"
-import loginImg from "@/img/login/login_background.jpg"
-import loginImg219 from "@/img/login/login_background-21-9.jpg"
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import {LoadingButton} from "@mui/lab";
 import ReactGA from "react-ga4";
 import {useTracking} from 'react-tracking';
 import {RecordWebUsage, WebTrackingEvent} from "@/models/web_usage";
-import christmasLogin from "@/img/christmas-login.png";
-import christmasLogin219 from "@/img/christmas-login-21-9.png";
 import GigoCircleIcon from "@/icons/GigoCircleLogo";
 import {sleep} from "@/services/utils";
 import Image from "next/image"
-import {usePathname, useRouter} from "next/navigation";
 
 
-function Login(this: any) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+function Login() {
+    const [isClient, setIsClient] = useState(false)
+    React.useEffect(() => {
+        setIsClient(true)
+    }, [])
+
+    const router = useRouter();
 
     const {trackEvent} = useTracking({}, {
         dispatch: (data: any) => {
-            call(
-                "/api/recordUsage",
-                "POST",
-                null, null, null,
-                data,
+            fetch(
+                `${config.rootPath}/api/recordUsage`,
+                {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                }
             )
         }
     });
     const location = usePathname();
 
     const searchParams = useSearchParams();
+    let isMobile = searchParams?.get("viewport") === "mobile";
 
 
     //@ts-ignore
     const forwardPath = searchParams.get('forward') ? decodeURIComponent(searchParams.get('forward')) : '';
-
-
 
 
     const styles = {
@@ -135,21 +135,27 @@ function Login(this: any) {
         onSuccess: (usr: any) => onSuccessGoogle(usr)
     });
 
-    const startGoogle = () => {
-        const payload: RecordWebUsage = {
-            host: window.location.host,
-            event: WebTrackingEvent.LoginStart,
-            timespent: 0,
-            path: location,
-            latitude: null,
-            longitude: null,
-            metadata: {"auth_provider": "google"},
+    const startGoogle =() => {
+        if (!isClient) {
+            return
         }
-        trackEvent(payload);
+        // const payload: RecordWebUsage = {
+        //     host: window.location.host,
+        //     event: WebTrackingEvent.LoginStart,
+        //     timespent: 0,
+        //     path: location,
+        //     latitude: null,
+        //     longitude: null,
+        //     metadata: {"auth_provider": "google"},
+        // }
+        // trackEvent(payload);
         googleButton()
     }
 
     const googleSignIn = async () => {
+        if (!isClient) {
+            return
+        }
         setLoading(true)
         let auth = await authorizeGoogle(externalToken, password);
 
@@ -190,7 +196,8 @@ function Login(this: any) {
 
             await sleep(1000)
 
-            window.location.href = forwardPath || "/home";
+
+            router.push(forwardPath || "/home")
 
         } else {
             if (sessionStorage.getItem("alive") === null || auth["user"] === undefined)
@@ -199,47 +206,49 @@ function Login(this: any) {
             setLoading(false)
         }
 
-        const payload: RecordWebUsage = {
-            host: window.location.host,
-            event: WebTrackingEvent.Login,
-            timespent: 0,
-            path: location,
-            latitude: null,
-            longitude: null,
-            metadata: {"auth_provider": "google"},
-        }
-        trackEvent(payload);
+        // const payload: RecordWebUsage = {
+        //     host: window.location.host,
+        //     event: WebTrackingEvent.Login,
+        //     timespent: 0,
+        //     path: location,
+        //     latitude: null,
+        //     longitude: null,
+        //     metadata: {"auth_provider": "google"},
+        // }
+        // trackEvent(payload);
     }
 
     const onSuccessGithub = async (gh: any) => {
-        const payload: RecordWebUsage = {
-            host: window.location.host,
-            event: WebTrackingEvent.LoginStart,
-            timespent: 0,
-            path: location,
-            latitude: null,
-            longitude: null,
-            metadata: {"auth_provider": "github"},
+        if (!isClient) {
+            return
         }
-        trackEvent(payload);
+        // const payload: RecordWebUsage = {
+        //     host: window.location.host,
+        //     event: WebTrackingEvent.LoginStart,
+        //     timespent: 0,
+        //     path: location,
+        //     latitude: null,
+        //     longitude: null,
+        //     metadata: {"auth_provider": "github"},
+        // }
+        // trackEvent(payload);
 
         setExternal(true)
         setExternalToken(gh["code"])
         setExternalLogin("Github")
         setLoading(true)
-        let res = await call(
-            "/api/auth/loginWithGithub",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/auth/loginWithGithub`,
             {
-                external_auth: gh["code"],
-            },
-            null,
-            config.rootPath
-        )
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    external_auth: gh["code"],
+                })
+            }
+        ).then(async (response) => await response.json())
 
         if (res["auth"] === false) {
             //@ts-ignore
@@ -252,27 +261,29 @@ function Login(this: any) {
     }
 
     const githubConfirm = async () => {
+        if (!isClient) {
+            return
+        }
         if (ghConfirm !== true) {
             //@ts-ignore
             swal("BAD")
             setLoading(false)
         }
         setLoading(true)
-        let res = await call(
-            "/api/auth/confirmLoginWithGithub",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {password: password},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/auth/confirmLoginWithGithub`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    password: password,
+                })
+            }
+        ).then(async (response) => response.json())
 
         let auth = await authorizeGithub(password);
-
-        window.sessionStorage.setItem("loginXP", JSON.stringify(res["xp"]));
 
         // @ts-ignore
         if (auth["user"] !== undefined) {
@@ -304,7 +315,7 @@ function Login(this: any) {
 
             await sleep(1000)
 
-            window.location.href = forwardPath || "/home";
+            router.push(forwardPath || "/home");
 
         } else {
             if (sessionStorage.getItem("alive") === null)
@@ -313,35 +324,34 @@ function Login(this: any) {
             setLoading(false)
         }
 
-        const payload: RecordWebUsage = {
-            host: window.location.host,
-            event: WebTrackingEvent.Login,
-            timespent: 0,
-            path: location,
-            latitude: null,
-            longitude: null,
-            metadata: {"auth_provider": "github"},
-        }
-        trackEvent(payload);
+        // const payload: RecordWebUsage = {
+        //     host: window.location.host,
+        //     event: WebTrackingEvent.Login,
+        //     timespent: 0,
+        //     path: location,
+        //     latitude: null,
+        //     longitude: null,
+        //     metadata: {"auth_provider": "github"},
+        // }
+        // trackEvent(payload);
     }
 
     const onFailureGithub = (gh: any) => {
-        ;
+
     };
 
     const retrieveOTPLink = async () => {
         // @ts-ignore
-        let res = await call(
-            "/api/otp/generateUserOtpUri",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {},
-            null,
-            config.rootPath
-        );
+        let res = await fetch(
+            `${config.rootPath}/api/otp/generateUserOtpUri`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            }
+        ).then(async (response) => response.json());
 
         if (res === undefined) {
             if (sessionStorage.getItem("alive") === null)
@@ -391,18 +401,21 @@ function Login(this: any) {
     }
 
     const loginFunction = async () => {
+        if (!isClient) {
+            return
+        }
         setLoading(true)
 
-        const payload: RecordWebUsage = {
-            host: window.location.host,
-            event: WebTrackingEvent.LoginStart,
-            timespent: 0,
-            path: location,
-            latitude: null,
-            longitude: null,
-            metadata: {},
-        }
-        trackEvent(payload);
+        // const payload: RecordWebUsage = {
+        //     host: window.location.host,
+        //     event: WebTrackingEvent.LoginStart,
+        //     timespent: 0,
+        //     path: location,
+        //     latitude: null,
+        //     longitude: null,
+        //     metadata: {},
+        // }
+        // trackEvent(payload);
 
         let auth = await authorize(username, password);
 
@@ -437,17 +450,18 @@ function Login(this: any) {
 
             await sleep(1000)
 
-            window.location.href = forwardPath || "/home";
-            const payload: RecordWebUsage = {
-                host: window.location.host,
-                event: WebTrackingEvent.Login,
-                timespent: 0,
-                path: location,
-                latitude: null,
-                longitude: null,
-                metadata: {},
-            }
-            trackEvent(payload);
+            router.push(forwardPath || "/home")
+
+            // const payload: RecordWebUsage = {
+            //     host: window.location.host,
+            //     event: WebTrackingEvent.Login,
+            //     timespent: 0,
+            //     path: location,
+            //     latitude: null,
+            //     longitude: null,
+            //     metadata: {},
+            // }
+            // trackEvent(payload);
         } else if (auth.includes("Too many failed attempts")) {
             //@ts-ignore
             swal("Login failed.", auth);
@@ -463,6 +477,9 @@ function Login(this: any) {
     }
 
     let renderLogin = () => {
+        if (!isClient) {
+            return
+        }
         return (
             <Box sx={{
                 display: 'flex', // Enable Flexbox
@@ -476,9 +493,9 @@ function Login(this: any) {
                           sx={{
                               justifyContent: "center",
                               outlineColor: "black",
-                              width: window.innerWidth > 1000 ? "34%" : "80vw",
-                              minWidth: window.innerWidth > 1000 ? "600px" : "0px",
-                              height: window.innerWidth > 1000 ? "auto" : "auto",
+                              width: !isMobile ? "34%" : "80vw",
+                              minWidth: !isMobile ? "600px" : "0px",
+                              height: !isMobile ? "auto" : "auto",
                               borderRadius: 1,
                               backgroundColor: theme.palette.background.default,
                               boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);"
@@ -495,7 +512,7 @@ function Login(this: any) {
                         <TextField
                             label={"Username/Email"}
                             variant={`outlined`}
-                            size={window.innerWidth > 1000 ? `medium` : `small`}
+                            size={!isMobile ? `medium` : `small`}
                             color={"primary"}
                             helperText={"Please enter your username or email"}
                             inputProps={
@@ -503,7 +520,7 @@ function Login(this: any) {
                             }
                             onChange={e => setUsername(e.target.value)}
                             sx={{
-                                width: window.innerWidth > 1000 ? "28vw" : "60vw",
+                                width: !isMobile ? "28vw" : "60vw",
                                 marginLeft: "3.5vw",
                                 marginRight: "3.5vw",
                                 mt: "3.5vh",
@@ -513,7 +530,7 @@ function Login(this: any) {
                         <TextField
                             label={"Password"}
                             variant={`outlined`}
-                            size={window.innerWidth > 1000 ? `medium` : `small`}
+                            size={!isMobile ? `medium` : `small`}
                             type={showPass ? `text` : `password`}
                             color={`primary`}
                             helperText={"Please enter your password"}
@@ -525,7 +542,7 @@ function Login(this: any) {
                                 }}
                             onChange={e => setPassword(e.target.value)}
                             sx={{
-                                width: window.innerWidth > 1000 ? "28vw" : "60vw",
+                                width: !isMobile ? "28vw" : "60vw",
                                 marginLeft: "3.5vw",
                                 marginRight: "3.5vw",
                                 mt: "3.5vh",
@@ -550,7 +567,7 @@ function Login(this: any) {
                                 minWidth: '10vw',
                                 justifyContent: "center",
                                 lineHeight: "35px",
-                                width: window.innerWidth > 1000 ? '' : '50vw',
+                                width: !isMobile ? '' : '50vw',
                             }}
                         >
                             Login
@@ -562,9 +579,9 @@ function Login(this: any) {
                             variant={`text`}
                             color={"primary"}
                             sx={{
-                                width: window.innerWidth > 1000 ? '15vw' : '80vw',
+                                width: !isMobile ? '15vw' : '80vw',
                                 justifyContent: "center",
-                                paddingTop: window.innerWidth > 1000 ? '' : "8%",
+                                paddingTop: !isMobile ? '' : "8%",
                             }}
                         >
                             Forgot Password
@@ -576,15 +593,15 @@ function Login(this: any) {
                             variant={`text`}
                             color={"primary"}
                             sx={{
-                                width: window.innerWidth > 1000 ? '15vw' : '60vw',
+                                width: !isMobile ? '15vw' : '60vw',
                                 justifyContent: "center",
-                                paddingTop: window.innerWidth > 1000 ? '' : "5%",
+                                paddingTop: !isMobile ? '' : "5%",
                             }}
                         >
                             No Account? Register
                         </Button>
                         <Typography component={"div"} variant={"h6"} sx={{
-                            width: window.innerWidth > 1000 ? "85%" : "90%",
+                            width: !isMobile ? "85%" : "90%",
                             display: "flex",
                             justifyContent: "center",
                             paddingTop: "25px"
@@ -599,12 +616,12 @@ function Login(this: any) {
                             <Button onClick={() => startGoogle()}>
                                 <Grid container spacing={{xs: 2}} justifyContent="center" sx={{
                                     flexGrow: 1,
-                                    paddingRight: window.innerWidth > 1000 ? '.5vw' : "4vh"
+                                    paddingRight: !isMobile ? '.5vw' : "4vh"
                                 }}>
                                     <Grid item xs={"auto"}>
                                         <Image
                                             style={{
-                                                width: window.innerWidth > 1000 ? "2vw" : "8vw",
+                                                width: !isMobile ? "2vw" : "8vw",
                                                 height: "auto",
                                                 marginTop: "10px"
                                             }}
@@ -615,12 +632,12 @@ function Login(this: any) {
                                     <Grid item xs={"auto"}>
                                         <Image
                                             style={{
-                                                width: window.innerWidth > 1000 ? "5vw" : "10vw",
+                                                width: !isMobile ? "5vw" : "10vw",
                                                 height: "auto",
                                                 paddingTop: "1.5vh",
-                                                left: window.innerWidth > 1000 ? '0vw' : "11vw",
-                                                bottom: window.innerWidth > 1000 ? "0vh" : "2.3vh",
-                                                position: window.innerWidth > 1000 ? "relative" : "absolute"
+                                                left: !isMobile ? '0vw' : "11vw",
+                                                bottom: !isMobile ? "0vh" : "2.3vh",
+                                                position: !isMobile ? "relative" : "absolute"
                                             }}
                                             alt={"Google Name"}
                                             src={theme.palette.mode === "light" ? googleLight : googleDark}
@@ -631,7 +648,6 @@ function Login(this: any) {
                             <LoginGithub
                                 color={"primary"}
                                 sx={{
-                                    // width: window.innerWidth > 1000 ? '7vw' : '25vw',
                                     justifyContent: "center",
                                     padding: "15px"
                                 }}
@@ -644,16 +660,15 @@ function Login(this: any) {
                                 <div style={{display: 'flex', alignItems: 'center'}}>
                                     <Image
                                         style={{
-                                            width: window.innerWidth > 1000 ? "2vw" : "8vw",
+                                            width: !isMobile ? "2vw" : "8vw",
                                             height: "auto"
                                         }}
                                         alt={"Github Logo"}
                                         src={theme.palette.mode === "light" ? githubLogoDark : githubLogoLight}
                                     />
                                     <Image
-                                        // width={window.innerWidth > 1000 ? 500 : 10}
                                         style={{
-                                            width: window.innerWidth > 1000 ? "5vw" : "10vw",
+                                            width: !isMobile ? "5vw" : "10vw",
                                             height: "auto",
                                             marginLeft: '0.5rem' // Adjust the margin as needed
                                         }}
@@ -670,6 +685,9 @@ function Login(this: any) {
     }
 
     let renderExternal = () => {
+        if (!isClient) {
+            return
+        }
         return (
             <Box sx={{
                 display: 'flex', // Enable Flexbox
@@ -683,7 +701,7 @@ function Login(this: any) {
                           sx={{
                               justifyContent: "center",
                               outlineColor: "black",
-                              width: window.innerWidth > 1000 ? "35%" : "70%",
+                              width: !isMobile ? "35%" : "70%",
                               borderRadius: 1,
                               backgroundColor: theme.palette.background.default,
                               paddingBottom: "1.5vw"
@@ -713,11 +731,11 @@ function Login(this: any) {
                                 }}
                             onChange={e => setPassword(e.target.value)}
                             sx={{
-                                width: window.innerWidth > 1000 ? "28vw" : "60vw",
+                                width: !isMobile ? "28vw" : "60vw",
                                 marginLeft: "3.5vw",
                                 marginRight: "3.5vw",
                                 mt: "3.5vh",
-                                paddingBottom: window.innerWidth > 1000 ? "1.5vh" : "3.0vh"
+                                paddingBottom: !isMobile ? "1.5vh" : "3.0vh"
                             }}
                             InputProps={{
                                 endAdornment: <ShowButton/>
@@ -745,7 +763,7 @@ function Login(this: any) {
                         <Typography variant="h5" component="div"
                                     sx={{fontSize: "75%"}}
                         >
-                            Haven't linked your account yet?
+                            Haven`&#39;`t linked your account yet?
                         </Typography>
                         <Button
                             onClick={async () => {
@@ -763,13 +781,6 @@ function Login(this: any) {
     }
 
     const aspectRatio = useAspectRatio();
-
-    const iconContainerStyles: React.CSSProperties = {
-        width: aspectRatio === '21:9' ? '100vw' : '100vw',
-        height: aspectRatio === '21:9' ? '100vh' : '100vh', // Set to 100% of viewport height
-        position: 'absolute',
-        zIndex: 0,
-    };
 
     const iconStyles: React.CSSProperties = {
         width: '100%',
@@ -814,7 +825,11 @@ function Login(this: any) {
             return "login_background.jpg"
         }
     }
-    
+
+    if (!isClient) {
+        return null
+    }
+
     return (
         <div
             style={{
@@ -840,7 +855,7 @@ function Login(this: any) {
                     }}>
                         <GigoCircleIcon
                             sx={{
-                                width: window.innerWidth > 1000 ? '120px' : '80px', // Adjust the width as needed
+                                width: !isMobile ? '120px' : '80px', // Adjust the width as needed
                                 height: 'auto', // Maintain aspect ratio
                                 color: 'white',
                             }}
@@ -852,7 +867,7 @@ function Login(this: any) {
                                 paddingTop: "15px",
                                 paddingLeft: "15px",
                                 fontWeight: 'bold', // Customize the text style,
-                                fontSize: window.innerWidth > 1000 ? '2em' : '5vw', // Adjust the font size,
+                                fontSize: !isMobile ? '2em' : '5vw', // Adjust the font size,
                                 // fontFamily: 'Kanit',
                                 color: 'white',
                             }}
@@ -865,42 +880,6 @@ function Login(this: any) {
             </ThemeProvider>
         </div>
     );
-}
-
-function useAspectRatio() {
-    const [aspectRatio, setAspectRatio] = useState('');
-
-    useEffect(() => {
-        function gcd(a: any, b: any): any {
-            return b === 0 ? a : gcd(b, a % b);
-        }
-
-        function calculateAspectRatio() {
-            const width = window.screen.width;
-            const height = window.screen.height;
-            let divisor = gcd(width, height);
-
-            // Dividing by GCD and truncating into integers
-            let simplifiedWidth = Math.trunc(width / divisor);
-            let simplifiedHeight = Math.trunc(height / divisor);
-
-            divisor = Math.ceil(simplifiedWidth / simplifiedHeight);
-            simplifiedWidth = Math.trunc(simplifiedWidth / divisor);
-            simplifiedHeight = Math.trunc(simplifiedHeight / divisor);
-            setAspectRatio(`${simplifiedWidth}:${simplifiedHeight}`);
-        }
-
-        calculateAspectRatio();
-
-        window.addEventListener('resize', calculateAspectRatio);
-
-
-        return () => {
-            window.removeEventListener('resize', calculateAspectRatio);
-        };
-    }, []);
-
-    return aspectRatio;
 }
 
 function hexToRGBA(hex: any, alpha = 1) {
