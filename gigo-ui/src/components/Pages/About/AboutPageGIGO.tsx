@@ -28,17 +28,6 @@ function AboutGIGO() {
 
         return (
             <Box sx={{position: 'relative', height: "auto", width: "40vw"}}>
-                {loading && (
-                    <Box sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        zIndex: 100
-                    }}>
-                        <CircularProgress color="inherit" />
-                    </Box>
-                )}
                 <video
                     src={videoSrc}
                     autoPlay
@@ -65,17 +54,6 @@ function AboutGIGO() {
 
         return (
             <Box sx={{position: 'relative', height: "auto", width: "100vw", p: 2}}>
-                {loading && (
-                    <Box sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        zIndex: 100
-                    }}>
-                        <CircularProgress color="inherit" />
-                    </Box>
-                )}
                 <video
                     src={videoSrc}
                     autoPlay
@@ -173,7 +151,7 @@ function AboutGIGO() {
                         </Grid>
                         <Grid item xs={1}/>
                         <Grid item xs={"auto"}>
-                            <DesktopVideo videoSrc={config.rootPath + "/cloudstore/videos/bytes.mp4"}/>AboutBytesIcon
+                            <DesktopVideo videoSrc={config.rootPath + "/cloudstore/videos/bytes.mp4"}/>
                         </Grid>
                         <Grid item xs={1}/>
                     </Grid>

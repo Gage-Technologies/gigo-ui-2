@@ -4,12 +4,10 @@ import {
     Box,
     Button,
     ClickAwayListener,
-    createTheme,
     Grow,
     IconButton,
     MenuItem,
     MenuList,
-    PaletteMode,
     Paper,
     Popper,
     Typography,
@@ -18,9 +16,9 @@ import Notification from "../models/notification";
 import CloseIcon from '@material-ui/icons/Close';
 import config from "../config";
 import swal from "sweetalert";
-import {useNavigate} from "react-router-dom";
-import {getAllTokens, theme} from "@/theme";
+import {theme} from "@/theme";
 import NotificationsPausedIcon from '@mui/icons-material/NotificationsPaused';
+import {useRouter} from "next/navigation";
 
 
 interface IProps {
@@ -36,10 +34,10 @@ const NotificationPopup: React.FC<IProps> = ({
                                                  setNotifications,
                                                  setNotificationCount,
                                              }) => {
-
+    const router = useRouter();
+    
     const [open, setOpen] = useState(false);
     const anchorRef = React.useRef<HTMLButtonElement>(null);
-    let navigate = useNavigate();
 
     const acknowledgeNotification = async (notification_id: string) => {
         let res = await fetch(
@@ -130,19 +128,19 @@ const NotificationPopup: React.FC<IProps> = ({
     const handleNotificationNavigate = (event: React.MouseEvent<HTMLLIElement, MouseEvent> | React.TouchEvent<HTMLLIElement>, notificationType: number, notifId: string) => {
         if (notificationType === 0) {
             // add a navigate to friends page once available
-            navigate("/profile")
+            router.push("/profile")
             handleNotificationClose(notifId)
         } else if (notificationType === 1) {
             acknowledgeNotification(notifId)
-            navigate("/nemesis")
+            router.push("/nemesis")
             handleNotificationClose(notifId)
         } else if (notificationType === 2) {
             acknowledgeNotification(notifId)
-            navigate("/nemesis")
+            router.push("/nemesis")
             handleNotificationClose(notifId)
         } else if (notificationType === 3) {
             acknowledgeNotification(notifId)
-            navigate("/streak")
+            router.push("/streak")
             handleNotificationClose(notifId)
         } else {
             acknowledgeNotification(notifId)

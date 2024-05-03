@@ -16,7 +16,7 @@ function About() {
                 flexDirection: "column"
             }}>
                 <AboutPageSwitch/>
-                {/*<AboutPageJourney />*/}
+                <AboutPageJourney />
             </Box>
         </CssBaseline>
     );

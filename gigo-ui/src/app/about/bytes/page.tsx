@@ -28,7 +28,7 @@ function About() {
                 flexDirection: "column"
             }}>
                 <AboutPageSwitch/>
-                {/*<AboutBytes />*/}
+                <AboutBytes />
             </Box>
         </CssBaseline>
     );

@@ -12,7 +12,7 @@ import {
 import {theme, isHoliday} from "@/theme";
 import { AwesomeButton } from "react-awesome-button";
 import 'react-awesome-button/dist/styles.css';
-
+import Image from 'next/image';
 import BytesIcon from "@/icons/Bytes/BytesIcon";
 import CTIcon from "@/img/bytes/ct-logo.svg";
 import NSIcon from "@/img/bytes/ns-icon.svg";
@@ -101,7 +101,7 @@ function AboutBytes() {
     const renderDesktop = () => {
         return (
             <>
-                <Box style={{width: "100%", height: "500px", backgroundColor: theme.palette.secondary.dark}}>
+                <Box style={{width: "100%", height: "500px", backgroundColor: theme.palette.primary.dark}}>
                     <div style={{width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly"}}>
                         <div style={{position: "relative", top: "100px", width: '50%'}}>
                             <Typography variant={"h1"} sx={{color: "white"}}>
@@ -119,10 +119,10 @@ function AboutBytes() {
                         <AwesomeButton style={{
                             width: "auto",
                             height: "50px",
-                            '--button-primary-color': theme.palette.primary.main,
-                            '--button-primary-color-dark': theme.palette.primary.dark,
+                            '--button-primary-color': theme.palette.secondary.main,
+                            '--button-primary-color-dark': theme.palette.secondary.dark,
                             '--button-primary-color-light': theme.palette.text.primary,
-                            '--button-primary-color-hover': theme.palette.primary.main,
+                            '--button-primary-color-hover': theme.palette.secondary.main,
                             fontSize: "28px"
                         }} type="primary" href={"/byte/1750943457427324928"} >
                             <span>Take a Byte</span>
@@ -138,7 +138,7 @@ function AboutBytes() {
                             <h2 style={{ textAlign: 'left' }}>Code Teacher</h2>
                             <p>GIGO Bytes are integrated with Code Teacher to offer a unique and personalized learning experience. Code Teacher acts as your own personal AI tutor, providing tailored guidance and support throughout your coding journey. </p>
                             <div style={{ display: 'flex', justifyContent: 'center' }}>
-                                <img alt="Code Teacher" src={CTIcon} style={{ width: "16vw", height: "16vw"}} />
+                                <Image alt="Code Teacher" src={CTIcon} style={{ width: "16vw", height: "16vw"}} />
                             </div>
                         </Grid>
                         <Grid item xs={1} />
@@ -188,7 +188,7 @@ function AboutBytes() {
                                     alignItems: 'center',
                                     mt: 1
                                 }}>
-                                    <img alt="Code Teacher" src={NSIcon} style={{width: "7vw", height: "7vw"}}/>
+                                    <Image alt="Code Teacher" src={NSIcon} style={{width: "7vw", height: "7vw"}}/>
                                 </Box>
                             </div>
                         </Grid>
@@ -263,7 +263,7 @@ function AboutBytes() {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <img alt="Code Teacher" src={CTIcon} style={{width: "50vw", height: "50vw"}}/>
+                            <Image alt="Code Teacher" src={CTIcon} style={{width: "50vw", height: "50vw"}}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Code Teacher</h2>
                         <p style={textStyle as React.CSSProperties}>GIGO Bytes are integrated with Code Teacher to offer
@@ -312,7 +312,7 @@ function AboutBytes() {
                                 alignItems: 'center',
                                 mt: 1
                             }}>
-                                <img alt="Code Teacher" src={NSIcon} style={{width: "30vw", height: "30vw"}}/>
+                                <Image alt="Code Teacher" src={NSIcon} style={{width: "30vw", height: "30vw"}}/>
                             </Box>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Feeling Stuck?</h2>

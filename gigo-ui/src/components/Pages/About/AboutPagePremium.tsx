@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react";
 import { useEffect } from "react";
 import {
@@ -11,14 +12,14 @@ import {
     ThemeProvider,
     Typography
 } from "@mui/material";
-import {theme, isHoliday} from "@/theme";
+import {getAllTokens, isHoliday} from "@/theme";
 import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
-import { initialAuthState, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
+import { initialAuthState, initialAuthStateUpdate, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
+import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
 import { AwesomeButton } from "react-awesome-button";
 import 'react-awesome-button/dist/styles.css';
-import Image from "next/image";
 
 import premiumImage from "@/img/croppedPremium.png";
 import premiumGorilla from "@/img/pro/premiumGorilla.png";
@@ -28,96 +29,81 @@ import workspaces from "@/img/premiumPageIcons/settings.svg"
 import resources from "@/img/premiumPageIcons/technology.svg"
 import privateWorkspace from "@/img/premiumPageIcons/padlock.svg"
 import vscodeTheme from "@/img/premiumPageIcons/coding.svg"
-import {redirect} from "next/navigation";
+import Image from "next/image";
+import {useRouter} from "next/navigation";
 
-async function AboutPagePremium() {
+function AboutPagePremium() {
+    let userPref = localStorage.getItem('theme')
+
+    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
+
+    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+
     // load auth state from storage
-    let loggedIn = false
     const authState = useAppSelector(selectAuthState);
-    if (authState.authenticated) {
-        loggedIn = true
-    }
+
+    const [loading, setLoading] = React.useState(false)
+    const [inTrial, setInTrial] = React.useState(false)
+    const [membership, setMembership] = React.useState(0)
+    const [membershipDates, setMembershipDates] = React.useState({ start: 0, last: 0, upcoming: 0 })
+
+
+    let router = useRouter();
     let dispatch = useAppDispatch();
 
-    let loading = false;
-    let inTrial = false;
-    let membership = 0;
-    let membershipDates = {start: 0, last: 0, upcoming: 0}
-
     const stripeNavigate = async () => {
-        const endpoint = `${config.rootPath}/api/stripe/premiumMembershipSession`;
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: '{}'
-        };
-        try {
-            const response = await fetch(endpoint, options);
-            const data = await response.json();
+        let res = await call(
+            "/api/stripe/premiumMembershipSession",
+            "post",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            {},
+            null,
+            config.rootPath
+        )
 
-            if (data.return_url) {
-                redirect(data.return_url);
-            } else if (data.message === "You must be logged in to access the GIGO system.") {
-                const authState = Object.assign({}, initialAuthState);
-                dispatch(updateAuthState(authState));
-                redirect(`/login?forward=${encodeURIComponent(window.location.pathname)}`);
-            }
-        } catch (error) {
-            console.error('Error fetching data:', error);
+        if (res["message"] === "You must be logged in to access the GIGO system.") {
+            let authState = Object.assign({}, initialAuthState)
+            // @ts-ignore
+            dispatch(updateAuthState(authState))
+            router.push("/login?forward="+encodeURIComponent(window.location.pathname))
+        }
+        if (res !== undefined && res["return url"] !== undefined) {
+            window.location.replace(res["return url"])
         }
     }
 
-
     const getSubData = async () => {
-        const endpoint = `${config.rootPath}/api/user/subscription`;
-        const options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: '{}'
-        };
+        let follow = call(
+            "/api/user/subscription",
+            "post",
+            null,
+            null,
+            null,
+            //@ts-ignore
+            {},
+            null,
+            config.rootPath
+        )
 
-        try {
-            const response = await fetch(endpoint, options);
-            if (!response.ok) {
-                throw new Error("Failed to fetch subscription data.");
-            }
+        const [res] = await Promise.all([
+            follow
+        ])
 
-            let data: {
-                membershipStart?: number,
-                lastPayment?: number,
-                upcomingPayment?: number,
-                inTrial?: boolean,
-                subscription?: number
-            }  = await response.json();
-
-            if (!data) {
-                swal("There has been an issue loading data. Please try again later.");
-                return;
-            }
-
-            if (data.membershipStart && data.lastPayment && data.upcomingPayment) {
-                membershipDates = {
-                    start: data.membershipStart,
-                    last: data.lastPayment,
-                    upcoming: data.upcomingPayment
-                };
-            }
-
-            if (data.inTrial !== undefined) {
-                inTrial = data.inTrial;
-            }
-
-            if (data.subscription !== undefined) {
-                membership = data.subscription;
-            }
-        } catch (error) {
-            console.error('Error fetching subscription data:', error);
-            swal("An error occurred while fetching data. Please try again later.");
+        if (res === undefined) {
+            swal("There has been an issue loading data. Please try again later.")
         }
+
+        setMembershipDates({
+            start: res["membershipStart"],
+            last: res["lastPayment"],
+            upcoming: res["upcomingPayment"]
+        })
+        setInTrial(res["inTrial"])
+        setMembership(res["subscription"])
+
     }
 
     const getCountdown = (upcomingDateInSeconds: number) => {
@@ -137,17 +123,19 @@ async function AboutPagePremium() {
         return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
+    // Changed "Become A Pro" to "Stay A Pro"
 
-    if (authState.authenticated) {
-        getSubData()
-    }
+    useEffect(() => {
+        if (authState.authenticated)
+            getSubData()
+    }, [])
 
-    let height = "200px"
-    let width = "200px"
+    let height = 200
+    let width = 200
 
     if (window.innerWidth <= 1000) {
-        height = "180px"
-        width = "180px"
+        height = 180
+        width = 180
     }
 
     let textWidth = "250px"
@@ -163,7 +151,7 @@ async function AboutPagePremium() {
     return (
         <CssBaseline>
             <div>
-                <Box style={window.innerWidth > 1000 ? { width: "100%", height: "500px", backgroundColor: theme.palette.primary.light } : { width: "100%", height: "850px", backgroundColor: theme.palette.primary.light }}>
+                <Box style={window.innerWidth > 1000 ? { width: "100%", height: "500px", backgroundColor: theme.palette.secondary.light } : { width: "100%", height: "850px", backgroundColor: theme.palette.secondary.light }}>
                     <div style={window.innerWidth > 1000 ? { width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly" } : { width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
                         <div style={window.innerWidth > 1000 ? { position: "relative", top: "150px" } : { position: "relative", height: "100%", top: "50px" }}>
                             {inTrial ? (
@@ -210,10 +198,10 @@ async function AboutPagePremium() {
                                     <h4>Don't want to see it go? Only $8/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
-                                        '--button-primary-color': theme.palette.primary.main,
-                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color': theme.palette.secondary.main,
+                                        '--button-primary-color-dark': theme.palette.secondary.dark,
                                         '--button-primary-color-light': theme.palette.text.primary,
-                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        '--button-primary-color-hover': theme.palette.secondary.main,
                                         fontSize: "14px"
                                     }} type="primary" onPress={() => stripeNavigate()}>
                                         <Image src={premiumImage} alt={""}/>
@@ -225,10 +213,10 @@ async function AboutPagePremium() {
                                     <h4>Only $8/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
-                                        '--button-primary-color': theme.palette.primary.main,
-                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color': theme.palette.secondary.main,
+                                        '--button-primary-color-dark': theme.palette.secondary.dark,
                                         '--button-primary-color-light': theme.palette.text.primary,
-                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        '--button-primary-color-hover': theme.palette.secondary.main,
                                         fontSize: "14px"
                                     }} type="primary" onPress={() => stripeNavigate()}>
                                         <Image src={premiumImage} alt={""}/>
@@ -242,10 +230,10 @@ async function AboutPagePremium() {
                                     <h4>No Limits. No Restrictions. True Freedom.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
-                                        '--button-primary-color': theme.palette.primary.main,
-                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color': theme.palette.secondary.main,
+                                        '--button-primary-color-dark': theme.palette.secondary.dark,
                                         '--button-primary-color-light': theme.palette.text.primary,
-                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        '--button-primary-color-hover': theme.palette.secondary.main,
                                         fontSize: "14px"
                                     }} type="primary" href={"/settings"} onPress={() => {
                                         window.sessionStorage.setItem("accountsPage", "membership");
@@ -258,7 +246,7 @@ async function AboutPagePremium() {
 
                         </div>
                         <div>
-                            <Image src={premiumGorilla} alt={""} />
+                            <Image src={premiumGorilla} alt={""}/>
                         </div>
                     </div>
                 </Box>
@@ -266,60 +254,60 @@ async function AboutPagePremium() {
                 <Box>
                     <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={codeTeacher} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt="" src={codeTeacher} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>Access to Code Teacher</h4>
-                                <body>Your personal Magic tutor. Code Teacher works along side you to help you learn to code and solve problems.</body>
+                                <div>Your personal Magic tutor. Code Teacher works along side you to help you learn to code and solve problems.</div>
                             </div>
                         </div>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={privateWorkspace} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt=""  src={privateWorkspace} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>Private Workspaces</h4>
-                                <body>Keep your code personal. Work on projects privately, developing your skills in stealth mode.</body>
+                                <div>Keep your code personal. Work on projects privately, developing your skills in stealth mode.</div>
                             </div>
                         </div>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={resources} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt=""  src={resources} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>More Workspace Resources</h4>
-                                <body>Get Access to 8 cpu cores, 8GB ram and 50GB disk. Run projects faster, reduce build times, and get the best experience.</body>
+                                <div>Get Access to 8 cpu cores, 8GB ram and 50GB disk. Run projects faster, reduce build times, and get the best experience.</div>
                             </div>
                         </div>
                     </div>
                     <div style={{ height: "100px" }} />
                     <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={workspaces} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt=""  src={workspaces} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>Three Concurrent DevSpaces</h4>
-                                <body>Run all the code you need, as much as you need. Work on multiple projects at the same time or with up to three concurrent DevSpaces.</body>
+                                <div>Run all the code you need, as much as you need. Work on multiple projects at the same time or with up to three concurrent DevSpaces.</div>
                             </div>
                         </div>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={streakFreeze} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt=""  src={streakFreeze} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>Two Streak Freezes a Week</h4>
-                                <body>Keep your streak longer. Don't let a bad week kill your awesome streak! Streak freezes preserve your streak on days that you can't find the time.</body>
+                                <div>Keep your streak longer. Don't let a bad week kill your awesome streak! Streak freezes preserve your streak on days that you can't find the time.</div>
                             </div>
                         </div>
                         <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.primary.light }}>
-                                <img src={vscodeTheme} width={width} height={height} />
+                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
+                                <Image alt=""  src={vscodeTheme} width={width} height={height} />
                             </Button>
                             <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
                                 <h4>Premium VsCode Theme</h4>
-                                <body>A unique code theme to help you see the errors faster. Code the GIGO way with the custom GIGO editor theme!</body>
+                                <div>A unique code theme to help you see the errors faster. Code the GIGO way with the custom GIGO editor theme!</div>
                             </div>
                         </div>
                     </div>

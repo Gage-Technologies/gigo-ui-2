@@ -1,3 +1,4 @@
+'use client'
 import React, {useEffect, useState} from 'react';
 import JourneyAboutPageIcon from "@/icons/Journey/JourneyAboutPageIcon";
 import {theme} from "@/theme";
