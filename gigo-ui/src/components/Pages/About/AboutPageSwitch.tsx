@@ -5,7 +5,7 @@ import {
 
 function AboutPageSwitch() {
     return (
-        <Box sx={{display: "flex", justifyContent: "space-evenly", p:1}}>
+        <Box sx={{display: "flex", justifyContent: "space-evenly", p:1,  marginTop: "30px", zIndex: 10}}>
             <Button variant='outlined' href="/about">
                 GIGO
             </Button>

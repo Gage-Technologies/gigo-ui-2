@@ -25,7 +25,7 @@ function About() {
                 display: "flex",
                 justifyContent: "center",
                 zIndex: 99,
-                flexDirection: "column"
+                flexDirection: "column",
             }}>
                 <AboutPageSwitch/>
                 <AboutGIGO />
