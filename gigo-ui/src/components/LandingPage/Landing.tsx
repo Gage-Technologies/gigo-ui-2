@@ -121,9 +121,11 @@ const GIGOLandingPage: React.FC = () => {
                 <Image
                     src={backgroundImageWebP}
                     alt="Landing background"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    fill={true}
+                    style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                    }}
                     priority={true}
                 />
                 {fireflies.length > 0 && fireflyMemo}

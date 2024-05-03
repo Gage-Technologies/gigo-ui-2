@@ -1,7 +1,7 @@
 'use client'
 import * as React from "react"
-import {Box, ButtonBase, Card, CardContent, createTheme, PaletteMode, Typography} from "@mui/material";
-import {getAllTokens, theme} from "@/theme";
+import {Box, ButtonBase, Card, CardContent, Typography} from "@mui/material";
+import {theme} from "@/theme";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
@@ -30,18 +30,37 @@ interface IProps {
     isHome?: boolean;
 }
 
-export default function BytesCardMobile(props: IProps) {
+export default function BytesCardMobile({
+                                            width = "100%",
+                                            height = "550px",
+                                            imageWidth = 281,
+                                            imageHeight = 500,
+                                            bytesId = '',
+                                            bytesTitle = '',
+                                            bytesThumb = '',
+                                            bytesDesc = '',
+                                            animate = false,
+                                            style = {},
+                                            onMouseEnter = undefined,
+                                            onMouseLeave = undefined,
+                                            inByte = false,
+                                            completedEasy = false,
+                                            completedMedium = false,
+                                            completedHard = false,
+                                            language = "Python",
+                                            isHome = false
+                                        }) {
     const styles = {
         card: {
-            width: props.width,
+            width: width,
             // boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
             // backgroundColor: theme.palette.background.default
-            height: props.height,
+            height: height,
             border: "none",
             boxShadow: "none",
             backgroundColor: "transparent",
             backgroundImage: "none",
-            animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
+            animation: animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
         },
         image: {
@@ -104,22 +123,22 @@ export default function BytesCardMobile(props: IProps) {
             }
             `}
             </style>
-            <ButtonBase href={`/byte/${props.bytesId}`}>
+            <ButtonBase href={`/byte/${bytesId}`}>
                 <Card
                     sx={styles.card}
-                    style={props.style}
-                    onMouseEnter={props.onMouseEnter}
-                    onMouseLeave={props.onMouseLeave}
+                    style={style}
+                    onMouseEnter={onMouseEnter}
+                    onMouseLeave={onMouseLeave}
                 >
                     <div style={styles.imageContainer as React.CSSProperties}>
                         <div style={{position: "relative", width: "fit-content", height: "fit-content"}}>
                             <Image
                                 alt={""}
-                                src={props.bytesThumb}
+                                src={bytesThumb}
                                 style={styles.image as React.CSSProperties}
                                 loading="lazy"
-                                width={props.imageWidth}
-                                height={props.imageHeight}
+                                width={imageWidth}
+                                height={imageHeight}
                             />
                             <Box
                                 display={"flex"}
@@ -134,16 +153,16 @@ export default function BytesCardMobile(props: IProps) {
                                 }}
                             >
                                 <BytesHardBadge
-                                    finished={props.completedHard === undefined ? false : props.completedHard}
-                                    inByte={props.inByte}
+                                    finished={completedHard === undefined ? false : completedHard}
+                                    inByte={inByte}
                                 />
                                 <BytesMediumBadge
-                                    finished={props.completedMedium === undefined ? false : props.completedMedium}
-                                    inByte={props.inByte}
+                                    finished={completedMedium === undefined ? false : completedMedium}
+                                    inByte={inByte}
                                 />
                                 <BytesEasyBadge
-                                    finished={props.completedEasy === undefined ? false : props.completedEasy}
-                                    inByte={props.inByte}
+                                    finished={completedEasy === undefined ? false : completedEasy}
+                                    inByte={inByte}
                                 />
                             </Box>
                             <Box
@@ -158,13 +177,13 @@ export default function BytesCardMobile(props: IProps) {
                                     gap: '10px',
                                 }}
                             >
-                                <BytesLanguage language={props.language === undefined ? "Python" : props.language}/>
+                                <BytesLanguage language={language === undefined ? "Python" : language}/>
                             </Box>
                         </div>
                     </div>
                     <CardContent sx={styles.content}>
                         <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
-                            {props.bytesTitle}
+                            {bytesTitle}
                         </Typography>
                     </CardContent>
                 </Card>

@@ -101,9 +101,11 @@ const GIGOLandingPageMobile: React.FC = () => {
                 <Image
                     src={backgroundImageWebP}
                     alt="Mobile landing background"
-                    layout="fill"
-                    objectFit="cover"
-                    objectPosition="center"
+                    fill={true}
+                    style={{
+                        objectFit: "cover",
+                        objectPosition: "center",
+                    }}
                     priority={true}
                 />
                 {fireflies.length > 0 && fireflyMemo}

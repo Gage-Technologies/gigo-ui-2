@@ -296,7 +296,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const AppBar = styled(MuiAppBar, {
-        shouldForwardProp: (prop) => prop !== 'open',
+        shouldForwardProp: (prop) => prop !== 'leftopen' && prop !== 'rightopen',
     })<AppBarProps>(({theme, leftopen, rightopen}) => ({
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
@@ -331,7 +331,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const ContentContainer = styled(Box, {
-        shouldForwardProp: (prop) => prop !== 'open',
+        shouldForwardProp: (prop) => prop !== 'leftOpen' && prop !== 'rightOpen',
     })<ContentContainerProps>(({theme, leftOpen, rightOpen}) => ({
         overflowX: 'hidden',
         transition: theme.transitions.create(['margin', 'width'], {
@@ -806,7 +806,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         return (
             <AppBar
                 position="fixed"
-                // open={open && !homePageLockedDrawer}
                 leftopen={false}
                 elevation={5}
                 style={{

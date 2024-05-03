@@ -212,6 +212,9 @@ async function Home({
                                                     completedHard={project["completed_hard"]}
                                                     language={programmingLanguages[project["lang"]]}
                                                     isHome={false}
+                                                    onMouseEnter={undefined}
+                                                    onMouseLeave={undefined}
+                                                    animate={false}
                                                 />
                                             </Suspense>
                                         </Box>
@@ -306,6 +309,7 @@ async function Home({
                                                         completedMedium={project["completed_medium"]}
                                                         completedHard={project["completed_hard"]}
                                                         language={programmingLanguages[project["lang"]]}
+                                                        animate={false}
                                                     />
                                                 </Suspense>
                                             </Box>

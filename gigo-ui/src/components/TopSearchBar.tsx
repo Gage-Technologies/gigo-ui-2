@@ -172,7 +172,10 @@ interface IProps {
 }
 
 // initialize redux states
-export default function TopSearchBar(props: IProps) {
+export default function TopSearchBar({
+                                         width = "35vw",
+                                         height = "auto",
+                                     }: IProps) {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
@@ -1867,7 +1870,7 @@ export default function TopSearchBar(props: IProps) {
             <>
                 <Search
                     style={{
-                        width: props.width,
+                        width: width,
                         minWidth: 320,
                     }}
                 >
@@ -1877,7 +1880,7 @@ export default function TopSearchBar(props: IProps) {
                     {searchPending ? (
                         <SearchLoading size={32} sx={{
                             color: theme.palette.primary.contrastText,
-                            left: `calc(${props.width} - 65px)`,
+                            left: `calc(${width} - 65px)`,
                             marginTop: "5px",
                             minWidth: 0,
                             padding: 1,
@@ -1885,7 +1888,7 @@ export default function TopSearchBar(props: IProps) {
                     ) : (
                         <FilterIconButton sx={{
                             color: theme.palette.primary.contrastText,
-                            left: `calc(${props.width} - 65px)`,
+                            left: `calc(${width} - 65px)`,
                             minWidth: 0,
                             padding: 1,
                         }} onClick={handleClick}>
@@ -1934,7 +1937,7 @@ export default function TopSearchBar(props: IProps) {
                             }}
                             value={(searchParams.query !== undefined && searchParams.query.length > 0) ? searchParams.query : null}
                             style={{
-                                width: props.width,
+                                width: width,
                             }}
                             filterOptions={(options) => options}
                             ListboxProps={
@@ -2121,7 +2124,7 @@ export default function TopSearchBar(props: IProps) {
                             }}
                             value={(searchParams.query !== undefined && searchParams.query.length > 0) ? searchParams.query : null}
                             style={{
-                                // width: props.width,
+                                // width: width,
                             }}
                             ListboxProps={
                                 {
@@ -2181,9 +2184,4 @@ export default function TopSearchBar(props: IProps) {
             </div>
         </Suspense>
     )
-}
-
-TopSearchBar.defaultProps = {
-    width: "35vw",
-    height: "auto"
 }
