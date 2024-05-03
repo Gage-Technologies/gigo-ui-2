@@ -10,6 +10,9 @@ import {CtWebSocketProvider} from "@/services/ct_websocket";
 import type { Metadata, Viewport } from 'next'
 import React from "react";
 import {CssBaseline} from "@mui/material";
+import {GoogleOAuthProvider} from "@react-oauth/google";
+import config from "@/config";
+import GoogleProvider from "@/app/GoogleProvider";
 
 export const metadata: Metadata = {
     applicationName: 'GIGO Dev',
@@ -49,13 +52,15 @@ export default function Layout({
             <StoreProvider>
                 <WebSocketProvider>
                     <CtWebSocketProvider>
-                        <ThemeProvider theme={theme}>
-                            <CssBaseline>
-                                <AppWrapper>
-                                    {children}
-                                </AppWrapper>
-                            </CssBaseline>
-                        </ThemeProvider>
+                        <GoogleProvider>
+                            <ThemeProvider theme={theme}>
+                                <CssBaseline>
+                                    <AppWrapper>
+                                        {children}
+                                    </AppWrapper>
+                                </CssBaseline>
+                            </ThemeProvider>
+                        </GoogleProvider>
                     </CtWebSocketProvider>
                 </WebSocketProvider>
             </StoreProvider>

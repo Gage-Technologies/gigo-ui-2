@@ -5,7 +5,7 @@ import config from "../config";
 import JSZip from "jszip";
 import swal from "sweetalert";
 import { Buffer } from "buffer";
-import { store } from "@/reducers/store";
+import { makeStore } from "@/reducers/store";
 import { initialAuthState, updateAuthState } from "@/reducers/auth/auth";
 import { resetAppWrapper } from "@/reducers/appWrapper/appWrapper";
 import { clearProjectState } from "@/reducers/createProject/createProject";
@@ -38,18 +38,18 @@ function constructUrl(url, params) {
 }
 
 const clearReducers = async () => {
-  let authState = Object.assign({}, initialAuthState)
-  // @ts-ignore
-  store.dispatch(updateAuthState(authState))
-
-  store.dispatch(resetAppWrapper())
-  store.dispatch(clearProjectState())
-  store.dispatch(clearSearchParamsState())
-  store.dispatch(clearJourneyFormState())
-  store.dispatch(clearCache())
-  store.dispatch(clearMessageCache())
-  store.dispatch(clearChatState())
-  store.dispatch(clearBytesState())
+  // let authState = Object.assign({}, initialAuthState)
+  // // @ts-ignore
+  // makeStore().dispatch(updateAuthState(authState))
+  //
+  // store.dispatch(resetAppWrapper())
+  // store.dispatch(clearProjectState())
+  // store.dispatch(clearSearchParamsState())
+  // store.dispatch(clearJourneyFormState())
+  // store.dispatch(clearCache())
+  // store.dispatch(clearMessageCache())
+  // store.dispatch(clearChatState())
+  // store.dispatch(clearBytesState())
 
 }
 

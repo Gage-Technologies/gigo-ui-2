@@ -5,6 +5,8 @@ import { makeStore, AppStore } from '@/reducers/store'
 import {Persistor} from "redux-persist/es/types";
 import {persistStore} from "redux-persist";
 import {PersistGate} from "redux-persist/integration/react";
+import config from "@/config";
+
 
 export default function StoreProvider({
                                           children
