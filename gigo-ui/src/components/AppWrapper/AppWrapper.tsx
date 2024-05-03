@@ -84,9 +84,7 @@ import ChatContainer from "../Chat/ChatContainer";
 import {
     initialAppWrapperStateUpdate,
     resetAppWrapper,
-    selectAppWrapperChatOpen,
     selectAppWrapperClosedMobileWelcomeBanner,
-    selectAppWrapperSidebarOpen,
     updateAppWrapper
 } from "@/reducers/appWrapper/appWrapper";
 import {clearProjectState} from "@/reducers/createProject/createProject";
@@ -165,14 +163,14 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const backgroundName = useAppSelector(selectAuthStateBackgroundName);
     const username = useAppSelector(selectAuthStateUserName)
     const tutorialState = useAppSelector(selectAuthStateTutorialState)
-    const leftOpen = useAppSelector(selectAppWrapperSidebarOpen)
-    const rightOpen = useAppSelector(selectAppWrapperChatOpen)
     const mobileWelcomeBannerClosed = useAppSelector(selectAppWrapperClosedMobileWelcomeBanner)
     const inTrial = useAppSelector(selectAuthStateInTrial)
     const hasPaymentInfo = useAppSelector(selectAuthStateHasPaymentInfo)
     const hasSubscription = useAppSelector(selectAuthStateHasSubscription)
     const alreadyCancelled = useAppSelector(selectAuthStateAlreadyCancelled)
 
+    const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true");
+    const [rightOpen, setRightOpen] = React.useState(query.get("chat") === "true");
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const [reportPopup, setReportPopup] = React.useState(false)
 
@@ -257,30 +255,44 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         marginTop: 'auto',
     }));
 
-    // const [leftOpen, setLeftOpen] = React.useState(sidebarOpenState);
-    // const [rightOpen, setRightOpen] = React.useState(chatOpenState);
-
     const handleDrawerOpen = () => {
-        let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
+        setLeftOpen(true);
+        let q = new URLSearchParams(query);
+        q.set("menu", "true");
         if (rightOpen) {
-            appWrapperState.chatOpen = true
+            q.delete("chat");
+            setRightOpen(false);
         }
-        appWrapperState.sidebarOpen = true;
-        dispatch(updateAppWrapper(appWrapperState));
+
+        router.push(pathname + "?" + q.toString(), {scroll: false});
     };
     const handleDrawerClose = () => {
-        let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-        appWrapperState.sidebarOpen = homePageLockedDrawer;
-        dispatch(updateAppWrapper(appWrapperState));
+        setLeftOpen(false);
+        let q = new URLSearchParams(query);
+        q.delete("menu");
+        router.push(pathname + "?" + q.toString(), {scroll: false});
     };
 
     const handleChatButton = () => {
-        let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-        if (!rightOpen && leftOpen) {
-            appWrapperState.sidebarOpen = homePageLockedDrawer;
+        let action = true;
+        if (rightOpen) {
+            action = false;
         }
-        appWrapperState.chatOpen = !rightOpen;
-        dispatch(updateAppWrapper(appWrapperState));
+
+        setRightOpen(action);
+        let q = new URLSearchParams(query);
+        if (action) {
+            q.set("chat", "true");
+        } else {
+            q.delete("chat");
+        }
+
+        if (action && leftOpen) {
+            q.delete("menu");
+            setLeftOpen(false);
+        }
+
+        router.push(pathname + "?" + q.toString(), {scroll: false});
     }
 
     const handleCloseMobileWelcomeBanner = () => {
@@ -849,7 +861,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Typography>
                         </Box>
                     </Button>
-                    <TopSearchBar/>
+                    <TopSearchBar width={"35vw"} height={"auto"} />
                     <Box sx={{flexGrow: 1}}/>
                     {loggedIn ? (
                         <Box>
@@ -1345,9 +1357,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const closeChat = () => {
-        let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-        appWrapperState.chatOpen = false;
-        dispatch(updateAppWrapper(appWrapperState));
+        setRightOpen(false);
+        let q = new URLSearchParams(query);
+        q.delete("menu");
+        router.push(pathname + "?" + q.toString(), {scroll: false});
     }
 
     const actions = [
@@ -1376,11 +1389,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             }
         },
         {
-            icon: <ChatBubbleOutline/>, name: 'Chat', action: () => {
-                let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-                appWrapperState.chatOpen = !rightOpen
-                dispatch(updateAppWrapper(appWrapperState));
-            }
+            icon: <ChatBubbleOutline/>, name: 'Chat', action: handleChatButton
         },
         {
             icon: <AutoStoriesIcon/>, name: 'Articles', action: () => {
@@ -1468,7 +1477,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </Box>
                         </Button>
-                        <TopSearchBar/>
+                        <TopSearchBar width={"35vw"} height={"auto"}/>
                         {loggedIn ? (
                             <>
                                 <Button

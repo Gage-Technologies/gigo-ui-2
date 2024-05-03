@@ -80,11 +80,6 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 import {Snackbar} from "@material-ui/core";
 import Slide, {SlideProps} from '@mui/material/Slide';
 import ReactDOM from "react-dom";
-import {
-    initialAppWrapperStateUpdate,
-    selectAppWrapperChatOpen,
-    updateAppWrapper
-} from "@/reducers/appWrapper/appWrapper";
 import Menu from "@mui/material/Menu";
 import Image from "next/image";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
@@ -230,7 +225,7 @@ export default function ChatContainer() {
     const authorRenown = useAppSelector(selectAuthStateTier);
     const authorRole = useAppSelector(selectAuthStateRole);
 
-    const chatOpen = useAppSelector(selectAppWrapperChatOpen);
+    const chatOpen = query.get("chat") === "true";
 
     let loggedIn = false
     const authState = useAppSelector(selectAuthState);
@@ -2522,9 +2517,11 @@ export default function ChatContainer() {
                 key={chat._id}
                 onClick={() => {
                     closeNotification();
-                    let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-                    appWrapperState.chatOpen = true;
-                    dispatch(updateAppWrapper(appWrapperState));
+
+                    let q = new URLSearchParams(query);
+                    q.set("chat", "true");
+                    router.push(pathname + "?" + q.toString(), {scroll: false});
+
                     handleChatButtonClick(chat);
                 }}
                 sx={{
@@ -2664,9 +2661,10 @@ export default function ChatContainer() {
                         return;
                     }
 
-                    let appWrapperState = Object.assign({}, initialAppWrapperStateUpdate);
-                    appWrapperState.chatOpen = true;
-                    dispatch(updateAppWrapper(appWrapperState));
+                    let q = new URLSearchParams(query);
+                    q.set("chat", "true");
+                    router.push(pathname + "?" + q.toString(), {scroll: false});
+
                     handleChatButtonClick(chat);
                 }}
                 sx={{

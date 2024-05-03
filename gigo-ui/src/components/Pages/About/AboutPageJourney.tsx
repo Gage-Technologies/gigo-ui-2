@@ -1,17 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import JourneyAboutPageIcon from "@/icons/Journey/JourneyAboutPageIcon";
-import {theme, getAllTokens, isHoliday} from "@/theme";
+import {theme} from "@/theme";
 import JourneyPageCampIcon from "@/icons/Journey/JourneyPageCampIcon";
 import {Grid} from "@material-ui/core";
 import JourneyPagePumpIcon from "@/icons/Journey/JourneyPagePumpIcon";
-import {useAppSelector} from "@/reducers/hooks";
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import {AwesomeButton} from "react-awesome-button";
-import {useNavigate} from "react-router-dom";
+import {useSearchParams} from "next/navigation";
 
 function AboutPageJourney() {
-    const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
-    const chatOpen = useAppSelector(selectAppWrapperChatOpen);
+    const query = useSearchParams();
+    const chatOpen = query.get("chat") === "true";
+    const sidebarOpen = query.get("menu") === "true";
 
     const aspectRatio = useAspectRatio();
 
@@ -38,9 +37,9 @@ function AboutPageJourney() {
             sidebarOpen
                 ? 'calc(95vw - 15vw)'
                 : chatOpen ? 'calc(95vw - 15vw)'
-                : '95vw',
+                    : '95vw',
         height: '90vh',
-        background: `radial-gradient(circle, rgba(0,0,0,0) 40%, ${hexToRGBA(theme.palette.background.default)} 70%, ${hexToRGBA(theme.palette.background.default)} 83%), linear-gradient(180deg, rgba(0,0,0,0) 51%, rgba(0,0,0,0) 52%, ${hexToRGBA(theme.palette.background.default)} 92%, ${hexToRGBA(theme.palette.background.default)}` , // Vignette gradient
+        background: `radial-gradient(circle, rgba(0,0,0,0) 40%, ${hexToRGBA(theme.palette.background.default)} 70%, ${hexToRGBA(theme.palette.background.default)} 83%), linear-gradient(180deg, rgba(0,0,0,0) 51%, rgba(0,0,0,0) 52%, ${hexToRGBA(theme.palette.background.default)} 92%, ${hexToRGBA(theme.palette.background.default)}`, // Vignette gradient
         position: 'absolute',
         left: '0%',
         bottom: (aspectRatio !== '21:9') && (sidebarOpen || chatOpen) ? '-1%' : '0%',
@@ -104,7 +103,7 @@ function AboutPageJourney() {
         top: '37.6%',
         left: '55.8%',
         transform: 'translate(-50%, -50%)',
-        width:  aspectRatio === '21:9' ?  '6%': '7%', // Set width and height to the same value to create a circle
+        width: aspectRatio === '21:9' ? '6%' : '7%', // Set width and height to the same value to create a circle
         height: aspectRatio === '21:9' ? '15.4%' : '12.4%',
 
         backgroundColor: '#e9c6af',
@@ -127,7 +126,7 @@ function AboutPageJourney() {
     };
 
     const finalButtonStyles: React.CSSProperties = {
-        backgroundColor: buttonHover ? '#58cc02': '#4da902', /* Duolingo green */
+        backgroundColor: buttonHover ? '#58cc02' : '#4da902', /* Duolingo green */
         color: 'white',
         border: 'none',
         borderRadius: '25px', /* Rounded corners */
@@ -147,8 +146,9 @@ function AboutPageJourney() {
     return (
         <div style={containerStyles}>
             <div style={iconContainerStyles}>
-                <div style={vignetteStyles} /> {/* Vignette overlay */}
-                <JourneyAboutPageIcon style={iconStyles} aspectRatio={aspectRatio.toString()} />
+                <div style={vignetteStyles}/>
+                {/* Vignette overlay */}
+                <JourneyAboutPageIcon style={iconStyles} aspectRatio={aspectRatio.toString()}/>
                 <div style={textStyles}>Your Journey Starts Here</div>
                 <div style={textStyles2}>Your Journey Starts Here</div>
                 <button
@@ -164,42 +164,64 @@ function AboutPageJourney() {
             <div style={{display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
                 <div style={textBoxStyles}>
                     <div style={{display: 'flex', justifyContent: 'center'}}>
-                    <br/>
                         <br/>
                         <br/>
                         <br/>
                         <br/>
                         <br/>
-                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'flex-start' }}>
-                            <div style={{ fontFamily: 'Arial, sans-serif', lineHeight: '1.5', textAlign: 'left', maxWidth: '80%' }}>
+                        <br/>
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            justifyContent: 'center',
+                            alignItems: 'flex-start'
+                        }}>
+                            <div style={{
+                                fontFamily: 'Arial, sans-serif',
+                                lineHeight: '1.5',
+                                textAlign: 'left',
+                                maxWidth: '80%'
+                            }}>
                                 <h1 style={{textAlign: 'center'}}>GIGO Journey System</h1>
                                 <br/>
                                 <br/>
                                 <Grid container spacing={0}>
                                     <Grid item xs={6}>
-                                        <p>GIGO Journeys focus on delivering comprehensive programming education. The journey is structured to provide programmers of various skill levels with concise, well-defined, and efficient paths to enhance their programming expertise.</p>
+                                        <p>GIGO Journeys focus on delivering comprehensive programming education. The
+                                            journey is structured to provide programmers of various skill levels with
+                                            concise, well-defined, and efficient paths to enhance their programming
+                                            expertise.</p>
                                         <ol>
                                             <strong>Incremental Learning Path</strong>
-                                            <p>For Entry-Level Programmers: The journey starts with the basics of programming. Entry-level participants engage in simple exercises and challenges that introduce fundamental concepts like variables, loops, and functions.</p>
-                                            <p>For Experienced Programmers: Intermediate and advanced units are available. These include complex algorithms, design patterns, data structures, and specialized areas like machine learning or distributed systems.</p>
+                                            <p>For Entry-Level Programmers: The journey starts with the basics of
+                                                programming. Entry-level participants engage in simple exercises and
+                                                challenges that introduce fundamental concepts like variables, loops,
+                                                and functions.</p>
+                                            <p>For Experienced Programmers: Intermediate and advanced units are
+                                                available. These include complex algorithms, design patterns, data
+                                                structures, and specialized areas like machine learning or distributed
+                                                systems.</p>
                                             <li>
                                                 <strong>Bite-Sized Lessons</strong>
-                                                <p>Lessons are broken down into manageable, easily digestible segments. This allows participants to learn at their own pace and facilitates understanding by focusing on one concept at a time.</p>
-                                                <p>Practical examples and hands-on exercises are integrated within each lesson to ensure understanding and retention.</p>
+                                                <p>Lessons are broken down into manageable, easily digestible segments.
+                                                    This allows participants to learn at their own pace and facilitates
+                                                    understanding by focusing on one concept at a time.</p>
+                                                <p>Practical examples and hands-on exercises are integrated within each
+                                                    lesson to ensure understanding and retention.</p>
                                             </li>
                                         </ol>
                                     </Grid>
                                     <Grid item xs={6}>
-                                        <JourneyPageCampIcon style={iconStyles} aspectRatio={aspectRatio.toString()} />
+                                        <JourneyPageCampIcon style={iconStyles} aspectRatio={aspectRatio.toString()}/>
                                     </Grid>
 
                                 </Grid>
                                 <Grid container spacing={0}>
-                                <Grid item xs={11}>
+                                    <Grid item xs={11}>
 
-                                </Grid>
+                                    </Grid>
                                     <Grid item xs={6}>
-                                        <JourneyPagePumpIcon style={iconStyles} aspectRatio={aspectRatio.toString()} />
+                                        <JourneyPagePumpIcon style={iconStyles} aspectRatio={aspectRatio.toString()}/>
                                     </Grid>
 
 
@@ -207,18 +229,26 @@ function AboutPageJourney() {
                                         <div style={{textAlign: 'left', justifyContent: 'center'}}>
                                             <h2>Curriculum</h2>
                                         </div>
-                                        <p>The curriculum is designed with a wide array of programming languages and paradigms, allowing flexibility and personalization for each participant. It covers:</p>
+                                        <p>The curriculum is designed with a wide array of programming languages and
+                                            paradigms, allowing flexibility and personalization for each participant. It
+                                            covers:</p>
                                         <ul>
                                             <li>Fundamentals: Data types, control structures, error handling, etc.</li>
-                                            <li>Intermediate Concepts: Object-oriented programming, APIs, databases, etc.</li>
-                                            <li>Advanced Topics: Multi-threading, distributed computing, cloud-native technologies, etc.</li>
-                                            <li>Specialized Paths: In-depth mastery in areas like machine learning, network programming, etc.</li>
+                                            <li>Intermediate Concepts: Object-oriented programming, APIs, databases,
+                                                etc.
+                                            </li>
+                                            <li>Advanced Topics: Multi-threading, distributed computing, cloud-native
+                                                technologies, etc.
+                                            </li>
+                                            <li>Specialized Paths: In-depth mastery in areas like machine learning,
+                                                network programming, etc.
+                                            </li>
                                         </ul>
 
 
-
                                         <h3>Code Teacher Tutor Support</h3>
-                                        <p>Never venture alone! Code Teacher helps students overcome obstacles and achieve success together.</p>
+                                        <p>Never venture alone! Code Teacher helps students overcome obstacles and
+                                            achieve success together.</p>
                                     </Grid>
                                     <Grid item xs={12}>
                                         <br/>
@@ -226,7 +256,8 @@ function AboutPageJourney() {
 
                                     </Grid>
                                     <Grid container xs={12} style={{justifyContent: "center", alignItems: "center"}}>
-                                        <AwesomeButton style={{ width: "30%", height: "100%",
+                                        <AwesomeButton style={{
+                                            width: "30%", height: "100%",
                                             '--button-primary-color': theme.palette.primary.main,
                                             '--button-primary-color-dark': theme.palette.primary.dark,
                                             '--button-primary-color-light': theme.palette.text.primary,
@@ -251,7 +282,16 @@ function AboutPageJourney() {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <h3>Conclusion</h3>
-                                        <p>The GIGO Journey system stands as a robust educational framework catering to different skill levels. Its incremental and bite-sized approach to lessons ensures that learners can progress at a comfortable pace without feeling overwhelmed. By connecting foundational concepts to advanced mastery through a well-structured pathway, it ensures a coherent and fulfilling learning experience for anyone looking to either start their coding journey or elevate their existing skills to complete mastery. Whether a novice seeking full competency or an experienced programmer aiming for complete mastery, the GIGO Journeys have the tools, resources, and support needed to reach those goals.</p>
+                                        <p>The GIGO Journey system stands as a robust educational framework catering to
+                                            different skill levels. Its incremental and bite-sized approach to lessons
+                                            ensures that learners can progress at a comfortable pace without feeling
+                                            overwhelmed. By connecting foundational concepts to advanced mastery through
+                                            a well-structured pathway, it ensures a coherent and fulfilling learning
+                                            experience for anyone looking to either start their coding journey or
+                                            elevate their existing skills to complete mastery. Whether a novice seeking
+                                            full competency or an experienced programmer aiming for complete mastery,
+                                            the GIGO Journeys have the tools, resources, and support needed to reach
+                                            those goals.</p>
                                         <br/>
                                     </Grid>
 

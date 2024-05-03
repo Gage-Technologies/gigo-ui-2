@@ -5,8 +5,6 @@ import ProjectCard from "@/components/Project/ProjectCard";
 import config from "@/config";
 import MoonLoader from "react-spinners/MoonLoader";
 import * as React from "react";
-import {useAppSelector} from "@/reducers/hooks";
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
@@ -15,8 +13,8 @@ export default function RecommendedProjectsScroll() {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
-    const chatOpen = useAppSelector(selectAppWrapperChatOpen);
-    const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
+    const chatOpen = query.get("chat") === "true";
+    const sidebarOpen = query.get("menu") === "true";
 
     const [recData, setRecData] = React.useState<any[]>([])
     const [recDataPage, setRecDataPage] = React.useState(0)

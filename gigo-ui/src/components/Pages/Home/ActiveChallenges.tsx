@@ -7,7 +7,6 @@ import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from "@/reducers/appWrapper/appWrapper";
 import {useSearchParams} from "next/navigation";
 
 export interface IProps {
@@ -19,8 +18,8 @@ function ActiveChallenges({activeData}: IProps) {
     let isMobile = query.get("viewport") === "mobile";
 
     const authState = useAppSelector(selectAuthState);
-    const sidebarOpen = useAppSelector(selectAppWrapperSidebarOpen);
-    const chatOpen = useAppSelector(selectAppWrapperChatOpen);
+    const chatOpen = query.get("chat") === "true";
+    const sidebarOpen = query.get("menu") === "true";
 
     return (
         <>

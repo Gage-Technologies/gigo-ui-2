@@ -5,12 +5,12 @@ import {styled} from '@mui/system';
 
 import backgroundImageWebP from "@/img/landing/gigo-landing-valentines.webp"
 import {useAppSelector} from '@/reducers/hooks';
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from '@/reducers/appWrapper/appWrapper';
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import HeartIcon from '@/icons/GIGO/Heart';
+import {useSearchParams} from "next/navigation";
 
 
 // Hero container with jungle-themed background
@@ -44,9 +44,10 @@ const HeroContent = styled(Box)({
 });
 
 const GIGOLandingPageValentines: React.FC = () => {
+    const query = useSearchParams();
+    const leftOpen = query.get('menu') === 'true';
+    const rightOpen = query.get('chat') === 'true';
     const [hearts, setHearts] = useState<string[]>([]);
-    const leftOpen = useAppSelector(selectAppWrapperSidebarOpen)
-    const rightOpen = useAppSelector(selectAppWrapperChatOpen)
     const endRef = useRef<HTMLDivElement | null>(null);
 
     // Define the move animation

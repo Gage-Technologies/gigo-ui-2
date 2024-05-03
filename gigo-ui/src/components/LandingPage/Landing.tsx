@@ -6,11 +6,11 @@ import Image from 'next/image';
 
 import backgroundImageWebP from "@/img/landing/gigo-landing.webp";
 import {useAppSelector} from '@/reducers/hooks';
-import {selectAppWrapperChatOpen, selectAppWrapperSidebarOpen} from '@/reducers/appWrapper/appWrapper';
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
 import {SocialIcon} from 'react-social-icons';
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
+import {useSearchParams} from "next/navigation";
 
 
 // Hero container with jungle-themed background
@@ -39,9 +39,10 @@ const HeroContent = styled(Box)({
 });
 
 const GIGOLandingPage: React.FC = () => {
+    const query = useSearchParams();
     const [fireflies, setFireflies] = useState<string[]>([]);
-    const leftOpen = useAppSelector(selectAppWrapperSidebarOpen);
-    const rightOpen = useAppSelector(selectAppWrapperChatOpen);
+    const leftOpen = query.get('menu') === 'true';
+    const rightOpen = query.get('chat') === 'true';
     const endRef = useRef<HTMLDivElement | null>(null);
 
     // Define the move animation
