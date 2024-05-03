@@ -1,9 +1,5 @@
 'use client'
-import {
-    Box,
-    Grid,
-    Typography,
-} from '@mui/material';
+import {Box, Grid, Typography,} from '@mui/material';
 import MarkdownRenderer from '@/components/MarkdownServer/MarkdownRenderer';
 import {SimpleTreeView} from '@mui/x-tree-view/SimpleTreeView';
 import {treeItemClasses} from "@mui/x-tree-view";
@@ -23,7 +19,6 @@ import TimerIcon from '@mui/icons-material/Timer';
 import CodeTeacherIcon from "@/icons/CodeTeacher";
 import {theme} from '@/theme';
 import {usePathname} from "next/navigation";
-import Layout from '@/app/layout';
 
 function StyledTreeItem(props: any) {
     const treeItemStyling: React.CSSProperties = {
@@ -108,7 +103,7 @@ function StyledTreeItem(props: any) {
     );
 }
 
-export default async function DocumentationUI({markdownContent, selectedNode}: any) {
+export default function DocumentationUI({markdownContent, selectedNode}: any) {
     let pathname = usePathname();
 
     return (

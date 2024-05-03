@@ -1,24 +1,13 @@
 'use client'
 import * as React from "react";
-import { useEffect } from "react";
-import {
-    Box, Button,
-    Card,
-    Container,
-    createTheme,
-    CssBaseline,
-    Grid,
-    PaletteMode,
-    ThemeProvider,
-    Typography
-} from "@mui/material";
-import {getAllTokens, isHoliday} from "@/theme";
-import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
-import { initialAuthState, initialAuthStateUpdate, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
-import call from "@/services/api-call";
+import {useEffect} from "react";
+import {Box, Button, createTheme, CssBaseline, PaletteMode} from "@mui/material";
+import {getAllTokens} from "@/theme";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
+import {initialAuthState, selectAuthState, updateAuthState} from "@/reducers/auth/auth";
 import config from "@/config";
 import swal from "sweetalert";
-import { AwesomeButton } from "react-awesome-button";
+import {AwesomeButton} from "react-awesome-button";
 import 'react-awesome-button/dist/styles.css';
 
 import premiumImage from "@/img/croppedPremium.png";
@@ -45,30 +34,29 @@ function AboutPagePremium() {
     const [loading, setLoading] = React.useState(false)
     const [inTrial, setInTrial] = React.useState(false)
     const [membership, setMembership] = React.useState(0)
-    const [membershipDates, setMembershipDates] = React.useState({ start: 0, last: 0, upcoming: 0 })
+    const [membershipDates, setMembershipDates] = React.useState({start: 0, last: 0, upcoming: 0})
 
 
     let router = useRouter();
     let dispatch = useAppDispatch();
 
     const stripeNavigate = async () => {
-        let res = await call(
-            "/api/stripe/premiumMembershipSession",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/stripe/premiumMembershipSession`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            }
+        ).then(async (response) => response.json())
 
         if (res["message"] === "You must be logged in to access the GIGO system.") {
             let authState = Object.assign({}, initialAuthState)
             // @ts-ignore
             dispatch(updateAuthState(authState))
-            router.push("/login?forward="+encodeURIComponent(window.location.pathname))
+            router.push("/login?forward=" + encodeURIComponent(window.location.pathname))
         }
         if (res !== undefined && res["return url"] !== undefined) {
             window.location.replace(res["return url"])
@@ -76,17 +64,16 @@ function AboutPagePremium() {
     }
 
     const getSubData = async () => {
-        let follow = call(
-            "/api/user/subscription",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let follow = fetch(
+            `${config.rootPath}/api/user/subscription`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}'
+            }
+        ).then(async (response) => response.json())
 
         const [res] = await Promise.all([
             follow
@@ -151,12 +138,29 @@ function AboutPagePremium() {
     return (
         <CssBaseline>
             <div>
-                <Box style={window.innerWidth > 1000 ? { width: "100%", height: "500px", backgroundColor: theme.palette.secondary.light } : { width: "100%", height: "850px", backgroundColor: theme.palette.secondary.light }}>
-                    <div style={window.innerWidth > 1000 ? { width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly" } : { width: "100%", display: "flex", flexDirection: "column", height: "100%" }}>
-                        <div style={window.innerWidth > 1000 ? { position: "relative", top: "150px" } : { position: "relative", height: "100%", top: "50px" }}>
+                <Box style={window.innerWidth > 1000 ? {
+                    width: "100%",
+                    height: "500px",
+                    backgroundColor: theme.palette.secondary.light
+                } : {width: "100%", height: "850px", backgroundColor: theme.palette.secondary.light}}>
+                    <div style={window.innerWidth > 1000 ? {
+                        width: "100%",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-evenly"
+                    } : {width: "100%", display: "flex", flexDirection: "column", height: "100%"}}>
+                        <div style={window.innerWidth > 1000 ? {
+                            position: "relative",
+                            top: "150px"
+                        } : {position: "relative", height: "100%", top: "50px"}}>
                             {inTrial ? (
-                                <div style={window.innerWidth > 1000 ? {} : { left: "20px", position: "relative", width: "90%", lineHeight: 1.5 }}>
-                                    <h1 style={{ top: '1%' }}>
+                                <div style={window.innerWidth > 1000 ? {} : {
+                                    left: "20px",
+                                    position: "relative",
+                                    width: "90%",
+                                    lineHeight: 1.5
+                                }}>
+                                    <h1 style={{top: '1%'}}>
                                         1 Month Trial Expires in{' '}
                                         {window.innerWidth > 1000 ? (
                                             <span style={window.innerWidth > 1000 ? {
@@ -174,7 +178,7 @@ function AboutPagePremium() {
                                                 {getCountdown(membershipDates.upcoming)}
                                             </span>
                                         ) : (
-                                            <div style={window.innerWidth > 1000 ? {} : { marginTop: "20px" }}>
+                                            <div style={window.innerWidth > 1000 ? {} : {marginTop: "20px"}}>
                                                 <span style={window.innerWidth > 1000 ? {
                                                     backgroundColor: 'rgba(256, 256, 256, 0.6)', // adjust the transparency by changing the alpha value
                                                     padding: '10px',
@@ -195,7 +199,7 @@ function AboutPagePremium() {
                                     {/*<h4> Dont want To see it go?</h4>*/}
 
 
-                                    <h4>Don't want to see it go? Only $8/mo. Cancel anytime.</h4>
+                                    <h4>Don&#39;t want to see it go? Only $8/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
                                         '--button-primary-color': theme.palette.secondary.main,
@@ -208,7 +212,11 @@ function AboutPagePremium() {
                                     </AwesomeButton>
                                 </div>
                             ) : membership !== 1 ? (
-                                <div style={window.innerWidth > 1000 ? {} : { left: "20px", position: "relative", width: "90%" }}>
+                                <div style={window.innerWidth > 1000 ? {} : {
+                                    left: "20px",
+                                    position: "relative",
+                                    width: "90%"
+                                }}>
                                     <h1>Become a Pro</h1>
                                     <h4>Only $8/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
@@ -223,7 +231,12 @@ function AboutPagePremium() {
                                     </AwesomeButton>
                                 </div>
                             ) : (
-                                <div style={window.innerWidth > 1000 ? {} : { position: "relative", left: "20px", width: "90%", lineHeight: 1.5 }}>
+                                <div style={window.innerWidth > 1000 ? {} : {
+                                    position: "relative",
+                                    left: "20px",
+                                    width: "90%",
+                                    lineHeight: 1.5
+                                }}>
                                     <h1>
                                         It Feels Good to Be A Pro
                                     </h1>
@@ -250,69 +263,109 @@ function AboutPagePremium() {
                         </div>
                     </div>
                 </Box>
-                <div style={window.innerWidth > 1000 ? { height: "200px" } : { height: "100px" }} />
+                <div style={window.innerWidth > 1000 ? {height: "200px"} : {height: "100px"}}/>
                 <Box>
-                    <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt="" src={codeTeacher} width={width} height={height} />
+                    <div style={window.innerWidth > 1000 ? {
+                        display: "flex",
+                        flexDirection: "row",
+                        width: "100%",
+                        justifyContent: "space-evenly"
+                    } : {display: "flex", flexDirection: "column", width: "100%", alignItems: "center"}}>
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={codeTeacher} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>Access to Code Teacher</h4>
-                                <div>Your personal Magic tutor. Code Teacher works along side you to help you learn to code and solve problems.</div>
+                                <div>Your personal Magic tutor. Code Teacher works along side you to help you learn to
+                                    code and solve problems.
+                                </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt=""  src={privateWorkspace} width={width} height={height} />
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={privateWorkspace} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>Private Workspaces</h4>
-                                <div>Keep your code personal. Work on projects privately, developing your skills in stealth mode.</div>
+                                <div>Keep your code personal. Work on projects privately, developing your skills in
+                                    stealth mode.
+                                </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt=""  src={resources} width={width} height={height} />
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={resources} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>More Workspace Resources</h4>
-                                <div>Get Access to 8 cpu cores, 8GB ram and 50GB disk. Run projects faster, reduce build times, and get the best experience.</div>
+                                <div>Get Access to 8 cpu cores, 8GB ram and 50GB disk. Run projects faster, reduce build
+                                    times, and get the best experience.
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div style={{ height: "100px" }} />
-                    <div style={window.innerWidth > 1000 ? { display: "flex", flexDirection: "row", width: "100%", justifyContent: "space-evenly" } : { display: "flex", flexDirection: "column", width: "100%", alignItems: "center" }}>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt=""  src={workspaces} width={width} height={height} />
+                    <div style={{height: "100px"}}/>
+                    <div style={window.innerWidth > 1000 ? {
+                        display: "flex",
+                        flexDirection: "row",
+                        width: "100%",
+                        justifyContent: "space-evenly"
+                    } : {display: "flex", flexDirection: "column", width: "100%", alignItems: "center"}}>
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={workspaces} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>Three Concurrent DevSpaces</h4>
-                                <div>Run all the code you need, as much as you need. Work on multiple projects at the same time or with up to three concurrent DevSpaces.</div>
+                                <div>Run all the code you need, as much as you need. Work on multiple projects at the
+                                    same time or with up to three concurrent DevSpaces.
+                                </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt=""  src={streakFreeze} width={width} height={height} />
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={streakFreeze} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>Two Streak Freezes a Week</h4>
-                                <div>Keep your streak longer. Don't let a bad week kill your awesome streak! Streak freezes preserve your streak on days that you can't find the time.</div>
+                                <div>Keep your streak longer. Don&#39;t let a bad week kill your awesome streak! Streak
+                                    freezes preserve your streak on days that you can&#39;t find the time.
+                                </div>
                             </div>
                         </div>
-                        <div style={window.innerWidth > 1000 ? {} : { marginBottom: "50px" }}>
-                            <Button disabled={true} style={{ backgroundColor: theme.palette.secondary.light }}>
-                                <Image alt=""  src={vscodeTheme} width={width} height={height} />
+                        <div style={window.innerWidth > 1000 ? {} : {marginBottom: "50px"}}>
+                            <Button disabled={true} style={{backgroundColor: theme.palette.secondary.light}}>
+                                <Image alt="" src={vscodeTheme} width={width} height={height}/>
                             </Button>
-                            <div style={window.innerWidth > 1000 ? { width: textWidth } : { width: textWidth, wordWrap: "break-word" }}>
+                            <div style={window.innerWidth > 1000 ? {width: textWidth} : {
+                                width: textWidth,
+                                wordWrap: "break-word"
+                            }}>
                                 <h4>Premium VsCode Theme</h4>
-                                <div>A unique code theme to help you see the errors faster. Code the GIGO way with the custom GIGO editor theme!</div>
+                                <div>A unique code theme to help you see the errors faster. Code the GIGO way with the
+                                    custom GIGO editor theme!
+                                </div>
                             </div>
                         </div>
                     </div>
                 </Box>
-                <div style={window.innerWidth > 1000 ? { height: "200px" } : { height: "100px" }} />
+                <div style={window.innerWidth > 1000 ? {height: "200px"} : {height: "100px"}}/>
             </div>
         </CssBaseline>
     );

@@ -107,7 +107,7 @@ function AboutGIGO() {
                             <h2 style={{textAlign: 'left'}}>Start Your Journey</h2>
                             <p>Journeys provide a tailored learning experience in coding, with quick, manageable
                                 projects to suit your schedule. The adaptive framework caters to your interests, for
-                                stress-free learning. GIGO's AI tutor, Code Teacher, offers on-the-fly personalized
+                                stress-free learning. GIGO&#39;s AI tutor, Code Teacher, offers on-the-fly personalized
                                 help, guiding you from beginner to skilled developer.</p>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <JourneyIcon style={{height: '13vw', width: '13vw'}}/>
@@ -130,7 +130,7 @@ function AboutGIGO() {
                         <Grid item xs={1}/>
                         <Grid item xs={4}>
                             <h2 style={{textAlign: 'left'}}>Need a new Journey path?</h2>
-                            <p>Detours let you change up your learning path to focus on what you need or want to learn next. They're choices that pop up as you go, giving you the chance to dive deeper into topics or brush up on skills. With Detours, you control where your coding skills grow, making sure your learning fits just right for you.</p>
+                            <p>Detours let you change up your learning path to focus on what you need or want to learn next. They&#39;re choices that pop up as you go, giving you the chance to dive deeper into topics or brush up on skills. With Detours, you control where your coding skills grow, making sure your learning fits just right for you.</p>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <DetourSignIcon style={{height: '13vw', width: '13vw'}}/>
                             </div>
@@ -220,7 +220,7 @@ function AboutGIGO() {
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Start Your Journey</h2>
                         <p style={textStyle as React.CSSProperties}>Journeys provide a tailored learning experience in
-                            coding, with quick, manageable projects to suit your schedule. The adaptive framework caters to your interests, for stress-free learning. GIGO's AI tutor, Code Teacher, offers on-the-fly personalized help, guiding you from beginner to skilled developer.</p>
+                            coding, with quick, manageable projects to suit your schedule. The adaptive framework caters to your interests, for stress-free learning. GIGO&#39;s AI tutor, Code Teacher, offers on-the-fly personalized help, guiding you from beginner to skilled developer.</p>
                         <Grid item xs={4} style={{paddingTop: "5vh"}}>
                             <MobileVideo videoSrc={config.rootPath + "/cloudstore/videos/journeys.mp4"}/>
                         </Grid>
@@ -235,7 +235,7 @@ function AboutGIGO() {
                             <DetourSignIcon style={{height: '30vw', width:'30vw'}}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Need a new Journey path?</h2>
-                        <p style={textStyle as React.CSSProperties}>Detours let you change up your learning path to focus on what you need or want to learn next. They're choices that pop up as you go, giving you the chance to dive deeper into topics or brush up on skills. With Detours, you control where your coding skills grow, making sure your learning fits just right for you.</p>
+                        <p style={textStyle as React.CSSProperties}>Detours let you change up your learning path to focus on what you need or want to learn next. They&#39;re choices that pop up as you go, giving you the chance to dive deeper into topics or brush up on skills. With Detours, you control where your coding skills grow, making sure your learning fits just right for you.</p>
                         <Grid item xs={4} style={{paddingTop: "5vh"}}>
                             <MobileVideo videoSrc={config.rootPath + "/cloudstore/videos/detours.mp4"}/>
                         </Grid>

@@ -105,7 +105,7 @@ const titleStyle = {
                                <DetourSign width={"60vw"} />
                             </Box>
                         </div>
-                        <h2 style={textStyle as React.CSSProperties}>Let's Get Sidetracked</h2>
+                        <h2 style={textStyle as React.CSSProperties}>Let&#39;s Get Sidetracked</h2>
                         <p style={textStyle as React.CSSProperties}>
                             Journey Detours allow for a variable learning experience. Users can explore niche avenues
                             of programming to have a wider breadth of skills based on interest.
@@ -126,7 +126,7 @@ const titleStyle = {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <img alt="Code Teacher" src={CTIcon} style={{width: "50vw", height: "50vw"}}/>
+                            <Image alt="Code Teacher" src={CTIcon} width={600} height={600}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Code Teacher</h2>
                         <p style={textStyle as React.CSSProperties}>Journeys are integrated with Code Teacher to offer

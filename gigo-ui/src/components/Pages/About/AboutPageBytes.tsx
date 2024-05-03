@@ -174,7 +174,7 @@ function AboutBytes() {
                         <Grid item xs={1}/>
                         <Grid item xs={4}>
                             <h2 style={{textAlign: 'left'}}>Feeling stuck?</h2>
-                            <p>Code Teacher will offer intelligent suggestions on 'What To Do Next?', ensuring a smooth
+                            <p>Code Teacher will offer intelligent suggestions on &#39;What To Do Next?&#39;, ensuring a smooth
                                 learning curve.</p>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <Box sx={{
@@ -210,7 +210,7 @@ function AboutBytes() {
                         <Grid item xs={4}>
                             <h2 style={{textAlign: 'left'}}>Customizable Difficulty Levels</h2>
                             <p>Adjust the difficulty level of each challenge, making it suitable for
-                                various experience levels. Each difficulty has it's own goal unique to that level of programming.
+                                various experience levels. Each difficulty has it&#39;s own goal unique to that level of programming.
                             </p>
                             <div style={{display: 'flex', justifyContent: 'center'}}>
                                 <Box sx={{
@@ -317,7 +317,7 @@ function AboutBytes() {
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Feeling Stuck?</h2>
                         <p style={textStyle as React.CSSProperties}>Code Teacher will offer intelligent suggestions on
-                            'What To Do Next?', ensuring a smooth
+                            &#39;What To Do Next?&#39;, ensuring a smooth
                             learning curve.</p>
                         <Grid item xs={4} style={{paddingTop: "5vh"}}>
                             <MobileVideo videoSrc={config.rootPath + "/cloudstore/videos/demo-nextsteps.mp4"}/>
@@ -349,7 +349,7 @@ function AboutBytes() {
                         <h2 style={textStyle as React.CSSProperties}>Customizable Difficulty</h2>
                         <p style={textStyle as React.CSSProperties}>Adjust the difficulty level of each challenge,
                             making it suitable for
-                            various experience levels. Each difficulty has it's own goal unique to that level of
+                            various experience levels. Each difficulty has it&#39;s own goal unique to that level of
                             programming.</p>
                         <Grid item xs={4} style={{paddingTop: "5vh"}}>
                             <MobileVideo videoSrc={config.rootPath + "/cloudstore/videos/demo-difficulty.mp4"}/>
