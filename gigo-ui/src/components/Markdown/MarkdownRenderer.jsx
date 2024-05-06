@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {Suspense, useCallback, useEffect, useState} from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import {defaultSchema} from 'rehype-sanitize';
 import remarkCodeBlock from 'remark-code-blocks';
 import ReactMarkdown from 'react-markdown';
-import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+// import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
+import ReactSyntaxHighlighter from '../SyntaxHighlighter/ReactSyntaxHighlighter';
 import {darkSyntaxTheme, lightSyntaxTheme} from './SyntaxHighlights';
 import {alpha, Box, IconButton, Tooltip, Typography} from '@mui/material';
 import {theme} from '@/theme';
@@ -228,15 +229,17 @@ const MarkdownRenderer = ({
                       {goToLink}
                     </Box>
                     <ErrorBoundary>
-                      <SyntaxHighlighter
-                        style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
-                        language={match[1]}
-                        PreTag="div"
-                        className="notranslate"
-                        {...props}
-                      >
-                        {t}
-                      </SyntaxHighlighter>
+                      <Suspense fallback={<div />}>
+                        <ReactSyntaxHighlighter
+                          style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
+                          language={match[1]}
+                          PreTag="div"
+                          className="notranslate"
+                          {...props}
+                        >
+                          {t}
+                        </ReactSyntaxHighlighter>
+                      </Suspense>
                     </ErrorBoundary>
                   </div>
                 );

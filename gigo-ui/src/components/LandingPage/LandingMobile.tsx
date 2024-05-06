@@ -5,7 +5,9 @@ import {styled} from '@mui/system';
 
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
-import {SocialIcon} from 'react-social-icons';
+// @ts-ignore
+import {SocialIcon} from 'react-social-icons/component';
+import 'react-social-icons/discord'
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import config from "@/config";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
@@ -120,7 +122,7 @@ const GIGOLandingPageMobile: React.FC = () => {
                     <Typography variant="body2" gutterBottom
                                 sx={{maxWidth: "80vw"}}> {/* Change typography variant and max width */}
                         Code in the cloud, learn from thousands of lessons, and work with the latest technologies from
-                        any machine, even a tablet!
+                        any device, even a tablet!
                         Built by self-taught developers, GIGO focuses on aligning learning with the real world of
                         development.
                         Click Start Your Journey to start learning now!
@@ -136,7 +138,7 @@ const GIGOLandingPageMobile: React.FC = () => {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
                         }}
-                        href="/journey/main"
+                        href="/journey"
                     >
                         Start Your Journey
                     </Button>

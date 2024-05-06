@@ -61,7 +61,7 @@ const titleStyle = {
                                     // textOverflow: 'ellipsis'  // Optionally add an ellipsis
                                 }}
                                 type="primary"
-                                href={"/journey/main"}
+                                href={"/journey"}
                             >
                                 Start Your Journey
                             </AwesomeButton>

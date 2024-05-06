@@ -182,7 +182,7 @@ export default function JourneyBannerMobile({
                         '--button-default-border-radius': "12px",
                         fontSize: "28px",
                         height: "80px",
-                    }} type="primary" href={"/journey/main"}>
+                    }} type="primary" href={"/journey"}>
                         <span>Continue Your Journey</span>
                     </AwesomeButton>
                 </Box>
@@ -213,7 +213,7 @@ export default function JourneyBannerMobile({
                         '--button-primary-color-hover': theme.palette.primary.main,
                         '--button-default-border-radius': "12px",
                         fontSize: "28px"
-                    }} type="primary" href={"/journey/main"}>
+                    }} type="primary" href={"/journey"}>
                         <span>Start Your Journey</span>
                     </AwesomeButton>
                 </Box>

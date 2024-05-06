@@ -156,7 +156,7 @@ function AboutPageJourney() {
                     style={buttonStyles}
                     onMouseEnter={() => setButtonHover(true)}
                     onMouseLeave={() => setButtonHover(false)}
-                    onClick={() => window.location.href = '/journey/main'}
+                    onClick={() => window.location.href = '/journey'}
                 >
                     <div style={buttonShine}/>
                     Get Started
@@ -263,7 +263,7 @@ function AboutPageJourney() {
 
                                     borderRadius: "25px",
                                     fontSize: "100%",
-                                }} type="primary" href={"/journey/main"}>
+                                }} type="primary" href={"/journey"}>
                                     Embark On Your Journey
                                 </AwesomeButton>
                                 <br/>

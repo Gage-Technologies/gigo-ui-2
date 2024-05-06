@@ -7,28 +7,6 @@ import Image from "next/image";
 import {palette} from '@/palette';
 
 const GIGOLandingPage: React.FC = () => {
-    // const [windowSize, setWindowSize] = React.useState(1920)
-    // React.useEffect(() => {
-    //     setWindowSize(window.innerWidth)
-    //     window.addEventListener('resize', () => {
-    //         setWindowSize(window.innerWidth)
-    //     })
-    // }, [])
-    //
-    // const query = useSearchParams();
-    // const leftOpen = query.get('menu') === 'true';
-    // const rightOpen = query.get('chat') === 'true';
-    //
-    // let width: string;
-    // let widthSub = 0;
-    // if (leftOpen) {
-    //     widthSub += 200;
-    // }
-    // if (rightOpen) {
-    //     widthSub += 300;
-    // }
-    // width = widthSub > 0 ? `calc(100vw - ${widthSub}px)` : '100vw';
-
     const windowSize = 1000;
 
     return (
@@ -149,6 +127,7 @@ const GIGOLandingPage: React.FC = () => {
                             fontSize: "28px",
                             padding: "24px",
                         }}
+                        href={"/journey"}
                     >
                         Start Your Journey
                     </Button>
@@ -172,6 +151,7 @@ const GIGOLandingPage: React.FC = () => {
                             fontSize: "28px",
                             padding: "24px",
                         }}
+                        href={"/journey"}
                     >
                         Start Your Journey
                     </Button>

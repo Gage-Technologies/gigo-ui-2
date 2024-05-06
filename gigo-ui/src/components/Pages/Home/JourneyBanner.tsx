@@ -177,7 +177,7 @@ export default function JourneyBanner({
                             '--button-primary-color-hover': '#29c18c',
                             '--button-default-border-radius': "12px",
                             fontSize: "28px",
-                        }} type="primary" href={"/journey/main"}>
+                        }} type="primary" href={"/journey"}>
                             <span>Continue Your Journey</span>
                         </AwesomeButton>
                     </Box>
@@ -216,7 +216,7 @@ export default function JourneyBanner({
                             '--button-primary-color-hover': theme.palette.primary.main,
                             '--button-default-border-radius': "12px",
                             fontSize: "28px"
-                        }} type="primary" href={"/journey/main"}>
+                        }} type="primary" href={"/journey"}>
                             <span>Start Your Journey</span>
                         </AwesomeButton>
                     </Box>

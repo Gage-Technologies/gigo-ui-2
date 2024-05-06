@@ -1,10 +1,10 @@
 import React from "react";
-import { PythonOriginal } from 'devicons-react';
-import { GoOriginal } from 'devicons-react';
-import { RustOriginal } from "devicons-react";
-import { CplusplusOriginal } from 'devicons-react';
-import { JavascriptOriginal } from 'devicons-react';
-import { CsharpOriginal } from 'devicons-react';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import GoOriginal from 'devicons-react/lib/icons/GoOriginal';
+import RustOriginal from "devicons-react/lib/icons/RustOriginal";
+import CplusplusOriginal from 'devicons-react/lib/icons/CplusplusOriginal';
+import JavascriptOriginal from 'devicons-react/lib/icons/JavascriptOriginal';
+import CsharpOriginal from 'devicons-react/lib/icons/CsharpOriginal';
 import { themeHelpers } from "@/theme";
 
 export type ByteBadgeProps = {

@@ -34,18 +34,16 @@ import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
-import {
-    CplusplusOriginal,
-    CplusplusPlain,
-    CsharpOriginal,
-    CsharpPlain,
-    GoOriginal,
-    GoPlain,
-    JavascriptOriginal,
-    JavascriptPlain,
-    PythonOriginal,
-    RustOriginal
-} from "devicons-react";
+import CplusplusOriginal from 'devicons-react/lib/icons/CplusplusOriginal';
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import CsharpOriginal from 'devicons-react/lib/icons/CsharpOriginal';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
+import GoOriginal from 'devicons-react/lib/icons/GoOriginal';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import JavascriptOriginal from 'devicons-react/lib/icons/JavascriptOriginal';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
 import {Task, Unit} from "@/models/journey/unit";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";

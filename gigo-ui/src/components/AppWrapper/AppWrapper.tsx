@@ -34,7 +34,6 @@ import {
     Button,
     Card,
     CardContent,
-    CssBaseline,
     Link,
     ListItemButton,
     Menu,
@@ -42,7 +41,6 @@ import {
     SpeedDial,
     SpeedDialAction,
     TextField,
-    ThemeProvider,
     Tooltip,
 } from "@mui/material";
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
@@ -74,10 +72,15 @@ import {
     updateAuthState,
 } from "@/reducers/auth/auth";
 import {isChrome} from "react-device-detect";
-import {LocalFireDepartment, Quiz} from "@mui/icons-material";
+import {
+    ChatBubbleOutline,
+    FolderOutlined,
+    HomeOutlined,
+    InfoOutlined,
+    LocalFireDepartment,
+    Quiz
+} from "@mui/icons-material";
 import {Icon as IconifyIcon} from "@iconify/react";
-import Snowfall from "react-snowfall";
-import Confetti from "react-confetti";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChatContainer from "../Chat/ChatContainer";
@@ -90,14 +93,19 @@ import {
 import {clearProjectState} from "@/reducers/createProject/createProject";
 import {clearSearchParamsState} from "@/reducers/searchParams/searchParams";
 import {clearJourneyFormState} from "@/reducers/journeyForm/journeyForm";
-import {ChatBubbleOutline, FolderOutlined, HomeOutlined, InfoOutlined} from "@mui/icons-material";
 import Notification from "@/models/notification";
 import NotificationPopup from "../NotificationPopup";
 import {clearCache} from "@/reducers/pageCache/pageCache";
 import CloseIcon from "@mui/icons-material/Close";
 import {clearChatState} from "@/reducers/chat/chat";
 import {clearMessageCache} from "@/reducers/chat/cache";
-import {SocialIcon} from 'react-social-icons'
+// @ts-ignore
+import {SocialIcon} from 'react-social-icons/component';
+import 'react-social-icons/github'
+import 'react-social-icons/discord'
+import 'react-social-icons/x'
+import 'react-social-icons/medium'
+import 'react-social-icons/reddit'
 import Snackbar from '@mui/material/Snackbar';
 import {RecordWebUsage, WebTrackingEvent} from '@/models/web_usage';
 import {useTracking} from 'react-tracking';
@@ -107,6 +115,11 @@ import {sleep} from '@/services/utils';
 import {decodeToken} from 'react-jwt';
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import Image from "next/image";
+import {Suspense} from "react";
+
+// lazy imports to reduce bundle size
+const Snowfall = React.lazy(() => import('react-snowfall'));
+const Confetti = React.lazy(() => import('react-confetti'));
 
 
 interface IProps {
@@ -384,7 +397,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     ? "0px"
                     : pathname.startsWith("/launchpad/") && query.get("editor") === "true"
                         ? "28px"
-                        : "64px"
+                        : isMobile ? "56px" : "64px"
             }}
             id={"contentContainer"}
         >
@@ -865,7 +878,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Typography>
                         </Box>
                     </Button>
-                    <TopSearchBar width={"35vw"} height={"auto"} />
+                    <TopSearchBar width={"35vw"} height={"auto"}/>
                     <Box sx={{flexGrow: 1}}/>
                     {loggedIn ? (
                         <Box>
@@ -1859,7 +1872,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         <ListItem disablePadding>
                             <ListItemButton color={"primary"} sx={{
                                 borderRadius: 2,
-                            }} href={"/journey/main"}>
+                            }} href={"/journey"}>
                                 <ListItemIcon>
                                     <ExploreIcon style={{color: theme.palette.text.primary,}}/>
                                 </ListItemIcon>
@@ -2330,7 +2343,11 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         }
 
         if (holiday === Holiday.Christmas && (!onHomePage || loggedIn)) {
-            return (<Snowfall/>)
+            return (
+                <Suspense fallback={<div/>}>
+                    <Snowfall/>
+                </Suspense>
+            )
         }
         return null
     }
@@ -2341,8 +2358,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         }
 
         if (holiday === Holiday.NewYears && (!onHomePage || loggedIn)) {
-            return (<Confetti gravity={0.01} numberOfPieces={100} wind={0.001}
-                              colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1}/>)
+            return (
+                <Suspense fallback={<div/>}>
+                    <Confetti gravity={0.01} numberOfPieces={100} wind={0.001}
+                              colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1}/>
+                </Suspense>
+            )
         }
         return null
     }

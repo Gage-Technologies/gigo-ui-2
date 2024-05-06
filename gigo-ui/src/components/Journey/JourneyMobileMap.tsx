@@ -1,47 +1,29 @@
 import {AwesomeButton} from "react-awesome-button";
 import CheckIcon from "@mui/icons-material/Check";
-import python from "./Icons/joruneyMainAssets/journey-python-no-cirlce.svg";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import React, {useEffect, useState} from "react";
-import {
-    Box,
-    Button,
-    CircularProgress,
-    createTheme,
-    Grid,
-    PaletteMode,
-    Popover,
-    SpeedDial,
-    Typography
-} from "@mui/material";
-import DetourCard from "./DetourCard";
+import {Box, Button, CircularProgress, createTheme, PaletteMode, Popover, SpeedDial, Typography} from "@mui/material";
 import {SpeedDialAction} from "@mui/lab";
 import ArticleIcon from "@mui/icons-material/Article";
-import ForkRightIcon from "@mui/icons-material/ForkRight";
 import CloseIcon from "@mui/icons-material/Close";
 import {getAllTokens} from "@/theme";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthStateId} from "@/reducers/auth/auth";
 import call from "@/services/api-call";
 import config from "@/config";
-import {ThreeDots} from "react-loading-icons";
 import swal from "sweetalert";
-import golang from "./Icons/bytes/golang-logo.svg";
-import javascript from "../components/Icons/bytes/journey-javascript.svg"
-import {
-    CplusplusOriginal, CplusplusPlain,
-    CsharpOriginal, CsharpPlain,
-    GoOriginal, GoPlain,
-    JavascriptOriginal, JavascriptPlain,
-    PythonOriginal,
-    RustOriginal
-} from "devicons-react";
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
 
 interface JourneyMapProps {
     unitId: any;
 }
 
-function JourneyMobileMap({ unitId }: JourneyMapProps) {
+function JourneyMobileMap({unitId}: JourneyMapProps) {
     const [anchorElDetour, setAnchorElDetour] = useState(null);
     const [anchorElDesc, setAnchorElDesc] = useState(null);
     let userPref = localStorage.getItem('theme')
@@ -236,7 +218,7 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
             config.rootPath
         )
 
-        if (res !== undefined && res["success"] !== undefined && res["success"] === true){
+        if (res !== undefined && res["success"] !== undefined && res["success"] === true) {
             let tasks = res["data"]["tasks"]
 
             let structuredData = tasks.sort((a: { node_above: number | null; }, b: { node_above: number | null; }) => {
@@ -262,7 +244,7 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
     const openDesc = Boolean(anchorElDesc);
 
     //@ts-ignore
-    const CurvedPath = ({ points }) => {
+    const CurvedPath = ({points}) => {
         const curveDepth = 70;
         let minX = Math.min(...points.map((p: { x: any; }) => p.x));
         let maxX = Math.max(...points.map((p: { x: any; }) => p.x));
@@ -292,12 +274,12 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
         const height = maxY - minY;
 
         return (
-            <svg viewBox={`${minX} ${minY} ${width} ${height}`} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-                <path d={d} stroke="#008866" strokeWidth="12" fill="none" strokeDasharray="30,10" />
+            <svg viewBox={`${minX} ${minY} ${width} ${height}`}
+                 style={{width: '100%', height: '100%', position: 'absolute', top: 0, left: 0}}>
+                <path d={d} stroke="#008866" strokeWidth="12" fill="none" strokeDasharray="30,10"/>
             </svg>
         );
     };
-
 
 
     const TaskDescription = () => {
@@ -316,7 +298,9 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
                     pt: 4,
                     height: "225px"
                 }}>
-                    <Typography sx={{textTransform: "none", textAlign: 'justify', marginLeft: '28px', marginRight: '28px'}} variant={"h6"}>
+                    <Typography
+                        sx={{textTransform: "none", textAlign: 'justify', marginLeft: '28px', marginRight: '28px'}}
+                        variant={"h6"}>
                         {taskDescription}
                     </Typography>
 
@@ -326,8 +310,9 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
         )
     }
 
-    const taskPopups = () => {;
-        return(
+    const taskPopups = () => {
+        ;
+        return (
             <>
                 <Popover
                     id={openDesc ? 'simple-popover' : undefined}
@@ -416,8 +401,18 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
         console.log("heigfht: ", points.length * speedDialHeight + 200)
 
         return (
-            <Box sx={{ position: 'relative', width: '100%', height: "100%", display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', paddingTop: "10px", paddingBottom: "10px"}}>
-                <CurvedPath points={points} />
+            <Box sx={{
+                position: 'relative',
+                width: '100%',
+                height: "100%",
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'column',
+                paddingTop: "10px",
+                paddingBottom: "10px"
+            }}>
+                <CurvedPath points={points}/>
                 {metadata.map((item: { _id: React.Key | null | undefined; }, index: number) => (
                     <div
                         style={{
@@ -449,7 +444,7 @@ function JourneyMobileMap({ unitId }: JourneyMapProps) {
                     alignItems: "center",
                     alignContent: "center"
                 }}>
-                    <CircularProgress />
+                    <CircularProgress/>
                 </Box>
             )}
         </>

@@ -4,7 +4,9 @@ import {Box, Button, Link, Typography} from '@mui/material';
 import {styled} from '@mui/system';
 import {theme, themeHelpers} from '@/theme';
 import LazyLoad from 'react-lazyload';
-import {SocialIcon} from 'react-social-icons';
+// @ts-ignore
+import {SocialIcon} from 'react-social-icons/component';
+import 'react-social-icons/discord'
 import GigoCircleIcon from '@/icons/GIGO/GigoCircleLogo';
 import HeartIcon from '@/icons/GIGO/Heart';
 import {useSearchParams} from "next/navigation";
@@ -135,7 +137,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                     <Typography variant="body1" gutterBottom sx={{maxWidth: "40vw"}}>
                         Built by self-taught developers, GIGO focuses on aligning learning with the real world of
                         development.
-                        Code in the cloud, work on real projects, and learn the latest technologies from any machine,
+                        Code in the cloud, work on real projects, and learn the latest technologies from any device,
                         even a tablet!
                         Click Start Your Journey to start learning now!
                     </Typography>
@@ -151,7 +153,7 @@ const GIGOLandingPageValentines: React.FC = () => {
                                 backgroundColor: theme.palette.primary.main + "99",
                             }
                         }}
-                        href="/journey/main"
+                        href="/journey"
                         // onClick={() => {
                         //     if (endRef.current) {
                         //         endRef.current.scrollIntoView({ block: 'start', behavior: 'smooth' });

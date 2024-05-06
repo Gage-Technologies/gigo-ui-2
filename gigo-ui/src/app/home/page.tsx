@@ -5,7 +5,7 @@ import config from "@/config";
 import Carousel from "../../components/Carousel";
 import ReactGA from "react-ga4";
 import GIGOLandingPage from "@/components/LandingPage/Landing2";
-import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
+import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile2";
 import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";

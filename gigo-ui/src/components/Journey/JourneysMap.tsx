@@ -21,14 +21,12 @@ import {selectAuthStateId} from "@/reducers/auth/auth";
 import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
-import {
-    CplusplusPlain,
-    CsharpPlain,
-    GoPlain,
-    JavascriptPlain,
-    PythonOriginal,
-    RustOriginal
-} from "devicons-react";
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
 
 interface JourneyMapProps {
     unitId: any;

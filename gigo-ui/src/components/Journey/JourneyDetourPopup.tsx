@@ -76,7 +76,7 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
         )
 
         if (detour !== undefined && detour["success"] !== undefined && detour["success"] === true){
-            redirectToMain("/journey/main")
+            redirectToMain("/journey")
         } else {
             swal("There was an issue adding this detour")
         }

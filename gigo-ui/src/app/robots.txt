@@ -22,4 +22,4 @@ Allow: /
 User-agent: *
 Disallow: /
 
-Sitemap: /sitemap/sitemap.xml
+Sitemap: https://www.gigo.dev/sitemap/sitemap.xml
