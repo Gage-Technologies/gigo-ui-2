@@ -26,7 +26,7 @@ import {
     Typography
 } from '@mui/material';
 import {theme, themeHelpers} from "@/theme";
-import {ArrowDownward, Delete, EmojiEmotions, Gif} from "@material-ui/icons";
+import {ArrowDownward, Delete, EmojiEmotions, Gif} from "@mui/icons-material";
 import Tenor from "../Tenor";
 import Emoji from "../Emoji";
 import config from "../../config";
@@ -77,7 +77,7 @@ import renown9 from "../../img/renown/renown9.svg"
 import renown10 from "../../img/renown/renown10.svg"
 import {LoadingButton} from "@mui/lab";
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
-import {Snackbar} from "@material-ui/core";
+import {Snackbar} from "@mui/material";
 import Slide, {SlideProps} from '@mui/material/Slide';
 import ReactDOM from "react-dom";
 import Menu from "@mui/material/Menu";

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Icon } from "@material-ui/core";
+import { Icon } from "@mui/material";
 import codeTeacher from '@/img/codeteacher.svg'
 import Image from "next/image";
 

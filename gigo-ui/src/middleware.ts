@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse, userAgent } from 'next/server'
 import {handleDocumentationRedirect} from "@/app/documentation/middleware";
+import {decodeToken} from "react-jwt";
 
 export const config = {
     matcher: [
@@ -17,6 +18,22 @@ export const config = {
 export function middleware(request: NextRequest) {
     let url = request.nextUrl
     let redirect = false;
+    let cookie = request.cookies.get("gigoAuthToken");
+    if (cookie) {
+        let decodedToken: any = decodeToken(cookie?.value || "");
+        if (!decodedToken) {
+            // clear the token and redirect to login
+            request.cookies.delete("gigoAuthToken");
+            return NextResponse.redirect(url);
+        }
+
+        let exp: number | undefined = decodedToken["exp"];
+        if (!exp || exp < Date.now()) {
+            // clear the token and redirect to login
+            request.cookies.delete("gigoAuthToken");
+            return NextResponse.redirect(url);
+        }
+    }
 
     // handle root redirect to home page
     if (url.pathname === "/") {
@@ -29,6 +46,13 @@ export function middleware(request: NextRequest) {
     if (docOut.redirect) {
         url = docOut.url
         redirect = true
+    }
+
+    // handle overwrite of chat state for logged out users
+    if (url.searchParams.get("chat") === "true" && !cookie) {
+        console.log("overwriting chat state for logged out user");
+        url.searchParams.delete("chat");
+        redirect = true;
     }
 
     // Handle device redirects

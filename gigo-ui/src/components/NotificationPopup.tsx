@@ -13,7 +13,7 @@ import {
     Typography,
 } from "@mui/material";
 import Notification from "../models/notification";
-import CloseIcon from '@material-ui/icons/Close';
+import CloseIcon from '@mui/icons-material/Close';
 import config from "../config";
 import swal from "sweetalert";
 import {theme} from "@/theme";

@@ -69,7 +69,7 @@ import renown7 from "../img/renown/renown7.svg"
 import renown8 from "../img/renown/renown8.svg"
 import renown9 from "../img/renown/renown9.svg"
 import renown10 from "../img/renown/renown10.svg"
-import {grey} from "@material-ui/core/colors";
+import {grey} from "@mui/material/colors";
 import {debounce} from "lodash";
 import Image from "next/image";
 import SuspenseFallback from "@/components/SuspenseFallback";

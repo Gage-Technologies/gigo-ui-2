@@ -8,7 +8,7 @@ import freeze from "@/img/streak/freeze.svg"
 import {Rotate, Slide} from "react-awesome-reveal"
 import Button from '@mui/material/Button';
 import config from "@/config";
-import {Close} from "@material-ui/icons";
+import {Close} from "@mui/icons-material";
 import Image from "next/image";
 
 interface IProps {

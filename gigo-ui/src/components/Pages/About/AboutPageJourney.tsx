@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import JourneyAboutPageIcon from "@/icons/Journey/JourneyAboutPageIcon";
 import {theme} from "@/theme";
 import JourneyPageCampIcon from "@/icons/Journey/JourneyPageCampIcon";
-import {Grid} from "@material-ui/core";
+import {Grid} from "@mui/material";
 import JourneyPagePumpIcon from "@/icons/Journey/JourneyPagePumpIcon";
 import {AwesomeButton} from "react-awesome-button";
 import {useSearchParams} from "next/navigation";

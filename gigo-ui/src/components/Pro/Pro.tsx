@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Icon } from "@material-ui/core";
+import { Icon } from "@mui/material";
 import pro from '@/img/pro/premium_gorilla_pro.svg'
 import Image from "next/image";
 

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Icon } from "@material-ui/core";
+import { Icon } from "@mui/material";
 import ProBanner from '@/img/pro/pro-background-profile.svg'
 import Image from "next/image";
 

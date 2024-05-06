@@ -1,4 +1,3 @@
-import {Icon} from "@material-ui/core";
 import byte from "@/img/bytes/byte-medium-difficulty-selection.svg";
 import React from "react";
 import Image from 'next/image';
@@ -12,10 +11,9 @@ function ByteMediumSelectionIcon(props: any) {
 
     return (
         <div style={{...props.style, width: props.width, position: 'relative'}}>
-            <Image alt="" src={byte} style={{ width: '100%', height: '100%'}} />
+            <Image alt="" src={byte} style={{width: '100%', height: '100%'}}/>
         </div>
     );
-
 
 
 }

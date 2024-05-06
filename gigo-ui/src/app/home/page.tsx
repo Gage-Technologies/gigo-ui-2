@@ -4,7 +4,7 @@ import {Box, Button, Grid, Typography} from "@mui/material";
 import config from "@/config";
 import Carousel from "../../components/Carousesl";
 import ReactGA from "react-ga4";
-import GIGOLandingPage from "@/components/LandingPage/Landing";
+import GIGOLandingPage from "@/components/LandingPage/Landing2";
 import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
 import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";

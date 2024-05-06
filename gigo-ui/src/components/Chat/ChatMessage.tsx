@@ -1,13 +1,12 @@
 'use client'
 /* Chat message similar to twitch built in React with MUI */
 
-import {Card, CardContent, createStyles, createTheme, Link, PaletteMode, Typography} from "@mui/material";
+import {Card, CardContent, createStyles, Link, Typography} from "@mui/material";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import * as React from "react";
-import {withStyles} from "@material-ui/core";
 import moment from 'moment';
-import {getAllTokens, theme} from "@/theme";
-import {makeStyles} from "@material-ui/core/styles";
+import {theme} from "@/theme";
+import {makeStyles, withStyles} from "@mui/styles";
 
 const useStyles = makeStyles({
     gradientText: {

@@ -1,4 +1,3 @@
-import {Icon} from "@material-ui/core";
 import journeyCamp from "@/img/journey/camp-site-journey.svg";
 import React from "react";
 import Image from 'next/image';
@@ -12,13 +11,13 @@ function JourneyPageCampIcon(props: any) {
     if (props.aspectRatio === '21:9') {
         return (
             <div style={{...props.style, width: props.width, paddingBottom, position: 'relative'}}>
-                <Image alt="" src={journeyCamp} style={{position: 'absolute', width: '100%', height: '100%'}} />
+                <Image alt="" src={journeyCamp} style={{position: 'absolute', width: '100%', height: '100%'}}/>
             </div>
         );
-    }else{
+    } else {
         return (
             <div style={{...props.style, width: props.width, paddingBottom, position: 'relative'}}>
-                <Image alt="" src={journeyCamp} style={{position: 'absolute', width: '100%', height: '100%'}} />
+                <Image alt="" src={journeyCamp} style={{position: 'absolute', width: '100%', height: '100%'}}/>
             </div>
         );
     }

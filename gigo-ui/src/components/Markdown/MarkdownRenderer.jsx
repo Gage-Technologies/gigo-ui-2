@@ -6,15 +6,14 @@ import remarkCodeBlock from 'remark-code-blocks';
 import ReactMarkdown from 'react-markdown';
 import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import {darkSyntaxTheme, lightSyntaxTheme} from './SyntaxHighlights';
-import {alpha, Box, createTheme, IconButton, Tooltip, Typography} from '@mui/material';
-import {getAllTokens, theme} from '@/theme';
+import {alpha, Box, IconButton, Tooltip, Typography} from '@mui/material';
+import {theme} from '@/theme';
 import merge from 'deepmerge';
-import {Check, ContentCopy} from "@mui/icons-material";
+import {Check, ContentCopy, Launch} from "@mui/icons-material";
 import {styled} from "@mui/material/styles";
 import {visit} from 'unist-util-visit';
 import config from "../../config";
 import "./css/MarkdownRenderer.css";
-import {Launch} from "@material-ui/icons";
 import ErrorBoundary from "../ErrorBoundary";
 
 const syntaxHighlightingSchema = merge(defaultSchema, {
@@ -23,7 +22,15 @@ const syntaxHighlightingSchema = merge(defaultSchema, {
   },
 });
 
-const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPlugins, rehypePlugins, goToCallback}) => {
+const MarkdownRenderer = ({
+                            markdown,
+                            style,
+                            onAllMediaLoaded,
+                            imgProxy,
+                            remarkPlugins,
+                            rehypePlugins,
+                            goToCallback
+                          }) => {
   const CopyCode = styled('code')(() => ({
     cursor: 'pointer',
 
@@ -176,7 +183,7 @@ const MarkdownRenderer = ({markdown, style, onAllMediaLoaded, imgProxy, remarkPl
                   }
                 }
 
-                  return (
+                return (
                   <div style={{position: 'relative', marginRight: "18px", paddingTop: "4px"}}>
                     <Typography
                       variant={"body2"}

@@ -83,18 +83,6 @@ export default function UserIcon(props: IProps) {
     const internalContent = () => {
         return (
             <div style={{position: "relative"}}> {/* Common Parent */}
-                {props.pro && (
-                    <ProBannerCircle
-                        style={{
-                            position: "absolute",
-                            top: "50%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
-                        }}
-                        width={scaleSize(1.2)}
-                        height={scaleSize(1.2)}
-                    />
-                )}
                 <Badge
                     overlap="circular"
                     anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
@@ -104,6 +92,18 @@ export default function UserIcon(props: IProps) {
                         zIndex: 1 // Adjust as needed
                     }}
                 >
+                    {props.pro && (
+                        <ProBannerCircle
+                            style={{
+                                position: "absolute",
+                                top: "50%",
+                                left: "50%",
+                                transform: "translate(-50%, -50%)",
+                            }}
+                            width={scaleSize(1.2)}
+                            height={scaleSize(1.2)}
+                        />
+                    )}
                     <Image alt={""} src={svgData} height={props.size} width={props.size} style={{
                         position: "absolute",
                         top: "50%",

@@ -13,7 +13,7 @@ import {useAppSelector} from "@/reducers/hooks";
 import premiumGorilla from "@/img/pro/pro-pop-up-icon-plain.svg"
 import proBackground from "@/img/pro/popu-up-backgraound-plain.svg"
 import config from "../../config";
-import {Close} from "@material-ui/icons";
+import {Close} from "@mui/icons-material";
 import {LoadingButton} from "@mui/lab";
 import Image from "next/image";
 import {useSearchParams} from "next/navigation";

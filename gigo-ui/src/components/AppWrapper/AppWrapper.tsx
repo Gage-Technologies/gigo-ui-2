@@ -90,15 +90,15 @@ import {
 import {clearProjectState} from "@/reducers/createProject/createProject";
 import {clearSearchParamsState} from "@/reducers/searchParams/searchParams";
 import {clearJourneyFormState} from "@/reducers/journeyForm/journeyForm";
-import {ChatBubbleOutline, FolderOutlined, HomeOutlined, InfoOutlined,} from "@material-ui/icons";
+import {ChatBubbleOutline, FolderOutlined, HomeOutlined, InfoOutlined} from "@mui/icons-material";
 import Notification from "@/models/notification";
 import NotificationPopup from "../NotificationPopup";
 import {clearCache} from "@/reducers/pageCache/pageCache";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 import {clearChatState} from "@/reducers/chat/chat";
 import {clearMessageCache} from "@/reducers/chat/cache";
 import {SocialIcon} from 'react-social-icons'
-import Snackbar from '@material-ui/core/Snackbar';
+import Snackbar from '@mui/material/Snackbar';
 import {RecordWebUsage, WebTrackingEvent} from '@/models/web_usage';
 import {useTracking} from 'react-tracking';
 import Pro from '@/icons/Pro';
@@ -170,7 +170,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const alreadyCancelled = useAppSelector(selectAuthStateAlreadyCancelled)
 
     const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true");
-    const [rightOpen, setRightOpen] = React.useState(query.get("chat") === "true");
+    const [rightOpen, setRightOpen] = React.useState(query.get("chat") === "true" && authState.authenticated);
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const [reportPopup, setReportPopup] = React.useState(false)
 
@@ -2231,7 +2231,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
         return (
             <>
-                {!isMobile && (
+                {!isMobile && authState.authenticated && (
                     <IconButton
                         onClick={() => handleChatButton()}
                         sx={{
@@ -2348,7 +2348,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 sx={{
                     position: 'fixed',
                     bottom: '20px',
-                    left: '20px',
+                    left: leftOpen ? '220px' : '20px',
                     zIndex: 200,
                     p: 2,
                     color: theme.palette.error.main,
@@ -2398,21 +2398,15 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     return (
         <>
-            <ThemeProvider theme={theme}>
-                {/*{renderChristmasSnow()}*/}
-                {/*{renderNewYearConfetti()}*/}
-                <CssBaseline>
-                    {!isByteMobilePage ? appBarRenderer() : null}
-                    {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
-                    {renderChatSideBar()}
-                    {
-                        // we only render the children on mobile if the chat bar is not open
-                        !(isMobile && rightOpen) ?
-                            memoizedChildren : null
-                    }
-                    {renderDevelopment && renderDevelopmentMarker()}
-                </CssBaseline>
-            </ThemeProvider>
+            {!isByteMobilePage ? appBarRenderer() : null}
+            {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
+            {renderChatSideBar()}
+            {
+                // we only render the children on mobile if the chat bar is not open
+                !(isMobile && rightOpen) ?
+                    memoizedChildren : null
+            }
+            {/*{renderDevelopment && renderDevelopmentMarker()}*/}
         </>
     );
 }

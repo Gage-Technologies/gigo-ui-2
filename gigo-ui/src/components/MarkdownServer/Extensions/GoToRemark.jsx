@@ -2,7 +2,7 @@ import { visit } from 'unist-util-visit';
 import React from "react";
 import ReactDOM from "react-dom";
 import {Button, Tooltip} from "@mui/material";
-import {Launch} from "@material-ui/icons";
+import {Launch} from "@mui/icons-material";
 
 const createGoToRemark = (instanceId, callback) => {
     if (typeof instanceId === 'number' && instanceId < 0) {
