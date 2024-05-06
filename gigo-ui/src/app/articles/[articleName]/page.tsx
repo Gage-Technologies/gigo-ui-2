@@ -9,7 +9,8 @@ export default async function Article({ params }: { params: { articleName: strin
         `${url}`,
         {
             method: 'GET',
-            cache: "force-cache"
+            cache: "force-cache",
+            credentials: 'include'
         }
     ).then(async (response) => {
         let markdownContents = await response.text();

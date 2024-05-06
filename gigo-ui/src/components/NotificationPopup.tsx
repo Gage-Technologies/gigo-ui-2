@@ -49,7 +49,8 @@ const NotificationPopup: React.FC<IProps> = ({
                 },
                 body: JSON.stringify({
                     notification_id: notification_id,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -79,7 +80,8 @@ const NotificationPopup: React.FC<IProps> = ({
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(res => res.json())
 

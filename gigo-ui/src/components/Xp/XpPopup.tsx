@@ -142,7 +142,8 @@ const XpPopup = (props: IProps) => {
                     'Content-Type': 'application/json'
                 },
                 body: '{}',
-                cache: "no-cache"
+                cache: "no-cache",
+                credentials: 'include'
             }
         ).then(async (response) => response.json())
 

@@ -643,7 +643,8 @@ export default function ChatContainer() {
                 },
                 body: JSON.stringify({
                     query: query,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -673,7 +674,8 @@ export default function ChatContainer() {
                 body: JSON.stringify({
                     chat_id: chat._id,
                     query: query,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -704,7 +706,8 @@ export default function ChatContainer() {
                     skip: 0,
                     limit: 10,
                     query: query,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -735,7 +738,8 @@ export default function ChatContainer() {
                     skip: 0,
                     limit: 10,
                     query: query,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 

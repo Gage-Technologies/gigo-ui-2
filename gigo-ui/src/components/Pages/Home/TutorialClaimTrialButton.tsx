@@ -24,7 +24,8 @@ export default function TutorialClaimTrialButton() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: {return_url?: string, return_year?: string, message?: string} = await response.json();

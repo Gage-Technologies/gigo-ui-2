@@ -138,7 +138,8 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                 },
                 body: JSON.stringify({
                     workspace_id: props.wsId,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 

@@ -12,10 +12,9 @@ import BytesIcon from "@/icons/Bytes/BytesIcon";
 import "react-awesome-button/dist/styles.css"
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
-import Layout from "@/app/layout";
 import {cookies} from "next/headers";
 import Tutorial from "@/components/Pages/Home/Tutorial";
-import {checkSessionStatus} from "@/services/utils";
+import {checkSessionStatus, getSessionCookies} from "@/services/utils";
 import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjectsScroll";
 import ActiveChallenges from "@/components/Pages/Home/ActiveChallenges";
 import JourneyBanner from "@/components/Pages/Home/JourneyBanner";
@@ -36,7 +35,8 @@ async function Home({
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: '{}'
+            body: '{}',
+            credentials: 'include'
         }
     ).then(async (response) => {
         let data: { rec_bytes?: any[], message?: string } = await response.json();
@@ -53,20 +53,29 @@ async function Home({
     let activeData: any[] = [];
     let loggedIn = false;
     if (checkSessionStatus(cookies().get('gigoAuthToken'))) {
+        let cookieHeader = getSessionCookies(cookies());
+
         loggedIn = true;
-        let unitsReq = await fetch(
+        let unitsReq = fetch(
             `${config.rootPath}/api/journey/completesUnitsStats`,
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': cookieHeader
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
-            let data: { finished_journey_count?: number, message?: string } = await response.json();
-            if (data.finished_journey_count !== undefined) {
-                completedJourneyUnits = data.finished_journey_count
+            try {
+                let data: { finished_journey_count?: number, message?: string } = await response.json();
+                if (data.finished_journey_count !== undefined) {
+                    console.log("finished_journey_count: ", data.finished_journey_count)
+                    completedJourneyUnits = data.finished_journey_count
+                }
+            } catch (e) {
+                console.log("failed to get units: ", e)
             }
         })
 
@@ -75,21 +84,29 @@ async function Home({
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': cookieHeader
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
-            let data: {
-                completed_tasks?: number,
-                incompleted_tasks?: number,
-                message?: string
-            } = await response.json();
-            if (data.completed_tasks !== undefined) {
-                completedJourneyTasks = data.completed_tasks
-            }
-            if (data.incompleted_tasks !== undefined) {
-                incompletedJourneyTasks = data.incompleted_tasks
+            try {
+                let data: {
+                    completed_tasks?: number,
+                    incompleted_tasks?: number,
+                    message?: string
+                } = await response.json();
+                if (data.completed_tasks !== undefined) {
+                    console.log("completed tasks: ", data.completed_tasks)
+                    completedJourneyTasks = data.completed_tasks
+                }
+                if (data.incompleted_tasks !== undefined) {
+                    console.log("incompleted tasks: ", data.incompleted_tasks)
+                    incompletedJourneyTasks = data.incompleted_tasks
+                }
+            } catch (e) {
+                console.log("failed to get tasks: ", e)
             }
         })
 
@@ -98,14 +115,21 @@ async function Home({
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': cookieHeader
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
-            let data: { detour_count?: number, message?: string } = await response.json();
-            if (data.detour_count !== undefined) {
-                detourCount = data.detour_count
+            try {
+                let data: { detour_count?: number, message?: string } = await response.json();
+                if (data.detour_count !== undefined) {
+                    console.log("detour_count: ", data.detour_count)
+                    detourCount = data.detour_count
+                }
+            } catch (e) {
+                console.log("failed to get detour count: ", e)
             }
         })
 
@@ -114,30 +138,43 @@ async function Home({
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': cookieHeader
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
-            let data: { started_journey?: boolean, message?: string } = await response.json();
-            if (data.started_journey !== undefined) {
-                startedJourney = data.started_journey
+            try {
+                let data: { started_journey?: boolean, message?: string } = await response.json();
+                if (data.started_journey !== undefined) {
+                    console.log("started_journey: ", data.started_journey)
+                    startedJourney = data.started_journey
+                }
+            } catch (e) {
+                console.log("failed to get started journey: ", e)
             }
         })
 
         let activeReq = fetch(
-            `${config.rootPath}/api/project/active`,
+            `${config.rootPath}/api/home/active`,
             {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'Cookie': cookieHeader
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
-            let data: { projects?: any[], message?: string } = await response.json();
-            if (data.projects !== undefined) {
-                activeData = data.projects
+            try {
+                let data: { projects?: any[], message?: string } = await response.json();
+                if (data.projects !== undefined) {
+                    activeData = data.projects
+                }
+            } catch (e) {
+                console.log("failed to get active data: ", e)
             }
         })
 
@@ -340,99 +377,97 @@ async function Home({
     }
 
     return (
-        <Layout>
-            <div style={{overflow: "hidden"}}>
-                <Tutorial/>
-                {renderLanding()}
-                <Typography component={"div"}>
-                </Typography>
-                <Grid container sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: "1",
-                    // paddingLeft: "50px"
-                }}>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexWrap: "wrap",
-                            width: "100%",
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'background.default',
-                            color: 'text.primary',
-                        }}
-                    >
+        <div style={{overflow: "hidden"}}>
+            <Tutorial/>
+            {renderLanding()}
+            <Typography component={"div"}>
+            </Typography>
+            <Grid container sx={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "1",
+                // paddingLeft: "50px"
+            }}>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: "wrap",
+                        width: "100%",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'background.default',
+                        color: 'text.primary',
+                    }}
+                >
+                    <Suspense fallback={<SuspenseFallback/>}>
+                        {(isMobile) ? (
+                            <JourneyBannerMobile
+                                startedJourney={startedJourney}
+                                completedJourneyTasks={completedJourneyTasks}
+                                completedJourneyUnits={completedJourneyUnits}
+                                detourCount={detourCount}
+                                incompletedJourneyTasks={incompletedJourneyTasks}
+                            />
+                        ) : (
+                            <JourneyBanner
+                                startedJourney={startedJourney}
+                                completedJourneyTasks={completedJourneyTasks}
+                                completedJourneyUnits={completedJourneyUnits}
+                                detourCount={detourCount}
+                                incompletedJourneyTasks={incompletedJourneyTasks}
+                            />
+                        )}
+                    </Suspense>
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: "wrap",
+                        width: "100%",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'background.default',
+                        color: 'text.primary',
+                    }}
+                >
+                    {Bytes()}
+                </Box>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: "wrap",
+                        width: "100%",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'background.default',
+                        color: 'text.primary',
+                    }}
+                >
+                    {(!isMobile && loggedIn) ? (
                         <Suspense fallback={<SuspenseFallback/>}>
-                            {(isMobile) ? (
-                                <JourneyBannerMobile
-                                    startedJourney={startedJourney}
-                                    completedJourneyTasks={completedJourneyTasks}
-                                    completedJourneyUnits={completedJourneyUnits}
-                                    detourCount={detourCount}
-                                    incompletedJourneyTasks={incompletedJourneyTasks}
-                                />
-                            ) : (
-                                <JourneyBanner
-                                    startedJourney={startedJourney}
-                                    completedJourneyTasks={completedJourneyTasks}
-                                    completedJourneyUnits={completedJourneyUnits}
-                                    detourCount={detourCount}
-                                    incompletedJourneyTasks={incompletedJourneyTasks}
-                                />
-                            )}
+                            <ActiveChallenges activeData={activeData}/>
                         </Suspense>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexWrap: "wrap",
-                            width: "100%",
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'background.default',
-                            color: 'text.primary',
-                        }}
-                    >
-                        {Bytes()}
-                    </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexWrap: "wrap",
-                            width: "100%",
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'background.default',
-                            color: 'text.primary',
-                        }}
-                    >
-                        {(isMobile && loggedIn) ? (
-                            <Suspense fallback={<SuspenseFallback/>}>
-                                <ActiveChallenges activeData={activeData}/>
-                            </Suspense>
-                        ) : null}
-                    </Box>
+                    ) : null}
+                </Box>
 
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            flexWrap: "wrap",
-                            width: "100%",
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            bgcolor: 'background.default',
-                            color: 'text.primary',
-                        }}
-                    >
-                        <Suspense fallback={<SuspenseFallback/>}>
-                            <RecommendedProjectsScroll/>
-                        </Suspense>
-                    </Box>
-                </Grid>
-            </div>
-        </Layout>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexWrap: "wrap",
+                        width: "100%",
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        bgcolor: 'background.default',
+                        color: 'text.primary',
+                    }}
+                >
+                    <Suspense fallback={<SuspenseFallback/>}>
+                        <RecommendedProjectsScroll/>
+                    </Suspense>
+                </Box>
+            </Grid>
+        </div>
     );
 }
 

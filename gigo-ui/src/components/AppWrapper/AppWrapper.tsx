@@ -383,8 +383,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 marginTop: isByteMobilePage
                     ? "0px"
                     : pathname.startsWith("/launchpad/") && query.get("editor") === "true"
-                        ? "14px"
-                        : "32px"
+                        ? "28px"
+                        : "64px"
             }}
             id={"contentContainer"}
         >
@@ -439,7 +439,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: any = await response.json();
@@ -538,7 +539,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     page: pathname,
                     // @ts-ignore
                     issue: textFieldRef.current.value,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: any = await response.json();
@@ -569,7 +571,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: any = await response.json();
@@ -610,7 +613,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: any = await response.json();
@@ -1173,7 +1177,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: any = await response.json();

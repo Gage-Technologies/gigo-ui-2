@@ -31,7 +31,8 @@ export default function RecommendedProjectsScroll() {
                 },
                 body: JSON.stringify({
                     skip: recDataPage * 32,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(async (response) => {
             let data: { projects?: any[], message?: string } = await response.json();

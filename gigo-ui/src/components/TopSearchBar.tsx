@@ -522,7 +522,8 @@ export default function TopSearchBar({
                     query: e.target.value,
                     skip: 0,
                     limit: 5,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -721,7 +722,8 @@ export default function TopSearchBar({
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(params)
+                body: JSON.stringify(params),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -732,7 +734,8 @@ export default function TopSearchBar({
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(params)
+                body: JSON.stringify(params),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -743,7 +746,8 @@ export default function TopSearchBar({
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(bytesParams)
+                body: JSON.stringify(bytesParams),
+                credentials: 'include'
             }
         ).then(res => res.json())
 
@@ -806,7 +810,8 @@ export default function TopSearchBar({
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(params)
+                    body: JSON.stringify(params),
+                    credentials: 'include'
                 }
             ).then(res => res.json())
 
@@ -838,7 +843,8 @@ export default function TopSearchBar({
                     query: e.target.value,
                     skip: 0,
                     limit: 5,
-                })
+                }),
+                credentials: 'include'
             }
         ).then(res => res.json())
 

@@ -36,7 +36,8 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
                     'Content-Type': 'application/json'
                 },
                 body: '{}',
-                cache: "no-cache"
+                cache: "no-cache",
+                credentials: 'include'
             }
         ).then(async (response) => response.json())
 

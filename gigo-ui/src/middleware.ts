@@ -28,7 +28,7 @@ export function middleware(request: NextRequest) {
         }
 
         let exp: number | undefined = decodedToken["exp"];
-        if (!exp || exp < Date.now()) {
+        if (!exp || exp * 1000 < Date.now()) {
             // clear the token and redirect to login
             request.cookies.delete("gigoAuthToken");
             return NextResponse.redirect(url);

@@ -48,7 +48,8 @@ function AboutPagePremium() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => response.json())
 
@@ -71,7 +72,8 @@ function AboutPagePremium() {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: '{}'
+                body: '{}',
+                credentials: 'include'
             }
         ).then(async (response) => response.json())
 

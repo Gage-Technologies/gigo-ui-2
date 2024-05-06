@@ -1,7 +1,6 @@
 import DocumentationUI from '@/components/Documentation/Documentation';
 import {Suspense} from "react";
 import SuspenseFallback from "@/components/SuspenseFallback";
-import Layout from "@/app/layout";
 
 export default async function Documentation({params}: { params: { level: string[] } }) {
     const relativePath = params.level.join("/")
@@ -38,13 +37,11 @@ export default async function Documentation({params}: { params: { level: string[
     });
 
     return (
-        <Layout>
-            <Suspense fallback={<SuspenseFallback/>}>
-                <DocumentationUI
-                    markdownContent={content}
-                    selectedNode={[selectedNode]}
-                />
-            </Suspense>
-        </Layout>
+        <Suspense fallback={<SuspenseFallback/>}>
+            <DocumentationUI
+                markdownContent={content}
+                selectedNode={[selectedNode]}
+            />
+        </Suspense>
     );
 }

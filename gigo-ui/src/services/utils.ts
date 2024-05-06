@@ -1,5 +1,7 @@
 import {decodeToken} from "react-jwt";
 import {RequestCookie} from "next/dist/compiled/@edge-runtime/cookies";
+import {cookies} from "next/headers";
+import {ReadonlyRequestCookies} from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
 /**
  * Returns a promise that when awaited sleeps for the specified time in millis
@@ -40,4 +42,12 @@ export function checkSessionStatus(sessionCookie: RequestCookie | undefined): bo
 
     let expires = new Date(decodedToken.exp * 1000);
     return expires.getTime() >= Date.now();
+}
+
+export function getSessionCookies(cookies: ReadonlyRequestCookies): string {
+    let cookieHeader = `gigoAuthToken=${cookies.get('gigoAuthToken')?.value || ''}`;
+    if (cookies.get('gigo-session-affinity') !== null) {
+        cookieHeader += `;gigo-session-affinity=${cookies.get('gigo-session-affinity')?.value || ''}`;
+    }
+    return cookieHeader;
 }

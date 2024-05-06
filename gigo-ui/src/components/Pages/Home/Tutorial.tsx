@@ -350,7 +350,8 @@ export default function Tutorial() {
                                             },
                                             body: JSON.stringify({
                                                 tutorial_key: "home"
-                                            })
+                                            }),
+                                            credentials: 'include'
                                         }
                                     )
                                 }}
@@ -387,7 +388,8 @@ export default function Tutorial() {
                                         },
                                         body: JSON.stringify({
                                             tutorial_key: "home"
-                                        })
+                                        }),
+                                        credentials: 'include'
                                     }
                                 )
 
