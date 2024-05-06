@@ -1,6 +1,6 @@
 'use client'
 import {Button, Typography} from "@mui/material";
-import Carousel from "@/components/Carousesl";
+import Carousel from "@/components/Carousel";
 import ProjectCard from "@/components/Project/ProjectCard";
 import config from "@/config";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";

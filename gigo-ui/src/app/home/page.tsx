@@ -2,7 +2,7 @@ import * as React from "react";
 import {Suspense} from "react";
 import {Box, Button, Grid, Typography} from "@mui/material";
 import config from "@/config";
-import Carousel from "../../components/Carousesl";
+import Carousel from "../../components/Carousel";
 import ReactGA from "react-ga4";
 import GIGOLandingPage from "@/components/LandingPage/Landing2";
 import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile";
