@@ -20,7 +20,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import DescriptionIcon from '@mui/icons-material/Description';
 import {AwesomeButton} from 'react-awesome-button';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import call from "@/services/api-call";
 import config from "@/config";
 import {selectAuthStateId} from "@/reducers/auth/auth";
 import {initialJourneyDetourStateUpdate, updateJourneyDetourState} from "@/reducers/journeyDetour/journeyDetour";
@@ -856,7 +855,7 @@ function JourneyMainMobile() {
                 <Grid container spacing={2}>
                     {Object.entries(journeys).map(([key, value], index) => (
                         <Grid item xs={6} key={key}>
-                            <Box textAlign="center" sx={{ width: '100%' }}>
+                            <Box textAlign="center" sx={{ width: '100%', p:1 }}>
                                 <Typography variant="subtitle1" sx={{ color: selectedJourney === key ? "#29C18C" : 'white' }}>
                                     {value.title}
                                 </Typography>
@@ -1034,7 +1033,7 @@ function JourneyMainMobile() {
         dispatch(updateJourneyDetourState(updateState))
 
         return (
-            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)} width={'65vw'} mobile={true}/>
+            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)} width={'65vw'}/>
         )
     }
 

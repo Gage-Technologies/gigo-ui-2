@@ -6,7 +6,7 @@ import {Box, Button, CircularProgress, createTheme, PaletteMode, Popover, SpeedD
 import {SpeedDialAction} from "@mui/lab";
 import ArticleIcon from "@mui/icons-material/Article";
 import CloseIcon from "@mui/icons-material/Close";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthStateId} from "@/reducers/auth/auth";
 import call from "@/services/api-call";
@@ -26,9 +26,6 @@ interface JourneyMapProps {
 function JourneyMobileMap({unitId}: JourneyMapProps) {
     const [anchorElDetour, setAnchorElDetour] = useState(null);
     const [anchorElDesc, setAnchorElDesc] = useState(null);
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [openSpeedDial, setOpenSpeedDial] = useState(null);
     const [tasks, setTasks] = React.useState([])
 
@@ -148,11 +145,11 @@ function JourneyMobileMap({unitId}: JourneyMapProps) {
                     justifyContent: 'center',
                     textAlign: 'center',
                     '--button-default-height': '70px',
-                    '--button-primary-color': theme.palette.secondary.main,
-                    '--button-primary-color-dark': theme.palette.secondary.dark,
-                    '--button-primary-color-light': theme.palette.secondary.dark,
-                    '--button-primary-color-active': theme.palette.secondary.dark,
-                    '--button-primary-color-hover': theme.palette.secondary.main,
+                    '--button-primary-color': theme.palette.primary.main,
+                    '--button-primary-color-dark': theme.palette.primary.dark,
+                    '--button-primary-color-light': theme.palette.primary.dark,
+                    '--button-primary-color-active': theme.palette.primary.dark,
+                    '--button-primary-color-hover': theme.palette.primary.main,
                     '--button-default-font-size': '14px',
                     '--button-default-border-radius': '80%',
                     '--button-horizontal-padding': '3px',

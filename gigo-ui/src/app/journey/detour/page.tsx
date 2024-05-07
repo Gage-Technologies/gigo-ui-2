@@ -17,12 +17,16 @@ import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour";
 import swal from "sweetalert";
 import {Unit} from "@/models/journey/unit";
 import {debounce} from "lodash";
+import {useSearchParams} from "next/navigation";
+import JourneyDetoursMobile from "@/components/Journey/JourneyDetoursMobile";
 
 interface JourneyGroups {
     [key: string]: Unit[]; // Key is the title, value is an array of units
 }
 
 function JourneyDetours() {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     const [isSticky, setIsSticky] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
     const sections = useRef([]);
@@ -292,9 +296,9 @@ function JourneyDetours() {
         )
     }
 
-    return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline>
+    const detoursDesktop = () => {
+        return (
+            <>
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'center',
@@ -352,9 +356,19 @@ function JourneyDetours() {
                     :
                     renderSearchContent()
                 }
-            </CssBaseline>
-        </ThemeProvider>
-    );
+            </>
+        )
+    }
+
+    const renderJourneyDetours = () => {
+        if (isMobile) {
+            return <JourneyDetoursMobile />
+        } else {
+            return detoursDesktop()
+        }
+    }
+
+    return renderJourneyDetours()
 }
 
 export default JourneyDetours;

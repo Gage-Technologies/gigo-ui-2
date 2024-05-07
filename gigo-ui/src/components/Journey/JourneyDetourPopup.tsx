@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Grid, Chip, Button} from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
 import {getAllTokens, themeHelpers} from "@/theme";
-import call from "@/services/api-call";
 import config from "@/config";
 import JourneyMap from "./JourneysMap";
 import {useAppSelector} from "@/reducers/hooks";
@@ -147,15 +146,19 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
                                 //@ts-ignore
                                 detourData.color}`
                         }}>
-                            <Image src={config.rootPath + "/static/junit/t/" +
+                            <Image
+                                src={config.rootPath + "/static/junit/t/" +
                                 //@ts-ignore
-                                detourData._id} alt="Top Image"
-                                 style={{
-                                     maxHeight: '200px',
-                                     borderRadius: '30px',
-                                     padding: "10px",
-                                     marginRight: "20px"
-                                 }}/>
+                                detourData._id}
+                                alt="Top Image"
+                                width={200}
+                                height={200}
+                                style={{
+                                    maxHeight: '200px',
+                                    borderRadius: '30px',
+                                    padding: "10px",
+                                    marginRight: "20px"
+                                }}/>
                             <div style={{display: "flex", flexDirection: "column", textAlign: "left", height: "100%"}}>
                                 <Typography variant="h5" style={{marginBottom: '8px'}}>
                                     {

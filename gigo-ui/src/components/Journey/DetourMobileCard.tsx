@@ -104,8 +104,8 @@ function DetourMobileCard(props: any) {
                 <CardMedia
                     component="img"
                     sx={props.width !== undefined && props.width !== null ? {
-                        width: '5.5vw',
-                        height: '10vw',
+                        width: '15vw',
+                        height: '30vw',
                         objectFit: 'cover',
                         alignSelf: 'center',
                         borderRadius: '10px',

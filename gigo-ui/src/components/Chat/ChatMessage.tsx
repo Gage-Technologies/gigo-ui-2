@@ -6,7 +6,7 @@ import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import * as React from "react";
 import moment from 'moment';
 import {theme} from "@/theme";
-import {makeStyles, withStyles} from "@material-ui/core/styles";
+import {makeStyles, withStyles} from "@mui/styles";
 
 const useStyles = makeStyles({
     gradientText: {

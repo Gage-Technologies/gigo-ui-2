@@ -1,8 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import {Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Grid, Chip, Button} from '@mui/material';
+import {Typography, IconButton, Dialog, Box, Grid, Chip, Button} from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
 import {theme, themeHelpers} from "@/theme";
-import call from "@/services/api-call";
 import config from "@/config";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthStateId} from "@/reducers/auth/auth";
@@ -10,7 +9,6 @@ import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour"; // Adju
 import swal from "sweetalert";
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
 import {Unit} from "@/models/journey/unit";
-import DetourCard from "./DetourCard";
 import DetourMobileCard from "./DetourMobileCard";
 import JourneyMobileMap from "./JourneyMobileMap";
 import Image from "next/image";
@@ -149,6 +147,8 @@ const JourneyDetourMobilePopup: React.FC<JourneyDetourPopupProps> = ({ open, onC
                                     <Image src={config.rootPath + "/static/junit/t/" +
                                         //@ts-ignore
                                         detourData._id} alt="Top Image"
+                                        width={100}
+                                        height={100}
                                          style={{
                                              maxHeight: '30vh',
                                              borderRadius: '30px',
@@ -189,45 +189,6 @@ const JourneyDetourMobilePopup: React.FC<JourneyDetourPopupProps> = ({ open, onC
                             </Grid>
                         </Box>
                     </Grid>
-                    {/*<Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>*/}
-                    {/*    <Box style={{*/}
-                    {/*        padding: '20px', // Adjust padding as needed*/}
-                    {/*        borderRadius: '50px', // Adjust for rounded corners*/}
-                    {/*        backgroundColor: theme.palette.background.default,*/}
-                    {/*        display: 'flex',*/}
-                    {/*        flexDirection: 'row',*/}
-                    {/*        alignItems: 'center', // Center the text inside*/}
-                    {/*        justifyContent: 'center',*/}
-                    {/*        width: "90%", // Set the width to 90% of the parent*/}
-                    {/*        textAlign: 'center', // Center the text horizontally*/}
-                    {/*        margin: 'auto', // Auto margins for horizontal centering if needed*/}
-                    {/*        border: `2px solid ${*/}
-                    {/*            //@ts-ignore*/}
-                    {/*            detourData.color}`*/}
-                    {/*    }}>*/}
-
-                    {/*        <div style={{display: "flex", flexDirection: "column", textAlign: "left", height: "100%"}}>*/}
-                    {/*        /!*<Typography variant="h5" style={{marginBottom: '8px'}}>*!/*/}
-                    {/*            /!*    {*!/*/}
-                    {/*            /!*        //@ts-ignore*!/*/}
-                    {/*            /!*        detourData.name}*!/*/}
-                    {/*            /!*</Typography>*!/*/}
-                    {/*            <Typography variant="body2">*/}
-                    {/*                {displayedDescription}*/}
-                    {/*            </Typography>*/}
-                    {/*            <div style={{*/}
-                    {/*                display: 'flex',*/}
-                    {/*                justifyContent: 'flex-end'*/}
-                    {/*            }}> /!* Container for the button *!/*/}
-                    {/*                {isLongDescription && (*/}
-                    {/*                    <Button onClick={toggleDescription} size="small">*/}
-                    {/*                        {showFullDescription ? 'Read Less' : 'Read More'}*/}
-                    {/*                    </Button>*/}
-                    {/*                )}*/}
-                    {/*            </div>*/}
-                    {/*        </div>*/}
-                    {/*    </Box>*/}
-                    {/*</Grid>*/}
                 </Grid>
                 <Grid container spacing={2} alignItems="center" style={{display: "flex", flexDirection: "row"}}>
                     <Grid item xs={12} style={{position: "relative", left: "3vw", top: "3vh"}}>
@@ -297,10 +258,10 @@ const JourneyDetourMobilePopup: React.FC<JourneyDetourPopupProps> = ({ open, onC
                     </Grid>
                     <div style={{width: "100%", display: "flex", justifyContent: "center", paddingTop: "50px"}}>
                         <MuiAwesomeButton
-                            backgroundColor={theme.palette.secondary.main}
-                            hoverColor={theme.palette.secondary.light}
-                            secondaryColor={theme.palette.secondary.dark}
-                            textColor={theme.palette.secondary.dark}
+                            backgroundColor={theme.palette.primary.main}
+                            hoverColor={theme.palette.primary.light}
+                            secondaryColor={theme.palette.primary.dark}
+                            textColor={theme.palette.primary.dark}
                             onClick={TakeDetour}
                         >
                             <h1 style={{fontSize: "1em", paddingRight: "1vw", paddingLeft: "1vw"}}>

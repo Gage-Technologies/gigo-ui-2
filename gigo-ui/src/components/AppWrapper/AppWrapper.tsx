@@ -2143,7 +2143,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <ListItem disablePadding>
                         <ListItemButton color={"primary"} sx={{
                             borderRadius: 2,
-                        }} href={"/journey/detours"}>
+                        }} href={"/journey/detour"}>
                             <ListItemIcon>
                                 <ExploreIcon style={{color: theme.palette.text.primary,}}/>
                             </ListItemIcon>

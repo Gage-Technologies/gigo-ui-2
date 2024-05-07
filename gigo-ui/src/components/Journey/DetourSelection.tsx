@@ -1,28 +1,28 @@
 import React, {useEffect, useState} from "react";
 import {
     Box,
-    Button, ButtonBase,
-    CircularProgress, createTheme,
-    Grid, MobileStepper, PaletteMode, Tooltip,
-    Typography
+    ButtonBase,
+    CircularProgress,
+    Grid, Tooltip,
 } from "@mui/material";
 import Carousel from "@/components/Carousel";
 import DetourCard from "./DetourCard";
 import {Unit} from "@/models/journey/unit";
 import DetourSignIcon from "@/icons/Journey/DetourSign";
-import call from "@/services/api-call";
 import config from "@/config";
-import {theme} from "@/theme";
+import DetourMobileCard from "@/components/Journey/DetourMobileCard";
+import {useSearchParams} from "next/navigation";
 
 interface DetourSelectionProps {
     detours: Unit[];
     color: string;
     textColor: string;
     width?: string;
-    mobile: boolean;
 }
 
 function DetourSelection(props: DetourSelectionProps) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     const [detours, setDetours] = useState<Unit[]>([])
     const detourUnitPreview = async () => {
         let res = await fetch(
@@ -60,11 +60,19 @@ function DetourSelection(props: DetourSelectionProps) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const handleRender = (unit: Unit) => {
+        if (isMobile) {
+            return <DetourMobileCard width={"70vw"} data={unit}/>
+        } else {
+            return <DetourCard data={unit} width={props.width !== undefined && props.width !== null ? props.width : '18vw'}/>
+        }
+    }
+
     return (
         //@ts-ignore
         <Box sx={{position: "relative", width: "80%", borderRadius: '30px'}}>
             <Tooltip title={"See More"}>
-                <ButtonBase href={"/journey/detours"}>
+                <ButtonBase href={"/journey/detour"}>
                     <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", paddingTop: "10px"}}>
                         <DetourSignIcon width={"80%"}/>
                     </Box>
@@ -85,7 +93,7 @@ function DetourSelection(props: DetourSelectionProps) {
                                 return (
                                     <div key={unit._id} style={{display: "grid", justifyContent: "center", alignItems: "center", paddingBottom: "20px"}}>
                                         <Grid item xs={6}>
-                                            <DetourCard data={unit} width={props.width !== undefined && props.width !== null ? props.width : '18vw'} mobile={props.mobile}/>
+                                            {handleRender(unit)}
                                         </Grid>
                                     </div>
                                 )

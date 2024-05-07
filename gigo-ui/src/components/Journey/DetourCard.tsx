@@ -5,8 +5,11 @@ import {theme} from "@/theme";
 import config from "@/config"
 import {programmingLanguages} from "@/services/vars";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
+import {useSearchParams} from "next/navigation";
 
 function DetourCard(props: any) {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     const [openPopup, setOpenPopup] = useState<boolean>(false);
 
     const closePopup = () => {
@@ -91,7 +94,7 @@ function DetourCard(props: any) {
             }} onClick={() => setOpenPopup(true)}>
                 <CardMedia
                     component="img"
-                    sx={props.mobile ? {
+                    sx={isMobile ? {
                         width: '20vw',
                         height: '30vw',
                         objectFit: 'cover',

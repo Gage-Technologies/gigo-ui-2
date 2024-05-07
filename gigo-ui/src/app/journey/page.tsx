@@ -45,6 +45,7 @@ import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
 import {useSearchParams} from "next/navigation";
 import JourneyMainMobile from '@/components/Journey/JourneyMainMobile';
+import Image from 'next/image'
 
 function JourneyMain() {
     let query = useSearchParams();
@@ -632,13 +633,13 @@ function JourneyMain() {
                         <AwesomeButton style={{
                             width: "auto",
                             //@ts-ignore
-                            '--button-primary-color': theme.palette.secondary.main,
-                            '--button-primary-color-dark': theme.palette.secondary.dark,
-                            '--button-primary-color-light': theme.palette.secondary.dark,
+                            '--button-primary-color': theme.palette.primary.main,
+                            '--button-primary-color-dark': theme.palette.primary.dark,
+                            '--button-primary-color-light': theme.palette.primary.dark,
                             //@ts-ignore
-                            '--button-primary-color-active': theme.palette.secondary.dark,
+                            '--button-primary-color-active': theme.palette.primary.dark,
                             //@ts-ignore
-                            '--button-primary-color-hover': theme.palette.secondary.main,
+                            '--button-primary-color-hover': theme.palette.primary.main,
                             '--button-default-border-radius': "24px",
                             '--button-hover-pressure': "4",
                             height: "10vh",
@@ -872,78 +873,113 @@ function JourneyMain() {
                 sx={{
                     flexGrow: 1,
                     height: '93vh',
-                    backgroundImage: `url(${journeyMap})`, // Set the background image
-                    backgroundSize: 'cover', // Ensure the image covers the full area without being repeated
-                    backgroundPosition: 'center', // Center the background image
-                    backgroundRepeat: 'no-repeat', // Do not repeat the background image
+                    position: 'relative', // Make the container relative to host the absolute-positioned Image
+                    overflow: 'hidden' // Ensures that children are contained within the Box
                 }}
             >
-                <Box sx={{
-                    flexGrow: 1,
-                    height: '93vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column'
-                }}>
-                    <Box sx={{
-                        height: '20vh',
+                <Image
+                    src={journeyMap} // The source of the background image
+                    alt="Journey Map Background"
+                    layout="fill" // Makes the image cover the entire container
+                    objectFit="cover" // Ensures the image covers the entire container while maintaining aspect ratio
+                    objectPosition="center" // Centers the image
+                    priority // Optional: loads the image eagerly
+                    style={{
+                        zIndex: -1 // Places the image behind the Box contents
+                    }}
+                />
+                <Box
+                    sx={{
+                        flexGrow: 1,
+                        height: '93vh',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         flexDirection: 'column',
-                        mb: 2
-                    }}>
-                        <Typography variant="h4" sx={{color: "white"}}>Choose Your Lane</Typography>
-                        <Typography variant="body1" textTransform="none"
-                                    sx={{width: '45vw', textAlign: 'center', mt: 3, color: "white"}}>
-                            Journey&#39;s are a structured way to learn programming. Select the starting path you would like
-                            to take in your Journey. You can always take a detour at any time to switch it up.
+                        position: 'relative' // Positions child elements relative to this Box
+                    }}
+                >
+                    <Box
+                        sx={{
+                            height: '20vh',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexDirection: 'column',
+                            mb: 2,
+                            color: 'white'
+                        }}
+                    >
+                        <Typography variant="h4">Choose Your Lane</Typography>
+                        <Typography
+                            variant="body1"
+                            textTransform="none"
+                            sx={{
+                                width: '45vw',
+                                textAlign: 'center',
+                                mt: 3
+                            }}
+                        >
+                            Journey's are a structured way to learn programming. Select the starting path you would like to take in your Journey. You can always take a detour at any time to switch it up.
                         </Typography>
                     </Box>
-                    <Grid container spacing={2} sx={{height: '60vh'}}>
-                        <Grid item xs={2} container justifyContent="center" alignItems="center"/>
-                        <Grid item xs={8} container direction="row" justifyContent="center" alignItems="center"
-                              sx={{ gap: 12 }}>
-                            {Object.entries(journeys).
-                            filter(([key, value]) => value.id !== undefined && value.id !== null && value.id !== "").
-                            map(([key, value]) => (
-                                <Box key={key} textAlign="center" sx={{ position: 'relative', width: '10vw' }}>
-                                    <Typography variant="subtitle1" component="div"
-                                                sx={{ color: selectedJourney === key ? "#29C18C" : 'white' }}>
-                                        {value.title}
-                                    </Typography>
-                                    <Button variant={'outlined'} onClick={() => selectJourney(key, value.id)} sx={{
-                                        borderRadius: "20px",
-                                        width: '100%',
-                                        height: '10vw',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        borderColor: selectedJourney === key ? "#29C18C" : 'white',
-                                        backgroundColor: selectedJourney === key ? "#282826" : '',
-                                        '&:hover': {
-                                            backgroundColor: selectedJourney === key ? '#282826' : '',
-                                            borderColor: selectedJourney === key ? "#29C18C" : '#29C18C',
-                                        },
-                                    }}>
-                                        {value.img}
-                                    </Button>
-                                    {value.favorite && (
-                                        <Chip
-                                            icon={<StarIcon sx={{color: '#ffd700 !important'}}/>}
-                                            label="Most Popular"
-                                            size="small"
+                    <Grid container spacing={2} sx={{ height: '60vh' }}>
+                        <Grid item xs={2} container justifyContent="center" alignItems="center" />
+                        <Grid
+                            item
+                            xs={8}
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            sx={{ gap: 12 }}
+                        >
+                            {Object.entries(journeys)
+                                .filter(([key, value]) => value.id !== undefined && value.id !== null && value.id !== '')
+                                .map(([key, value]) => (
+                                    <Box key={key} textAlign="center" sx={{ position: 'relative', width: '10vw' }}>
+                                        <Typography
+                                            variant="subtitle1"
+                                            component="div"
+                                            sx={{ color: selectedJourney === key ? '#29C18C' : 'white' }}
+                                        >
+                                            {value.title}
+                                        </Typography>
+                                        <Button
+                                            variant={'outlined'}
+                                            onClick={() => selectJourney(key, value.id)}
                                             sx={{
-                                                position: 'absolute',
-                                                bottom: -28,
-                                                right: "calc(5vw - 57.7px)",
-                                                color: '#ffd700',
-                                                border: '1px solid #ffd700',
+                                                borderRadius: '20px',
+                                                width: '100%',
+                                                height: '10vw',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                borderColor: selectedJourney === key ? '#29C18C' : 'white',
+                                                backgroundColor: selectedJourney === key ? '#282826' : '',
+                                                '&:hover': {
+                                                    backgroundColor: selectedJourney === key ? '#282826' : '',
+                                                    borderColor: selectedJourney === key ? '#29C18C' : '#29C18C'
+                                                }
                                             }}
-                                        />
-                                    )}
-                                </Box>
-                            ))}
+                                        >
+                                            {value.img}
+                                        </Button>
+                                        {value.favorite && (
+                                            <Chip
+                                                icon={<StarIcon sx={{ color: '#ffd700 !important' }} />}
+                                                label="Most Popular"
+                                                size="small"
+                                                sx={{
+                                                    position: 'absolute',
+                                                    bottom: -28,
+                                                    right: 'calc(5vw - 57.7px)',
+                                                    color: '#ffd700',
+                                                    border: '1px solid #ffd700'
+                                                }}
+                                            />
+                                        )}
+                                    </Box>
+                                ))}
                         </Grid>
                         <Grid item xs={2} container justifyContent="center" alignItems="center">
                         </Grid>
@@ -961,14 +997,14 @@ function JourneyMain() {
                             </Typography>
                             {selectedJourney && (
                                 <MuiAwesomeButton
-                                    backgroundColor={theme.palette.secondary.main}
-                                    hoverColor={theme.palette.secondary.light}
-                                    secondaryColor={theme.palette.secondary.dark}
-                                    textColor={theme.palette.secondary.dark}
+                                    backgroundColor={theme.palette.primary.main}
+                                    hoverColor={theme.palette.primary.light}
+                                    secondaryColor={theme.palette.primary.dark}
+                                    textColor={theme.palette.primary.dark}
                                     loading={loadingMapData}
                                     onClick={handleStartJourney}
                                 >
-                                    <h1 style={{fontSize: "2vw", paddingRight: "1vw", paddingLeft: "1vw"}}>
+                                    <h1 style={{ fontSize: '2vw', paddingRight: '1vw', paddingLeft: '1vw' }}>
                                         Start Journey
                                     </h1>
                                 </MuiAwesomeButton>
@@ -977,7 +1013,6 @@ function JourneyMain() {
                     </Grid>
                 </Box>
             </Box>
-
         );
     }
 
@@ -1149,7 +1184,7 @@ function JourneyMain() {
         dispatch(updateJourneyDetourState(updateState))
 
         return (
-            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)} mobile={false}/>
+            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)}/>
         )
     }
 
