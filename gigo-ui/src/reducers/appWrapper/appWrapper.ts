@@ -38,5 +38,7 @@ export const { resetAppWrapper, updateAppWrapper } = appWrapperSlice.actions;
 
 export const selectAppWrapperClosedMobileWelcomeBanner = (state: RootState) => state.appWrapper ? state.appWrapper.closedMobileWelcomeBanner : initialAppWrapperState.closedMobileWelcomeBanner;
 
+
+
 export default appWrapperSlice.reducer;
 
