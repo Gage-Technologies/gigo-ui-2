@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Box, Card, CardContent, CardMedia, createTheme, PaletteMode, Tooltip, Typography} from "@mui/material";
+import {Box, Card, CardContent, CardMedia, Tooltip, Typography} from "@mui/material";
 import JourneyDetourPopup from "./JourneyDetourPopup";
 import {theme} from "@/theme";
 import config from "@/config"

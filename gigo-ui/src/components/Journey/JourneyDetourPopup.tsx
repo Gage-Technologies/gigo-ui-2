@@ -16,7 +16,7 @@ import Image from "next/image";
 interface JourneyDetourPopupProps {
     open: boolean;
     onClose: () => void;
-    unit: object;
+    unit: Unit;
 }
 
 const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, unit }) => {
@@ -63,17 +63,18 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
 
 
     const TakeDetour = async() => {
-        let detour = await call(
-            "/api/journey/createDetour",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            { detour_unit_id: unit._id, user_id: userId, task_id: reduxIdState, },
-            null,
-            config.rootPath
-        )
+        let detour = await fetch(
+            `${config.rootPath}/api/journey/createDetour`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({detour_unit_id: unit._id, user_id: userId, task_id: reduxIdState}),
+                credentials: 'include'
+            }
+        ).then(async (response) => response.json())
+
 
         if (detour !== undefined && detour["success"] !== undefined && detour["success"] === true){
             redirectToMain("/journey")
@@ -83,17 +84,17 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
     }
 
     const getUnitMap= async(unitId: any) => {
-        let unitmap = await call(
-            "/api/journey/getJourneyFromUnit",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            { unit_id: unitId},
-            null,
-            config.rootPath
-        )
+        let unitmap = await fetch(
+            `${config.rootPath}/api/journey/getJourneyFromUnit`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({unit_id: unitId}),
+                credentials: 'include'
+            }
+        ).then(async (response) => response.json())
 
         if (unitmap !== undefined && unitmap["success"] !== undefined && unitmap["success"] === true){
             setJourneyUnitMap(unitmap["units"])
@@ -103,7 +104,7 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
         }
     }
 
-    const handleDataChange= (data: React.SetStateAction<object>) => {
+    const handleDataChange= (data: React.SetStateAction<Unit>) => {
         setDetourData(data)
     }
 

@@ -25,17 +25,18 @@ interface DetourSelectionProps {
 function DetourSelection(props: DetourSelectionProps) {
     const [detours, setDetours] = useState<Unit[]>([])
     const detourUnitPreview = async () => {
-        let res = await call(
-            "/api/journey/getUnitsPreview",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/journey/getUnitsPreview`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}',
+                credentials: 'include'
+            }
+        ).then(async (response) => response.json())
+
 
         if (res !== undefined && res["success"] !== undefined && res["success"] === true) {
             setDetours(res["units"])

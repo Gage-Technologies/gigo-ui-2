@@ -1,12 +1,12 @@
 'use client'
 import React, {createRef, useEffect, useRef, useState} from 'react';
-import {theme, themeHelpers} from "@/theme";
+import {theme} from "@/theme";
 import {
     Box,
     Button,
-    Card, Chip,
+    Chip,
     CircularProgress,
-    Grid,
+    Grid, Modal,
     Popover,
     SpeedDial,
     Typography
@@ -15,41 +15,36 @@ import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import 'react-awesome-button/dist/styles.css';
 import '@/components/Journey/button.css'
 import '@/components/Journey/background.css'
-import {SpeedDialAction} from "@mui/lab";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckIcon from '@mui/icons-material/Check';
-import ArticleIcon from '@mui/icons-material/Article';
+import DescriptionIcon from '@mui/icons-material/Description';
 import {AwesomeButton} from 'react-awesome-button';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
-import journeyMap from "@/img/journey/journey-map.svg";
+import call from "@/services/api-call";
 import config from "@/config";
 import {selectAuthStateId} from "@/reducers/auth/auth";
-import JourneyPortals from "@/components/Journey/JourneyPortals";
 import {initialJourneyDetourStateUpdate, updateJourneyDetourState} from "@/reducers/journeyDetour/journeyDetour";
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
-import CplusplusOriginal from 'devicons-react/lib/icons/CplusplusOriginal';
-import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
-import CsharpOriginal from 'devicons-react/lib/icons/CsharpOriginal';
-import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
-import GoOriginal from 'devicons-react/lib/icons/GoOriginal';
-import GoPlain from 'devicons-react/lib/icons/GoPlain';
-import JavascriptOriginal from 'devicons-react/lib/icons/JavascriptOriginal';
-import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
-import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
-import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
+import {
+    CplusplusOriginal,
+    CplusplusPlain,
+    CsharpOriginal,
+    CsharpPlain,
+    GoOriginal,
+    GoPlain,
+    JavascriptOriginal,
+    JavascriptPlain,
+    PythonOriginal,
+    RustOriginal
+} from "devicons-react";
 import {Task, Unit} from "@/models/journey/unit";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
-import {useSearchParams} from "next/navigation";
-import JourneyMainMobile from '@/components/Journey/JourneyMainMobile';
+import FollowTheSignsIcon from '@mui/icons-material/FollowTheSigns';
+import Fab from "@mui/material/Fab";
 
-function JourneyMain() {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
-
+function JourneyMainMobile() {
     const [loadingMapData, setLoadingMapData] = useState(false);
     const [contentLoaded, setContentLoaded] = useState(true)
 
@@ -108,8 +103,6 @@ function JourneyMain() {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
-
-
 
 
     const getTasks = async () => {
@@ -171,7 +164,6 @@ function JourneyMain() {
 
         // @ts-ignore
         const fetchedTasks = sortedUnitData.map(async (unit: any) => {
-
             let res = await fetch(
                 `${config.rootPath}/api/journey/getTasksInUnit`,
                 {
@@ -188,6 +180,7 @@ function JourneyMain() {
             ).then(async (response) => response.json())
 
             const tasks = res.data.tasks
+
 
             const currentUrl = window.location.href;
             let usedUrl = extractIdFromUrl(currentUrl)
@@ -215,7 +208,7 @@ function JourneyMain() {
             setNextUnit(allUnits[allUnits.length - 1]);
             setUnitData(slicedUnits);
             // Update this line to not slice slicedUnits again
-            unitRefs.current = slicedUnits.map((_: any, i: any) => unitRefs.current[i] ?? createRef<HTMLDivElement>());
+            unitRefs.current = slicedUnits.map((_, i) => unitRefs.current[i] ?? createRef<HTMLDivElement>());
             setLoadingMainPage(false);
         } else {
             setUnitData(prevUnitData => [...allUnits, ...prevUnitData]);
@@ -242,7 +235,6 @@ function JourneyMain() {
 
         }
 
-
         skip += 5
 
         // setUnitData(allUnits.slice(0, -1));
@@ -252,7 +244,6 @@ function JourneyMain() {
             setContentLoaded(true)
         }
 
-        // unitRefs.current = allUnits.map((_, i) => unitRefs.current[i] ?? createRef<HTMLDivElement>());
     }
 
     useEffect(() => {
@@ -292,6 +283,7 @@ function JourneyMain() {
 
     const [hasScrolled, setHasScrolled] = useState(false);
 
+
     // // todo: works properly, but scrolls super fast. Keeping in case the smooth scroll causes too many issues.
     useEffect(() => {
         // if we have already scrolled or no data exists return
@@ -301,7 +293,7 @@ function JourneyMain() {
 
         // calculate the last unit that has a completed task
         const lastUnitWithCompletedTaskIndex = unitData.reduce((acc, unit, index) =>
-            unit.tasks.some((task: { completed: any; }) => task.completed) ? index : acc, -1
+            unit.tasks.some(task => task.completed) ? index : acc, -1
         );
 
         console.log("Last unit with completed task index:", lastUnitWithCompletedTaskIndex);
@@ -327,8 +319,7 @@ function JourneyMain() {
             // if the user has been working on a previous unit attempt to find it
             for (let i = 0; i < unitData.length; i++) {
                 const unit = unitData[i];
-                // @ts-ignore
-                const taskFound = unit.tasks.some((task: { code_source_id: string; }) => task.code_source_id === lastUnitId);
+                const taskFound = unit.tasks.some(task => task.code_source_id === lastUnitId);
                 if (taskFound) {
                     // once the unit is found set the index to it
                     indexOfUnitWithTask = i;
@@ -600,9 +591,6 @@ function JourneyMain() {
         );
     };
 
-
-
-
     const TaskDescription = () => {
         return (
             <>
@@ -713,7 +701,6 @@ function JourneyMain() {
     const Tasks = (item: any, index: any, firstIncomplete: any) => {
         return (
             <>
-
                 <SpeedDial
                     sx={{
                         '& .MuiSpeedDial-fab': {
@@ -731,17 +718,6 @@ function JourneyMain() {
                     direction="right"
                     open={openSpeedDial === item._id}
                 >
-                    {/*//@ts-ignore*/}
-                    <SpeedDialAction
-                        icon={<ArticleIcon/>}
-                        //@ts-ignore
-                        tooltipTitle="Info"
-                        onClick={handleClickDesc(item.description, item.name, item.code_source_id, (index === firstIncomplete))}
-                        sx={{
-                            backgroundColor: "#52ad94",
-                            color: "white"
-                        }}
-                    />
                 </SpeedDial>
 
                 {taskPopups()}
@@ -761,17 +737,16 @@ function JourneyMain() {
         const firstIncompleteIndex = metadata.findIndex((item: { completed: any; }) => !item.completed);
 
         return (
-            <Box sx={{ position: 'relative', width: '100%', height: `${points.length * speedDialHeight}px` }}>
+            <Box sx={{ position: 'relative', width: '100%', height: `${points.length * speedDialHeight}px`, display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center', flexDirection: 'column'}}>
                 <CurvedPath points={points} />
                 {metadata.map((item: { _id: React.Key | null | undefined; }, index: number) => (
                     <div
-                        key={item._id}
                         style={{
-                            position: 'absolute',
-                            top: `${points[index].y - speedDialHeight / 2}px`,
-                            left: `${index % 2 === 0 ? '150px' : '350px'}`,
-                            //transform: 'translateY(-50%)',
+                            transform: `${index % 2 === 0 ? 'translateX(-40%)' : 'translateX(70%)'}`,
                         }}
+                        key={item._id}
                         onMouseEnter={handleMouseEnter(item._id)}
                         onMouseLeave={handleMouseLeave}
                     >
@@ -783,14 +758,13 @@ function JourneyMain() {
     };
 
 
-
     const GetStarted = () => {
         const [selectedJourney, setSelectedJourney] = useState('');
         const [firstProject, setFirstProject] = useState('');
+        const [loadingMapData, setLoadingMapData] = useState(false);
 
         const handleStartJourney = async () => {
             setLoadingMapData(true)
-
             let res = await fetch(
                 `${config.rootPath}/api/journey/addUnitToMap`,
                 {
@@ -850,136 +824,98 @@ function JourneyMain() {
                 title: 'C#',
                 description: 'C# is powerful for building a variety of applications, especially for Windows platforms, making it a go-to for desktop software, games, and mobile apps.',
                 img: <CsharpOriginal size={"100px"}/>,
-                id: "",
+                id: "example_id_csharp",
                 favorite: false
             },
             cpp: {
                 title: 'C++',
                 description: 'C++ is highly efficient and versatile, favored for applications where speed and resource control are critical, such as video games or real-time systems.',
                 img: <CplusplusOriginal size={"100px"}/>,
-                id: "",
+                id: "example_id_cpp",
                 favorite: false
             }
         };
 
-        const selectJourney = (journey: React.SetStateAction<string>, id: string) => {
-            setSelectedJourney(journey);
-            setFirstProject(id)
+        const selectJourney = (journeyKey: React.SetStateAction<string>, id: React.SetStateAction<string>) => {
+            setSelectedJourney(journeyKey);
+            setFirstProject(id);
         };
 
         return (
-            <Box
-                sx={{
-                    flexGrow: 1,
-                    height: '93vh',
-                    backgroundImage: `url(${journeyMap})`, // Set the background image
-                    backgroundSize: 'cover', // Ensure the image covers the full area without being repeated
-                    backgroundPosition: 'center', // Center the background image
-                    backgroundRepeat: 'no-repeat', // Do not repeat the background image
-                }}
-            >
-                <Box sx={{
-                    flexGrow: 1,
-                    height: '93vh',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexDirection: 'column'
-                }}>
-                    <Box sx={{
-                        height: '20vh',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexDirection: 'column',
-                        mb: 2
-                    }}>
-                        <Typography variant="h4" sx={{color: "white"}}>Choose Your Lane</Typography>
-                        <Typography variant="body1" textTransform="none"
-                                    sx={{width: '45vw', textAlign: 'center', mt: 3, color: "white"}}>
-                            Journey&#39;s are a structured way to learn programming. Select the starting path you would like
-                            to take in your Journey. You can always take a detour at any time to switch it up.
+            <Box sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'start',
+                flexGrow: 1
+            }}>
+                <Typography variant="h4" sx={{ color: "white", mb: 2 }}>Choose Your Lane</Typography>
+                <Typography variant="body1" sx={{ width: '90vw', textAlign: 'center', color: "white", mb: 3 }}>
+                    Journeys are a structured way to learn programming. Select the starting path you would like to take in your Journey. You can always take a detour at any time to switch it up.
+                </Typography>
+                <Grid container spacing={2}>
+                    {Object.entries(journeys).map(([key, value], index) => (
+                        <Grid item xs={6} key={key}>
+                            <Box textAlign="center" sx={{ width: '100%' }}>
+                                <Typography variant="subtitle1" sx={{ color: selectedJourney === key ? "#29C18C" : 'white' }}>
+                                    {value.title}
+                                </Typography>
+                                <Button variant="outlined" onClick={() => selectJourney(key, value.id)} sx={{
+                                    borderRadius: "20px",
+                                    width: '100%',
+                                    height: '30vw',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                    borderColor: selectedJourney === key ? "#29C18C" : 'white',
+                                    backgroundColor: selectedJourney === key ? "#282826" : '',
+                                    '&:hover': {
+                                        backgroundColor: selectedJourney === key ? '#282826' : '',
+                                        borderColor: selectedJourney === key ? "#29C18C" : '#29C18C',
+                                    },
+                                }}>
+                                    {value.img}
+                                </Button>
+                                {value.favorite && (
+                                    <Chip
+                                        icon={<StarIcon sx={{color: '#ffd700 !important'}}/>}
+                                        label="Most Popular"
+                                        size="small"
+                                        sx={{
+                                            color: '#ffd700',
+                                            border: '1px solid #ffd700',
+                                        }}
+                                    />
+                                )}
+                            </Box>
+                        </Grid>
+                    ))}
+                </Grid>
+                {selectedJourney && (
+                    <Box sx={{ mt: 2, pb: 2, width: '90vw', textAlign: 'center' }}>
+                        <Typography variant="body1" sx={{ color: "white" }}>
+                            {/*@ts-ignore*/}
+                            {journeys[selectedJourney].description}
                         </Typography>
+                        <Button
+                            onClick={handleStartJourney}
+                            sx={{
+                                width: '50vw',
+                                height: '8vh',
+                                backgroundColor: "#29C18C",
+                                color: "white",
+                                mt: 2,
+                                '&:hover': {
+                                    backgroundColor: "#3ACF98",
+                                }
+                            }}>
+                            Start Journey
+                        </Button>
                     </Box>
-                    <Grid container spacing={2} sx={{height: '60vh'}}>
-                        <Grid item xs={2} container justifyContent="center" alignItems="center"/>
-                        <Grid item xs={8} container direction="row" justifyContent="center" alignItems="center"
-                              sx={{ gap: 12 }}>
-                            {Object.entries(journeys).
-                            filter(([key, value]) => value.id !== undefined && value.id !== null && value.id !== "").
-                            map(([key, value]) => (
-                                <Box key={key} textAlign="center" sx={{ position: 'relative', width: '10vw' }}>
-                                    <Typography variant="subtitle1" component="div"
-                                                sx={{ color: selectedJourney === key ? "#29C18C" : 'white' }}>
-                                        {value.title}
-                                    </Typography>
-                                    <Button variant={'outlined'} onClick={() => selectJourney(key, value.id)} sx={{
-                                        borderRadius: "20px",
-                                        width: '100%',
-                                        height: '10vw',
-                                        flexDirection: 'column',
-                                        alignItems: 'center',
-                                        borderColor: selectedJourney === key ? "#29C18C" : 'white',
-                                        backgroundColor: selectedJourney === key ? "#282826" : '',
-                                        '&:hover': {
-                                            backgroundColor: selectedJourney === key ? '#282826' : '',
-                                            borderColor: selectedJourney === key ? "#29C18C" : '#29C18C',
-                                        },
-                                    }}>
-                                        {value.img}
-                                    </Button>
-                                    {value.favorite && (
-                                        <Chip
-                                            icon={<StarIcon sx={{color: '#ffd700 !important'}}/>}
-                                            label="Most Popular"
-                                            size="small"
-                                            sx={{
-                                                position: 'absolute',
-                                                bottom: -28,
-                                                right: "calc(5vw - 57.7px)",
-                                                color: '#ffd700',
-                                                border: '1px solid #ffd700',
-                                            }}
-                                        />
-                                    )}
-                                </Box>
-                            ))}
-                        </Grid>
-                        <Grid item xs={2} container justifyContent="center" alignItems="center">
-                        </Grid>
-                        <Grid item xs={12} sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            mt: 2
-                        }}>
-                            <Typography variant="body1"
-                                        sx={{textAlign: 'center', marginBottom: '20px', width: '45vw', color: "white"}}>
-                                {/*@ts-ignore*/}
-                                {selectedJourney && journeys[selectedJourney].description}
-                            </Typography>
-                            {selectedJourney && (
-                                <MuiAwesomeButton
-                                    backgroundColor={theme.palette.secondary.main}
-                                    hoverColor={theme.palette.secondary.light}
-                                    secondaryColor={theme.palette.secondary.dark}
-                                    textColor={theme.palette.secondary.dark}
-                                    loading={loadingMapData}
-                                    onClick={handleStartJourney}
-                                >
-                                    <h1 style={{fontSize: "2vw", paddingRight: "1vw", paddingLeft: "1vw"}}>
-                                        Start Journey
-                                    </h1>
-                                </MuiAwesomeButton>
-                            )}
-                        </Grid>
-                    </Grid>
-                </Box>
+                )}
             </Box>
-
         );
-    }
+    };
 
     const nextUnitPreview = () => {
         return (
@@ -990,37 +926,34 @@ function JourneyMain() {
                 zIndex: 1,
             }}>
                 {nextUnit && (
-                    <Grid container>
-                        <Grid item xs={12} sm={12} md={12} lg={12} xl={12} sx={{
-                            display: 'flex', flexDirection: 'column', alignItems: 'center',
-                            borderRadius: '30px', position: 'relative',
+                    <Box sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    }}>
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            backgroundColor: nextUnit.color,
+                            borderRadius: '30px',
+                            position: 'relative',
+                            zIndex: 10,
+                            width: "400px",
+                            paddingBottom: '30px'
                         }}>
-                            <Box sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center',
-                                backgroundColor: nextUnit.color,
-                                borderRadius: '30px',
-                                position: 'relative',
-                                zIndex: 1,
-                                mt: 1,
-                                mb: 2,
-                                width: "625px",
-                                paddingBottom: '30px'
-                            }}>
-                                <Box sx={{p: 2, }}>
-                                    <Typography variant="h5" sx={{color: getTextColor(nextUnit.color)}}>{nextUnit.name}</Typography>
-                                </Box>
-                                {journeyStops(nextUnit.tasks)}
+                            <Box sx={{p: 2}}>
+                                <Typography variant="h5" sx={{color: getTextColor(nextUnit.color)}}>{nextUnit.name}</Typography>
                             </Box>
-                        </Grid>
+                            {journeyStops(nextUnit.tasks)}
+                        </Box>
                         <Box sx={{
                             position: 'absolute', // This is the 'wall' overlay.
                             top: 0,
                             left: 0,
                             width: '100%',
                             height: '100%',
-                            zIndex: 2,
+                            zIndex: 98,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -1034,26 +967,25 @@ function JourneyMain() {
                             left: 0,
                             width: '100%',
                             height: '100%',
-                            zIndex: 2,
+                            zIndex: 99,
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
                         }}>
                             <MuiAwesomeButton
-                                backgroundColor={theme.palette.primary.main}
-                                hoverColor={theme.palette.primary.light}
-                                secondaryColor={theme.palette.primary.dark}
-                                textColor={theme.palette.primary.dark}
+                                backgroundColor={theme.palette.secondary.main}
+                                hoverColor={theme.palette.secondary.light}
+                                secondaryColor={theme.palette.secondary.dark}
+                                textColor={theme.palette.secondary.dark}
                                 loading={loadingMapData}
                                 onClick={handleAddUnitToMap}
                             >
-                                <h1 style={{fontSize: "2vw", paddingRight: "1vw", paddingLeft: "1vw", width: "20vw",
-                                    height: "50px", justifyContent: "center", alignItems: "center", display: "flex"}}>
+                                <h1 style={{fontSize: "8vw", paddingRight: "1vw", paddingLeft: "1vw"}}>
                                     Add Unit to Map
                                 </h1>
                             </MuiAwesomeButton>
                         </Box>
-                    </Grid>
+                    </Box>
                 )}
             </Box>
         )
@@ -1071,67 +1003,20 @@ function JourneyMain() {
 
     const [isHovered, setIsHovered] = useState(false);
 
-    const unitHandout = (unit: any, index: any) => {
-        const cardStyles = (index: number, unitColor: string) => ({
-            borderRadius: '30px',
-            ...themeHelpers.frostedGlass,
-            backgroundColor: hexToRGBA(unitColor, 1),
-            borderColor: 'none',
-            overflow: 'hidden',
-            position: 'absolute',
-            zIndex: expandedCard === index ? 99 : 11,
-            boxShadow: expandedCard === index ? '' : `inset 0px -50px 75px -25px ${hexToRGBA(unitColor, 0.5)}`,
-        });
+    function getTextColor(backgroundColor: string): string {
+        // This function assumes the background color is in hex format (e.g., #ffffff)
 
-        return (
-            <Card sx={cardStyles(index, unit.color)}>
-                <Box sx={{maxHeight: expandedCard === index ? 'none' : '45vh', overflow: 'hidden'}}>
-                    <Box sx={{backgroundColor: 'rgba(255,255,255,0.8)', textAlign: 'center'}}>
-                        <Typography variant="h4" sx={{color: 'black'}}>Handout</Typography>
-                    </Box>
-                    <MarkdownRenderer
-                        markdown={unit.handout}
-                        style={{
-                            color: getTextColor(unit.color),
-                            margin: "20px",
-                            fontSize: "0.8rem",
-                            width: "fit-content",
-                            maxWidth: "475px",
-                        }}
-                    />
-                </Box>
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        bottom: 0,
-                        left: 0,
-                        width: '100%',
-                        height: 43,
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backdropFilter: expandedCard === index ? 'none' : 'blur(1px)',
-                    }}
-                >
-                    <Button
-                        variant="contained"
-                        onClick={() => handleToggleClick(index)}
-                        sx={{
-                            zIndex: 2,
-                            opacity: 0.7,
-                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                            borderRadius: '50%',
-                            color: 'black',
-                            minWidth: 30,
-                            height: 30,
-                            padding: '5px',
-                        }}
-                    >
-                        {expandedCard === index ? <KeyboardArrowUpIcon/> : <KeyboardArrowDownIcon/>}
-                    </Button>
-                </Box>
-            </Card>
-        )
+        // Convert hex to RGB
+        const rgb = parseInt(backgroundColor.substring(1), 16); // Convert hex to decimal
+        const r = (rgb >> 16) & 0xff;
+        const g = (rgb >> 8) & 0xff;
+        const b = (rgb >> 0) & 0xff;
+
+        // Calculate the luminance
+        const luminance = 0.2126 * (r / 255) ** 2.2 + 0.7152 * (g / 255) ** 2.2 + 0.0722 * (b / 255) ** 2.2;
+
+        // Return white for dark backgrounds and black for light backgrounds
+        return luminance < 0.5 ? 'white' : 'black';
     }
 
     const handleDetourSelection = (unit: any) => {
@@ -1149,94 +1034,131 @@ function JourneyMain() {
         dispatch(updateJourneyDetourState(updateState))
 
         return (
-            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)} mobile={false}/>
+            <DetourSelection detours={detours} color={unit.color} textColor={getTextColor(unit.color)} width={'65vw'} mobile={true}/>
         )
     }
 
+    const [showHandout, setShowHandout] = useState(null)
+    const [openDetourPop, setOpenDetourPop] = useState(false);
+
     const handleMap = (unit: any, index: any) => {
         const lastIndex = index === unitData.length - 1
+        const handleOpen = () => setOpenDetourPop(true);
+        const handleClose = () => setOpenDetourPop(false);
         const allCompleted = (tasks: Task[]) => tasks.every(task => task.completed);
-        const atLeastOneCompleted = (tasks: Task[]) => tasks.some(task => task.completed);
-
-        const isEven = index % 2 === 0
-        const leftStyle = isEven ? "center" : "start"
-        const rightStyle = isEven ? "start" : "center"
-
-        const conditionalHandout = (tasks: Task[]) => {
-            if (allCompleted(tasks)) return <></>;
-            if (atLeastOneCompleted(tasks)) return <>{unitHandout(unit, index)}</>;
-            return unitHandout(unit, index);
-        };
+        const toggleHandout = (idx: any) => {
+            if (showHandout === idx) {
+                setShowHandout(null)
+            } else {
+                setShowHandout(idx)
+            }
+        }
 
         return (
-            <>
-                <Grid item xs={12} sm={6} md={4} lg={3} xl={4} sx={{
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+            }}>
+                <Box sx={{
                     display: 'flex',
-                    justifyContent: (lastIndex && isEven) ? 'start' : leftStyle,
                     flexDirection: 'column',
                     alignItems: 'center',
+                    backgroundColor: unit.color,
+                    borderRadius: '30px',
+                    position: 'relative',
+                    zIndex: 10,
+                    width: "400px",
+                    paddingBottom: '30px'
                 }}>
-                    {isEven
+                    {(allCompleted(unit.tasks))
                         ?
-                        lastIndex ? handleDetourSelection(unit) : <JourneyPortals currentIndex={index}/>
+                        <Box sx={{
+                            position: 'absolute',
+                            bottom: 8,
+                            right: 8,
+                            borderRadius: '50%',
+                            backgroundColor: "#41c18c",
+                            width: 55,
+                            height: 55,
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <CheckIcon style={{color: 'white'}}/>
+                        </Box>
                         :
-                        conditionalHandout(unit.tasks)
+                        null
                     }
-                </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={6} xl={4} sx={{
-                    display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    borderRadius: '30px', position: 'relative',
-                }}>
                     <Box sx={{
+                        width: "100%",
                         display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        backgroundColor: unit.color,
-                        borderRadius: '30px',
-                        position: 'relative',
-                        zIndex: 10,
-                        width: "625px",
-                        paddingBottom: '30px'
+                        justifyContent: 'end',
+                        alignItems: 'center'
                     }}>
-                        {(allCompleted(unit.tasks))
+                        <Button onClick={() => toggleHandout(index)}>
+                            <DescriptionIcon sx={{ height: 30, width: 30, color: getTextColor(unit.color) }}/>
+                        </Button>
+                    </Box>
+                    <Box sx={{p: 2}}>
+                        <Typography variant="h5" sx={{color: getTextColor(unit.color)}}>{unit.name}</Typography>
+                    </Box>
+                    {
+                        (showHandout === index)
                             ?
+                            <MarkdownRenderer
+                                markdown={unit.handout}
+                                style={{
+                                    color: getTextColor(unit.color),
+                                    margin: "20px",
+                                    fontSize: "0.8rem",
+                                    width: "fit-content",
+                                    maxWidth: "90vw",
+                                }}
+                            />
+                            :
+                            journeyStops(unit.tasks)
+                    }
+                </Box>
+                {lastIndex && (
+                    <>
+                        <Fab
+                            onClick={handleOpen}
+                            aria-label="launch-mobile"
+                            sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 100, boxShadow: 'none', backgroundColor: "#ef9558", color: "white" }}
+                        >
+                            <FollowTheSignsIcon />
+                        </Fab>
+                        <Modal
+                            open={openDetourPop}
+                            onClose={handleClose}
+                            slotProps={{ backdrop: {
+                                style: {
+                                        backdropFilter: "blur(6.8px)",
+                                        opacity: "0.9"
+                                    }
+                                }
+                            }}
+                        >
                             <Box sx={{
                                 position: 'absolute',
-                                bottom: 8,
-                                right: 8,
-                                borderRadius: '50%',
-                                backgroundColor: "#41c18c",
-                                width: 55,
-                                height: 55,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: "90%",
+                                bgcolor: 'background.paper',
+                                boxShadow: 24,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                borderRadius: "30px"
                             }}>
-                                <CheckIcon style={{color: 'white'}}/>
+                                {handleDetourSelection(unit)}
                             </Box>
-                            :
-                            null
-                        }
-                        <Box sx={{p: 2, }}>
-                            <Typography variant="h5" sx={{color: getTextColor(unit.color)}}>{unit.name}</Typography>
-                        </Box>
-                        {journeyStops(unit.tasks)}
-                    </Box>
-                </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={3} xl={4} sx={{
-                    display: 'flex',
-                    justifyContent: lastIndex ? 'start' : rightStyle,
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}>
-                    {isEven
-                        ?
-                        conditionalHandout(unit.tasks)
-                        :
-                        lastIndex ? handleDetourSelection(unit) : <JourneyPortals currentIndex={index}/>
-                    }
-                </Grid>
-            </>
+                        </Modal>
+                    </>
+                )}
+            </Box>
         )
     }
 
@@ -1244,7 +1166,7 @@ function JourneyMain() {
         return (
             <Box sx={{overflow: 'hidden'}}>
                 <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', m: 2}}>
-                    <Typography variant="h2" sx={{color: 'text.primary', m: 1}}>Your Journey</Typography>
+                    <Typography variant="h3" sx={{color: 'text.primary', m: 1}}>Your Journey</Typography>
                 </Box>
                 {loading && (
                     <div style={{width: "100%", display: "flex", justifyContent: "center", paddingBottom: "40px"}}>
@@ -1253,10 +1175,8 @@ function JourneyMain() {
                 )}
                 {unitData.map((unit, index) => (
                     <section key={unit._id} id={unit._id} ref={unitRefs.current[index]}>
-                        <Grid container spacing={2}>
                             {handleMap(unit, index)}
-                        </Grid>
-                        <Box sx={{paddingBottom: '100px'}}/>
+                        <Box sx={{paddingBottom: '50px'}}/>
                     </section>
                 ))}
                 {nextUnitPreview()}
@@ -1265,38 +1185,18 @@ function JourneyMain() {
     };
 
     const pageContent = () => {
-        if (isMobile) {
-            return <JourneyMainMobile/>;
-        } else {
-            if (loadingMainPage) {
-                return null
-            }
-            if (activeJourney) {
-                return userJourney();
-            }
-            return <GetStarted/>;
+        if (loadingMainPage) {
+            return null
         }
+        if (activeJourney) {
+            return userJourney();
+        }
+        return <GetStarted/>;
     };
 
     return pageContent()
-
 }
 
-function getTextColor(backgroundColor: string): string {
-    // This function assumes the background color is in hex format (e.g., #ffffff)
-
-    // Convert hex to RGB
-    const rgb = parseInt(backgroundColor.substring(1), 16); // Convert hex to decimal
-    const r = (rgb >> 16) & 0xff;
-    const g = (rgb >> 8) & 0xff;
-    const b = (rgb >> 0) & 0xff;
-
-    // Calculate the luminance
-    const luminance = 0.2126 * (r / 255) ** 2.2 + 0.7152 * (g / 255) ** 2.2 + 0.0722 * (b / 255) ** 2.2;
-
-    // Return white for dark backgrounds and black for light backgrounds
-    return luminance < 0.5 ? 'white' : 'black';
-}
 function hexToRGBA(hex: any, alpha = 1) {
     let r = parseInt(hex.slice(1, 3), 16),
         g = parseInt(hex.slice(3, 5), 16),
@@ -1305,4 +1205,4 @@ function hexToRGBA(hex: any, alpha = 1) {
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }
 
-export default JourneyMain;
+export default JourneyMainMobile;

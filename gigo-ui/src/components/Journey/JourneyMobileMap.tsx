@@ -32,8 +32,6 @@ function JourneyMobileMap({unitId}: JourneyMapProps) {
     const [openSpeedDial, setOpenSpeedDial] = useState(null);
     const [tasks, setTasks] = React.useState([])
 
-    const [journeyUnitId, setJourneyUnitId] = useState(unitId)
-
     function splitDataByUnit(data: any[]) {
         // Reduce the data into an object with unit numbers as keys
         const unitData = data.reduce((acc, item) => {
@@ -233,7 +231,6 @@ function JourneyMobileMap({unitId}: JourneyMapProps) {
             swal("There was an issue getting this data. Please try again.")
         }
 
-        console.log("this is the task: ", res)
         return null
     }
 
@@ -397,8 +394,6 @@ function JourneyMobileMap({unitId}: JourneyMapProps) {
         }));
 
         const firstIncompleteIndex = metadata.findIndex((item: { completed: any; }) => !item.completed);
-
-        console.log("heigfht: ", points.length * speedDialHeight + 200)
 
         return (
             <Box sx={{
