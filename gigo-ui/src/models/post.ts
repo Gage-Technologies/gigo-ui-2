@@ -25,6 +25,7 @@ export default interface Post {
     visibility_string: string;
     thumbnail: string;
     leads: boolean;
+    challenge_cost: string;
 }
 
 export interface ProjectTutorial {

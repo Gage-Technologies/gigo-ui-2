@@ -47,7 +47,7 @@ interface IProps {
     projectTitle: string,
     projectDesc: string,
     projectThumb: string,
-    projectDate: string,
+    projectDate: Date,
     projectType: string,
     renown: number,
     onClick: () => void,
