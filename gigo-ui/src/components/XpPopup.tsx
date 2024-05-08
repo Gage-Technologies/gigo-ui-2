@@ -25,6 +25,7 @@ import call from "../services/api-call";
 import config from "../config";
 import { Close } from "@material-ui/icons";
 import { LoadingButton } from "@mui/lab";
+import Image from "next/image"
 
 interface IProps {
     oldXP: number;
@@ -231,7 +232,8 @@ const XpPopup = (props: IProps) => {
                         >
                             <Close/>
                         </IconButton>
-                        <img src={premiumGorilla}
+                        <Image src={premiumGorilla}
+                               alt={""}
                              style={window.innerHeight < 900 ? {width: "20%", marginBottom: "5px"} : {
                                  width: "30%",
                                  marginBottom: "20px"

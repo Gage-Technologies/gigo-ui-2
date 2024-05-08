@@ -27,6 +27,7 @@ import {selectAuthState} from "@/reducers/auth/auth";
 import GoProDisplay from "../GoProDisplay";
 import {AwesomeButton} from "react-awesome-button";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import {useRouter} from "next/navigation";
 
 export type ByteNextOutputMessageProps = {
     open: boolean;
@@ -68,7 +69,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
 
     const ctWs = useGlobalCtWebSocket();
 
-    const navigate = useNavigate();
+    const navigate = useRouter();
 
     const HiddenButton = styled(Button)`
         background-color: transparent;
@@ -374,7 +375,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             bytesId={props.nextByte._id}
                             bytesTitle={props.nextByte.name}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + props.nextByte._id}
-                            onClick={() => navigate(`/byte/${props.nextByte._id}`)}
+                            onClick={() => navigate.push(`/byte/${props.nextByte._id}`)}
                             style={{cursor: 'pointer', transition: 'transform 0.3s ease'}}
                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -425,7 +426,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             setResponse("")
                             setState(State.LOADING)
                             hide()
-                            navigate(`/byte/${props.nextByte._id}`)
+                            navigate.push(`/byte/${props.nextByte._id}`)
                         }}
                     >
                         Continue

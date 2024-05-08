@@ -9,6 +9,7 @@ import config from "../config";
 import LottieAnimation from "./LottieAnimation";
 import ProBannerCircle from "@/icons/ProBannerCircle";
 import { Buffer } from 'buffer';
+import {useRouter} from "next/navigation";
 
 interface IProps {
     size: number | string,
@@ -73,7 +74,7 @@ export default function UserIcon(props: IProps) {
     }, [props.backgroundPalette, props.backgroundName])
 
 
-    let navigate = useNavigate();
+    let navigate = useRouter();
 
     const scaleSize = (scale: number) => {
         if (typeof props.size === "string") {
@@ -142,7 +143,7 @@ export default function UserIcon(props: IProps) {
         <div>
             {props.userId !== "n/a" ?
                 <ButtonBase
-                    onClick={() =>  navigate("/user/" + props.userId)}
+                    onClick={() =>  navigate.push("/user/" + props.userId)}
                     style={ window.innerWidth > 1000 ? {
                         position: "relative",
                         //@ts-ignore

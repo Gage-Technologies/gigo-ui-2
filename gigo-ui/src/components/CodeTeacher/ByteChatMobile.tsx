@@ -32,19 +32,20 @@ import {
 import {initialAuthState, selectAuthState, selectAuthStateThumbnail} from "../../reducers/auth/auth";
 import config from "../../config";
 import UserIcon from "../UserIcon";
-import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import {getAllTokens} from "../../theme";
+import {getAllTokens} from "@/theme";
 import ForumIcon from '@mui/icons-material/Forum';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {grey} from "@mui/material/colors";
-import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "../../reducers/bytes/bytes";
+import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "@/reducers/bytes/bytes";
 import CloseIcon from "@material-ui/icons/Close";
 import GoProDisplay from "../GoProDisplay";
 import {Close, Description} from "@material-ui/icons";
 import CTIcon from '../../img/codeTeacher/CT-icon-simple.svg';
+import Image from "next/image"
 
 const InitialSuggestionButton = styled(Button)`
     animation: initSuggestionButtonAuraEffect 2s infinite alternate;
@@ -1027,7 +1028,7 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
                 }}
                 onClick={() => props.onExpand()}
             >
-                <img alt="CT" src={CTIcon} style={{width: "22px", height: "22px"}}/>
+                <Image alt="CT" src={CTIcon} style={{width: "22px", height: "22px"}}/>
             </HiddenButton>
         </Tooltip>
     ), [])

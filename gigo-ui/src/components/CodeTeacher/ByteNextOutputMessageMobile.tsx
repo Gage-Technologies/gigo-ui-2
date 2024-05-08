@@ -23,18 +23,19 @@ import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import { Typography } from "@material-ui/core";
 import { BugReportOutlined, Close } from "@material-ui/icons";
 import Lottie from "react-lottie";
-import * as byteSuccess from "../../img/byteSuccess.json"
+import * as byteSuccess from "@/img/byteSuccess.json"
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import { truncate } from "fs/promises";
 import { LoadingButton } from "@mui/lab";
 import { Player } from "@lottiefiles/react-lottie-player";
-import config from "../../config";
+import config from "@/config";
 import BytesCard from "../BytesCard";
 import { useNavigate } from "react-router-dom";
 import BytesCardSuccessPageMobile from "../ByteCardSuccessPageMobile";
 import GoProDisplay from "../GoProDisplay";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
+import {useRouter} from "next/navigation";
 
 export type ByteNextOutputMessageMobileProps = {
     trigger: boolean;
@@ -71,7 +72,7 @@ export default function ByteNextOutputMessageMobile(props: ByteNextOutputMessage
 
     const ctWs = useGlobalCtWebSocket();
 
-    const navigate = useNavigate();
+    const navigate = useRouter();
 
     const HiddenButton = styled(Button)`
         background-color: transparent;
@@ -376,7 +377,7 @@ export default function ByteNextOutputMessageMobile(props: ByteNextOutputMessage
                                     bytesId={props.nextByte._id}
                                     bytesTitle={props.nextByte.name}
                                     bytesThumb={config.rootPath + "/static/bytes/t/" + props.nextByte._id}
-                                    onClick={() => navigate(`/byte/${props.nextByte._id}`)}
+                                    onClick={() => navigate.push(`/byte/${props.nextByte._id}`)}
                                     style={{
                                         cursor: 'pointer',
                                         transition: 'transform 0.3s ease',
@@ -427,7 +428,7 @@ export default function ByteNextOutputMessageMobile(props: ByteNextOutputMessage
                             setResponse("")
                             setState(State.LOADING)
                             hide()
-                            navigate(`/byte/${props.nextByte._id}`)
+                            navigate.push(`/byte/${props.nextByte._id}`)
                         }}
                     >
                         Continue

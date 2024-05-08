@@ -6,6 +6,7 @@ import {Box, Button, Tooltip, Typography} from "@mui/material";
 import {CtParseFileResponse, SymbolType, Node} from "../../../models/ct_websocket";
 import CTIcon from '../../../img/codeTeacher/CT-icon-simple.svg';
 import {CtCircularProgress} from "../../CodeTeacher/CtCircularProgress";
+import Image from "next/image"
 
 interface CtCodeActionWidgetSpec extends LineWidgetSpec {
     textColor: string;
@@ -103,7 +104,7 @@ function createPortal(
                     <Button sx={{ m: 0.3 }} onClick={codeCleanupCallback} disabled={disabled}>
                         {loading ?
                             (<CtCircularProgress size={18} sx={{marginRight: "8px"}}/>)
-                            : (<img alt="Code Teacher" src={CTIcon} style={{width: 18, height: 18, marginRight: "8px"}}/>)}
+                            : (<Image alt="Code Teacher" src={CTIcon} style={{width: 18, height: 18, marginRight: "8px"}}/>)}
                         <Typography variant={"caption"} color={textColor} sx={{ fontSize: "10px" }}>
                             Clean Up Code
                         </Typography>

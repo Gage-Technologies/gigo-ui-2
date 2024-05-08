@@ -6,6 +6,7 @@ import CTIcon from '@/img/codeTeacher/CT-icon.svg';
 import {Box} from "@mui/material";
 import {initialAuthStateUpdate, selectAuthState} from "@/reducers/auth/auth";
 import {useAppSelector} from "@/reducers/hooks";
+import Image from "next/image"
 
 function CodeTeacherChatIcon(props: any) {
     const [anchorEl, setAnchorEl] = useState(null);
@@ -22,9 +23,10 @@ function CodeTeacherChatIcon(props: any) {
     const open = Boolean(anchorEl);
     const id = open ? 'code-teacher-popover' : undefined;
 
+
     return (
         <div style={{ ...props.style }}>
-            <img
+            <Image
                 alt="Code Teacher"
                 src={CTIcon}
                 style={{ cursor: 'pointer', ...props.style }}
@@ -49,7 +51,7 @@ function CodeTeacherChatIcon(props: any) {
             >
                 <Box sx={{ p: 2, maxWidth: 240, background: 'linear-gradient(0deg, rgba(34,117,85,1) 30%, rgba(30,81,135,1) 90%)' }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', pb: 2 }}>
-                        <img alt="Code Teacher" src={CTIcon} style={{ width: 80, height: 80}} />
+                        <Image alt="Code Teacher" src={CTIcon} style={{ width: 80, height: 80}} />
                         <Typography variant="h5">Code Teacher</Typography>
                     </Box>
                     <Typography variant="body2" paragraph>

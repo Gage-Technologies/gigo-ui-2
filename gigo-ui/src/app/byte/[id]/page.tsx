@@ -21,7 +21,7 @@ import {
     Typography,
 } from "@mui/material";
 import XpPopup from "@/components/XpPopup";
-import {getAllTokens} from "@/theme";
+import {getAllTokens, theme} from "@/theme";
 import {Add, PlayArrow} from "@material-ui/icons";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import {useNavigate} from "react-router-dom";
@@ -94,6 +94,7 @@ import {
     ctHighlightCodeRangeFullLines,
     removeCtHighlightCodeRange
 } from "@/components/IDE/Extensions/CtHighlightExtension";
+import {useRouter, useSearchParams} from "next/navigation";
 
 
 interface MergedOutputRow {
@@ -204,10 +205,10 @@ const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
 const NextStepsTimeout = 15000; // 15 seconds
 
 
-function Byte() {
-    let userPref = localStorage.getItem('theme');
-    const [mode, _] = useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+function Byte({params}: { params: {id: string}}) {
+    const query = useSearchParams()
+    const isJourney = query.get("journey") !== null
+    
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
     const [nodeBelow, setNodeBelow] = React.useState(null)
@@ -344,7 +345,7 @@ function Byte() {
 
     // Define the state and dispatch hook
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
+    const navigate = useRouter();
 
     // Define the state for your data and loading state
     const [byteData, setByteData] = useState<BytesData | null>(null);
@@ -420,18 +421,19 @@ function Byte() {
     const [runTutorial, setRunTutorial] = React.useState(!tutorialState.bytes && authState.authenticated)
     const [stepIndex, setStepIndex] = React.useState(0)
 
-    const location = useLocation();
-    const queryParams = new URLSearchParams(location.search);
+    // const location = useLocation();
+    // const queryParams = new URLSearchParams(location.search);
 
-    let {id} = useParams();
+    // let {id} = useParams();
+
+    let id = params.id;
 
     let ctWs = useGlobalCtWebSocket();
 
     let globalWs = useGlobalWebSocket();
 
     const determineDifficulty = React.useCallback(() => {
-        const isJourneyVersion = queryParams.has('journey');
-        const shouldSetToEasy = isJourneyVersion && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
+        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
 
         if (shouldSetToEasy) {
             updateDifficulty(0)
@@ -564,15 +566,15 @@ function Byte() {
         dispatch(updateAuthState(authState))
 
         // send api call to backend to mark the challenge tutorial as completed
-        await call(
-            "/api/user/markTutorial",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        await fetch(
+            `${config.rootPath}/api/user/markTutorial`,
             {
-                tutorial_key: "bytes"
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({tutorial_key: "bytes"}),
+                credentials: 'include'
             }
         )
     }
@@ -897,17 +899,17 @@ function Byte() {
 
 
     const getRecommendedBytes = async () => {
-        let recommendedBytes = await call(
-            "/api/bytes/getRecommendedBytes",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        );
+        let recommendedBytes = await fetch(
+            `${config.rootPath}/api/bytes/getRecommendedBytes`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({}),
+                credentials: 'include'
+            }
+        ).then(response => response.json());
 
         const [res] = await Promise.all([recommendedBytes]);
 
@@ -940,16 +942,16 @@ function Byte() {
     // Function to fetch the full metadata of a byte
     const getByte = async (byteId: string): Promise<any | null> => {
         try {
-            const response = await call("/api/bytes/getByte",
-                "POST",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                {byte_id: byteId},
-                null,
-                config.rootPath);
-            const [res] = await Promise.all([response]);
+            const res = await fetch(
+                `${config.rootPath}/api/bytes/getByte`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({byte_id: byteId}),
+                    credentials: 'include',
+                }).then(res => res.json())
 
             if (res && res["rec_bytes"]) {
                 let outlineContent = res["rec_bytes"][`files_${difficultyToString(determineDifficulty())}`]
@@ -977,19 +979,19 @@ function Byte() {
 
     const startByteAttempt = async (byteId: string) => {
         try {
-            const response = await call(
-                "/api/bytes/startByteAttempt",
-                "POST",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                {byte_id: byteId},
-                null,
-                config.rootPath
-            );
+            console.log("byte id in start: ", byteId)
+            const res = await fetch(
+                `${config.rootPath}/api/bytes/startByteAttempt`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/'},
+                    body: JSON.stringify({
+                        byte_id: byteId
+                    }),
+                    credentials: 'include'
+                }
+            ).then(res => res.json())
 
-            const [res] = await Promise.all([response]);
 
             if (res === undefined) {
                 swal("Server Error", "Cannot fetch byte data. Please try again later.");
@@ -1013,19 +1015,18 @@ function Byte() {
 
     const createWorkspace = async (byteId: string): Promise<boolean> => {
         try {
-            const response = await call(
-                "/api/bytes/createWorkspace",
-                "POST",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                {byte_id: byteId},
-                null,
-                config.rootPath
-            );
+            const res = await fetch(
+                `${config.rootPath}/api/bytes/createWorkspace`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({byte_id: byteId}),
+                    credentials: 'include',
+                }
+            ).then(res => res.json())
 
-            const [res] = await Promise.all([response]);
 
             if (res === undefined) {
                 swal("Server Error", "Cannot fetch byte data. Please try again later.");
@@ -1051,27 +1052,26 @@ function Byte() {
     };
 
     const markComplete = async () => {
-        let params = {
+        let funcParams = {
             byte_id: byteAttemptId,
             difficulty: difficultyToString(determineDifficulty()),
         }
-        const isJourneyVersion = queryParams.has('journey');
 
-        if (isJourneyVersion) {
+        if (isJourney) {
             //@ts-ignore
-            params["journey"] = true
+            funcParams["journey"] = true
         }
-        let res = await call(
-            "/api/bytes/setCompleted",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            params,
-            null,
-            config.rootPath
-        );
+        let res = await fetch(
+            `${config.rootPath}/api/bytes/setCompleted`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(funcParams),
+                credentials: 'include'
+            }
+        ).then(res => res.json())
 
         if (res === undefined) {
             swal("Server Error", "Cannot complete byte. Please try again later.");
@@ -1096,16 +1096,19 @@ function Byte() {
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
         try {
-            const response = await call("/api/journey/getUnitFromTask",
-                "POST",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                {task_id: byteId},
-                null,
-                config.rootPath);
-            const [res] = await Promise.all([response]);
+            // TODO maybe need to fix this
+            const res = await fetch(`${config.rootPath}/api/journey/getUnitFromTask`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": 'application/json'
+                    },
+                    body: JSON.stringify({task_id: byteId}),
+                    credentials: 'include',
+                }
+            ).then(res => res.json())
+
+            // const [res] = await Promise.all([response]);
 
             if (res && res["unit"]) {
                 setJourneyUnitData(res["unit"])
@@ -1123,11 +1126,10 @@ function Byte() {
     };
 
     useEffect(() => {
+        console.log("byte id: ", id)
         if (id === undefined) {
             return;
         }
-
-        const isJourneyVersion = queryParams.has('journey');
 
         setOutput(null);
         setExecutingCode(false);
@@ -1143,7 +1145,7 @@ function Byte() {
             if (authState.authenticated && id && byteData !== null) {
                 startByteAttempt(id).then(async () => {
                     // auto connect to the workspace if this is a journey task
-                    if (isJourneyVersion) {
+                    if (isJourney) {
                         for (let i = 0; i < 5; i++) {
                             let created = await createWorkspace(byteData._id);
                             if (created) {
@@ -1158,7 +1160,7 @@ function Byte() {
                 });
             }
         });
-        if (isJourneyVersion) {
+        if (isJourney) {
             getJourneyUnit(id).then((u: JourneyUnit | null) => {
                 // if (u !== null && !bytesState.handoutClosedByUser) {
                 //     setActiveSidebarTab("journeyHandout")
@@ -1431,7 +1433,7 @@ function Byte() {
     };
 
     const handleSelectByte = (byteId: string) => {
-        navigate(`/byte/${byteId}`);
+        navigate.push(`/byte/${byteId}`);
     };
 
     // Add a function to handle closing the terminal
@@ -1497,7 +1499,7 @@ function Byte() {
         if (!outputPopup && buttonClickedRef.current) {
             buttonClickedRef.current = false;
             if (!authState.authenticated) {
-                navigate("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
                 return
             }
             executeCode();
@@ -1728,7 +1730,7 @@ function Byte() {
             codeOutput={output?.merged || ""}
             nextByte={getNextByte()}
             containerRef={containerRef}
-            journey={queryParams.has('journey')}
+            journey={isJourney}
             currentDifficulty={determineDifficulty()}
             onTryHarderVersionClick={handleTryHarderVersionClick}
             nodeBelowId={nodeBelow}
@@ -1827,7 +1829,7 @@ function Byte() {
     }, [bytesState?.byteDifficulty])
 
     if (window.innerWidth < 1000) {
-        navigate("/")
+        navigate.push("/")
     }
 
     const goToCodeCallback = async (filePath: string, startLine: number, endLine: number) => {
@@ -2213,7 +2215,7 @@ function Byte() {
             setOutputPopup(false);
             buttonClickedRef.current = true;
             if (!authState.authenticated) {
-                navigate("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
                 return
             }
 
@@ -2232,7 +2234,7 @@ function Byte() {
         language={lang ? lang.extensions[0] : "py"}
         filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
         code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
-        theme={mode}
+        theme={theme.palette.mode}
         readonly={!authState.authenticated}
         onChange={(val, view) => handleEditorChange(val)}
         onCursorChange={(bytePosition, line, column) => setCursorPosition({
@@ -2467,7 +2469,7 @@ function Byte() {
                 setOutputPopup(false);
                 buttonClickedRef.current = true;
                 if (!authState.authenticated) {
-                    navigate("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                    navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
                     return
                 }
 
@@ -2486,7 +2488,7 @@ function Byte() {
             language={lang ? lang.extensions[0] : "py"}
             filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
             code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
-            theme={mode}
+            theme={theme.palette.mode}
             readonly={!authState.authenticated}
             onChange={(val, view) => handleEditorChange(val)}
             onCursorChange={(bytePosition, line, column) => setCursorPosition({
@@ -2589,7 +2591,6 @@ function Byte() {
             };
 
             const renderTutorial = () => {
-                const isJourney = queryParams.has('journey')
                 const ctVideo1 = config.rootPath + "/cloudstore/videos/ask_code_teacher_big.mp4"
                 const ctVideo2 = config.rootPath + "/cloudstore/videos/ask_code_teacher_code_question.mp4"
                 const ctVideo3 = config.rootPath + "/cloudstore/videos/ask_code_teacher_small.mp4"
@@ -2890,7 +2891,7 @@ function Byte() {
             return (
                 <ThemeProvider theme={theme}>
                 <CssBaseline>
-                    {(queryParams.has('journey')) ? journeyBytesPage() : bytesPage()}
+                    {(isJourney) ? journeyBytesPage() : bytesPage()}
             {renderNewFilePopup()}
             {renderDeleteFilePopup()}
             {renderTutorial()}

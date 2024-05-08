@@ -9,6 +9,7 @@ import Button from '@mui/material/Button';
 import {handle} from "mdast-util-to-markdown/lib/handle";
 import config from "../config";
 import {Close} from "@material-ui/icons";
+import Image from "next/image"
 
 interface IProps {
     closePopup: () => void;
@@ -183,7 +184,7 @@ const LootPopup = (props: IProps) => {
                             {/*    </Rotate>*/}
                             {/*</Slide>*/}
                             <Slide triggerOnce={true}>
-                                <img src={freeze} alt="freeze" style={{zIndex: 4}}/>
+                                <Image src={freeze} alt="freeze" style={{zIndex: 4}}/>
                             </Slide>
                         </div>
                         <div style={{height: "100px"}}/>
