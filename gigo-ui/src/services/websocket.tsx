@@ -112,6 +112,8 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
         onError: (error) => console.log("global socket error: ", error),
         onOpen: (event: WebSocketEventMap['open']) => console.log("global socket open"),
         onMessage: (event: WebSocketEventMap['message']) => {
+            console.log("global socket message: ", event);
+
             // skip if this is a ping
             if (event.data === "ping") {
                 return;

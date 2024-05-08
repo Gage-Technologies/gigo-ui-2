@@ -80,7 +80,7 @@ const ByteSelectionMenu: React.FC<ByteSelectionMenuProps> = ({ bytes, onSelectBy
                                 '--button-primary-color-light': "white",
                                 '--button-primary-color-hover': theme.palette.primary.main,
                                 fontSize: "16px",
-                            }} type="primary" href={"/journey/main"} >
+                            }} type="primary" href={"/journey"} >
                                 <span>Start Your Journey</span>
                             </AwesomeButton>
                         </Box>
