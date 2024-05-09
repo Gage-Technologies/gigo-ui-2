@@ -104,7 +104,7 @@ interface Reward {
 }
 
 
-function User() {
+function Profile() {
     const username = useAppSelector(selectAuthStateUserName);
     const tier = useAppSelector(selectAuthStateTier);
     let queryParams = useSearchParams();
@@ -451,16 +451,7 @@ function User() {
             stopScroll.current = true
         }
 
-        if (fresh) {
-            setSearchOptions(res["challenges"])
-            return
-        }
-
-        let opts = JSON.parse(JSON.stringify(searchOptions))
-        let newOpts = opts.concat(res["challenges"])
-        // filter duplicates incase there is an accidental overlap
-        let filteredOpts = newOpts.filter((v: any, i: any, a: any) => a.findIndex((t: any) => (t._id === v._id)) === i)
-        setSearchOptions(filteredOpts)
+        setSearchOptions(res["challenges"])
     }
 
     const stopScroll = React.useRef(false)
@@ -482,7 +473,7 @@ function User() {
             return dateB - dateA;
         }).map((project) => {
             return (
-                <Grid item>
+                <Grid item key={project._id}>
                     <div style={!isMobile ? {
                         display: "flex",
                         transform: `scale(${scaleFactor})`,
@@ -773,7 +764,7 @@ function User() {
                     <List>
                         {friendsList.length > 0 ? (
                             friendsList.map((row) => (
-                                <ListItem button onClick={() => router.push("/user/" + row["friend"])}>
+                                <ListItem button onClick={() => router.push("/user/" + row["friend"])} key={row["friend"]}>
                                     <Tooltip title={"Since " + new Date(row["date"]).toLocaleString("en-us", {day: '2-digit', month: 'short', year: 'numeric'})}>
                                         <ListItemAvatar>
                                             <UserIcon
@@ -876,7 +867,7 @@ function User() {
                     <List>
                         {searchResults.length > 0 ? (
                             searchResults.map((row: any) => (
-                                <ListItem button style={!isMobile ? { display: 'flex', justifyContent: 'center', alignItems: 'center' } : { display: 'flex', justifyContent: 'start', alignItems: 'center', width: "75vw" }}>
+                                <ListItem key={row["_id"]} button style={!isMobile ? { display: 'flex', justifyContent: 'center', alignItems: 'center' } : { display: 'flex', justifyContent: 'start', alignItems: 'center', width: "75vw" }}>
                                     <ListItemAvatar>
                                         <UserIcon
                                             userTier={row["user_status_string"]}
@@ -931,7 +922,7 @@ function User() {
                         </TableHead>
                         <TableBody>
                             {requestList.map((row: any) => (
-                                <TableRow >
+                                <TableRow key={row["_id"]}>
                                     <TableCell component="th" scope="row">
                                         {row["user_name"].toLowerCase() === username.toLowerCase()
                                             ? row["friend_name"]
@@ -1314,7 +1305,7 @@ function User() {
                                                 {backgroundArray.map((background, index) => {
                                                     let setInventoryHere = inventory.filter(e => e.full_name === background["name"])
                                                     return (
-                                                        <div>
+                                                        <div key={index}>
                                                             {setInventoryHere.length === 0 ? (
                                                                 <div style={{width: "100px", height: "100px", position: "relative", zIndex: 9}}>
                                                                     <div style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.3}}>
@@ -1896,7 +1887,7 @@ function User() {
                                             }}
                                         >
                                             {minorValues.map((minorValue) => {
-                                                return <Tab label={minorValue} value={minorValue} sx={{color: "text.primary"}}/>;
+                                                return <Tab key={minorValue} label={minorValue} value={minorValue} sx={{color: "text.primary"}}/>;
                                             })}
                                         </Tabs>
                                     </div>
@@ -1954,4 +1945,4 @@ function User() {
     );
 }
 
-export default User;
+export default Profile;

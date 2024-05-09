@@ -1,15 +1,15 @@
-import React, {useEffect} from "react"
+import React from "react"
 import {ButtonBase} from "@mui/material";
 import Badge from '@mui/material/Badge';
-import config from "../../config";
-import LottieAnimation from "../../components/LottieAnimation";
-import ProBannerCircle from "@/components/Pro/ProBannerCircle";
-import {Buffer} from 'buffer';
-import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import {useEffect} from "react";
+import config from "@/config";
+import LottieAnimation from "@/components/LottieAnimation";
+import ProBannerCircle from "@/icons/ProBannerCircle";
+import { Buffer } from 'buffer';
+import {useRouter} from "next/navigation";
 
 interface IProps {
-    size: number,
+    size: number | string,
     userTier: string | number,
     userThumb: string,
     userId: string,
@@ -23,9 +23,6 @@ interface IProps {
 }
 
 export default function UserIcon(props: IProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
-
     let styles = {
         lottie: {
             zIndex: 4,
@@ -73,6 +70,9 @@ export default function UserIcon(props: IProps) {
         }
     }, [props.backgroundPalette, props.backgroundName])
 
+
+    let navigate = useRouter();
+
     const scaleSize = (scale: number) => {
         if (typeof props.size === "string") {
             return `calc(${props.size} * ${scale})`
@@ -82,7 +82,19 @@ export default function UserIcon(props: IProps) {
 
     const internalContent = () => {
         return (
-            <div style={{position: "relative"}}> {/* Common Parent */}
+            <div style={{ position: "relative" }}> {/* Common Parent */}
+                {props.pro && (
+                    <ProBannerCircle
+                        style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                        }}
+                        width={scaleSize(1.2)}
+                        height={scaleSize(1.2)}
+                    />
+                )}
                 <Badge
                     overlap="circular"
                     anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
@@ -92,19 +104,7 @@ export default function UserIcon(props: IProps) {
                         zIndex: 1 // Adjust as needed
                     }}
                 >
-                    {props.pro && (
-                        <ProBannerCircle
-                            style={{
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
-                            }}
-                            width={scaleSize(1.2)}
-                            height={scaleSize(1.2)}
-                        />
-                    )}
-                    <Image alt={""} src={svgData} height={props.size} width={props.size} style={{
+                    <img src={svgData} style={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
@@ -137,56 +137,56 @@ export default function UserIcon(props: IProps) {
     }
 
     return (
-        <>
-            <div>
-                {props.userId !== "n/a" ?
-                    <ButtonBase
-                        href={"/user/" + props.userId}
-                        style={!isMobile ? {
-                            position: "relative",
+        <div>
+            {props.userId !== "n/a" ?
+                <ButtonBase
+                    onClick={() =>  navigate.push("/user/" + props.userId)}
+                    style={ window.innerWidth > 1000 ? {
+                        position: "relative",
+                        //@ts-ignore
+                        width: scaleSize(1.5),
+                        //@ts-ignore
+                        height: scaleSize(1.5),
+                        display: "flex", // Add Flexbox
+                        justifyContent: "center", // Center horizontally
+                        alignItems: "center" // Center vertically
+                    } : {
+                        position: "relative",
+                        //@ts-ignore
+                        width: scaleSize(1.5),
+                        //@ts-ignore
+                        height: scaleSize(1.2),
+                        display: "flex", // Add Flexbox
+                        justifyContent: "center", // Center horizontally
+                        alignItems: "center" // Center vertically
+                    }}
+                    disabled={!props.profileButton}
+                >
+                    {/* bound content to the center of the button */}
+                    <div style={{
+                        // position: "absolute",
+                        // top: scaleSize(.25),  // Center vertically
+                        // left: scaleSize(.25),  // Center horizontally
+                        display: "flex", // Add Flexbox
+                    }}>
+                        {internalContent()}
+                    </div>
+                </ButtonBase>
+                :
+                <Badge
+                    overlap="circular"
+                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                    variant="dot"
+                >
+                    {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
+                    <div style={{position: "relative", width: props.size, height: props.size}}>
+                        <img src={props.userThumb}
                             //@ts-ignore
-                            width: scaleSize(1.5),
-                            //@ts-ignore
-                            height: scaleSize(1.5),
-                            display: "flex", // Add Flexbox
-                            justifyContent: "center", // Center horizontally
-                            alignItems: "center" // Center vertically
-                        } : {
-                            position: "relative",
-                            //@ts-ignore
-                            width: scaleSize(1.5),
-                            //@ts-ignore
-                            height: scaleSize(1.2),
-                            display: "flex", // Add Flexbox
-                            justifyContent: "center", // Center horizontally
-                            alignItems: "center" // Center vertically
-                        }}
-                        disabled={!props.profileButton}
-                    >
-                        {/* bound content to the center of the button */}
-                        <div style={{
-                            // position: "absolute",
-                            // top: scaleSize(.25),  // Center vertically
-                            // left: scaleSize(.25),  // Center horizontally
-                            display: "flex", // Add Flexbox
-                        }}>
-                            {internalContent()}
-                        </div>
-                    </ButtonBase>
-                    :
-                    <Badge
-                        overlap="circular"
-                        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
-                        variant="dot"
-                    >
-                        {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
-                        <div style={{position: "relative", width: props.size, height: props.size}}>
-                            <Image alt={""} src={props.userThumb} width={props.size} height={props.size}></Image>
-                        </div>
-                    </Badge>
-                }
-            </div>
-        </>
+                             style={styles.imageTop} width={props.size} height={props.size}></img>
+                    </div>
+                </Badge>
+            }
+        </div>
     )
 }
 

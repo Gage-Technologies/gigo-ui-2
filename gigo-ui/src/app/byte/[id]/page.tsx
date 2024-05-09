@@ -18,7 +18,8 @@ import {
 } from "@mui/material";
 import XpPopup from "@/components/XpPopup";
 import {theme} from "@/theme";
-import {Add, PlayArrow} from "@material-ui/icons";
+import Add from "@material-ui/icons/Add";
+import PlayArrow from "@material-ui/icons/PlayArrow";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import swal from "sweetalert";
 import 'ace-builds';

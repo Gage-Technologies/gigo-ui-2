@@ -31,7 +31,7 @@ import {
 } from "@/models/ct_websocket";
 import {initialAuthState, selectAuthState, selectAuthStateThumbnail} from "@/reducers/auth/auth";
 import config from "../../config";
-import UserIcon from "../UserIcon";
+import UserIcon from "@/icons/User/UserIcon";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
