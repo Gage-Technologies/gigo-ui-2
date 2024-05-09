@@ -457,7 +457,7 @@ function UserPage({params}: { params: {id: string}}) {
                                         backgroundPalette={projects["background_palette"]}
                                         //@ts-ignore
                                         backgroundRender={projects["background_render"]}
-                                        exclusive={projects["challenge_cost"] === null ? false : true}
+                                        exclusive={projects["challenge_cost"] !== null}
                                         hover={false}
                                     />
                                 </Grid>
