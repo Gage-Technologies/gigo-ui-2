@@ -66,7 +66,7 @@ export function createPortal(hoverResult: LSP.Hover | null, diagnostics: Diagnos
     return {
         portal: ReactDOM.createPortal((
             <Box>
-                {diagnostics.map((x, i) => (<DiagnosticRenderer diagnostic={x} topBorder={i > 0} /> ))}
+                {diagnostics.map((x, i) => (<DiagnosticRenderer diagnostic={x} topBorder={i > 0} key={i} /> ))}
                 {hoverResult ? <DocumentationRenderer hover={hoverResult} topBorder={diagnostics.length > 0} /> : ""}
             </Box>
         ), dom),

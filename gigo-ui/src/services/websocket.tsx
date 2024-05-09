@@ -116,6 +116,7 @@ export const WebSocketProvider: React.FC<WebSocketProviderProps> = ({ children }
 
             // skip if this is a ping
             if (event.data === "ping") {
+                sendMessage("pong")
                 return;
             }
 

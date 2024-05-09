@@ -414,4 +414,7 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
     )
 });
 
+// Assign a display name to the component
+Editor.displayName = 'Editor';
+
 export default Editor;

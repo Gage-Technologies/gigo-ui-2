@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import React, {useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import {useGlobalCtWebSocket} from "../../services/ct_websocket";
+import {useGlobalCtWebSocket} from "@/services/ct_websocket";
 import {
     CtByteAssistantMessage,
     CtByteChatMessage,
@@ -28,8 +28,8 @@ import {
     CtMessageOrigin,
     CtMessageType,
     CtValidationErrorPayload
-} from "../../models/ct_websocket";
-import {initialAuthState, selectAuthState, selectAuthStateThumbnail} from "../../reducers/auth/auth";
+} from "@/models/ct_websocket";
+import {initialAuthState, selectAuthState, selectAuthStateThumbnail} from "@/reducers/auth/auth";
 import config from "../../config";
 import UserIcon from "../UserIcon";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
@@ -959,9 +959,8 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
                     let QuestionButton: any = Button
 
                     return (
-                        <Grid item xs={6}>
+                        <Grid item xs={6} key={index}>
                             <QuestionButton
-                                key={index}
                                 variant="outlined"
                                 sx={{
                                     height: "100%",

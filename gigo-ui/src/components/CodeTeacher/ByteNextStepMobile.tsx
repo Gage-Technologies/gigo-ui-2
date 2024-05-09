@@ -15,19 +15,18 @@ import {
     Tooltip,
     alpha
 } from "@mui/material";
-import { getAllTokens, themeHelpers } from "../../theme";
+import { getAllTokens, themeHelpers } from "@/theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import { Close } from "@material-ui/icons";
 import { Typography } from "@material-ui/core";
 import { Checklist, Circle } from "@mui/icons-material";
-import { useGlobalCtWebSocket } from "../../services/ct_websocket";
-import { CtByteNextStepsRequest, CtByteNextStepsResponse, CtGenericErrorPayload, CtMessage, CtMessageOrigin, CtMessageType, CtValidationErrorPayload } from "../../models/ct_websocket";
+import { useGlobalCtWebSocket } from "@/services/ct_websocket";
+import { CtByteNextStepsRequest, CtByteNextStepsResponse, CtGenericErrorPayload, CtMessage, CtMessageOrigin, CtMessageType, CtValidationErrorPayload } from "@/models/ct_websocket";
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import GoProDisplay from "../GoProDisplay";
-import {selectAuthState} from "../../reducers/auth/auth";
-import {useAppSelector} from "../../app/hooks";
+import {selectAuthState} from "@/reducers/auth/auth";
+import {useAppSelector} from "@/reducers/hooks";
 import PowerUpButton from "../PowerUpButton";
-import {initialBytesStateUpdate, updateBytesState} from "../../reducers/bytes/bytes";
 
 export type ByteNextStepProps = {
     trigger: boolean;

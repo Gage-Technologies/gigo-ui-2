@@ -7,31 +7,24 @@ import {
     Button,
     CircularProgress,
     Container,
-    createTheme,
-    CssBaseline,
     Dialog,
     DialogActions,
     DialogContent,
     DialogTitle,
     IconButton,
-    PaletteMode,
     TextField,
-    ThemeProvider,
     Tooltip,
     Typography,
 } from "@mui/material";
 import XpPopup from "@/components/XpPopup";
-import {getAllTokens, theme} from "@/theme";
+import {theme} from "@/theme";
 import {Add, PlayArrow} from "@material-ui/icons";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
-import {useNavigate} from "react-router-dom";
 import swal from "sweetalert";
-import call from "@/services/api-call";
 import 'ace-builds';
 import 'ace-builds/webpack-resolver';
 import ByteSelectionMenu from "@/components/ByteSelectionMenu";
 import config from "@/config";
-import {useLocation, useParams} from "react-router";
 import {useGlobalWebSocket} from "@/services/websocket";
 import {
     WsGenericErrorPayload,
@@ -205,10 +198,10 @@ const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
 const NextStepsTimeout = 15000; // 15 seconds
 
 
-function Byte({params}: { params: {id: string}}) {
+function Byte({params}: { params: { id: string } }) {
     const query = useSearchParams()
     const isJourney = query.get("journey") !== null
-    
+
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
     const [nodeBelow, setNodeBelow] = React.useState(null)
@@ -503,7 +496,7 @@ function Byte({params}: { params: {id: string}}) {
                 resolver(false);
                 return true
             }
-            let p = JSON.parse(JSON.stringify(msg.payload)) as {files: {file_name: string, code: string}[]}
+            let p = JSON.parse(JSON.stringify(msg.payload)) as { files: { file_name: string, code: string }[] }
             let newCode = p.files.map(x => {
                 return {file_name: x.file_name, content: x.code || 'Missing code'};
             });
@@ -984,7 +977,7 @@ function Byte({params}: { params: {id: string}}) {
                 `${config.rootPath}/api/bytes/startByteAttempt`,
                 {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/'},
+                    headers: {'Content-Type': 'application/'},
                     body: JSON.stringify({
                         byte_id: byteId
                     }),
@@ -1615,46 +1608,46 @@ function Byte({params}: { params: {id: string}}) {
     const portPluginMemo = React.useMemo(() => (
         <BytePortPlugin
             ports={activePorts}
-    onExpand={() => setActiveSidebarTab("activePorts")}
-    onHide={() => setActiveSidebarTab(null)}
-    maxWidth={"20vw"}
-    />
-), [activePorts])
+            onExpand={() => setActiveSidebarTab("activePorts")}
+            onHide={() => setActiveSidebarTab(null)}
+            maxWidth={"20vw"}
+        />
+    ), [activePorts])
 
 
     const renderEditorSideBar = () => {
         let stateTooltipTitle: string | React.ReactElement = (
             <Box>
                 <Typography variant='caption'>Disconnected From DevSpace</Typography>
-        <LoadingButton
-        loading={connectButtonLoading}
-        variant={"outlined"}
-        sx={{
-            fontSize: "10px",
-                height: "18px",
-                m: 0.5
-        }}
-        onClick={async () => {
-            if (byteData) {
-                setConnectButtonLoading(true)
-                for (let i = 0; i < 5; i++) {
-                    let created = await createWorkspace(byteData._id);
-                    if (created) {
-                        break
-                    }
+                <LoadingButton
+                    loading={connectButtonLoading}
+                    variant={"outlined"}
+                    sx={{
+                        fontSize: "10px",
+                        height: "18px",
+                        m: 0.5
+                    }}
+                    onClick={async () => {
+                        if (byteData) {
+                            setConnectButtonLoading(true)
+                            for (let i = 0; i < 5; i++) {
+                                let created = await createWorkspace(byteData._id);
+                                if (created) {
+                                    break
+                                }
 
-                    if (i === 4) {
-                        break
-                    }
-                }
-                setConnectButtonLoading(false)
-            }
-        }}
-    >
-        Connect
-        </LoadingButton>
-        </Box>
-    )
+                                if (i === 4) {
+                                    break
+                                }
+                            }
+                            setConnectButtonLoading(false)
+                        }
+                    }}
+                >
+                    Connect
+                </LoadingButton>
+            </Box>
+        )
         let stateIcon = (<LinkOffIcon sx={{color: alpha(theme.palette.text.primary, 0.6)}}/>)
         if (workspaceState !== null) {
             if (workspaceState === 1) {
@@ -1669,151 +1662,151 @@ function Byte({params}: { params: {id: string}}) {
         return (
             <Box
                 id="editor-sidebar"
-        display={"flex"}
-        flexDirection={"column"}
-        sx={{
-            position: "relative",
-                width: "fit-content",
-                padding: "0px",
-                gap: "10px",
-                height: "100%"
-        }}
-    >
-        {(activeSidebarTab === null || activeSidebarTab === "nextSteps") && activeFileIdx >= 0 && code[activeFileIdx] && (
-            <ByteNextStep
-                trigger={nextStepsPopup}
-            acceptedCallback={() => {
-            setNextStepsPopup(false)
-        }}
-            onExpand={() => setActiveSidebarTab("nextSteps")}
-            onHide={() => setActiveSidebarTab(null)}
-            currentCode={code[activeFileIdx].content}
-            maxWidth="20vw"
-            bytesID={id || ""}
-            // @ts-ignore
-            bytesDescription={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
-            // @ts-ignore
-            bytesDevSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-            bytesLang={programmingLanguages[byteData ? byteData.lang : 5]}
-            codePrefix={codeBeforeCursor}
-            codeSuffix={codeAfterCursor}
-            containerRef={containerRef}
-            lastTypedTime={lastTimeTyped}
-            timeout={NextStepsTimeout}
-            />
-        )}
-        {(activeSidebarTab === null || activeSidebarTab === "debugOutput") && activeFileIdx >= 0 && code[activeFileIdx] && (
-            <ByteNextOutputMessage
-                open={activeSidebarTab === "debugOutput"}
-            trigger={outputPopup}
-            acceptedCallback={() => {
-            setOutputPopup(false)
-        }}
-            onExpand={() => setActiveSidebarTab("debugOutput")}
-            onHide={() => setActiveSidebarTab(null)}
-            onSuccess={() => {
-            setSuggestionPopup(true)
-            markComplete()
-        }}
-            code={code.map(x => ({
-                    code: x.content,
-                    file_name: x.file_name
-                }))}
-            byteId={id || ""}
-            // @ts-ignore
-            description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
-            // @ts-ignore
-            questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
-            // @ts-ignore
-            dev_steps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-            maxWidth={"20vw"}
-            codeOutput={output?.merged || ""}
-            nextByte={getNextByte()}
-            containerRef={containerRef}
-            journey={isJourney}
-            currentDifficulty={determineDifficulty()}
-            onTryHarderVersionClick={handleTryHarderVersionClick}
-            nodeBelowId={nodeBelow}
-            />
-        )}
-        {(activeSidebarTab === null || activeSidebarTab === "codeSuggestion") && activeFileIdx >= 0 && code[activeFileIdx] && (
-            <ByteSuggestions2
-                range={suggestionRange}
-            editorRef={editorRef}
-            onExpand={() => setActiveSidebarTab("codeSuggestion")}
-            onHide={() => setActiveSidebarTab(null)}
-            lang={programmingLanguages[byteData ? byteData.lang : 5]}
-            code={code[activeFileIdx].content}
-            byteId={id || ""}
-            // @ts-ignore
-            description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
-            // @ts-ignore
-            dev_steps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-            maxWidth={"20vw"}
-            acceptedCallback={acceptCodeSuggestionCallback}
-            rejectedCallback={() => {
-            setSuggestionRange(null)
-            setLoadingCodeCleanup(null)
-        }}
-            />
-        )}
-        {(activeSidebarTab === null || activeSidebarTab === "activePorts") && journeyUnitData !== null && (
-            portPluginMemo
-        )}
-        {(activeSidebarTab === null || activeSidebarTab === "byteDevSteps") && byteData !== null && (
-            <ByteDevStepsPlugin
-                // @ts-ignore
-                devStepsContent={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-            open={activeSidebarTab === "byteDevSteps"}
-            onExpand={() => setActiveSidebarTab("byteDevSteps")}
-            onHide={() => setActiveSidebarTab(null)}
-            maxWidth={"20vw"}
-            />
-        )}
-        {(activeSidebarTab === null || activeSidebarTab === "journeyHandout") && journeyUnitData !== null && (
-            <JourneyHandoutPlugin
-                handoutContent={journeyUnitData.handout}
-            onExpand={() => setActiveSidebarTab("journeyHandout")}
-            onHide={() => setActiveSidebarTab(null)}
-            maxWidth={"20vw"}
-            />
-        )}
-        {isHarderVersionPopupVisible && (
-            <Dialog
-                open={isHarderVersionPopupVisible}
-            onClose={() => setIsHarderVersionPopupVisible(false)}
-            aria-labelledby="change-difficulty-dialog-title"
-            >
-            <DialogTitle id="change-difficulty-dialog-title">Change Difficulty</DialogTitle>
-        <DialogContent>
-        <DifficultyAdjuster
-            difficulty={determineDifficulty()}
-            onChange={(newDifficulty) => {
-            updateDifficulty(newDifficulty);
-            setIsHarderVersionPopupVisible(false);
-        }}
-            />
-            </DialogContent>
-            </Dialog>
-        )}
-        {activeSidebarTab === null && (
-            <Tooltip title={stateTooltipTitle}>
-            <Box
+                display={"flex"}
+                flexDirection={"column"}
                 sx={{
-            position: "absolute",
-                bottom: "10px",
-                height: "30px",
-                width: "30px",
-                marginLeft: "10px",
-                padding: "3px"
-        }}
-        >
-            {stateIcon}
+                    position: "relative",
+                    width: "fit-content",
+                    padding: "0px",
+                    gap: "10px",
+                    height: "100%"
+                }}
+            >
+                {(activeSidebarTab === null || activeSidebarTab === "nextSteps") && activeFileIdx >= 0 && code[activeFileIdx] && (
+                    <ByteNextStep
+                        trigger={nextStepsPopup}
+                        acceptedCallback={() => {
+                            setNextStepsPopup(false)
+                        }}
+                        onExpand={() => setActiveSidebarTab("nextSteps")}
+                        onHide={() => setActiveSidebarTab(null)}
+                        currentCode={code[activeFileIdx].content}
+                        maxWidth="20vw"
+                        bytesID={id || ""}
+                        // @ts-ignore
+                        bytesDescription={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
+                        // @ts-ignore
+                        bytesDevSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                        bytesLang={programmingLanguages[byteData ? byteData.lang : 5]}
+                        codePrefix={codeBeforeCursor}
+                        codeSuffix={codeAfterCursor}
+                        containerRef={containerRef}
+                        lastTypedTime={lastTimeTyped}
+                        timeout={NextStepsTimeout}
+                    />
+                )}
+                {(activeSidebarTab === null || activeSidebarTab === "debugOutput") && activeFileIdx >= 0 && code[activeFileIdx] && (
+                    <ByteNextOutputMessage
+                        open={activeSidebarTab === "debugOutput"}
+                        trigger={outputPopup}
+                        acceptedCallback={() => {
+                            setOutputPopup(false)
+                        }}
+                        onExpand={() => setActiveSidebarTab("debugOutput")}
+                        onHide={() => setActiveSidebarTab(null)}
+                        onSuccess={() => {
+                            setSuggestionPopup(true)
+                            markComplete()
+                        }}
+                        code={code.map(x => ({
+                            code: x.content,
+                            file_name: x.file_name
+                        }))}
+                        byteId={id || ""}
+                        // @ts-ignore
+                        description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
+                        // @ts-ignore
+                        questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
+                        // @ts-ignore
+                        dev_steps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                        maxWidth={"20vw"}
+                        codeOutput={output?.merged || ""}
+                        nextByte={getNextByte()}
+                        containerRef={containerRef}
+                        journey={isJourney}
+                        currentDifficulty={determineDifficulty()}
+                        onTryHarderVersionClick={handleTryHarderVersionClick}
+                        nodeBelowId={nodeBelow}
+                    />
+                )}
+                {(activeSidebarTab === null || activeSidebarTab === "codeSuggestion") && activeFileIdx >= 0 && code[activeFileIdx] && (
+                    <ByteSuggestions2
+                        range={suggestionRange}
+                        editorRef={editorRef}
+                        onExpand={() => setActiveSidebarTab("codeSuggestion")}
+                        onHide={() => setActiveSidebarTab(null)}
+                        lang={programmingLanguages[byteData ? byteData.lang : 5]}
+                        code={code[activeFileIdx].content}
+                        byteId={id || ""}
+                        // @ts-ignore
+                        description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
+                        // @ts-ignore
+                        dev_steps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                        maxWidth={"20vw"}
+                        acceptedCallback={acceptCodeSuggestionCallback}
+                        rejectedCallback={() => {
+                            setSuggestionRange(null)
+                            setLoadingCodeCleanup(null)
+                        }}
+                    />
+                )}
+                {(activeSidebarTab === null || activeSidebarTab === "activePorts") && journeyUnitData !== null && (
+                    portPluginMemo
+                )}
+                {(activeSidebarTab === null || activeSidebarTab === "byteDevSteps") && byteData !== null && (
+                    <ByteDevStepsPlugin
+                        // @ts-ignore
+                        devStepsContent={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                        open={activeSidebarTab === "byteDevSteps"}
+                        onExpand={() => setActiveSidebarTab("byteDevSteps")}
+                        onHide={() => setActiveSidebarTab(null)}
+                        maxWidth={"20vw"}
+                    />
+                )}
+                {(activeSidebarTab === null || activeSidebarTab === "journeyHandout") && journeyUnitData !== null && (
+                    <JourneyHandoutPlugin
+                        handoutContent={journeyUnitData.handout}
+                        onExpand={() => setActiveSidebarTab("journeyHandout")}
+                        onHide={() => setActiveSidebarTab(null)}
+                        maxWidth={"20vw"}
+                    />
+                )}
+                {isHarderVersionPopupVisible && (
+                    <Dialog
+                        open={isHarderVersionPopupVisible}
+                        onClose={() => setIsHarderVersionPopupVisible(false)}
+                        aria-labelledby="change-difficulty-dialog-title"
+                    >
+                        <DialogTitle id="change-difficulty-dialog-title">Change Difficulty</DialogTitle>
+                        <DialogContent>
+                            <DifficultyAdjuster
+                                difficulty={determineDifficulty()}
+                                onChange={(newDifficulty) => {
+                                    updateDifficulty(newDifficulty);
+                                    setIsHarderVersionPopupVisible(false);
+                                }}
+                            />
+                        </DialogContent>
+                    </Dialog>
+                )}
+                {activeSidebarTab === null && (
+                    <Tooltip title={stateTooltipTitle}>
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                bottom: "10px",
+                                height: "30px",
+                                width: "30px",
+                                marginLeft: "10px",
+                                padding: "3px"
+                            }}
+                        >
+                            {stateIcon}
+                        </Box>
+                    </Tooltip>
+                )}
             </Box>
-            </Tooltip>
-        )}
-        </Box>
-    )
+        )
     }
 
     const selectDiagnosticLevel = React.useCallback((): "hint" | "info" | "warning" | "error" => {
@@ -1859,116 +1852,116 @@ function Byte({params}: { params: {id: string}}) {
     const renderNewFilePopup = () => {
         return (
             <Dialog open={newFilePopup} maxWidth={'sm'} onClose={() => setNewFilePopup(false)}>
-        <DialogTitle>Create New File</DialogTitle>
-        <DialogContent>
-        <TextField
-            placeholder={"File Name"}
-        value={newFileName}
-        onChange={(event) => {
-            setNewFileName(event.target.value)
-        }}
-        onKeyDown={(e) => {
-            if (e.code == "Enter") {
-                e.preventDefault()
-                e.stopPropagation()
-                setCode(prev => {
-                    let newCode = prev.concat({
-                        file_name: newFileName,
-                        content: "",
-                    })
-                    syncFs(newCode)
-                    debouncedUpdateCode(newCode)
-                    return newCode
-                })
-                setActiveFile(newFileName)
-                setNewFilePopup(false)
-            }
-        }}
-        />
-        </DialogContent>
-        <DialogActions>
-        <Button
-            color={"error"}
-        variant={"outlined"}
-        onClick={() => {
-            setNewFilePopup(false)
-            setNewFileName("")
-        }}
-    >
-        Cancel
-        </Button>
-        <Button
-        color={"success"}
-        variant={"outlined"}
-        disabled={newFileName === ""}
-        onClick={() => {
-            setCode(prev => {
-                let newCode = prev.concat({
-                    file_name: newFileName,
-                    content: "",
-                })
-                syncFs(newCode)
-                debouncedUpdateCode(newCode)
-                return newCode
-            })
-            setActiveFile(newFileName)
-            setNewFilePopup(false)
-        }}
-    >
-        Create
-        </Button>
-        </DialogActions>
-        </Dialog>
-    )
+                <DialogTitle>Create New File</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        placeholder={"File Name"}
+                        value={newFileName}
+                        onChange={(event) => {
+                            setNewFileName(event.target.value)
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.code == "Enter") {
+                                e.preventDefault()
+                                e.stopPropagation()
+                                setCode(prev => {
+                                    let newCode = prev.concat({
+                                        file_name: newFileName,
+                                        content: "",
+                                    })
+                                    syncFs(newCode)
+                                    debouncedUpdateCode(newCode)
+                                    return newCode
+                                })
+                                setActiveFile(newFileName)
+                                setNewFilePopup(false)
+                            }
+                        }}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"error"}
+                        variant={"outlined"}
+                        onClick={() => {
+                            setNewFilePopup(false)
+                            setNewFileName("")
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color={"success"}
+                        variant={"outlined"}
+                        disabled={newFileName === ""}
+                        onClick={() => {
+                            setCode(prev => {
+                                let newCode = prev.concat({
+                                    file_name: newFileName,
+                                    content: "",
+                                })
+                                syncFs(newCode)
+                                debouncedUpdateCode(newCode)
+                                return newCode
+                            })
+                            setActiveFile(newFileName)
+                            setNewFilePopup(false)
+                        }}
+                    >
+                        Create
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     const renderDeleteFilePopup = () => {
         return (
             <Dialog open={deleteFileRequest !== null} maxWidth={'sm'} onClose={() => setDeleteFileRequest(null)}>
-        <DialogTitle>Delete File</DialogTitle>
-        <DialogContent>
-        <Typography variant={"body2"}>
-            Are you sure you want to delete the file <b>{deleteFileRequest}</b>?
-        <br/>
-        This action cannot be undone.
-        </Typography>
-        </DialogContent>
-        <DialogActions>
-        <Button
-            color={"inherit"}
-        variant={"outlined"}
-        onClick={() => {
-            setDeleteFileRequest(null)
-        }}
-    >
-        Cancel
-        </Button>
-        <Button
-        color={"error"}
-        variant={"outlined"}
-        onClick={() => {
-            if (activeFile === deleteFileRequest) {
-                if (code.length === 1) {
-                    setActiveFile("")
-                    setActiveFileIdx(-1)
-                } else {
-                    setActiveFile(code.filter((f) => f.file_name !== deleteFileRequest)[0].file_name)
-                }
-            }
-            setCode(prev => {
-                let newCode = prev.filter((f) => f.file_name !== deleteFileRequest)
-                syncFs(newCode, deleteFileRequest !== null ? [deleteFileRequest] : undefined)
-                debouncedUpdateCode(newCode)
-                return newCode
-            })
-            setDeleteFileRequest(null)
-        }}
-    >
-        Delete
-        </Button>
-        </DialogActions>
-        </Dialog>
-    )
+                <DialogTitle>Delete File</DialogTitle>
+                <DialogContent>
+                    <Typography variant={"body2"}>
+                        Are you sure you want to delete the file <b>{deleteFileRequest}</b>?
+                        <br/>
+                        This action cannot be undone.
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"inherit"}
+                        variant={"outlined"}
+                        onClick={() => {
+                            setDeleteFileRequest(null)
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        color={"error"}
+                        variant={"outlined"}
+                        onClick={() => {
+                            if (activeFile === deleteFileRequest) {
+                                if (code.length === 1) {
+                                    setActiveFile("")
+                                    setActiveFileIdx(-1)
+                                } else {
+                                    setActiveFile(code.filter((f) => f.file_name !== deleteFileRequest)[0].file_name)
+                                }
+                            }
+                            setCode(prev => {
+                                let newCode = prev.filter((f) => f.file_name !== deleteFileRequest)
+                                syncFs(newCode, deleteFileRequest !== null ? [deleteFileRequest] : undefined)
+                                debouncedUpdateCode(newCode)
+                                return newCode
+                            })
+                            setDeleteFileRequest(null)
+                        }}
+                    >
+                        Delete
+                    </Button>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     const renderAdminPopup = () => {
@@ -1976,84 +1969,84 @@ function Byte({params}: { params: {id: string}}) {
         return (
             <Dialog
                 open={adminPopup}
-        maxWidth={'sm'}
-        onClose={() => {
-            setAdminPopup(false)
-            setAdminPopupCommitLoading(false)
-            setAdminPopupCommitFailed(null)
-        }}
-    >
-        <DialogTitle>Admin Update Byte</DialogTitle>
-        <DialogContent>
-        <Typography variant={"body2"}>
-            Are you sure you want to submit the current code as an admin edit? This action cannot be undone.<br/><br/>
-        You code will be applied to the difficulty: <b>{difficultyToString(difficulty)}</b>
-        </Typography>
-        {adminPopupCommitFailed !== null && (
-            <Box sx={{
-            display: 'flex',
-                flexDirection: 'column',
-                mt: 2,
-                border: `1px solid ${theme.palette.error.main}`,
-                borderRadius: '10px',
-                padding: '10px',
-        }}>
-            <Typography variant={"body2"} sx={{fontSize: "0.8em", color: theme.palette.error.main}}>
-            {adminPopupCommitFailed}
-            </Typography>
-            </Box>
-        )}
-        </DialogContent>
-        <DialogActions>
-        <Button
-            color={"error"}
-        variant={"outlined"}
-        onClick={() => {
-            setAdminPopup(false)
-        }}
-    >
-        Cancel
-        </Button>
-        <LoadingButton
-        loading={adminPopupCommitLoading}
-        color={"success"}
-        variant={"outlined"}
-        onClick={() => {
-            if (id === undefined || id === null || byteData === undefined || byteData === null) {
-                return
-            }
+                maxWidth={'sm'}
+                onClose={() => {
+                    setAdminPopup(false)
+                    setAdminPopupCommitLoading(false)
+                    setAdminPopupCommitFailed(null)
+                }}
+            >
+                <DialogTitle>Admin Update Byte</DialogTitle>
+                <DialogContent>
+                    <Typography variant={"body2"}>
+                        Are you sure you want to submit the current code as an admin edit? This action cannot be undone.<br/><br/>
+                        You code will be applied to the difficulty: <b>{difficultyToString(difficulty)}</b>
+                    </Typography>
+                    {adminPopupCommitFailed !== null && (
+                        <Box sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            mt: 2,
+                            border: `1px solid ${theme.palette.error.main}`,
+                            borderRadius: '10px',
+                            padding: '10px',
+                        }}>
+                            <Typography variant={"body2"} sx={{fontSize: "0.8em", color: theme.palette.error.main}}>
+                                {adminPopupCommitFailed}
+                            </Typography>
+                        </Box>
+                    )}
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        color={"error"}
+                        variant={"outlined"}
+                        onClick={() => {
+                            setAdminPopup(false)
+                        }}
+                    >
+                        Cancel
+                    </Button>
+                    <LoadingButton
+                        loading={adminPopupCommitLoading}
+                        color={"success"}
+                        variant={"outlined"}
+                        onClick={() => {
+                            if (id === undefined || id === null || byteData === undefined || byteData === null) {
+                                return
+                            }
 
-            setAdminPopupCommitLoading(true)
-            globalWs.sendWebsocketMessage({
-                sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-                type: WsMessageType.AdminUpdateByteCodeRequest,
-                payload: {
-                    byte_id: id,
-                    content_difficulty: difficulty,
-                    files: code.map(x => ({
-                        content: x.content,
-                        file_name: x.file_name
-                    }))
-                }
-            } satisfies WsMessage<AdminUpdateByteCodeRequest>, (msg: WsMessage<AdminUpdateByteCodeResponse | WsGenericErrorPayload | WsValidationErrorPayload>): boolean => {
-                if (msg.type !== WsMessageType.AdminUpdateByteCodeResponse) {
-                    console.log("failed to update byte: ", msg)
-                    setAdminPopupCommitFailed("Byte update failed:\n" + JSON.stringify(msg))
-                    return true
-                }
+                            setAdminPopupCommitLoading(true)
+                            globalWs.sendWebsocketMessage({
+                                sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+                                type: WsMessageType.AdminUpdateByteCodeRequest,
+                                payload: {
+                                    byte_id: id,
+                                    content_difficulty: difficulty,
+                                    files: code.map(x => ({
+                                        content: x.content,
+                                        file_name: x.file_name
+                                    }))
+                                }
+                            } satisfies WsMessage<AdminUpdateByteCodeRequest>, (msg: WsMessage<AdminUpdateByteCodeResponse | WsGenericErrorPayload | WsValidationErrorPayload>): boolean => {
+                                if (msg.type !== WsMessageType.AdminUpdateByteCodeResponse) {
+                                    console.log("failed to update byte: ", msg)
+                                    setAdminPopupCommitFailed("Byte update failed:\n" + JSON.stringify(msg))
+                                    return true
+                                }
 
-                setAdminPopup(false)
-                setAdminPopupCommitLoading(false)
-                setAdminPopupCommitFailed(null)
-                return true
-            })
-        }}
-    >
-        Confirm
-        </LoadingButton>
-        </DialogActions>
-        </Dialog>
-    )
+                                setAdminPopup(false)
+                                setAdminPopupCommitLoading(false)
+                                setAdminPopupCommitFailed(null)
+                                return true
+                            })
+                        }}
+                    >
+                        Confirm
+                    </LoadingButton>
+                </DialogActions>
+            </Dialog>
+        )
     }
 
     const containerRef = useRef(null)
@@ -2064,840 +2057,842 @@ function Byte({params}: { params: {id: string}}) {
         return (
             <>
                 <Container maxWidth="xl" style={containerStyle}>
-        <Box sx={topContainerStyle} ref={containerRef}>
-        <Box sx={difficultyAdjusterStyle}>
-        <DifficultyAdjuster
-            difficulty={determineDifficulty()}
-        onChange={updateDifficulty}
-        />
-        </Box>
+                    <Box sx={topContainerStyle} ref={containerRef}>
+                        <Box sx={difficultyAdjusterStyle}>
+                            <DifficultyAdjuster
+                                difficulty={determineDifficulty()}
+                                onChange={updateDifficulty}
+                            />
+                        </Box>
 
-        {byteData ? (
-            <Typography variant="h4" component="h1" style={titleStyle}>
-            {byteData.name}
-            </Typography>
-        ) : (
-            <Box sx={titlePlaceholderContainerStyle}>
-            <Box sx={titlePlaceholderStyle}>
-            <SheenPlaceholder width="400px" height={"45px"}/>
-        </Box>
-        </Box>
-        )}
-        {byteData && authState.role === 1 && (
-            <Box
-                sx={{
-            position: 'absolute',
-                top: 25,
-                right: 35,
-        }}
-        >
-            <Button
-                variant="contained"
-            color="error"
-            onClick={() => setAdminPopup(true)}
-        >
-            Submit Admin Edit
-        </Button>
-        </Box>
-        )}
-        </Box>
-        <div style={mainLayoutStyle}>
-        <div style={combinedSectionStyle}>
-        <div style={markdownSectionStyle} id="byte-chat-container">
-            {byteData && id !== undefined && (
-                <ByteChat
-                    byteID={id}
-        // @ts-ignore
-        description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
-        // @ts-ignore
-        devSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-        // @ts-ignore
-        difficulty={difficultyToString(determineDifficulty())}
-        // @ts-ignore
-        questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
-        code={code.map(x => {
-                let content = x.content
-                if (activeFile === x.file_name) {
-                    content = codeBeforeCursor + "<<CURSOR>>" + codeAfterCursor
-                }
+                        {byteData ? (
+                            <Typography variant="h4" component="h1" style={titleStyle}>
+                                {byteData.name}
+                            </Typography>
+                        ) : (
+                            <Box sx={titlePlaceholderContainerStyle}>
+                                <Box sx={titlePlaceholderStyle}>
+                                    <SheenPlaceholder width="400px" height={"45px"}/>
+                                </Box>
+                            </Box>
+                        )}
+                        {byteData && authState.role === 1 && (
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 25,
+                                    right: 35,
+                                }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={() => setAdminPopup(true)}
+                                >
+                                    Submit Admin Edit
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                    <div style={mainLayoutStyle}>
+                        <div style={combinedSectionStyle}>
+                            <div style={markdownSectionStyle} id="byte-chat-container">
+                                {byteData && id !== undefined && (
+                                    <ByteChat
+                                        byteID={id}
+                                        // @ts-ignore
+                                        description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
+                                        // @ts-ignore
+                                        devSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                                        // @ts-ignore
+                                        difficulty={difficultyToString(determineDifficulty())}
+                                        // @ts-ignore
+                                        questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
+                                        code={code.map(x => {
+                                            let content = x.content
+                                            if (activeFile === x.file_name) {
+                                                content = codeBeforeCursor + "<<CURSOR>>" + codeAfterCursor
+                                            }
 
-                return {
-                    code: content,
-                    file_name: x.file_name
-                }
-            })}
-        containerRef={containerRef}
-        goToCallback={goToCodeCallback}
-        />
-    )}
-        </div>
-        <Box
-        id={"editor-section"}
-        style={editorAndTerminalStyle}
-        ref={editorContainerRef}
-            >
-            {byteData && (
-                <Tooltip title={programmingLanguages[byteData.lang]}>
-                <Box
-                    sx={{
-            position: 'absolute',
-                right: '16px',
-                bottom: terminalVisible ? '228px' : '18px',
-                zIndex: 3,
-                minWidth: 0,
-        }}
-    >
-        <BytesLanguage language={lang ? lang.extensions[0] : "py"}/>
-        </Box>
-        </Tooltip>
-    )}
-        <Box
-            display={"inline-flex"}
-        justifyContent={"space-between"}
-        sx={{
-            width: "100%",
-                marginBottom: "8px"
-        }}
-    >
-        <EditorTabs
-            value={activeFileIdx + 1}
-        onChange={(e, idx) => {
-            if (idx === 0) {
-                setNewFilePopup(true)
-                return
-            }
-            setActiveFile(code[idx - 1].file_name)
-        }}
-        variant="scrollable"
-        scrollButtons="auto"
-        aria-label="file tabs"
-        TabIndicatorProps={{sx: {display: "none"}}}
-    >
-        <EditorTab icon={<Add/>} aria-label="New file"/>
-            {code.map((file, index) => (
-                    <EditorTab
-                        key={file.file_name}
-                label={
-                <div style={{
-            display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
-        }}>
-        {file.file_name}
-        <IconButton
-            size="small"
-        onClick={() => setDeleteFileRequest(file.file_name)}
-        sx={{marginLeft: 0.5, padding: '2px', fontSize: "12px"}}
-    >
-        <CloseIcon fontSize="inherit"/>
-            </IconButton>
-            </div>
-    }
-        />
-    ))}
-        </EditorTabs>
-        <Box
-        display={"inline-flex"}
-            >
-            {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
-                <Tooltip title="Run Code">
-                <LoadingButton
-                    loading={executingCode}
-        variant="outlined"
-        color={"success"}
-        sx={{
-            zIndex: 3,
-                m: 0,
-                p: 0,
-                fontSize: "0.7rem !important",
-        }}
-        onClick={() => {
-            setOutputPopup(false);
-            buttonClickedRef.current = true;
-            if (!authState.authenticated) {
-                navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
-                return
-            }
+                                            return {
+                                                code: content,
+                                                file_name: x.file_name
+                                            }
+                                        })}
+                                        containerRef={containerRef}
+                                        goToCallback={goToCodeCallback}
+                                    />
+                                )}
+                            </div>
+                            <Box
+                                id={"editor-section"}
+                                style={editorAndTerminalStyle}
+                                ref={editorContainerRef}
+                            >
+                                {byteData && (
+                                    <Tooltip title={programmingLanguages[byteData.lang]}>
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                right: '16px',
+                                                bottom: terminalVisible ? '228px' : '18px',
+                                                zIndex: 3,
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <BytesLanguage language={lang ? lang.extensions[0] : "py"}/>
+                                        </Box>
+                                    </Tooltip>
+                                )}
+                                <Box
+                                    display={"inline-flex"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        width: "100%",
+                                        marginBottom: "8px"
+                                    }}
+                                >
+                                    <EditorTabs
+                                        value={activeFileIdx + 1}
+                                        onChange={(e, idx) => {
+                                            if (idx === 0) {
+                                                setNewFilePopup(true)
+                                                return
+                                            }
+                                            setActiveFile(code[idx - 1].file_name)
+                                        }}
+                                        variant="scrollable"
+                                        scrollButtons="auto"
+                                        aria-label="file tabs"
+                                        TabIndicatorProps={{sx: {display: "none"}}}
+                                    >
+                                        <EditorTab icon={<Add/>} aria-label="New file"/>
+                                        {code.map((file, index) => (
+                                            <EditorTab
+                                                key={file.file_name}
+                                                label={
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'space-between'
+                                                    }}>
+                                                        {file.file_name}
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => setDeleteFileRequest(file.file_name)}
+                                                            sx={{marginLeft: 0.5, padding: '2px', fontSize: "12px"}}
+                                                        >
+                                                            <CloseIcon fontSize="inherit"/>
+                                                        </IconButton>
+                                                    </div>
+                                                }
+                                            />
+                                        ))}
+                                    </EditorTabs>
+                                    <Box
+                                        display={"inline-flex"}
+                                    >
+                                        {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
+                                            <Tooltip title="Run Code">
+                                                <LoadingButton
+                                                    loading={executingCode}
+                                                    variant="outlined"
+                                                    color={"success"}
+                                                    sx={{
+                                                        zIndex: 3,
+                                                        m: 0,
+                                                        p: 0,
+                                                        fontSize: "0.7rem !important",
+                                                    }}
+                                                    onClick={() => {
+                                                        setOutputPopup(false);
+                                                        buttonClickedRef.current = true;
+                                                        if (!authState.authenticated) {
+                                                            navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                                                            return
+                                                        }
 
-            executeCode(); // Indicate button click
-        }}
-    >
-        Run <PlayArrow fontSize={"small"}/>
-        </LoadingButton>
-        </Tooltip>
-    )}
-        </Box>
-        </Box>
-        <Editor
-        ref={editorRef}
-        parentStyles={editorStyle}
-        language={lang ? lang.extensions[0] : "py"}
-        filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
-        code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
-        theme={theme.palette.mode}
-        readonly={!authState.authenticated}
-        onChange={(val, view) => handleEditorChange(val)}
-        onCursorChange={(bytePosition, line, column) => setCursorPosition({
-            row: line,
-            column: column
-        })}
-        lspUrl={byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined}
-        byteId={id}
-        difficulty={difficultyToString(determineDifficulty())}
-        diagnosticLevel={selectDiagnosticLevel()}
-        extensions={popupExtRef.current ? editorExtensions.concat(popupExtRef.current) : editorExtensions}
-        wrapperStyles={{
-            width: '100%',
-                height: '100%',
-                borderRadius: "10px",
-        ...(
-                // default
-                workspaceState === null ? {} :
-                    // starting or active
-                    workspaceState === 1 ?
-                        {border: `1px solid ${theme.palette.primary.main}`} :
-                        {border: `1px solid grey`}
-            )
-        }}
-        />
-        {terminalVisible && output && (
-            <ByteTerminal
-                output={output}
-            onClose={handleCloseTerminal}
-            onStop={() => cancelCodeExec(commandId)}
-            onInputSubmit={(input: string) => stdInExecRequest(commandId, input)}
-            isRunning={executingCode}
-            />
-        )}
-        </Box>
-        {renderEditorSideBar()}
-        </div>
-        <div style={byteSelectionMenuStyle}>
-        {recommendedBytes &&
-        <ByteSelectionMenu bytes={recommendedBytes} onSelectByte={handleSelectByte}/>}
-        </div>
-        </div>
-        </Container>
-        {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
-        {xpPopup ? (<XpPopup oldXP={
-            //@ts-ignore
-            (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
-            //@ts-ignore
-            xpData["level_up_reward"] !== null} maxXP={100}
-            //@ts-ignore
-            newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
-            //@ts-ignore
-            nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
-            //@ts-ignore
-            gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
-            //@ts-ignore
-            reward={xpData["level_up_reward"]}
-            //@ts-ignore
-            renown={xpData["xp_update"]["current_renown"]} popupClose={null}
-            homePage={true}/>) : null}
-        </>
-        )
-        }
-
-        const journeyBytesPage = () => {
-            let lang = mapFilePathToLangOption(activeFile)
-
-            console.log("journeyBytesPage lsp: ", byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined)
-
-            return (
-                <>
-                    <Container maxWidth="xl" style={containerStyle}>
-            <Box sx={{
-                position: "relative",
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '0rem',
-            }} ref={containerRef}>
-                {byteData ? (
-                        <Typography variant="h4" component="h1" style={titleStyle}>
-                    {byteData.name}
-                    </Typography>
-        ) : (
-                <Box sx={titlePlaceholderContainerStyle}>
-                <Box sx={titlePlaceholderStyle}>
-                <SheenPlaceholder width="400px" height={"45px"}/>
-            </Box>
-            </Box>
-        )}
-            {byteData && authState.role === 1 && (
-                <Box
-                    sx={{
-                position: 'absolute',
-                    top: 25,
-                    right: 35,
-            }}
-            >
-                <Button
-                    variant="contained"
-                color="error"
-                onClick={() => setAdminPopup(true)}
-            >
-                Submit Admin Edit
-            </Button>
-            </Box>
-            )}
-            </Box>
-            <div style={mainLayoutStyle}>
-            <div style={{
-                display: 'flex',
-                    height: '80vh',
-                    width: '95vw',
-                    marginLeft: '30px',
-                    marginRight: 'auto',
-                    borderRadius: theme.shape.borderRadius,
-                    overflow: 'hidden',
-                    boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
-                    border: `1px solid ${theme.palette.grey[300]}`,
-                    padding: "10px",
-                    backgroundColor: theme.palette.background.default
-            }}>
-            <div style={markdownSectionStyle} id="byte-chat-container">
-                {byteData && id !== undefined && (
-                    <ByteChat
-                        byteID={id}
-            // @ts-ignore
-            description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
-            // @ts-ignore
-            devSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
-            // @ts-ignore
-            difficulty={difficultyToString(determineDifficulty())}
-            // @ts-ignore
-            questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
-            code={code.map(x => {
-                    let content = x.content
-                    if (activeFile === x.file_name) {
-                        content = codeBeforeCursor + "<<CURSOR>>" + codeAfterCursor
-                    }
-
-                    return {
-                        code: content,
-                        file_name: x.file_name
-                    }
-                })}
-            containerRef={containerRef}
-            goToCallback={goToCodeCallback}
-            />
-        )}
-            </div>
-            <Box
-            id={"editor-section"}
-            style={editorAndTerminalStyle}
-            ref={editorContainerRef}
-                >
-                {byteData && (
-                    <Tooltip title={programmingLanguages[byteData.lang]}>
-                    <Box
-                        sx={{
-                position: 'absolute',
-                    right: '16px',
-                    bottom: terminalVisible ? '228px' : '18px',
-                    zIndex: 3,
-                    minWidth: 0,
-            }}
-        >
-            <BytesLanguage language={lang ? lang.extensions[0] : "py"}/>
-            </Box>
-            </Tooltip>
-        )}
-            <Box
-                display={"inline-flex"}
-            justifyContent={"space-between"}
-            sx={{
-                width: "100%",
-                    marginBottom: "8px"
-            }}
-        >
-            <EditorTabs
-                value={activeFileIdx + 1}
-            onChange={(e, idx) => {
-                if (idx === 0) {
-                    setNewFilePopup(true)
-                    return
-                }
-                setActiveFile(code[idx - 1].file_name)
-            }}
-            variant="scrollable"
-            scrollButtons="auto"
-            aria-label="file tabs"
-            TabIndicatorProps={{sx: {display: "none"}}}
-        >
-            <EditorTab icon={<Add/>} aria-label="New file"/>
-                {code.map((file, index) => (
-                        <EditorTab
-                            key={file.file_name}
-                    label={
-                    <div style={{
-                display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-            }}>
-            {file.file_name}
-            <IconButton
-                size="small"
-            onClick={() => setDeleteFileRequest(file.file_name)}
-            sx={{marginLeft: 0.5, padding: '2px', fontSize: "12px"}}
-        >
-            <CloseIcon fontSize="inherit"/>
-                </IconButton>
-                </div>
-        }
-            />
-        ))}
-            </EditorTabs>
-            <Box
-            display={"inline-flex"}
-                >
-                {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
-                    <Tooltip title="Run Code">
-                    <LoadingButton
-                        loading={executingCode}
-            variant="outlined"
-            color={"success"}
-            sx={{
-                zIndex: 3,
-                    m: 0,
-                    p: 0,
-                    fontSize: "0.7rem !important",
-            }}
-            onClick={() => {
-                setOutputPopup(false);
-                buttonClickedRef.current = true;
-                if (!authState.authenticated) {
-                    navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
-                    return
-                }
-
-                executeCode(); // Indicate button click
-            }}
-        >
-            Run <PlayArrow fontSize={"small"}/>
-            </LoadingButton>
-            </Tooltip>
-        )}
-            </Box>
-            </Box>
-            <Editor
-            ref={editorRef}
-            parentStyles={editorStyle}
-            language={lang ? lang.extensions[0] : "py"}
-            filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
-            code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
-            theme={theme.palette.mode}
-            readonly={!authState.authenticated}
-            onChange={(val, view) => handleEditorChange(val)}
-            onCursorChange={(bytePosition, line, column) => setCursorPosition({
-                row: line,
-                column: column
-            })}
-            lspUrl={byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined}
-            byteId={id}
-            difficulty={difficultyToString(determineDifficulty())}
-            diagnosticLevel={selectDiagnosticLevel()}
-            extensions={popupExtRef.current ? editorExtensions.concat(popupExtRef.current) : editorExtensions}
-            wrapperStyles={{
-                width: '100%',
-                    height: '100%',
-                    borderRadius: "10px",
-            ...(
-                    // default
-                    workspaceState === null ? {} :
-                        // starting or active
-                        workspaceState === 1 && lspActive ?
-                            {border: `1px solid ${theme.palette.primary.main}`} :
-                            {border: `1px solid grey`}
-                )
-            }}
-            />
-            {terminalVisible && output && (
-                <ByteTerminal
-                    output={output}
-                onClose={handleCloseTerminal}
-                onStop={() => cancelCodeExec(commandId)}
-                onInputSubmit={(input: string) => stdInExecRequest(commandId, input)}
-                isRunning={executingCode}
-                />
-            )}
-            </Box>
-            {renderEditorSideBar()}
-            </div>
-            </div>
-            </Container>
-            {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
-            {xpPopup ? (<XpPopup oldXP={
-                //@ts-ignore
-                (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
-                //@ts-ignore
-                xpData["level_up_reward"] !== null} maxXP={100}
-                //@ts-ignore
-                newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
-                //@ts-ignore
-                nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
-                //@ts-ignore
-                gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
-                //@ts-ignore
-                reward={xpData["level_up_reward"]}
-                //@ts-ignore
-                renown={xpData["xp_update"]["current_renown"]} popupClose={null}
-                homePage={true}/>) : null}
+                                                        executeCode(); // Indicate button click
+                                                    }}
+                                                >
+                                                    Run <PlayArrow fontSize={"small"}/>
+                                                </LoadingButton>
+                                            </Tooltip>
+                                        )}
+                                    </Box>
+                                </Box>
+                                <Editor
+                                    ref={editorRef}
+                                    parentStyles={editorStyle}
+                                    language={lang ? lang.extensions[0] : "py"}
+                                    filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
+                                    code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
+                                    theme={theme.palette.mode}
+                                    readonly={!authState.authenticated}
+                                    onChange={(val, view) => handleEditorChange(val)}
+                                    onCursorChange={(bytePosition, line, column) => setCursorPosition({
+                                        row: line,
+                                        column: column
+                                    })}
+                                    lspUrl={byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined}
+                                    byteId={id}
+                                    difficulty={difficultyToString(determineDifficulty())}
+                                    diagnosticLevel={selectDiagnosticLevel()}
+                                    extensions={popupExtRef.current ? editorExtensions.concat(popupExtRef.current) : editorExtensions}
+                                    wrapperStyles={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: "10px",
+                                        ...(
+                                            // default
+                                            workspaceState === null ? {} :
+                                                // starting or active
+                                                workspaceState === 1 ?
+                                                    {border: `1px solid ${theme.palette.primary.main}`} :
+                                                    {border: `1px solid grey`}
+                                        )
+                                    }}
+                                />
+                                {terminalVisible && output && (
+                                    <ByteTerminal
+                                        output={output}
+                                        onClose={handleCloseTerminal}
+                                        onStop={() => cancelCodeExec(commandId)}
+                                        onInputSubmit={(input: string) => stdInExecRequest(commandId, input)}
+                                        isRunning={executingCode}
+                                    />
+                                )}
+                            </Box>
+                            {renderEditorSideBar()}
+                        </div>
+                        <div style={byteSelectionMenuStyle}>
+                            {recommendedBytes &&
+                                <ByteSelectionMenu bytes={recommendedBytes} onSelectByte={handleSelectByte}/>}
+                        </div>
+                    </div>
+                </Container>
+                {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
+                {xpPopup ? (<XpPopup oldXP={
+                    //@ts-ignore
+                    (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
+                    //@ts-ignore
+                    xpData["level_up_reward"] !== null} maxXP={100}
+                    //@ts-ignore
+                                     newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
+                    //@ts-ignore
+                                     nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
+                    //@ts-ignore
+                                     gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
+                    //@ts-ignore
+                                     reward={xpData["level_up_reward"]}
+                    //@ts-ignore
+                                     renown={xpData["xp_update"]["current_renown"]} popupClose={null}
+                                     homePage={true}/>) : null}
             </>
-            )
-            }
+        )
+    }
 
-            const DesktopVideo = ({ videoSrc, height, width }: { videoSrc: string, height?: string, width?: string }) => {
-                const [loading, setLoading] = useState(true);
+    const journeyBytesPage = () => {
+        let lang = mapFilePathToLangOption(activeFile)
 
-                const handleLoadedData = () => {
-                    setLoading(false);
-                };
+        console.log("journeyBytesPage lsp: ", byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined)
 
-                return (
-                    <Box sx={{ position: 'relative', height: height ? height : "auto", width: width ? width : "300px" }}>
+        return (
+            <>
+                <Container maxWidth="xl" style={containerStyle}>
+                    <Box sx={{
+                        position: "relative",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0rem',
+                    }} ref={containerRef}>
+                        {byteData ? (
+                            <Typography variant="h4" component="h1" style={titleStyle}>
+                                {byteData.name}
+                            </Typography>
+                        ) : (
+                            <Box sx={titlePlaceholderContainerStyle}>
+                                <Box sx={titlePlaceholderStyle}>
+                                    <SheenPlaceholder width="400px" height={"45px"}/>
+                                </Box>
+                            </Box>
+                        )}
+                        {byteData && authState.role === 1 && (
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 25,
+                                    right: 35,
+                                }}
+                            >
+                                <Button
+                                    variant="contained"
+                                    color="error"
+                                    onClick={() => setAdminPopup(true)}
+                                >
+                                    Submit Admin Edit
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+                    <div style={mainLayoutStyle}>
+                        <div style={{
+                            display: 'flex',
+                            height: '80vh',
+                            width: '95vw',
+                            marginLeft: '30px',
+                            marginRight: 'auto',
+                            borderRadius: theme.shape.borderRadius,
+                            overflow: 'hidden',
+                            boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.2)',
+                            border: `1px solid ${theme.palette.grey[300]}`,
+                            padding: "10px",
+                            backgroundColor: theme.palette.background.default
+                        }}>
+                            <div style={markdownSectionStyle} id="byte-chat-container">
+                                {byteData && id !== undefined && (
+                                    <ByteChat
+                                        byteID={id}
+                                        // @ts-ignore
+                                        description={byteData ? byteData[`description_${difficultyToString(determineDifficulty())}`] : ""}
+                                        // @ts-ignore
+                                        devSteps={byteData ? byteData[`dev_steps_${difficultyToString(determineDifficulty())}`] : ""}
+                                        // @ts-ignore
+                                        difficulty={difficultyToString(determineDifficulty())}
+                                        // @ts-ignore
+                                        questions={byteData ? byteData[`questions_${difficultyToString(determineDifficulty())}`] : []}
+                                        code={code.map(x => {
+                                            let content = x.content
+                                            if (activeFile === x.file_name) {
+                                                content = codeBeforeCursor + "<<CURSOR>>" + codeAfterCursor
+                                            }
+
+                                            return {
+                                                code: content,
+                                                file_name: x.file_name
+                                            }
+                                        })}
+                                        containerRef={containerRef}
+                                        goToCallback={goToCodeCallback}
+                                    />
+                                )}
+                            </div>
+                            <Box
+                                id={"editor-section"}
+                                style={editorAndTerminalStyle}
+                                ref={editorContainerRef}
+                            >
+                                {byteData && (
+                                    <Tooltip title={programmingLanguages[byteData.lang]}>
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                right: '16px',
+                                                bottom: terminalVisible ? '228px' : '18px',
+                                                zIndex: 3,
+                                                minWidth: 0,
+                                            }}
+                                        >
+                                            <BytesLanguage language={lang ? lang.extensions[0] : "py"}/>
+                                        </Box>
+                                    </Tooltip>
+                                )}
+                                <Box
+                                    display={"inline-flex"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        width: "100%",
+                                        marginBottom: "8px"
+                                    }}
+                                >
+                                    <EditorTabs
+                                        value={activeFileIdx + 1}
+                                        onChange={(e, idx) => {
+                                            if (idx === 0) {
+                                                setNewFilePopup(true)
+                                                return
+                                            }
+                                            setActiveFile(code[idx - 1].file_name)
+                                        }}
+                                        variant="scrollable"
+                                        scrollButtons="auto"
+                                        aria-label="file tabs"
+                                        TabIndicatorProps={{sx: {display: "none"}}}
+                                    >
+                                        <EditorTab icon={<Add/>} aria-label="New file"/>
+                                        {code.map((file, index) => (
+                                            <EditorTab
+                                                key={file.file_name}
+                                                label={
+                                                    <div style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'space-between'
+                                                    }}>
+                                                        {file.file_name}
+                                                        <IconButton
+                                                            size="small"
+                                                            onClick={() => setDeleteFileRequest(file.file_name)}
+                                                            sx={{marginLeft: 0.5, padding: '2px', fontSize: "12px"}}
+                                                        >
+                                                            <CloseIcon fontSize="inherit"/>
+                                                        </IconButton>
+                                                    </div>
+                                                }
+                                            />
+                                        ))}
+                                    </EditorTabs>
+                                    <Box
+                                        display={"inline-flex"}
+                                    >
+                                        {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
+                                            <Tooltip title="Run Code">
+                                                <LoadingButton
+                                                    loading={executingCode}
+                                                    variant="outlined"
+                                                    color={"success"}
+                                                    sx={{
+                                                        zIndex: 3,
+                                                        m: 0,
+                                                        p: 0,
+                                                        fontSize: "0.7rem !important",
+                                                    }}
+                                                    onClick={() => {
+                                                        setOutputPopup(false);
+                                                        buttonClickedRef.current = true;
+                                                        if (!authState.authenticated) {
+                                                            navigate.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                                                            return
+                                                        }
+
+                                                        executeCode(); // Indicate button click
+                                                    }}
+                                                >
+                                                    Run <PlayArrow fontSize={"small"}/>
+                                                </LoadingButton>
+                                            </Tooltip>
+                                        )}
+                                    </Box>
+                                </Box>
+                                <Editor
+                                    ref={editorRef}
+                                    parentStyles={editorStyle}
+                                    language={lang ? lang.extensions[0] : "py"}
+                                    filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
+                                    code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
+                                    theme={theme.palette.mode}
+                                    readonly={!authState.authenticated}
+                                    onChange={(val, view) => handleEditorChange(val)}
+                                    onCursorChange={(bytePosition, line, column) => setCursorPosition({
+                                        row: line,
+                                        column: column
+                                    })}
+                                    lspUrl={byteData && lang && lang.lspSupport && lspActive ? `wss://${byteData._id}-lsp.${config.coderPath.replace("https://", "")}` : undefined}
+                                    byteId={id}
+                                    difficulty={difficultyToString(determineDifficulty())}
+                                    diagnosticLevel={selectDiagnosticLevel()}
+                                    extensions={popupExtRef.current ? editorExtensions.concat(popupExtRef.current) : editorExtensions}
+                                    wrapperStyles={{
+                                        width: '100%',
+                                        height: '100%',
+                                        borderRadius: "10px",
+                                        ...(
+                                            // default
+                                            workspaceState === null ? {} :
+                                                // starting or active
+                                                workspaceState === 1 && lspActive ?
+                                                    {border: `1px solid ${theme.palette.primary.main}`} :
+                                                    {border: `1px solid grey`}
+                                        )
+                                    }}
+                                />
+                                {terminalVisible && output && (
+                                    <ByteTerminal
+                                        output={output}
+                                        onClose={handleCloseTerminal}
+                                        onStop={() => cancelCodeExec(commandId)}
+                                        onInputSubmit={(input: string) => stdInExecRequest(commandId, input)}
+                                        isRunning={executingCode}
+                                    />
+                                )}
+                            </Box>
+                            {renderEditorSideBar()}
+                        </div>
+                    </div>
+                </Container>
+                {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
+                {xpPopup ? (<XpPopup oldXP={
+                    //@ts-ignore
+                    (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
+                    //@ts-ignore
+                    xpData["level_up_reward"] !== null} maxXP={100}
+                    //@ts-ignore
+                                     newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
+                    //@ts-ignore
+                                     nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
+                    //@ts-ignore
+                                     gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
+                    //@ts-ignore
+                                     reward={xpData["level_up_reward"]}
+                    //@ts-ignore
+                                     renown={xpData["xp_update"]["current_renown"]} popupClose={null}
+                                     homePage={true}/>) : null}
+            </>
+        )
+    }
+
+    const DesktopVideo = ({videoSrc, height, width}: { videoSrc: string, height?: string, width?: string }) => {
+        const [loading, setLoading] = useState(true);
+
+        const handleLoadedData = () => {
+            setLoading(false);
+        };
+
+        return (
+            <Box sx={{position: 'relative', height: height ? height : "auto", width: width ? width : "300px"}}>
                 {loading && (
                     <Box sx={{
-                    position: 'absolute',
+                        position: 'absolute',
                         top: '50%',
                         left: '50%',
                         transform: 'translate(-50%, -50%)',
                         zIndex: 100
-                }}>
-                    <CircularProgress color="inherit" />
-                        </Box>
+                    }}>
+                        <CircularProgress color="inherit"/>
+                    </Box>
                 )}
                 <video
                     src={videoSrc}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                onLoadedData={handleLoadedData}
-                style={{
-                    height: height ? height : "100%", // Defaulting to 100% to fill container if height is not specified
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    onLoadedData={handleLoadedData}
+                    style={{
+                        height: height ? height : "100%", // Defaulting to 100% to fill container if height is not specified
                         width: width ? width : "100%", // Defaulting to 100% to fill container if width is not specified
                         borderRadius: "10px",
                         border: "solid 2px #008664"
-                }}
-            >
-                Your browser does not support the video tag.
+                    }}
+                >
+                    Your browser does not support the video tag.
                 </video>
-                </Box>
-            );
-            };
+            </Box>
+        );
+    };
 
-            const renderTutorial = () => {
-                const ctVideo1 = config.rootPath + "/cloudstore/videos/ask_code_teacher_big.mp4"
-                const ctVideo2 = config.rootPath + "/cloudstore/videos/ask_code_teacher_code_question.mp4"
-                const ctVideo3 = config.rootPath + "/cloudstore/videos/ask_code_teacher_small.mp4"
-                const ctVideo4 = config.rootPath + "/cloudstore/videos/byte_objective_final.mp4"
-                const ctVideo5 = config.rootPath + "/cloudstore/videos/utilities_final.mp4"
-                const ctVideo6 = config.rootPath + "/cloudstore/videos/run_example.mp4"
+    const renderTutorial = () => {
+        const ctVideo1 = config.rootPath + "/cloudstore/videos/ask_code_teacher_big.mp4"
+        const ctVideo2 = config.rootPath + "/cloudstore/videos/ask_code_teacher_code_question.mp4"
+        const ctVideo3 = config.rootPath + "/cloudstore/videos/ask_code_teacher_small.mp4"
+        const ctVideo4 = config.rootPath + "/cloudstore/videos/byte_objective_final.mp4"
+        const ctVideo5 = config.rootPath + "/cloudstore/videos/utilities_final.mp4"
+        const ctVideo6 = config.rootPath + "/cloudstore/videos/run_example.mp4"
 
-                return (
-                    <>
-                        <CardTutorial
-                            open={runTutorial}
-                closeCallback={closeTutorialCallback}
-                step={stepIndex}
-                changeCallback={tutorialCallback}
-                steps={[
+        return (
+            <>
+                <CardTutorial
+                    open={runTutorial}
+                    closeCallback={closeTutorialCallback}
+                    step={stepIndex}
+                    changeCallback={tutorialCallback}
+                    steps={[
                         {
                             content: (
                                 <div>
                                     <h2 style={styles.tutorialHeader}>Welcome to your first Byte!</h2>
-                                <p style={styles.tutorialText}>
-                            Bytes are bite-sized coding challenges designed to help you learn to code.
-                            They are a great way to get started with coding and to learn new skills.
-                                </p>
+                                    <p style={styles.tutorialText}>
+                                        Bytes are bite-sized coding challenges designed to help you learn to code.
+                                        They are a great way to get started with coding and to learn new skills.
+                                    </p>
                                 </div>
-            ),
-                moreInfo: isJourney ? (
-                    <div>
-                        <p style={styles.tutorialText}>
-                        Bytes are the building blocks of your Journey.
-                    Each Byte is a self-contained project that you can work on and learn from.
-                    Bytes are organized into Units, to teach you new skills and concepts.
-                </p>
-                </div>
-            ) : undefined,
-                    targetId: "",
-            },
-                {
-                    content: (
-                        <Box
-                            display={"inline-flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"250px"} width={"154px"} videoSrc={ctVideo1}/>
-                <Box sx={{marginLeft: "20px", width: "400px"}}>
-                    <h2 style={styles.tutorialHeader}>Code Teacher</h2>
-                <p style={styles.tutorialText}>
-                    Code Teacher is a personal tutor system integrated directly into Bytes.
-                    Code Teacher is designed to help you learn to code as fast as possible.
-                </p>
-                </Box>
-                </Box>
-                ),
-                    targetId: "byte-chat-container",
-                        width: "625px",
-                },
-                {
-                    content: (
-                        <Box
-                            display={"flex"}
-                    flexDirection={"column"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"320px"} width={"460px"} videoSrc={ctVideo2}/>
-                <Box sx={{width: "450px"}}>
-                    <h2 style={styles.tutorialHeader}>Code Teacher Can See Your Code</h2>
-                <p style={styles.tutorialText}>
-                    Code Teacher is deeply integrated with your code editor and Byte.
-                    Code Teacher can see your code as you write it to help you better
-                    understand your objectives and solve problems.
-                </p>
-                </Box>
-                </Box>
-                ),
-                    moreInfo: (
-                        <Box sx={{width: "450px"}}>
-                    <p style={styles.tutorialText}>
-                        Code Teacher knows about your Byte objectives and can help explain what you
-                    are supposed to be doing. Think of CT as your personal tutor in the Byte
-                    and take advantage of the knowledge CT can provide.
-                </p>
-                </Box>
-                ),
-                    targetId: "byte-chat-container",
-                        width: "520px",
-                    height: "calc(50vh + 10px)"
-                },
-                {
-                    content: (
-                        <Box
-                            display={"inline-flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"250px"} width={"154px"} videoSrc={ctVideo3}/>
-                <Box sx={{marginLeft: "20px", width: "400px"}}>
-                    <h2 style={styles.tutorialHeader}>What can I ask Code Teacher</h2>
-                <p style={styles.tutorialText}>
-                    Code Teacher is your personal tutor. It is here to help you at all times.
-                    You can ask Code Teacher simple questions like "What's a boolean?" or
-                    more complex questions like "What is left to do to complete this Byte?"
-                </p>
-                </Box>
-                </Box>
-                ),
-                    targetId: "byte-chat-container",
-                        width: "625px",
-                },
-                {
-                    content: (
-                        <Box
-                            display={"inline-flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"250px"} width={"200px"} videoSrc={ctVideo4}/>
-                <Box sx={{marginLeft: "20px", width: "400px"}}>
-                    <h2 style={styles.tutorialHeader}>Byte Objective</h2>
-                <p style={styles.tutorialText}>
-                    You can find the objective of the Byte in the "Byte Objective" tab of the
-                    editor sidebar. This is a short description of what the Byte is about and
-                    what you should be doing. You can open and close the tab in the editor sidebar.
-                </p>
-                </Box>
-                </Box>
-                ),
-                    targetId: "editor-sidebar",
-                        width: "660px",
-                    left: true
-                },
-                {
-                    content: (
-                        <Box
-                            display={"inline-flex"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"250px"} width={"200px"} videoSrc={ctVideo5}/>
-                <Box sx={{marginLeft: "20px", width: "400px"}}>
-                    <h2 style={styles.tutorialHeader}>Editor Sidebar</h2>
-                <p style={styles.tutorialText}>
-                    The right side of the editor is your Editor Sidebar and contains multiple
-                    tools to help you learn. Click "More Info" to see a full list of tools.
-                </p>
-                </Box>
-                </Box>
-                ),
-                    moreInfo: (
-                        <Box sx={{width: "450px"}}>
-                    <p style={styles.tutorialText}>
-                        Editor Sidebar Tools:
-                    </p>
-                    <ul>
-                    <li style={styles.tutorialText}>
-                    <strong style={styles.tutorialText}>
-                        Next Step
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Next Step tool uses Code Teacher to help you with the next step in
-                completing
-                    the Byte. You can use this to help you when you get stuck. It has 15s
-                    cooldown
-                    so use it wisely!
-                </div>
-                </li>
-                <li style={styles.tutorialText}>
-                <strong style={styles.tutorialText}>
-                Debug
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Debug tool is used everytime you run your code. It checks if the
-                    Byte is
-                    complete and if not, it uses Code Teacher to explain what is wrong with
-                    your
-                    code.
-                    </div>
-                    </li>
-                    <li style={styles.tutorialText}>
-                <strong style={styles.tutorialText}>
-                    Code Cleanup
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Code Cleanup tool is triggered by the "Clean Up Code" button above
-                    functions in the editor. It uses Code Teacher to clean up your code and
-                    make it more readable. When you run Code Cleanup, it will show you the
-                    changes it made to your code and ask you if you want to save them.
-                </div>
-                </li>
-                <li style={styles.tutorialText}>
-                <strong style={styles.tutorialText}>
-                    Open Ports
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Open Ports tool allows you to preview and open the network ports
-                    that are open in your DevSpace. This is useful for when you are working
-                    on websites or HTTP APIs and want to see the site running in your
-                    browser.
-                    </div>
-                    </li>
-                    <li style={styles.tutorialText}>
-                <strong style={styles.tutorialText}>
-                    Byte Objectives
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Byte Objectives tool allows you to see all the objectives for your
-                    Byte. It is a great way to see what the Byte is looking for and to get
-                    ideas for your next step.
-                </div>
-                </li>
-                <li style={styles.tutorialText}>
-                <strong style={styles.tutorialText}>
-                    Unit Handout
-                </strong>
-                <br/>
-                <div style={styles.tutorialText}>
-                    The Unit Handout tool allows you to see the handout for your current
-                    Journey unit if you are active in a Journey. It is a great way to get
-                    background information for your work.
-                </div>
-                </li>
-                </ul>
-                </Box>
-                ),
-                    targetId: "editor-sidebar",
-                        width: "680px",
-                    left: true
-                },
-                {
-                    content: (
-                        <Box
-                            display={"flex"}
-                    flexDirection={"column"}
-                    alignItems={"center"}
-                    justifyContent={"space-between"}
-                    sx={{
-                    height: "fit-content",
-                        width: "fit-content",
-                }}
-                >
-                    <DesktopVideo height={"260px"} width={"460px"} videoSrc={ctVideo6}/>
-                <Box sx={{width: "450px"}}>
-                    <h2 style={styles.tutorialHeader}>Writing & Running Code</h2>
-                <p style={styles.tutorialText}>
-                    Use the main editor to write your code and the Run button in the top right to
-                    run your code. Once your code has exited, your code will automatically checked
-                    for completion of the Byte. If the code is not complete, Code Teacher will explain
-                    what is wrong with your code.
-                </p>
-                </Box>
-                </Box>
-                ),
-                    moreInfo: (
-                        <Box sx={{width: "450px"}}>
-                    <p style={styles.tutorialText}>
-                        When you Run your code output console will appear at the bottom of the editor
-                    and show you the output of your code. A text box will also appear in the console
-                    so you can pass in input to your code.
-                </p>
-                </Box>
-                ),
-                    targetId: "editor-section",
-                        width: "520px",
-                    height: "calc(50vh + 10px)",
-                    left: true
-                },
-            ]}
+                            ),
+                            moreInfo: isJourney ? (
+                                <div>
+                                    <p style={styles.tutorialText}>
+                                        Bytes are the building blocks of your Journey.
+                                        Each Byte is a self-contained project that you can work on and learn from.
+                                        Bytes are organized into Units, to teach you new skills and concepts.
+                                    </p>
+                                </div>
+                            ) : undefined,
+                            targetId: "",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"250px"} width={"154px"} videoSrc={ctVideo1}/>
+                                    <Box sx={{marginLeft: "20px", width: "400px"}}>
+                                        <h2 style={styles.tutorialHeader}>Code Teacher</h2>
+                                        <p style={styles.tutorialText}>
+                                            Code Teacher is a personal tutor system integrated directly into Bytes.
+                                            Code Teacher is designed to help you learn to code as fast as possible.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                            width: "625px",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"column"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"320px"} width={"460px"} videoSrc={ctVideo2}/>
+                                    <Box sx={{width: "450px"}}>
+                                        <h2 style={styles.tutorialHeader}>Code Teacher Can See Your Code</h2>
+                                        <p style={styles.tutorialText}>
+                                            Code Teacher is deeply integrated with your code editor and Byte.
+                                            Code Teacher can see your code as you write it to help you better
+                                            understand your objectives and solve problems.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box sx={{width: "450px"}}>
+                                    <p style={styles.tutorialText}>
+                                        Code Teacher knows about your Byte objectives and can help explain what you
+                                        are supposed to be doing. Think of CT as your personal tutor in the Byte
+                                        and take advantage of the knowledge CT can provide.
+                                    </p>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                            width: "520px",
+                            height: "calc(50vh + 10px)"
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"250px"} width={"154px"} videoSrc={ctVideo3}/>
+                                    <Box sx={{marginLeft: "20px", width: "400px"}}>
+                                        <h2 style={styles.tutorialHeader}>What can I ask Code Teacher</h2>
+                                        <p style={styles.tutorialText}>
+                                            Code Teacher is your personal tutor. It is here to help you at all times.
+                                            You can ask Code Teacher simple questions like `&quot;`What`&#39;`s a boolean?`&quot;` or
+                                            more complex questions like `&quot;`What is left to do to complete this Byte?`&quot;`
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                            width: "625px",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"250px"} width={"200px"} videoSrc={ctVideo4}/>
+                                    <Box sx={{marginLeft: "20px", width: "400px"}}>
+                                        <h2 style={styles.tutorialHeader}>Byte Objective</h2>
+                                        <p style={styles.tutorialText}>
+                                            You can find the objective of the Byte in the `&quot;`Byte Objective`&quot;` tab of the
+                                            editor sidebar. This is a short description of what the Byte is about and
+                                            what you should be doing. You can open and close the tab in the editor
+                                            sidebar.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "editor-sidebar",
+                            width: "660px",
+                            left: true
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"250px"} width={"200px"} videoSrc={ctVideo5}/>
+                                    <Box sx={{marginLeft: "20px", width: "400px"}}>
+                                        <h2 style={styles.tutorialHeader}>Editor Sidebar</h2>
+                                        <p style={styles.tutorialText}>
+                                            The right side of the editor is your Editor Sidebar and contains multiple
+                                            tools to help you learn. Click `&quot;`More Info`&quot;` to see a full list of tools.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box sx={{width: "450px"}}>
+                                    <p style={styles.tutorialText}>
+                                        Editor Sidebar Tools:
+                                    </p>
+                                    <ul>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Next Step
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Next Step tool uses Code Teacher to help you with the next step in
+                                                completing
+                                                the Byte. You can use this to help you when you get stuck. It has 15s
+                                                cooldown
+                                                so use it wisely!
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Debug
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Debug tool is used everytime you run your code. It checks if the
+                                                Byte is
+                                                complete and if not, it uses Code Teacher to explain what is wrong with
+                                                your
+                                                code.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Code Cleanup
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Code Cleanup tool is triggered by the `&quot;`Clean Up Code`&quot;` button above
+                                                functions in the editor. It uses Code Teacher to clean up your code and
+                                                make it more readable. When you run Code Cleanup, it will show you the
+                                                changes it made to your code and ask you if you want to save them.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Open Ports
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Open Ports tool allows you to preview and open the network ports
+                                                that are open in your DevSpace. This is useful for when you are working
+                                                on websites or HTTP APIs and want to see the site running in your
+                                                browser.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Byte Objectives
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Byte Objectives tool allows you to see all the objectives for your
+                                                Byte. It is a great way to see what the Byte is looking for and to get
+                                                ideas for your next step.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Unit Handout
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Unit Handout tool allows you to see the handout for your current
+                                                Journey unit if you are active in a Journey. It is a great way to get
+                                                background information for your work.
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </Box>
+                            ),
+                            targetId: "editor-sidebar",
+                            width: "680px",
+                            left: true
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"column"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <DesktopVideo height={"260px"} width={"460px"} videoSrc={ctVideo6}/>
+                                    <Box sx={{width: "450px"}}>
+                                        <h2 style={styles.tutorialHeader}>Writing & Running Code</h2>
+                                        <p style={styles.tutorialText}>
+                                            Use the main editor to write your code and the Run button in the top right
+                                            to
+                                            run your code. Once your code has exited, your code will automatically
+                                            checked
+                                            for completion of the Byte. If the code is not complete, Code Teacher will
+                                            explain
+                                            what is wrong with your code.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box sx={{width: "450px"}}>
+                                    <p style={styles.tutorialText}>
+                                        When you Run your code output console will appear at the bottom of the editor
+                                        and show you the output of your code. A text box will also appear in the console
+                                        so you can pass in input to your code.
+                                    </p>
+                                </Box>
+                            ),
+                            targetId: "editor-section",
+                            width: "520px",
+                            height: "calc(50vh + 10px)",
+                            left: true
+                        },
+                    ]}
                 />
-                </>
-            )
-            }
+            </>
+        )
+    }
 
-            return (
-                <ThemeProvider theme={theme}>
-                <CssBaseline>
-                    {(isJourney) ? journeyBytesPage() : bytesPage()}
+    return (
+        <>
+            {(isJourney) ? journeyBytesPage() : bytesPage()}
             {renderNewFilePopup()}
             {renderDeleteFilePopup()}
             {renderTutorial()}
-            </CssBaseline>
-            </ThemeProvider>
-        );
-        }
+        </>
+    );
+}
 
-        export default Byte;
+export default Byte;

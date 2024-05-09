@@ -909,39 +909,35 @@ export default function ByteChat(props: ByteChatProps) {
             return null
 
         return (
-            <Grid container sx={{
-                marginBottom: '10px'
-            }} spacing={1}>
-                {props.questions.map((q, index) => {
-                    return (
-                        <Grid item xs={6}>
-                            <Button
-                                key={index}
-                                variant="outlined"
-                                sx={{
-                                    height: "100%",
-                                    width:"100%",
-                                    fontSize: '0.65rem',
-                                    textTransform: 'none',
-                                    p: 1,
-                                    textAlign: "left",
-                                    color: mode === "light" ? alpha("#1d1d1d", 0.6) : alpha(grey[300], 0.6),
-                                    border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.2)}` : `1px solid ${alpha(grey[300], 0.2)}`,
-                                    '&:hover': {
-                                        color: mode === "light" ? "#1d1d1d" : grey[300],
-                                        backgroundColor: alpha(grey[500], 0.2),
-                                        border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.6)}` : `1px solid ${alpha(grey[500], 0.6)}`
-                                    }
-                                }}
-                                onClick={() => handleInitialQuestions(q, index)}
-                            >
-                                {q}
-                            </Button>
-                        </Grid>
-                    )
-                })}
+            <Grid container sx={{ marginBottom: '10px' }} spacing={1}>
+                {props.questions.map((q, index) => (
+                    <Grid item xs={6} key={index}>  {/* key prop moved here */}
+                        <Button
+                            variant="outlined"
+                            sx={{
+                                height: "100%",
+                                width: "100%",
+                                fontSize: '0.65rem',
+                                textTransform: 'none',
+                                p: 1,
+                                textAlign: "left",
+                                color: mode === "light" ? alpha("#1d1d1d", 0.6) : alpha(grey[300], 0.6),
+                                border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.2)}` : `1px solid ${alpha(grey[300], 0.2)}`,
+                                '&:hover': {
+                                    color: mode === "light" ? "#1d1d1d" : grey[300],
+                                    backgroundColor: alpha(grey[500], 0.2),
+                                    border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.6)}` : `1px solid ${alpha(grey[500], 0.6)}`
+                                }
+                            }}
+                            onClick={() => handleInitialQuestions(q, index)}
+                        >
+                            {q}
+                        </Button>
+                    </Grid>
+                ))}
             </Grid>
         )
+
     }
 
     const toggleProPopup = () => setGoProPopup(!goProPopup)
