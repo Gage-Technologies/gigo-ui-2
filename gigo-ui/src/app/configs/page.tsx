@@ -605,6 +605,7 @@ function PublicConfigs() {
     // @ts-ignore
     // @ts-ignore
     // @ts-ignore
+    // @ts-ignore
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
@@ -965,6 +966,8 @@ function PublicConfigs() {
                                             renderTags={(tagValue, getTagProps) =>
                                                 tagValue.map((option, index) => (
                                                     <Chip
+                                                        // @ts-ignore
+                                                        key={index}
                                                         variant="outlined"
                                                         label={typeof option === "string" ? option : option.value}
                                                         {...getTagProps({ index })}

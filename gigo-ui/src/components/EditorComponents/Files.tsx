@@ -222,10 +222,10 @@ function Folder({ children, name, padding, filepath, repoId, handleFileSelect, s
                     <div style={{
                         paddingBottom: "5px",
                     }}>
-                        {folderData.map((data) => {
+                        {folderData.map((data, index) => {
 
                             return (
-                                <div>
+                                <div key={index}>
                                     {data["type"] === "dir" ? (
                                         // @ts-ignore
                                         <Tree.Folder name={
@@ -295,9 +295,10 @@ function Files({ selectedFile, handleFileSelect, projectName, files, repoId }: F
                 <h1 style={{ fontSize: "medium", marginLeft: "10px" }}>{"Project Files"}</h1>
             </div>
             <Tree>
-                {(files && files.length > 0) && files.map((file) => {
+                {(files && files.length > 0) && files.map((file, index) => {
                     return (
-                        <div style={{
+                        <div key={index}
+                            style={{
                             paddingBottom: "2.5px",
                             fontSize: "small"
                         }}>
