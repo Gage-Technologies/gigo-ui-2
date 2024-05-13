@@ -95,6 +95,7 @@ type BackgroundArray = {
     modules: string;
     id?: string;
     name: string;
+    data: null | any;
 };
 
 interface Reward {
@@ -132,14 +133,14 @@ function Profile() {
         },
     };
 
-    let profileBackgroundArrayFull = [{"modules": "red_paint", "name": "red_paint"}, {"modules": "white_paint", "name": "white_paint"}, {"modules": "pink_paint", "name": "pink_paint"},{"modules": "blue_geometric_lines", "name": "blue_geometric_lines"}, {"modules": "green_geometric_lines", "name": "green_geometric_lines"}, {"modules": "red_geometric_lines", "name": "red_geometric_lines"}, {"modules": "blue_helix_circle", "name": "blue_helix_circle"}, {"modules": "green_helix_circle", "name": "green_helix_circle"}, {"modules": "red_helix_circle", "name": "red_helix_circle"}, {"modules": "pink_70s_funk", "name": "pink_70s_funk"}, {"modules": "orange_70s_funk", "name": "orange_70s_funk"}, {"modules": "green_70s_funk", "name": "green_70s_funk"},{"modules": "green_coffee_stain", "name": "green_coffee_stain"}, {"modules": "orange_coffee_stain", "name": "orange_coffee_stain"}, {"modules": "purple_coffee_stain", "name": "purple_coffee_stain"}, {"modules": "green_wave", "name": "green_wave"}, {"modules": "orange_wave", "name": "orange_wave"}, {"modules":"purple_wave", "name": "purple_wave"}, {"modules": "green_pulse", "name": "green_pulse"}, {"modules": "pink_pulse", "name": "pink_pulse"}, {"modules": "purple_pulse", "name": "purple_pulse"}, {"modules": "blue_dotted_circle", "name": "blue_dotted_circle"}, {"modules": "green_dotted_circle", "name": "green_dotted_circle"}, {"modules": "orange_dotted_circle", "name": "orange_dotted_circle"}, {"modules": "blue_fast_circle", "name": "blue_fast_circle"}, {"modules": "grey_fast_circle", "name": "grey_fast_circle"}, {"modules": "red_fast_circle", "name": "red_fast_circle"}, {"modules": "blue_dotted_vortex", "name": "blue_dotted_vortex"}, {"modules": "green_dotted_vortex", "name": "green_dotted_vortex"}, {"modules": "red_dotted_vortex", "name": "red_dotted_vortex"}]
+    let profileBackgroundArrayFull: BackgroundArray[] = [{"modules": "red_paint", "name": "red_paint", "data": null}, {"modules": "white_paint", "name": "white_paint", "data": null}, {"modules": "pink_paint", "name": "pink_paint", "data": null},{"modules": "blue_geometric_lines", "name": "blue_geometric_lines", "data": null}, {"modules": "green_geometric_lines", "name": "green_geometric_lines", "data": null}, {"modules": "red_geometric_lines", "name": "red_geometric_lines", "data": null}, {"modules": "blue_helix_circle", "name": "blue_helix_circle", "data": null}, {"modules": "green_helix_circle", "name": "green_helix_circle", "data": null}, {"modules": "red_helix_circle", "name": "red_helix_circle", "data": null}, {"modules": "pink_70s_funk", "name": "pink_70s_funk", "data": null}, {"modules": "orange_70s_funk", "name": "orange_70s_funk", "data": null}, {"modules": "green_70s_funk", "name": "green_70s_funk", "data": null},{"modules": "green_coffee_stain", "name": "green_coffee_stain", "data": null}, {"modules": "orange_coffee_stain", "name": "orange_coffee_stain", "data": null}, {"modules": "purple_coffee_stain", "name": "purple_coffee_stain", "data": null}, {"modules": "green_wave", "name": "green_wave", "data": null}, {"modules": "orange_wave", "name": "orange_wave", "data": null}, {"modules":"purple_wave", "name": "purple_wave", "data": null}, {"modules": "green_pulse", "name": "green_pulse", "data": null}, {"modules": "pink_pulse", "name": "pink_pulse", "data": null}, {"modules": "purple_pulse", "name": "purple_pulse", "data": null}, {"modules": "blue_dotted_circle", "name": "blue_dotted_circle", "data": null}, {"modules": "green_dotted_circle", "name": "green_dotted_circle", "data": null}, {"modules": "orange_dotted_circle", "name": "orange_dotted_circle", "data": null}, {"modules": "blue_fast_circle", "name": "blue_fast_circle", "data": null}, {"modules": "grey_fast_circle", "name": "grey_fast_circle", "data": null}, {"modules": "red_fast_circle", "name": "red_fast_circle", "data": null}, {"modules": "blue_dotted_vortex", "name": "blue_dotted_vortex", "data": null}, {"modules": "green_dotted_vortex", "name": "green_dotted_vortex", "data": null}, {"modules": "red_dotted_vortex", "name": "red_dotted_vortex", "data": null}]
 
     const [searchText, setSearchText] = React.useState("")
 
     const [chosenBackground, setChosenBackground] = React.useState<BackgroundArray[]>([]);
     const [backgroundTab, setBackgroundTab] = React.useState(0);
     const [backgroundArray, setBackgroundArray] = useState<BackgroundArray[]>([]);
-    const [profileBackgroundArray, setProfileBackgroundArray] = React.useState(profileBackgroundArrayFull);
+    const [profileBackgroundArray, setProfileBackgroundArray] = React.useState<BackgroundArray[]>([]);
     const [popupOpen, setPopupOpen] = React.useState(false);
     const [requestPopupOpen, setRequestPopupOpen] = React.useState(false);
     const [addFriendsPopupOpen, setAddFriendsPopupOpen] = React.useState(false);
@@ -367,6 +368,24 @@ function Profile() {
         }
     }
 
+    const fetchBackgroundData = async () => {
+        let promises: Promise<any>[] = [];
+        for (let i = 0; i < profileBackgroundArrayFull.length; i++){
+            promises.push(
+                fetch(`${config.rootPath}/static/ui/lottie/user_backgrounds/${profileBackgroundArrayFull[i]["name"]}.json`, {credentials: 'include'})
+                .then(data => {
+                    data.json().then(json => {
+                        profileBackgroundArrayFull[i]["data"] = json
+                    })
+                })
+                .catch(error => console.error(error))
+            );
+        }
+        await Promise.all(promises)
+        setProfileBackgroundArray(profileBackgroundArrayFull)
+        setBackgroundArray(profileBackgroundArray.slice(0,3))
+    }
+
     useEffect(() => {
         setLoading(true)
         getXP()
@@ -374,17 +393,7 @@ function Profile() {
         // infiniteScrollHandler().then()
         getFriendsList().then()
         getRequestList().then()
-        for (let i = 0; i < profileBackgroundArrayFull.length; i++){
-            fetch(`${config.rootPath}/static/ui/lottie/user_backgrounds/${profileBackgroundArrayFull[i]["name"]}.json`, {credentials: 'include'})
-                .then(data => {
-                    data.json().then(json => {
-                        profileBackgroundArrayFull[i]["modules"] = json
-                    })
-                })
-                .catch(error => console.error(error));
-        }
-        setProfileBackgroundArray(profileBackgroundArrayFull)
-        setBackgroundArray(profileBackgroundArray.slice(0,3))
+        fetchBackgroundData()
         setLoading(false)
     }, [])
 
@@ -550,8 +559,9 @@ function Profile() {
     const handleChanges = (event: React.SyntheticEvent, newValue: number) => {
         switch(newValue){
             case 0 : {
-                setBackgroundArray(profileBackgroundArray.slice(0,3))
+                setBackgroundArray([])
                 setBackgroundTab(0)
+                setChosenBackground([])
                 break
             }
             case 1 : {
@@ -600,9 +610,8 @@ function Profile() {
                 break
             }
             case 10 : {
-                setBackgroundArray([])
+                setBackgroundArray(profileBackgroundArray.slice(0,3))
                 setBackgroundTab(10)
-                setChosenBackground([])
                 break
             }
         }
@@ -619,7 +628,7 @@ function Profile() {
             dispatch(updateAuthState(authState));
         } else {
             const currentBackground = background[0];
-            setUserBackground(currentBackground.modules);
+            setUserBackground(currentBackground.data);
             setShowPopup(false);
             let authState = { ...initialAuthStateUpdate };
 
@@ -635,8 +644,8 @@ function Profile() {
             dispatch(updateAuthState(authState));
         }
     };
+
     const getUserBackgroundInventory = async () => {
-        //todo check if maybe it should be formatted safer
         if (inventory.length === 0) {
             let inventoryData = await fetch(
                 `${config.rootPath}/api/reward/getUserRewardInventory`,
@@ -1069,6 +1078,192 @@ function Profile() {
         return () => cancelAnimationFrame(frameId);
     }, [sidebarOpen, chatOpened, scaleFactor, searchOptions]);
 
+    const editBackgroundModal = () => {
+        return(
+            <Modal
+                open={showPopup}
+                onClose={() => closeBackgroundPopup()}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <div style={{display: "flex", width: "60vw", height: "60vh", alignItems: "center", justifyContent: "center"}}>
+                    <Box
+                        sx={{
+                            boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
+                            color: 'text.primary',
+                            borderRadius: 1,
+                            width: "60vw",
+                            minHeight: "550px",
+                            height: "60vh",
+                            backgroundColor: theme.palette.background.default,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "start",
+                            alignItems: "center",
+                            transform: "translate(30%, 30%)"
+                        }}
+                    >
+                        <IconButton
+                            aria-label="close"
+                            onClick={() => closeBackgroundPopup()}
+                            color="primary"
+                            style={{position: 'absolute', top: "1%", right: "1%", zIndex: 10}}
+                        >
+                            <CloseIcon/>
+                        </IconButton>
+                        <div style={{height: "90%", overflowY: "hidden", paddingRight: "20px"}}>
+                            <Tabs
+                                orientation="vertical"
+                                variant="scrollable"
+                                value={backgroundTab}
+                                onChange={handleChanges}
+                                aria-label="Vertical tabs example"
+                                sx={{
+                                    borderRight: 1,
+                                    borderColor: 'divider',
+                                    height: "100%",
+                                    overflowY: "auto"
+                                }}
+                            >
+                                <Tab label="None"/>
+                                <Tab label="Geometric"/>
+                                <Tab label="Helix"/>
+                                <Tab label="70s Funk"/>
+                                <Tab label="Coffee Stain"/>
+                                <Tab label="Wave"/>
+                                <Tab label="Pulse"/>
+                                <Tab label="Dotted Circle"/>
+                                <Tab label="Fast Circle"/>
+                                <Tab label="Dotted Vortex"/>
+                                <Tab label="Paint"/>
+                            </Tabs>
+                        </div>
+                        <div style={{
+                            height: "90%",
+                            width: "30%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexDirection: "column",
+                            padding: "10px"
+                        }}>
+                            {backgroundArray.map((background, index) => {
+                                let personalInventory = inventory.filter(e => e.full_name === background["name"])
+                                return (
+                                    <div key={index} style={{padding: "10px"}}>
+                                        {personalInventory.length === 0 ? (
+                                            <div style={{width: "100px", height: "100px", position: "relative", zIndex: 9}}>
+                                                <div style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.3}}>
+                                                    <Button disabled={true}>
+                                                        <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
+                                                            <Lottie options={
+                                                                {loop: true,
+                                                                    autoplay: true,
+                                                                    animationData: background["data"],
+                                                                    rendererSettings: {
+                                                                        preserveAspectRatio: 'xMidYMid slice'
+                                                                    }
+                                                                }} width={100}
+                                                                    height={100} isClickToPauseDisabled={true}/>
+                                                        </div>
+                                                    </Button>
+                                                </div>
+                                                <div style={{zIndex: 10, width: "100px", height: "100px", position: "absolute", top: 40, left: 45}}>
+                                                    <LockIcon/>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <Button onClick={() => setChosenBackground([
+                                                {
+                                                    modules: background["modules"],
+                                                    id: personalInventory[0]["id"],
+                                                    name: background["name"],
+                                                    data: background["data"],
+                                                }
+                                            ])} disabled={false}>
+                                                <div style={{
+                                                    display: "flex",
+                                                    alignItems: "center",
+                                                    justifyContent: "center"
+                                                }}>
+                                                    <Lottie options={
+                                                        {
+                                                            loop: true,
+                                                            autoplay: true,
+                                                            animationData: background["data"],
+                                                            rendererSettings: {
+                                                                preserveAspectRatio: 'xMidYMid slice'
+                                                            }
+                                                        }} width={100}
+                                                            height={100}
+                                                            isClickToPauseDisabled={true}
+                                                    />
+                                                </div>
+                                            </Button>
+                                        )}
+                                    </div>
+                                )
+                            })}
+                        </div>
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                position: 'relative',
+                            }}
+                        >
+                            <div
+                                style={{
+                                    position: 'relative',
+                                    zIndex: 1,
+                                }}
+                            >
+                                <UserIcon
+                                    userId={authState.id}
+                                    userTier={authState.tier}
+                                    userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
+                                    size={300}
+                                    backgroundName={null}
+                                    backgroundPalette={null}
+                                    backgroundRender={null}
+                                    profileButton={false}
+                                    pro={authState.role.toString() === "1"}
+                                    mouseMove={false}
+                                />
+                            </div>
+                            {chosenBackground.length !== 0 && (
+                                <div
+                                    style={{
+                                        position: 'absolute',
+                                        width: 575,
+                                        height: 575,
+                                        zIndex: 2,
+                                    }}
+                                >
+                                    <Lottie
+                                        options={{
+                                            loop: true,
+                                            autoplay: true,
+                                            animationData: chosenBackground[0]["data"],
+                                            rendererSettings: {
+                                                preserveAspectRatio: 'xMidYMid slice',
+                                            },
+                                        }}
+                                        isClickToPauseDisabled={true}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <div style={{position: 'absolute', bottom: "1%", right: "1%", zIndex: 10}}>
+                            <Button onClick={() => submitBackgroundChange(chosenBackground)}>Submit</Button>
+                        </div>
+                    </Box>
+                </div>
+            </Modal>
+        )
+    }
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
@@ -1247,147 +1442,7 @@ function Profile() {
                                         </div>
                                     </div>
                                 ) : null}
-                                <Modal
-                                    open={showPopup}
-                                    onClose={() => closeBackgroundPopup()}
-                                    aria-labelledby="modal-modal-title"
-                                    aria-describedby="modal-modal-description"
-                                >
-                                    <div style={{display: "flex", width: "60vw", height: "60vh", alignItems: "center", justifyContent: "center"}}>
-                                        <Box
-                                            sx={{
-                                                boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
-                                                color: 'text.primary',
-                                                borderRadius: 1,
-                                                width: "60vw",
-                                                minHeight: "550px",
-                                                height: "60vh",
-                                                backgroundColor: theme.palette.background.default,
-                                                display: "flex",
-                                                flexDirection: "row",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                transform: "translate(30%, 30%)"
-                                            }}
-                                        >
-                                            <IconButton
-                                                aria-label="close"
-                                                onClick={() => closeBackgroundPopup()}
-                                                color="primary"
-                                                style={{ position: 'absolute', top: "1%", right: "1%", zIndex: 10 }}
-                                            >
-                                                <CloseIcon />
-                                            </IconButton>
-                                            <div style={{height: "90%", overflowY: "hidden", paddingRight: "20px"}}>
-                                                <Tabs
-                                                    orientation="vertical"
-                                                    variant="scrollable"
-                                                    value={backgroundTab}
-                                                    onChange={handleChanges}
-                                                    aria-label="Vertical tabs example"
-                                                    sx={{ borderRight: 1, borderColor: 'divider', height: "100%", overflowY: "auto" }}
-                                                >
-                                                    <Tab label="Paint"/>
-                                                    {/*<Tab label="Bubbles"  />*/}
-                                                    <Tab label="Geometric"  />
-                                                    <Tab label="Helix"  />
-                                                    <Tab label="70s Funk"  />
-                                                    <Tab label="Coffee Stain"/>
-                                                    <Tab label="Wave"  />
-                                                    <Tab label="Pulse" />
-                                                    <Tab label="Dotted Circle" />
-                                                    <Tab label="Fast Circle" />
-                                                    <Tab label="Dotted Vortex" />
-                                                    <Tab label="None" />
-                                                </Tabs>
-                                            </div>
-                                            <div style={{height: "90%", width: "30%", overflowY: "auto", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "left"}}>
-                                                {backgroundArray.map((background, index) => {
-                                                    let setInventoryHere = inventory.filter(e => e.full_name === background["name"])
-                                                    return (
-                                                        <div key={index}>
-                                                            {setInventoryHere.length === 0 ? (
-                                                                <div style={{width: "100px", height: "100px", position: "relative", zIndex: 9}}>
-                                                                    <div style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.3}}>
-                                                                        <Button disabled={true}>
-                                                                            <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                                                                <Lottie options={
-                                                                                    {loop: true,
-                                                                                        autoplay: true,
-                                                                                        animationData: background["modules"],
-                                                                                        rendererSettings: {
-                                                                                            preserveAspectRatio: 'xMidYMid slice'
-                                                                                        }
-                                                                                    }} width={100}
-                                                                                        height={100} isClickToPauseDisabled={true}/>
-                                                                            </div>
-                                                                        </Button>
-                                                                    </div>
-                                                                    <div style={{zIndex: 10, width: "100px", height: "100px", position: "absolute", top: 40, left: 45}}>
-                                                                        <LockIcon/>
-                                                                    </div>
-                                                                </div>
-                                                            ) : (
-                                                                <Button onClick={() => setChosenBackground([
-                                                                    {
-                                                                        modules: background["modules"],
-                                                                        id: setInventoryHere[0]["id"],
-                                                                        name: background["name"]
-                                                                    }
-                                                                ])} disabled={false}>
-                                                                    <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                                                        <Lottie options={
-                                                                            {loop: true,
-                                                                                autoplay: true,
-                                                                                animationData: background["modules"],
-                                                                                rendererSettings: {
-                                                                                    preserveAspectRatio: 'xMidYMid slice'
-                                                                                }
-                                                                            }} width={100}
-                                                                                height={100} isClickToPauseDisabled={true}
-                                                                        />
-                                                                    </div>
-                                                                </Button>
-                                                            )}
-                                                        </div>
-                                                    )
-                                                })}
-                                            </div>
-                                            <div style={{width: "50%", display: "flex", justifyContent: "center", paddingLeft: "40px"}}>
-                                                <div style={{display: "flex", flexDirection: "column"}}>
-                                                    <div style={{paddingTop: "100px"}}>
-                                                        {chosenBackground === null ? (
-                                                            <div></div>
-                                                        ) : (
-                                                            <div style={{position: "relative"}}>
-                                                                <div style={{position: "absolute", top: 0, left: 0, zIndex: 6}}>
-                                                                    <ProfilePicture
-                                                                        width={300}
-                                                                        height={300}
-                                                                        imageSrc={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                                                    />
-                                                                </div>
-                                                                <Lottie options={
-                                                                    {loop: true,
-                                                                        autoplay: true,
-                                                                        animationData: chosenBackground[0],
-                                                                        rendererSettings: {
-                                                                            preserveAspectRatio: 'xMidYMid slice'
-                                                                        }
-                                                                    }} width={500}
-                                                                        height={500} style={{position: "absolute", top: -120, left: -100, zIndex: 1}} isClickToPauseDisabled={true}
-                                                                />
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div style={{display: "flex", justifyContent: "center", alignItems: "end", height: "100%", paddingTop: "100px"}}>
-                                                        <Button onClick={() => submitBackgroundChange(chosenBackground)}>Submit</Button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Box>
-                                    </div>
-                                </Modal>
+                                {editBackgroundModal()}
                                 <div style={{height: "10px"}}/>
                                 {!isMobile ? (
                                     <Box
@@ -1399,7 +1454,12 @@ function Profile() {
                                             marginLeft: "120px"
                                         }}
                                     >
-                                        <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
+                                        <div style={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            justifyContent: "center",
+                                            alignItems: "center"
+                                        }}>
                                             <Typography sx={{
                                                 display: 'flex',
                                                 width: "100%",
@@ -1410,12 +1470,13 @@ function Profile() {
                                             </Typography>
                                             <Typography sx={{
                                                 display: 'flex',
-                                                width: "100%", justifyContent: "left"}}>
+                                                width: "100%", justifyContent: "left"
+                                            }}>
                                                 {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
                                             </Typography>
                                         </div>
                                         <hr style={{color: "white"}}/>
-                                        {userData !== null ?  userData["bio"] : "N/A"}
+                                        {userData !== null ? userData["bio"] : "N/A"}
                                     </Box>
                                 ) : (
                                     <div style={{
@@ -1438,13 +1499,25 @@ function Profile() {
                                         >
                                             <Typography sx={window.innerWidth <= 1000 && window.innerWidth > 300 ? {
                                                 display: 'flex',
-                                                width: "130px", justifyContent: "left", fontSize: "16px", marginLeft: "10px"} : {display: 'flex',
-                                                width: "130px", justifyContent: "left", fontSize: "12px"}}>
+                                                width: "130px",
+                                                justifyContent: "left",
+                                                fontSize: "16px",
+                                                marginLeft: "10px"
+                                            } : {
+                                                display: 'flex',
+                                                width: "130px", justifyContent: "left", fontSize: "12px"
+                                            }}>
                                                 {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
                                             </Typography>
                                         </Box>
-                                        <div style={{display: "flex", flexDirection: "row", justifyContent: "right", width: "100%", marginRight: "5px"}}>
-                                            <div style={{ position: 'relative' }}>
+                                        <div style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            justifyContent: "right",
+                                            width: "100%",
+                                            marginRight: "5px"
+                                        }}>
+                                            <div style={{position: 'relative'}}>
                                                 <Image
                                                     alt="coffee-pot"
                                                     style={!isMobile ? {
