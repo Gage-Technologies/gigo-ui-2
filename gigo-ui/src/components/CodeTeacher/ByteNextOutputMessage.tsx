@@ -13,8 +13,8 @@ import {
     CtValidationErrorPayload
 } from "@/models/ct_websocket";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import {Typography} from "@material-ui/core";
-import {BugReportOutlined, Close} from "@material-ui/icons";
+import {Typography} from "@mui/material";
+import {BugReportOutlined, Close} from "@mui/icons-material";
 import * as byteSuccess from "../../img/byteSuccess.json"
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import {LoadingButton} from "@mui/lab";

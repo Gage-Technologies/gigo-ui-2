@@ -16,8 +16,8 @@ import {
 } from "@mui/material";
 import { getAllTokens, themeHelpers } from "../../theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import { Close } from "@material-ui/icons";
-import { Typography } from "@material-ui/core";
+import { Close } from "@mui/icons-material";
+import { Typography } from "@mui/material";
 import { Checklist } from "@mui/icons-material";
 import { useGlobalCtWebSocket } from "../../services/ct_websocket";
 import { CtByteSuggestionRequest, CtByteSuggestionResponse, CtGenericErrorPayload, CtMessage, CtMessageOrigin, CtMessageType, CtValidationErrorPayload } from "../../models/ct_websocket";

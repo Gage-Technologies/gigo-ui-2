@@ -14,7 +14,7 @@ import {
     ThemeProvider,
     Tooltip
 } from "@mui/material";
-import {Chip, Grid} from "@material-ui/core";
+import {Chip, Grid} from "@mui/material";
 import {useAppSelector} from "@/reducers/hooks";
 import {useNavigate} from "react-router-dom";
 import premiumImage from "../img/croppedPremium.png";
@@ -24,7 +24,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import SearchIcon from "@mui/icons-material/Search";
 import call from "@/services/api-call";
 import swal from "sweetalert";
-import {Add, Cancel, Edit} from "@material-ui/icons";
+import {Add, Cancel, Edit} from "@mui/icons-material";
 import WorkspaceConfigEditor from "@/components/editor/workspace_config/editor";
 import { DefaultWorkspaceConfig, Workspace, WorkspaceConfig } from "@/models/workspace";
 import Tag from "@/models/tag";

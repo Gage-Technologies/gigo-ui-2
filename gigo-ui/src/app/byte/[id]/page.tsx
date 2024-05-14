@@ -18,8 +18,8 @@ import {
 } from "@mui/material";
 import XpPopup from "@/components/XpPopup";
 import {theme} from "@/theme";
-import Add from "@material-ui/icons/Add";
-import PlayArrow from "@material-ui/icons/PlayArrow";
+import Add from "@mui/icons-material/Add";
+import PlayArrow from "@mui/icons-material/PlayArrow";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import swal from "sweetalert";
 import 'ace-builds';
@@ -76,7 +76,7 @@ import {ctCreateCodeActions} from "@/components/IDE/Extensions/CtCodeActionExten
 import ByteSuggestions2 from "@/components/CodeTeacher/ByteSuggestions2";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
 import {CodeFile} from "@/models/code_file";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 import {EditorTab, EditorTabs} from "@/components/IDE/EditorTabs";
 import JourneyUnit from "@/models/journey_unit";
 import JourneyHandoutPlugin from "@/components/JourneyHandoutPlugin";

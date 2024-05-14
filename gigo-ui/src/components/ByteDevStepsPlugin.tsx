@@ -1,6 +1,6 @@
 import {alpha, Box, Button, createTheme, PaletteMode, styled, Tooltip} from "@mui/material";
 import React, {useState} from "react";
-import {Close, Explore, Flag} from "@material-ui/icons";
+import {Close, Explore, Flag} from "@mui/icons-material";
 import {getAllTokens} from "@/theme";
 import MarkdownRenderer from "./Markdown/MarkdownRenderer";
 import AboutBytesIcon from "@/icons/Bytes/AboutPage";

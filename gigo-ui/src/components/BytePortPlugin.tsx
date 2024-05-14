@@ -11,7 +11,7 @@ import {
     Typography
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
-import {ArrowDropDown, Close, OpenInBrowser, OpenInNew, Refresh} from "@material-ui/icons";
+import {ArrowDropDown, Close, OpenInBrowser, OpenInNew, Refresh} from "@mui/icons-material";
 import {getAllTokens} from "../theme";
 import {Preview} from "@mui/icons-material";
 

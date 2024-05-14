@@ -20,7 +20,7 @@ import {
     CtMessageType, CtValidationErrorPayload
 } from "../../models/ct_websocket";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import {Close, Done} from "@material-ui/icons";
+import {Close, Done} from "@mui/icons-material";
 import ConstructionIcon from '@mui/icons-material/Construction';
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import { LoadingButton } from "@mui/lab";

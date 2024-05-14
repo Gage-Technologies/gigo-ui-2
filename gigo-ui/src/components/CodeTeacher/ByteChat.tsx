@@ -41,7 +41,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {grey} from "@mui/material/colors";
 import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "@/reducers/bytes/bytes";
-import {AddComment, Close} from "@material-ui/icons";
+import {AddComment, Close} from "@mui/icons-material";
 import GoProDisplay from "../GoProDisplay";
 import createGoToRemark from "../Markdown/Extensions/GoToRemark";
 import {simpleHash} from "@/services/utils";

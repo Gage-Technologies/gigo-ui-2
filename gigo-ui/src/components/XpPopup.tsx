@@ -23,7 +23,7 @@ import premiumGorilla from "../img/pro-pop-up-icon-plain.svg"
 import proBackground from "../img/popu-up-backgraound-plain.svg"
 import call from "../services/api-call";
 import config from "../config";
-import { Close } from "@material-ui/icons";
+import { Close } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
 import Image from "next/image"
 

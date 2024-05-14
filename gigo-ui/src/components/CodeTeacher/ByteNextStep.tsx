@@ -12,8 +12,8 @@ import {
 } from "@mui/material";
 import {getAllTokens} from "@/theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import {Close} from "@material-ui/icons";
-import {Typography} from "@material-ui/core";
+import {Close} from "@mui/icons-material";
+import {Typography} from "@mui/material";
 import {Circle} from "@mui/icons-material";
 import {useGlobalCtWebSocket} from "@/services/ct_websocket";
 import {

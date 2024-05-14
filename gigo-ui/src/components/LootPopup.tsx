@@ -8,7 +8,7 @@ import {Rotate, Slide} from "react-awesome-reveal"
 import Button from '@mui/material/Button';
 import {handle} from "mdast-util-to-markdown/lib/handle";
 import config from "../config";
-import {Close} from "@material-ui/icons";
+import {Close} from "@mui/icons-material";
 import Image from "next/image"
 
 interface IProps {

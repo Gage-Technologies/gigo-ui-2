@@ -41,9 +41,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import {grey} from "@mui/material/colors";
 import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "@/reducers/bytes/bytes";
-import CloseIcon from "@material-ui/icons/Close";
+import CloseIcon from "@mui/icons-material/Close";
 import GoProDisplay from "../GoProDisplay";
-import {Close, Description} from "@material-ui/icons";
+import {Close, Description} from "@mui/icons-material";
 import CTIcon from '../../img/codeTeacher/CT-icon-simple.svg';
 import Image from "next/image"
 
