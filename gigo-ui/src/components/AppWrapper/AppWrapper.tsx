@@ -2432,7 +2432,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 !(isMobile && rightOpen) ?
                     memoizedChildren : null
             }
-            {/*{renderDevelopment && renderDevelopmentMarker()}*/}
+            {renderDevelopment && renderDevelopmentMarker()}
         </>
     );
 }
