@@ -371,6 +371,7 @@ const HomeworkHelperActive = ({
                             {code.map(
                                 (c, index) => (
                                     <ButtonBase
+                                        key={index}
                                         sx={{
                                             borderRadius: "8px",
                                         }}
