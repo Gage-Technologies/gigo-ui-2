@@ -85,7 +85,11 @@ const formatTz = (tz: string): TimezoneOption => {
 };
 
 
-function CreateNewAccount() {
+function CreateNewAccount({params}: { params: { referrer: string | undefined } }) {
+    const referralUser = params.referrer || ""
+
+    console.log("referralUser", referralUser)
+
     const { trackEvent } = useTracking({}, {
         dispatch: (data: any) => {
             fetch(
@@ -190,9 +194,6 @@ function CreateNewAccount() {
             {showPass ? <VisibilityIcon /> : <VisibilityOffIcon />}
         </Button>
     )
-
-    // retrieve url params
-    let { name } = useParams();
 
     ReactGA.initialize("G-38KBFJZ6M6");
 
@@ -436,9 +437,9 @@ function CreateNewAccount() {
             force_pass: forcePass
         }
 
-        if (name !== "" && name !== undefined) {
+        if (referralUser !== "") {
             //@ts-ignore
-            params["referral_user"] = name
+            params["referral_user"] = referralUser
         }
 
         // duplicate the avatar image to prevent it from being modified
@@ -662,9 +663,9 @@ function CreateNewAccount() {
             }
         }
 
-        if (name !== "" && name !== undefined) {
+        if (referralUser !== "") {
             //@ts-ignore
-            params["referral_user"] = name
+            params["referral_user"] = referralUser
         }
 
         // duplicate the avatar image to prevent it from being modified
@@ -842,9 +843,9 @@ function CreateNewAccount() {
             }
         }
 
-        if (name !== "" && name !== undefined) {
+        if (referralUser !== "") {
             //@ts-ignore
-            params["referral_user"] = name
+            params["referral_user"] = referralUser
         }
 
         // duplicate the avatar image to prevent it from being modified

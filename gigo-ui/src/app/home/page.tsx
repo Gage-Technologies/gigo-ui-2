@@ -188,7 +188,7 @@ async function Home({
     }
     ////////////////////////////////////////////////////
 
-    let isMobile = searchParams?.viewport === "mobile";
+    const isMobile = searchParams?.viewport === "mobile";
 
     // let theme = createTheme(getAllTokens('dark'))
 

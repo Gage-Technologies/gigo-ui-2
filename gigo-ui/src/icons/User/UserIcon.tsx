@@ -1,3 +1,4 @@
+'use client'
 import React from "react"
 import {ButtonBase} from "@mui/material";
 import Badge from '@mui/material/Badge';
