@@ -51,3 +51,7 @@ export function getSessionCookies(cookies: ReadonlyRequestCookies): string {
     }
     return cookieHeader;
 }
+
+export function constructAuthorizationHeader(username: string, password: string) {
+    return "Basic " + Buffer.from(username + ":" + password).toString("base64");
+}

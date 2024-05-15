@@ -430,10 +430,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     };
 
     const clearReducers = () => {
-        let authState = Object.assign({}, initialAuthState)
-        // @ts-ignore
-        dispatch(updateAuthState(authState))
-
+        dispatch(updateAuthState(initialAuthState))
         dispatch(resetAppWrapper())
         dispatch(clearProjectState())
         dispatch(clearSearchParamsState())
@@ -2374,7 +2371,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 sx={{
                     position: 'fixed',
                     bottom: '20px',
-                    left: leftOpen ? '220px' : '20px',
+                    left: leftOpen || homePageLockedDrawer ? '220px' : '20px',
                     zIndex: 200,
                     p: 2,
                     color: theme.palette.error.main,

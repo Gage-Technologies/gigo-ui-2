@@ -22,7 +22,7 @@ import {
     updateAuthState
 } from "@/reducers/auth/auth";
 import {keyframes} from "@mui/system";
-import {useAppSelector} from "@/reducers/hooks";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import {LoadingButton} from "@mui/lab";
 import config from "@/config";
 import {useRouter} from "next/navigation";
@@ -72,6 +72,8 @@ const StartCodingButton = styled(LoadingButton)`
 
 export default function Tutorial() {
     let router = useRouter();
+
+    const dispatch = useAppDispatch();
 
     const authState = useAppSelector(selectAuthState);
     const tutorialState = useAppSelector(selectAuthStateTutorialState);
@@ -337,7 +339,6 @@ export default function Tutorial() {
                                     // update the state
                                     state.home = true
                                     authState.tutorialState = state
-                                    // @ts-ignore
                                     dispatch(updateAuthState(authState))
 
                                     // send api call to backend to mark the challenge tutorial as completed
@@ -375,7 +376,6 @@ export default function Tutorial() {
                                 // update the state
                                 state.home = true
                                 authState.tutorialState = state
-                                // @ts-ignore
                                 dispatch(updateAuthState(authState))
 
                                 // send api call to backend to mark the challenge tutorial as completed

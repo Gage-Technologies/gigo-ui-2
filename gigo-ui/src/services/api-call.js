@@ -16,12 +16,8 @@ import { clearChatState } from "@/reducers/chat/chat";
 import { clearMessageCache } from "@/reducers/chat/cache";
 import { sleep } from './utils'
 import {clearBytesState} from "@/reducers/bytes/bytes";
+import {constructAuthorizationHeader} from "./utils";
 
-function constructAuthorizationHeader(rawUsername, rawPassword) {
-  let username = rawUsername.toString("base64");
-  let password = rawPassword.toString("base64");
-  return "Basic " + new Buffer(username + ":" + password).toString("base64");
-}
 
 function constructUrl(url, params) {
   let temp_url = url + "?";
