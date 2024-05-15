@@ -29,7 +29,6 @@ import {
     Typography
 } from "@mui/material";
 import {getAllTokens} from "@/theme";
-import darkImageUploadIcon from "@/img/dark_image_upload2.svg";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import LockIcon from '@mui/icons-material/Lock';
 import ReactGA from "react-ga4";
@@ -2324,7 +2323,7 @@ function CreateProject() {
                                             opacity: thumbnail === null ? "30%" : "100%",
                                             borderRadius: "10px"
                                         }}
-                                        src={thumbnail === null ? darkImageUploadIcon : thumbnail}
+                                        src={thumbnail === null ? `${config.rootPath}/cloudstore/images/dark_image_upload2.svg` : thumbnail}
                                         alt="upload icon"
                                         className={"background"}
                                     />
