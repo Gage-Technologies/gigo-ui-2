@@ -82,6 +82,7 @@ import CheckIcon from "@mui/icons-material/Check";
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import GoProDisplay from "@/components/GoProDisplay";
 import {useRouter} from "next/navigation";
+import fetchWithUpload from "@/services/chunkUpload";
 
 
 interface LocationState {
@@ -486,19 +487,21 @@ function CreateProject() {
             return
         }
 
-        let res = await call(
-            "/api/search/tags",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/tags`,
             {
-                query: e.target.value,
-                skip: 0,
-                limit: 5,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: e.target.value,
+                    skip: 0,
+                    limit: 5,
+                }),
+                credentials: 'include'
             }
-        )
+        ).then(async (response) => response.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -551,19 +554,21 @@ function CreateProject() {
             queryValue = e.target.value;
         }
 
-        let res = await call(
-            "/api/search/workspaceConfigs",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/search/workspaceConfigs`,
             {
-                query: queryValue,
-                skip: 0,
-                limit: 5,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    query: queryValue,
+                    skip: 0,
+                    limit: 5,
+                }),
+                credentials: 'include'
             }
-        )
+        ).then(async (response) => response.json())
 
         if (res === undefined) {
             swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
@@ -864,32 +869,36 @@ function CreateProject() {
             //@ts-ignore
             params["gen_image_id"] = genImageId
 
-            let res = await call(
-                "/api/project/create",
-                "post",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                params
-            )
+            let res = await fetch(
+                `${config.rootPath}/api/project/create`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params),
+                    credentials: 'include'  // Include cookies
+                }
+            ).then(async (response) => response.json())
 
             createProjectCallback(res)
         } else {
-            let res = await call(
-                "/api/project/create",
-                "post",
-                null,
-                null,
-                null,
+            let res = await fetchWithUpload(
+                `${config.rootPath}/api/project/create`,
                 // @ts-ignore
-                params,
                 createProjectForm.thumbnail,
-                config.rootPath,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(params),
+                    credentials: 'include'  // Include cookies
+                },
                 createProjectCallback
             )
 
-            if (res === undefined) {
+            if (res === undefined || res === null) {
                 if (sessionStorage.getItem("alive") === null)
                     //@ts-ignore
                     swal(
@@ -901,14 +910,6 @@ function CreateProject() {
             }
 
             if ("message" in res && res["message"] !== "File Upload Starting") {
-                if (sessionStorage.getItem("alive") === null)
-                    //@ts-ignore
-                    swal(
-                        "Server Error",
-                        (res["message"] !== "internal server error occurred") ?
-                            res["message"] :
-                            "An unexpected error has occurred. We're sorry, we'll get right on that!"
-                    );
                 setChangeLock(false);
                 return;
             }
@@ -931,20 +932,22 @@ function CreateProject() {
         }
 
         // execute api call to remote GIGO server to create workspace
-        let res = await call(
-            "/api/workspace/create",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/workspace/create`,
             {
-                "commit": "main", // for now always 'main' - future will handle branches and commits
-                "repo": project.repo_id,  // available in attempt or project
-                "code_source_id": project._id,  // pass id of attempt or project
-                "code_source_type": 0, // 0 for project - 1 for attempt
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "commit": "main", // for now always 'main' - future will handle branches and commits
+                    "repo": project.repo_id,  // available in attempt or project
+                    "code_source_id": project._id,  // pass id of attempt or project
+                    "code_source_type": 0, // 0 for project - 1 for attempt
+                }),
+                credentials: 'include'  // Include cookies
             }
-        )
+        ).then(async (response) => response.json())
 
         // handle failed call
         if (res === undefined || res["message"] === undefined) {
@@ -984,17 +987,19 @@ function CreateProject() {
             return false
 
         // execute api call to remote GIGO server to create image
-        let res = await call(
-            "/api/project/genImage",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        let res = await fetch(
+            `${config.rootPath}/api/project/genImage`,
             {
-                "prompt": prompt,
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    "prompt": prompt,
+                }),
+                credentials: 'include'  // Include cookies
             }
-        )
+        ).then(async (response) => response.json())
 
         // handle generation count failure
         if (res !== undefined && res["message"] !== undefined && res["message"] === "User has already reached the generation limit") {
@@ -3380,15 +3385,17 @@ function CreateProject() {
         dispatch(updateAuthState(authState))
 
         // send api call to backend to mark the challenge tutorial as completed
-        await call(
-            "/api/user/markTutorial",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
+        await fetch(
+            `${config.rootPath}/api/user/markTutorial`,
             {
-                tutorial_key: "create_project"
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    tutorial_key: "create_project"
+                }),
+                credentials: 'include'
             }
         )
     }
