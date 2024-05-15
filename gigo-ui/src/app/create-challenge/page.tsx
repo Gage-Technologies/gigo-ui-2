@@ -171,6 +171,8 @@ function CreateProject() {
 
     ReactGA.initialize("G-38KBFJZ6M6");
 
+
+
     // this enables us to push tutorial restarts from the app wrapper down into this page
     useEffect(() => {
         if (tutorialState.create_project === !runTutorial) {
