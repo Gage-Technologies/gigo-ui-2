@@ -26,6 +26,16 @@ export default interface Post {
     thumbnail: string;
     leads: boolean;
     challenge_cost: string;
+    exclusive_description: string;
+    name: string;
+    color_palette: string;
+    render_in_front: boolean;
+    estimated_tutorial_time_millis: number | null;
+    deleted: boolean;
+    has_access: boolean;
+    start_time_millis: number;
+    stripe_price_id: number | string;
+    post_title: "string"
 }
 
 export interface ProjectTutorial {

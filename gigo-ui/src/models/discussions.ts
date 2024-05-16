@@ -14,6 +14,10 @@ export interface Discussion {
     leads: boolean;
     revision: number;
     discussion_level: number;
+    name: string;
+    color_palette: string;
+    render_in_front: boolean;
+    user_status: number;
 }
 
 export interface Comment {
@@ -29,6 +33,10 @@ export interface Comment {
     leads: boolean;
     revision: number;
     discussion_level: number;
+    name: string;
+    color_palette: string;
+    render_in_front: boolean;
+    user_status: number;
 }
 
 export interface ThreadComment {
@@ -43,6 +51,10 @@ export interface ThreadComment {
     leads: boolean;
     revision: number;
     discussion_level: number;
+    name: string;
+    color_palette: string;
+    render_in_front: boolean;
+    user_status: number;
 }
 
 export interface ThreadReply {
@@ -103,7 +115,11 @@ export const EmptyThreadComment = {
     comment_id: "",
     leads: false,
     revision: 0,
-    discussion_level: 2
+    discussion_level: 2,
+    name: "",
+    color_palette: "",
+    render_in_front: false,
+    user_status: 0,
 } as ThreadComment;
 
 export const EmptyThreadReply = {
