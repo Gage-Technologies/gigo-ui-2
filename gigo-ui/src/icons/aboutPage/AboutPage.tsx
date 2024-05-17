@@ -1,4 +1,4 @@
-import {Icon} from "@material-ui/core";
+
 import jungle from "./jungle-sun-4k.svg";
 import jungle219 from "./jungle-sun-21-9.svg";
 import React from "react";
