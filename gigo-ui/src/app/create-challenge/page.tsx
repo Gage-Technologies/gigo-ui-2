@@ -82,6 +82,7 @@ import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import GoProDisplay from "@/components/GoProDisplay";
 import {useRouter} from "next/navigation";
 import fetchWithUpload from "@/services/chunkUpload";
+import Image from "next/image"
 
 
 interface LocationState {
@@ -2314,8 +2315,10 @@ function CreateProject() {
                                     {thumbnail == null || thumbnail == "" ? (
                                         <h5 style={{color: "grey"}}>Upload Image</h5>
                                     ) : null}
-                                    <img
+                                    <Image
                                         key={thumbnail}
+                                        width={400}
+                                        height={400}
                                         style={{
                                             height: thumbnail === null ? "30vh" : "42vh",
                                             width: "auto",

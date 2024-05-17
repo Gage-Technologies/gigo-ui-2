@@ -9,6 +9,7 @@ import config from "../config";
 import LottieAnimation from "./LottieAnimation";
 import ProBannerCircle from "@/icons/ProBannerCircle";
 import { Buffer } from 'buffer';
+import Image from "next/image";
 
 interface IProps {
     size: number | string,
@@ -106,7 +107,7 @@ export default function UserIcon(props: IProps) {
                         zIndex: 1 // Adjust as needed
                     }}
                 >
-                    <img src={svgData} style={{
+                    <Image src={svgData} alt={""} style={{
                         position: "absolute",
                         top: "50%",
                         left: "50%",
@@ -182,9 +183,9 @@ export default function UserIcon(props: IProps) {
                 >
                     {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
                     <div style={{position: "relative", width: props.size, height: props.size}}>
-                        <img src={props.userThumb}
+                        <Image alt={""}  src={props.userThumb}
                             //@ts-ignore
-                             style={styles.imageTop} width={props.size} height={props.size}></img>
+                             style={styles.imageTop} width={props.size} height={props.size}></Image>
                     </div>
                 </Badge>
             }

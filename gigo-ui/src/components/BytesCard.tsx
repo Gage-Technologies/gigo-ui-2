@@ -21,6 +21,7 @@ import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
+import Image from "next/image";
 
 
 interface IProps {
@@ -158,7 +159,7 @@ export default function BytesCard(props: IProps) {
                 >
                     <div style={{ position: 'relative' }}>
                         {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
+                        <Image alt={""} width={400} height={400} style={styles.image} src={props.bytesThumb} loading="lazy" />
                         <Box 
                             display={"flex"}
                             flexDirection={"column"}
