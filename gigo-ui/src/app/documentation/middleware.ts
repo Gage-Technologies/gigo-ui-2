@@ -1,4 +1,3 @@
-import { NextRequest, NextResponse } from 'next/server'
 import {NextURL} from "next/dist/server/web/next-url";
 
 export function handleDocumentationRedirect(url: NextURL): {url: NextURL, redirect: boolean} {
