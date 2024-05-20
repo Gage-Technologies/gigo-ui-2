@@ -1,6 +1,6 @@
-'use client';
 import React, {useEffect, useState} from 'react';
-import {Box, Button, createTheme, Grid, PaletteMode, Paper, SxProps, Typography} from '@mui/material';
+
+import {Box, Button, createTheme, PaletteMode, Typography, Grid, Paper, SxProps} from '@mui/material';
 import backgroundImage from '@/img/welcome-background.png';
 import {AwesomeButton} from "react-awesome-button"; // Adjust the import path according to your file structure
 import {getAllTokens} from "@/theme";
@@ -12,22 +12,18 @@ import styled, {css, keyframes} from 'styled-components';
 import {selectAuthState} from "@/reducers/auth/auth";
 import {useAppSelector} from "@/reducers/hooks";
 import premiumGorilla from "@/img/pro-pop-up-icon-plain.svg";
-import {useRouter, useSearchParams} from "next/navigation";
+import { useSearchParams} from "next/navigation";
 import Image from "next/image";
-import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 
 
-const WelcomePage: React.FC = () => {
+const WelcomeMobilePage: React.FC = () => {
 
     const [showSubscription, setShowSubscription] = useState(false);
-    const navigate = useRouter();
     let userPref = localStorage.getItem('theme')
     const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
     const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const query = useSearchParams();
     const forwardPath = query.get("forward") ? decodeURIComponent(query.get("forward") || "") : "";
-
-    let isMobile = query.get("viewport") === "mobile";
 
     const authState = useAppSelector(selectAuthState)
 
@@ -36,19 +32,18 @@ const WelcomePage: React.FC = () => {
     const [maxLink, setMaxLink] = useState("");
     const [loadingProLinks, setLoadingProLinks] = useState<string | null>(null)
 
-
     const retrieveProUrls = async (): Promise<{ basic: string, advanced: string, max: string } | null> => {
-        let res = await fetch(
-            `${config.rootPath}/api/stripe/premiumMembershipSession`,
-            {
-                method: 'POST',
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({}),
-                credentials: 'include'
-            }
-        ).then(res => res.json());
+        let res = await call(
+            "/api/stripe/premiumMembershipSession",
+            "post",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            {},
+            null,
+            config.rootPath
+        )
 
         if (res !== undefined && res["basic"] !== undefined && res["advanced"] !== undefined && res["max"] !== undefined) {
             setBasicLink(res["basic"])
@@ -65,27 +60,25 @@ const WelcomePage: React.FC = () => {
     }
 
     const handleClaimButtonClick = React.useCallback(async (plan: string) => {
-        // First let's check if we have a cached session - we hope so cause it'll be way faster
-        let bLink = basicLink;
-        let aLink = advancedLink;
-        let mLink = maxLink;
-
+        // first let's check if we have a cached session - we hope so cause it'll be way faster
+        let bLink = basicLink
+        let aLink = advancedLink
+        let mLink = maxLink
         if (bLink === "") {
-            setLoadingProLinks(plan);
-            // Retrieve the URLs if they aren't cached
-            let links = await retrieveProUrls();
+            setLoadingProLinks(plan)
+            // retrieve the urls if they aren't cached
+            let links = await retrieveProUrls()
             if (links === null) {
-                swal("Server Error", "This is awkward... The server is having a fit. We hope you claim your trial another time!", "error");
-                setLoadingProLinks(null);
-                return;
+                swal("Server Error", "This is awkward... The server is having a fit. We hope you claim your trial another time!", "error")
+                return
             }
-            bLink = links.basic;
-            aLink = links.advanced;
-            mLink = links.max;
-            setLoadingProLinks(null);
+            bLink = links.basic
+            aLink = links.advanced
+            mLink = links.max
+            setLoadingProLinks(null)
         }
 
-        // Open the monthly link in a new tab
+        // open the monthly link in a new tab
         if (plan === "advanced") {
             window.open(aLink, "_blank");
         } else if (plan === "max") {
@@ -93,20 +86,14 @@ const WelcomePage: React.FC = () => {
         } else {
             window.open(bLink, "_blank");
         }
-    }, [basicLink, advancedLink, maxLink]);
-
-
+    }, [basicLink, advancedLink, maxLink])
 
     useEffect(() => {
-        if (authState.authenticated) {
-            retrieveProUrls();
+        if (!authState.authenticated) {
+            return
         }
+        retrieveProUrls();
     }, [authState.authenticated]);
-
-    if (isMobile){
-        return <WelcomeMobilePage/>
-    }
-
 
     // Define the types for the benefits
     type BenefitType = {
@@ -154,38 +141,38 @@ const WelcomePage: React.FC = () => {
 // Component to render the plan card
     const Plan: React.FC<PlanProps> = ({title, price, billingPeriod, benefits, trialText, discountText}) => {
         return (
-            <Grid container justifyContent="center" sx={{height: "100%"}}>
-                <Box sx={{position: "relative", height: "100%"}}>
+            <Grid container justifyContent="center">
+                <Box>
                     <Typography variant="h6" sx={{fontWeight: 'bold', mb: 2, textAlign: "center"}}>{title}</Typography>
                     <Box sx={{
                         width: '100%',
-                        mb: 1,
+                        mb: 2,
                         // border: '1px solid', // Adds an outline
                         borderColor: 'grey.300', // Adjust the color as needed
                         borderRadius: '18px', // Optional: adds rounded corners
                         p: 2, // Adds some padding inside the box
                     }}>
-                        <Typography variant="h4" sx={{fontWeight: 'bold', mb: 2}}>{price}</Typography>
+                        <Typography variant="h4" sx={{fontWeight: 'bold', mb: 2, textAlign: "center", width: "100%"}}>{price}</Typography>
                     </Box>
-                    <Typography variant="subtitle1" sx={{mb: 1, textAlign: 'left'}}>{billingPeriod}</Typography>
+                    <Typography variant="subtitle1" sx={{mb: 2, textAlign: 'left'}}>{billingPeriod}</Typography>
                     <Grid item xs={12} sm={12} md={12}>
                         {benefits.map((benefit, index) => (
+
                             <Benefit key={index} benefit={benefit}/>
+
                         ))}
                     </Grid>
-                    <Box sx={{marginTop: "32px"}} />
-                    <Box sx={{position: "absolute", bottom: 0, left: 0, right: 0}}>
-                        {trialText && <Typography variant="body2" sx={{mb: 1, textAlign: 'left'}}>{trialText}</Typography>}
-                        {discountText && <Typography variant="body2" sx={{
-                            color: 'secondary.main',
-                            mb: 1,
-                            textAlign: 'left'
-                        }}>{discountText}</Typography>}
-                    </Box>
+                    {trialText && <Typography variant="body2" sx={{mb: 2, textAlign: 'left'}}>{trialText}</Typography>}
+                    {discountText && <Typography variant="body2" sx={{
+                        color: 'secondary.main',
+                        mb: 2,
+                        textAlign: 'left'
+                    }}>{discountText}</Typography>}
                 </Box>
             </Grid>
         );
     };
+
 
     const basicBenefits: BenefitType[] = [
         {
@@ -306,8 +293,13 @@ const WelcomePage: React.FC = () => {
                                         align={"center"}>
                                 Free for 1 month
                             </Typography>
+                            <Typography variant={"body2"} style={{textAlign: "left", width: "100%"}}>
+                                <a href="#bottom" style={{color: "#ffffff70"}}>
+                                    Skip Offer At Bottom Of Page
+                                </a>
+                            </Typography>
                         </Box>
-                        <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
+                        <Image alt={"premiumGorilla"} width={60} height={60} src={premiumGorilla} style={{
                             width: "80px",
                             marginBottom: "20px"
                         }}/>
@@ -470,22 +462,21 @@ const WelcomePage: React.FC = () => {
                             Skip Offer
                         </AwesomeButton>
                     </Box>
+                    <div id="bottom" style={{textAlign: "center"}}/>
                 </Box>
             </div>
         );
     } else {
         return (
-            <div style={{
+            <Box sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'space-between', // This will space out the main and bottom sections
+                justifyContent: 'center',
                 alignItems: 'center',
-                height: '93vh',
+                minHeight: '100vh',
                 // backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                textAlign: 'center',
-                padding: '20px 0', // Add padding to avoid content touching the edges
+                p: 2,
             }}>
                 <div style={{
                     position: 'absolute',
@@ -505,25 +496,18 @@ const WelcomePage: React.FC = () => {
                         quality={100} // Set image quality to high
                     />
                 </div>
-                {/* Middle section for Welcome Text and Get Started Button */}
-                <div style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%', // Take full height to center content vertically
-                }}>
-                    <h1>Welcome to GIGO</h1>
-                    <br/>
-                    <p>Learn something new today!</p>
-                    <br/>
-                    <Button variant="contained" onClick={() => setShowSubscription(true)}>Continue</Button>
-                </div>
-            </div>
+                <Typography variant="h4" align="center" gutterBottom>Welcome to GIGO</Typography>
+                <Typography variant="body1" align="center" sx={{mb: 4}}>
+                    Learn something new today!
+                </Typography>
+                <Button variant="contained" onClick={() => setShowSubscription(true)} sx={{mb: 2}}>
+                    Continue
+                </Button>
+            </Box>
         );
     }
 
 
 };
 
-export default WelcomePage;
+export default WelcomeMobilePage;
