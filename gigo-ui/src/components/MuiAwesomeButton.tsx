@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { styled } from '@mui/material/styles';
 import {LoadingButton, LoadingButtonProps} from "@mui/lab";
+import { Box } from '@mui/material';
 
 interface MuiAwesomeButtonProps extends Omit<LoadingButtonProps, 'color' | 'variant'> {
     backgroundColor: string;
@@ -33,9 +34,9 @@ const MuiAwesomeButtonStyled = styled(LoadingButton)<{
     '&::before': {
         content: '""',
         position: 'absolute',
-        top: 10,
+        top: 6,
         right: 0,
-        bottom: -10,
+        bottom: -6,
         left: 0,
         zIndex: -1,
         backgroundColor: secondarycolor,
@@ -45,7 +46,7 @@ const MuiAwesomeButtonStyled = styled(LoadingButton)<{
         }),
     },
     '&:hover': {
-        backgroundColor: isClicked ? 'transparent' : bgcolor,
+        backgroundColor: isClicked ? 'transparent' : hoverColor, // Updated to reflect hoverColor change
         boxShadow: "none",
     },
     '&.MuiLoadingButton-loading': {
@@ -72,23 +73,25 @@ const MuiAwesomeButton: React.FC<MuiAwesomeButtonProps> = ({
     };
 
     return (
-        <MuiAwesomeButtonStyled
-            bgcolor={backgroundColor}
-            secondarycolor={secondaryColor}
-            textcolor={textColor}
-            hoverColor={hoverColor}
-            variant="contained"
-            isClicked={isClicked}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp} // In case the cursor leaves the button while holding the click
-            onTouchStart={handleMouseDown} // For touch devices
-            onTouchEnd={handleMouseUp} // For touch devices
-            disableRipple={true}
-            {...props}
-        >
-            {children}
-        </MuiAwesomeButtonStyled>
+        <Box sx={{zIndex: 2, width: 'fit-content', height: 'fit-content', position: 'relative'}}>
+            <MuiAwesomeButtonStyled
+                bgcolor={backgroundColor}
+                secondarycolor={secondaryColor}
+                textcolor={textColor}
+                hoverColor={hoverColor}
+                variant="contained"
+                isClicked={isClicked}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseLeave={handleMouseUp} // In case the cursor leaves the button while holding the click
+                onTouchStart={handleMouseDown} // For touch devices
+                onTouchEnd={handleMouseUp} // For touch devices
+                disableRipple={true}
+                {...props}
+            >
+                {children}
+            </MuiAwesomeButtonStyled>
+        </Box>
     );
 };
 

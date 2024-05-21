@@ -42,7 +42,7 @@ import { ThreeDots } from "react-loading-icons";
 import Avataaar from "@/components/Avatar/avatar";
 import ReactDOM from "react-dom";
 import { LoadingButton } from "@mui/lab";
-import UserIcon from "@/components/UserIcon";
+import UserIcon from "@/icons/User/UserIcon";
 import { persistStore } from "redux-persist";
 import { makeStore } from "@/reducers/store";
 import { resetAppWrapper } from "@/reducers/appWrapper/appWrapper";

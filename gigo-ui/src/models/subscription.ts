@@ -4,7 +4,7 @@ export interface Subscription {
     current_subscription_string: string;
     stripe_subscription_string: string;
     payment: string;
-    membershipStart: string;
+    membershipStart: number;
     lastPayment: number;
     upcomingPayment: number;
     inTrial: boolean;
