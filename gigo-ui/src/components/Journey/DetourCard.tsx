@@ -1,3 +1,4 @@
+'use client'
 import React, {useState} from "react";
 import {Box, Card, CardContent, CardMedia, createTheme, PaletteMode, Tooltip, Typography} from "@mui/material";
 import JourneyDetourPopup from "./JourneyDetourPopup";
@@ -55,7 +56,7 @@ function DetourCard(props: any) {
                     />
                     <Box sx={{ display: 'flex', flexDirection: 'column', width: '450px' }}>
                         <CardContent>
-                            <Typography component="div" variant="body1" sx={props.width !== undefined && props.width !== null ? {fontSize: '1.5vh', paddingBottom: "10px"} : { fontSize: '2vh', paddingBottom: "10px" }}>
+                            <Typography component="div" variant="body1" sx={{ fontSize: '1.3rem', paddingBottom: "10px" }}>
                                 {props.data.name}
                             </Typography>
                         </CardContent>
@@ -118,7 +119,7 @@ function DetourCard(props: any) {
                 />
                 <Box sx={{ display: 'flex', flexDirection: 'column', width: '450px' }}>
                     <CardContent>
-                        <Typography component="div" variant="body1" sx={props.width !== undefined && props.width !== null ? {fontSize: '2vh', paddingBottom: "10px"} : { fontSize: '3vh', paddingBottom: "10px" }}>
+                        <Typography component="div" variant="body1" sx={{ fontSize: '1.3rem', paddingBottom: "10px" }}>
                             {props.data.name}
                         </Typography>
                     </CardContent>

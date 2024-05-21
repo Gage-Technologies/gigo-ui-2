@@ -15,7 +15,7 @@ import config from "@/config";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour";
 import swal from "sweetalert";
-import {Unit} from "@/models/journey/unit";
+import {Unit} from "@/models/journey";
 import {debounce} from "lodash";
 import {useSearchParams} from "next/navigation";
 import JourneyDetoursMobile from "@/components/Journey/JourneyDetoursMobile";

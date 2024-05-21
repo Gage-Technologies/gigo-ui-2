@@ -8,7 +8,7 @@ import {selectAuthStateId} from "@/reducers/auth/auth";
 import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour"; // Adjust import based on actual location
 import swal from "sweetalert";
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
-import {Unit} from "@/models/journey/unit";
+import {Unit} from "@/models/journey";
 import DetourMobileCard from "./DetourMobileCard";
 import JourneyMobileMap from "./JourneyMobileMap";
 import Image from "next/image";

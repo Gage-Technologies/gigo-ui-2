@@ -1,221 +1,532 @@
-import React, {useEffect, useState} from 'react';
-import {Box, Dialog, IconButton, Typography} from '@mui/material';
+'use client'
+import React, { useEffect, useState } from 'react';
+import { Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Card, CardContent, CardActions, Button, Grid, SxProps } from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
-import {LoadingButton} from '@mui/lab';
+import { LoadingButton } from '@mui/lab';
 import premiumGorilla from "../img/pro-pop-up-icon-plain.svg";
-import {theme} from "@/theme";
+import { theme } from "../theme";
+import call from "../services/api-call";
 import config from "../config";
-import proBackground from "../img/popu-up-backgraound-plain.svg";
-import {useAppSelector} from "@/reducers/hooks";
-import {selectAuthState} from "@/reducers/auth/auth"; // Adjust import based on actual location
+import { initialAuthStateUpdate, selectAuthState, updateAuthState } from "../reducers/auth/auth"; // Adjust import based on actual location
+import { Subscription, SubscriptionStatus } from "@/models/subscription";
+import stripeWhite from '../img/powered-stripe-white.svg'
+import stripeBlack from '../img/powered-stripe-black.svg'
+import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import { useGetProUrls } from '@/hooks/getProUrls';
+import { useGetUserSubData } from '@/hooks/getUserSubData';
+
+// Define the types for the benefits
+type BenefitType = {
+    title: string;
+    description: string;
+    learnMoreLink?: string;
+};
+
+const basicBenefits: BenefitType[] = [
+    {
+        title: 'Unlimited Retries',
+        description: 'No daily restrictions on Journeys & Bytes.'
+    },
+    {
+        title: 'Freeze Your Streak',
+        description: 'Get two streak freezes per week to keep your streak alive on your off days.'
+    },
+];
+
+const advancedBenefits: BenefitType[] = [
+    {
+        title: 'Basic',
+        description: 'Everything from the Basic plan.'
+    },
+    {
+        title: 'Access to Challenges',
+        description: 'GIGO\'s project-based learning experience.'
+    },
+    {
+        title: 'Larger DevSpaces',
+        description: '8 CPU cores, 8GB RAM, 50GB disk'
+    }
+];
+
+const maxBenefits: BenefitType[] = [
+    {
+        title: 'Advanced',
+        description: 'Everything from the Advanced plan.'
+    },
+    {
+        title: 'Smarter Code Teacher',
+        description: 'Learn faster with the smartest version of Code Teacher, your personal tutor on GIGO.'
+    }
+];
+
+const Benefit: React.FC<{ benefit: BenefitType, sx?: SxProps }> = ({ benefit, sx }) => {
+    return (
+        <Box sx={{
+            width: '100%',
+            mb: 1,
+            borderRadius: '8px',
+            ...sx,  // Spread the sx prop here
+        }}>
+            <Typography variant="subtitle2" color={"secondary"} sx={{ fontSize: "0.8rem", textAlign: "left" }}>
+                {benefit.title}
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1 }}>
+                {benefit.description}
+            </Typography>
+            {benefit.learnMoreLink && (
+                <Typography variant="body2" component="a" href={benefit.learnMoreLink}
+                    sx={{ display: 'block', mt: 1 }}>
+                    Learn More
+                </Typography>
+            )}
+        </Box>
+    );
+};
+
+interface SubscriptionCardProps {
+    title: string;
+    benefits: BenefitType[];
+    price: string;
+    loading: boolean;
+    href: string;
+    onClick?: () => void;
+    active: boolean;
+    previewPrice?: string;
+    downgradeDate?: string;
+    pendingDowngrade?: string;
+}
+
+const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ title, benefits, price, loading, href, onClick, active, previewPrice, downgradeDate, pendingDowngrade }) => {
+    let buttonText = price;
+    let buttonTextColor: "primary" | "error" = "primary"
+    if (active) {
+        buttonText = "Active"
+    }
+    if (downgradeDate) {
+        buttonText = "Confirm Downgrade"
+    }
+    if (previewPrice) {
+        buttonText = "Confirm Upgrade"
+    }
+    if (pendingDowngrade) {
+        buttonTextColor = "error"
+        buttonText = "Cancel Downgrade"
+    }
+
+    return (
+        <Card sx={{ minWidth: 225, margin: 2, textAlign: 'center' }}>
+            <CardContent>
+                <Typography variant="h5" component="div">
+                    {title}
+                </Typography>
+                <Grid container direction="column" spacing={1} sx={{ p: 0 }}>
+                    {benefits.map((benefit, index) => (
+                        <Grid item xs={12} sx={{ paddingLeft: "0px" }} key={index}>
+                            <Benefit benefit={benefit} />
+                        </Grid>
+                    ))}
+                </Grid>
+            </CardContent>
+            <CardActions sx={{ justifyContent: "center" }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%', flexDirection: 'column' }}>
+                    {previewPrice && (
+                        <Typography variant="caption" sx={{ color: "white" }}>
+                            Prorated cost: ${parseFloat(previewPrice).toFixed(2)}
+                        </Typography>
+                    )}
+                    {(downgradeDate || pendingDowngrade) && (
+                        <Typography variant="caption" sx={{ color: "white" }}>
+                            You will be downgraded on: {pendingDowngrade || downgradeDate}
+                        </Typography>
+                    )}
+                    {onClick ? (
+                        <LoadingButton
+                            onClick={onClick}
+                            disabled={active}
+                            loading={loading}
+                            sx={{
+                                width: "100%"
+                            }}
+                            variant="contained"
+                            color={buttonTextColor}
+                        >
+                            {buttonText}
+                        </LoadingButton>
+                    ) : (
+                        <LoadingButton
+                            href={href}
+                            disabled={active}
+                            loading={loading}
+                            target="_blank"
+                            sx={{
+                                width: "100%"
+                            }}
+                            variant="contained"
+                            color={buttonTextColor}
+                        >
+                            {buttonText}
+                        </LoadingButton>
+                    )}
+                </Box>
+            </CardActions>
+        </Card>
+    );
+};
 
 interface GoProPopupProps {
     open: boolean;
     onClose: () => void;
 }
 
-const GoProDisplay: React.FC<GoProPopupProps> = ({open, onClose}) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
-
+const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
+    const dispatch = useAppDispatch();
     const authState = useAppSelector(selectAuthState);
 
+    const [previewLoading, setPreviewLoading] = React.useState<string | null>(null)
+    const [preview, setPreview] = React.useState<{ status: string, price?: string, downgradeDate?: string } | null>(null)
     const [proUrlsLoading, setProUrlsLoading] = useState(false);
-    const [proMonthlyLink, setProMonthlyLink] = useState('');
-    const [proYearlyLink, setProYearlyLink] = useState('');
+    const [basicLink, setBasicLink] = useState('');
+    const [advancedLink, setAdvancedLink] = useState('');
+    const [maxLink, setMaxLink] = useState('');
+    const [subscription, setSubscription] = useState<Subscription | null>(null);
 
-    const retrieveProUrls = async (): Promise<{ monthly: string, yearly: string } | null> => {
-        setProUrlsLoading(true)
-        let res = await fetch(
-            `${config.rootPath}/api/stripe/premiumMembershipSession`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: '{}',
-                cache: "no-cache",
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
+    const getProUrls = useGetProUrls()
+    const getUserSubData = useGetUserSubData()
 
-        setProUrlsLoading(false)
+    const retrieveProUrls = async (): Promise<{ basic: string, advanced: string, max: string } | null> => {
+        let res = await getProUrls()
+        console.log("res: ", res)
 
-        if (res !== undefined && res["return url"] !== undefined && res["return year"] !== undefined) {
-            setProMonthlyLink(res["return url"])
-            setProYearlyLink(res["return year"])
-            return {
-                "monthly": res["return url"],
-                "yearly": res["return year"],
-            }
+        if (res !== undefined && res !== null) {
+            setBasicLink(res.basic)
+            setAdvancedLink(res.advanced)
+            setMaxLink(res.max)
+            return res
         }
 
         return null
     }
 
+    const getSubData = async (): Promise<Subscription | null> => {
+        let subscription = await getUserSubData();
+
+        if (subscription === undefined || subscription === null) {
+            return null
+        }
+
+        setSubscription(subscription)
+        return subscription
+    }
+
+    const updateSubscription = async (targetStatus: SubscriptionStatus, preview: boolean): Promise<{ success: boolean, prorated_cost: string | null } | null> => {
+        let subscription = await call(
+            "/api/stripe/updateSubscription",
+            "post",
+            null,
+            null,
+            null,
+            //@ts-ignore
+            {
+                target_status: targetStatus,
+                preview: preview,
+            },
+            null,
+            config.rootPath
+        )
+
+        if (subscription === undefined || (subscription["prorated_cost"] === undefined && subscription["success"] === undefined)) {
+            return null
+        }
+
+        return {
+            success: subscription["success"] || false,
+            prorated_cost: subscription["prorated_cost"] || null
+        }
+    }
+
+    const cancelSubscriptionDowngrade = async (target: string): Promise<boolean> => {
+        setPreviewLoading(target)
+        let subscription = await call(
+            "/api/stripe/cancelSubscriptionDowngrade",
+            "post",
+            null,
+            null,
+            null,
+            //@ts-ignore
+            {},
+            null,
+            config.rootPath
+        )
+
+        if (subscription === undefined || subscription["success"] === undefined) {
+            return false
+        }
+
+        if (subscription["success"]) {
+            getSubData().then(() => setPreviewLoading(null))
+        } else {
+            setPreviewLoading(null)
+        }
+        return subscription["success"]
+    }
+
+    const bootstrap = async () => {
+        setProUrlsLoading(true)
+        let subData = await getSubData()
+        if (subData !== null && subData.current_subscription === SubscriptionStatus.Free) {
+            await retrieveProUrls()
+        }
+        setProUrlsLoading(false)
+    }
+
     useEffect(() => {
         if (authState.authenticated) {
-            retrieveProUrls()
+            bootstrap()
         }
-    }, [authState.authenticated])
+    }, [authState.authenticated, open])
+
+    const handleUpgradeClick = async (targetStatus: SubscriptionStatus, force: boolean) => {
+        if (subscription === null || subscription.current_subscription === SubscriptionStatus.Free) {
+            return
+        }
+
+        // set the preview loading state
+        let preview = "basic"
+        if (targetStatus === SubscriptionStatus.ProMax) {
+            preview = "max"
+        } else if (targetStatus === SubscriptionStatus.ProAdvanced) {
+            preview = "advanced"
+        }
+        setPreviewLoading(preview)
+
+        // determine if this is an upgrade or downgrade
+        let upgrade = false
+        if (subscription.current_subscription < targetStatus) {
+            upgrade = true
+        }
+
+        if (!upgrade && !force) {
+            setPreview({
+                status: preview,
+                downgradeDate: new Date(subscription.upcomingPayment * 1000).toLocaleDateString()
+            })
+            setPreviewLoading(null)
+            return
+        }
+
+        // execute the upgrade or downgrade
+        let res = await updateSubscription(targetStatus, upgrade && !force)
+        if (res !== null) {
+            if (res.success) {
+                if (upgrade) {
+                    let sub = JSON.parse(JSON.stringify(subscription))
+                    sub.current_subscription = targetStatus
+                    setSubscription(sub)
+                    let authStateUpdate = Object.assign({}, initialAuthStateUpdate)
+                    authStateUpdate.role = targetStatus
+                    dispatch(updateAuthState(authStateUpdate))
+                }
+                setPreview(null)
+                getSubData()
+                onClose()
+            }
+
+            if (res.prorated_cost !== null) {
+                setPreview({
+                    status: preview,
+                    price: res.prorated_cost
+                })
+            }
+        }
+        setPreviewLoading(null)
+    }
 
     return (
-        <>
-            <Dialog open={open} onClose={onClose} maxWidth="md"
-                    PaperProps={{sx: {borderRadius: 7, overflow: "hidden"}}}>
-                <Box style={{
-                    width: isMobile ? "80vw" : "28vw",
-                    height: isMobile ? "78vh" : "70vh",
-                    minHeight: "420px",
-                    // justifyContent: "center",
-                    // marginLeft: "25vw",
-                    // marginTop: "5vh",
-                    outlineColor: "black",
-                    borderRadius: 7,
-                    boxShadow:
-                        "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                    // backgroundColor: theme.palette.background.default,
-                    backgroundImage: `url(${proBackground})`,
-                    backgroundSize: "cover",
-                    backgroundRepeat: "no-repeat",
-                    backgroundPosition: "center center"
-                }}>
-                    <div style={{
-                        borderRadius: "10px",
-                        padding: "20px",
-                        textAlign: "center",
-                    }}>
-                        <IconButton
-                            edge="end"
-                            color="inherit"
-                            size="small"
-                            onClick={onClose}
-
-                            sx={isMobile ? {
-                                position: "absolute",
-                                top: '3vh',
-                                right: '3vw',
-                                color: "white"
-                            } : {
-                                position: "absolute",
-                                top: '2vh',
-                                right: '2vw', color: "white"
-                            }}
-                        >
-                            <Close/>
-                        </IconButton>
-                        <Image alt={""} src={premiumGorilla} style={isMobile ? {width: "20%", marginBottom: "5px"} : {
-                            width: "30%",
-                            marginBottom: "20px"
-                        }}/>
-                        <Typography variant={isMobile ? "h5" : "h4"}
-                                    style={{marginBottom: "10px", color: "white"}} align={"center"}>GIGO
-                            Pro</Typography>
-                        <Typography variant={isMobile ? "body2" : "body1"}
-                                    style={{marginLeft: "20px", marginRight: "20px", color: "white"}} align={"center"}>
-                            Learn faster with a smarter Code Teacher!
-                        </Typography>
-                        <Typography variant={isMobile ? "body2" : "body1"}
-                                    style={{
-                                        marginBottom: "20px",
-                                        marginLeft: "20px",
-                                        marginRight: "20px",
-                                        color: "white"
-                                    }}
-                                    align={"center"}>
-                            Do more with larger DevSpaces!
-                        </Typography>
-                        <div style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            flexDirection: "row",
-                            width: "100%"
-                        }}>
-                            <div style={isMobile ? {
-                                backgroundColor: "#070D0D",
-                                borderRadius: "10px",
-                                padding: "20px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                                textAlign: "center",
-                                height: "fit-content"
-                            } : {
-                                backgroundColor: "#070D0D",
-                                borderRadius: "10px",
-                                padding: "20px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                                textAlign: "center",
-                                width: "200px"
-                            }}>
-                                <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
-                                            style={{marginBottom: "10px", color: "white"}}
-                                            align={"center"}>Monthly</Typography>
-                                <Typography variant={isMobile ? "h6" : "h5"}
-                                            style={{marginBottom: "10px", color: "white"}}
-                                            align={"center"}>$8</Typography>
-                                <LoadingButton
-                                    loading={proUrlsLoading}
-                                    variant="contained"
-                                    href={proMonthlyLink}
-                                    target="_blank"
-                                    style={{backgroundColor: theme.palette.secondary.dark}}
-                                >
-                                    Select
-                                </LoadingButton>
-                            </div>
-                            <div style={isMobile ? {
-                                backgroundColor: "#070D0D",
-                                borderRadius: "10px",
-                                padding: "20px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                                textAlign: "center",
-                                height: "fit-content"
-                            } : {
-                                backgroundColor: "#070D0D",
-                                borderRadius: "10px",
-                                padding: "20px",
-                                margin: "10px",
-                                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
-                                textAlign: "center",
-                                width: "200px"
-                            }}>
-                                <Typography variant={isMobile ? "subtitle2" : "subtitle1"}
-                                            style={{marginBottom: "10px", color: "white"}}
-                                            align={"center"}>Yearly</Typography>
-                                <Typography variant={isMobile ? "h6" : "h5"}
-                                            style={{marginBottom: "10px", color: "white"}}
-                                            align={"center"}>$80</Typography>
-                                <LoadingButton
-                                    loading={proUrlsLoading}
-                                    variant="contained"
-                                    href={proYearlyLink}
-                                    target="_blank"
-                                    style={{backgroundColor: theme.palette.secondary.dark}}
-                                >
-                                    Select
-                                </LoadingButton>
-                            </div>
-                        </div>
-                        <Typography
-                            variant="body1"
-                            style={{marginTop: "20px", color: "white", cursor: "pointer"}}
-                            align="center"
-                            component="a" // Render the Typography as an <a> tag
-                            href="/premium" // Specify the target URL
-                            target="_blank"
-                        >
-                            Learn More About Pro
-                        </Typography>
-                    </div>
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth={window.innerWidth <= 1000 ? "xl" : "md"}
+            sx={{
+                width: window.innerWidth <= 1000 ? "100vw" : "auto",
+                maxHeight: "100vh"
+            }}
+            PaperProps={{
+                sx: {
+                    borderRadius: window.innerWidth <= 1000 ? "0px" : "10px",
+                    overflow: "auto",
+                    backgroundColor: "background.default",
+                    margin: window.innerWidth <= 1000 ? "0px" : undefined,
+                    maxHeight: window.innerWidth <= 1000 ? "100vh" : undefined
+                }
+            }}
+        >
+            <Box sx={{
+                position: "relative",
+                boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
+                backgroundImage: `linear-gradient(to bottom right, ${theme.palette.primary.dark} 0%, ${theme.palette.background.default} 45%, ${theme.palette.background.default} 55%, ${theme.palette.secondary.dark} 100%)`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center center",
+                paddingBottom: "16px",
+            }}>
+                <IconButton
+                    edge="end"
+                    color="inherit"
+                    size="small"
+                    onClick={onClose}
+                    sx={{
+                        position: "absolute",
+                        top: { xs: '3vh', md: '20px' },
+                        right: { xs: '3vw', md: '30px' },
+                        color: "white"
+                    }}
+                >
+                    <Close />
+                </IconButton>
+                <Box
+                    sx={{
+                        mb: { xs: 1, md: 2.5 },
+                        position: "absolute",
+                        top: { xs: '3vh', md: '20px' },
+                        right: { xs: 'calc(3vw + 25px)', md: '60px' },
+                    }}
+                >
+                    <Image
+                        src={premiumGorilla}
+                        width={100}
+                        height={100}
+                        alt=""
+                    />
                 </Box>
-            </Dialog>
-        </>
+                <Typography variant="h4" sx={{ mb: 1.25, color: "white", marginLeft: 2, marginTop: 2 }}>
+                    GIGO Pro
+                </Typography>
+                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mb: 1, maxWidth: "60%" }}>
+                    Unlimited retries on Journeys & Bytes.
+                </Typography>
+                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%", mb: subscription && !subscription.usedFreeTrial && window.innerWidth > 1000 ? 1 : undefined }}>
+                    Freeze your Streak.
+                </Typography>
+                {subscription && !subscription.usedFreeTrial && window.innerWidth > 1000 && (
+                    <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%" }}>
+                        Claim Your 1 Month Free Trial!
+                    </Typography>
+                )}
+                <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ p: 2 }}>
+                    {subscription && !subscription.usedFreeTrial && window.innerWidth <= 1000 && (
+                        <Grid item xs={12}>
+                            <Typography variant="body1" sx={{ color: "white", mt: 1, width: "100%", textAlign: "center" }}>
+                                Claim Your 1 Month Free Trial!
+                            </Typography>
+                        </Grid>
+                    )}
+                    <Grid item xs={12} md={4}>
+                        <SubscriptionCard
+                            title="Basic"
+                            benefits={basicBenefits}
+                            price="$3/month"
+                            loading={proUrlsLoading || previewLoading === "basic"}
+                            href={basicLink}
+                            active={subscription !== null && subscription.current_subscription === SubscriptionStatus.ProBasic}
+                            previewPrice={preview === null || !preview.price || preview.status !== "basic" ? undefined : preview.price}
+                            onClick={
+                                subscription !== null &&
+                                    subscription.scheduledDowngrade === SubscriptionStatus.ProBasic ?
+                                    () => cancelSubscriptionDowngrade("basic")
+                                    :
+                                    subscription !== null &&
+                                        subscription.current_subscription !== SubscriptionStatus.Free ?
+                                        () => handleUpgradeClick(SubscriptionStatus.ProBasic, preview !== null && preview.status === "basic")
+                                        :
+                                        undefined
+                            }
+                            downgradeDate={preview === null || !preview.downgradeDate || preview.status !== "basic" ? undefined : preview.downgradeDate}
+                            pendingDowngrade={subscription !== null && subscription.scheduledDowngrade === SubscriptionStatus.ProBasic ? new Date(subscription.upcomingPayment * 1000).toLocaleDateString() : undefined}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <SubscriptionCard
+                            title="Advanced"
+                            benefits={advancedBenefits}
+                            price="$8/month"
+                            loading={proUrlsLoading || previewLoading === "advanced"}
+                            href={advancedLink}
+                            active={subscription !== null && subscription.current_subscription === SubscriptionStatus.ProAdvanced}
+                            previewPrice={preview === null || preview.status !== "advanced" ? undefined : preview.price}
+                            onClick={
+                                subscription !== null &&
+                                    subscription.scheduledDowngrade === SubscriptionStatus.ProAdvanced ?
+                                    () => cancelSubscriptionDowngrade("advanced")
+                                    :
+                                    subscription !== null &&
+                                        subscription.current_subscription !== SubscriptionStatus.Free ?
+                                        () => handleUpgradeClick(SubscriptionStatus.ProAdvanced, preview !== null && preview.status === "advanced")
+                                        :
+                                        undefined
+                            }
+                            downgradeDate={preview === null || !preview.downgradeDate || preview.status !== "advanced" ? undefined : preview.downgradeDate}
+                            pendingDowngrade={subscription !== null && subscription.scheduledDowngrade === SubscriptionStatus.ProAdvanced ? new Date(subscription.upcomingPayment * 1000).toLocaleDateString() : undefined}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                        <SubscriptionCard
+                            title="Max"
+                            benefits={maxBenefits}
+                            price="$15/month"
+                            loading={proUrlsLoading || previewLoading === "max"}
+                            href={maxLink}
+                            active={subscription !== null && subscription.current_subscription === SubscriptionStatus.ProMax}
+                            previewPrice={preview === null || preview.status !== "max" ? undefined : preview.price}
+                            onClick={
+                                subscription !== null &&
+                                    subscription.scheduledDowngrade === SubscriptionStatus.ProMax ?
+                                    () => cancelSubscriptionDowngrade("max")
+                                    :
+                                    subscription !== null &&
+                                        subscription.current_subscription !== SubscriptionStatus.Free ?
+                                        () => handleUpgradeClick(SubscriptionStatus.ProMax, preview !== null && preview.status === "max")
+                                        :
+                                        undefined
+                            }
+                            downgradeDate={preview === null || !preview.downgradeDate || preview.status !== "max" ? undefined : preview.downgradeDate}
+                            pendingDowngrade={subscription !== null && subscription.scheduledDowngrade === SubscriptionStatus.ProMax ? new Date(subscription.upcomingPayment * 1000).toLocaleDateString() : undefined}
+                        />
+                    </Grid>
+                </Grid>
+                <Box sx={{
+                    display: 'inline-flex',
+                    width: "100%",
+                    justifyContent: "space-between",
+                }}>
+                    <Typography
+                        variant="body1"
+                        sx={{ mx: 2, color: "white", cursor: "pointer" }}
+                        align="center"
+                        component="a"
+                        href="/premium"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            window.open("/premium", "_blank");
+                        }}
+                    >
+                        Learn More About Pro
+                    </Typography>
+                    <Image
+                        height={36}
+                        width={150}
+                        style={{
+                            marginLeft: "auto",
+                            marginRight: "16px"
+                        }}
+                        src={theme.palette.mode === "light" ? stripeBlack : stripeWhite}
+                        alt=""
+                    />
+                </Box>
+            </Box>
+        </Dialog>
     );
 };
 
 export default GoProDisplay;
+

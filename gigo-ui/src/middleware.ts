@@ -104,7 +104,6 @@ export function middleware(request: NextRequest) {
 
     // handle overwrite of chat state for logged out users
     if (url.searchParams.get("chat") === "true" && !cookie) {
-        console.log("overwriting chat state for logged out user");
         url.searchParams.delete("chat");
         redirect = true;
     }

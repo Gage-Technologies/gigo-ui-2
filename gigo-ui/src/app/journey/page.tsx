@@ -40,7 +40,7 @@ import JavascriptOriginal from 'devicons-react/lib/icons/JavascriptOriginal';
 import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
 import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
 import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
-import {Task, Unit} from "@/models/journey/unit";
+import {Task, Unit} from "@/models/journey";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
 import {useSearchParams} from "next/navigation";

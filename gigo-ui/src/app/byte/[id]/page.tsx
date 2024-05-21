@@ -78,7 +78,7 @@ import BytesLanguage from "@/icons/Bytes/BytesLanguage";
 import {CodeFile} from "@/models/code_file";
 import CloseIcon from "@mui/icons-material/Close";
 import {EditorTab, EditorTabs} from "@/components/IDE/EditorTabs";
-import JourneyUnit from "@/models/journey_unit";
+import {Unit} from "@/models/journey";
 import JourneyHandoutPlugin from "@/components/JourneyHandoutPlugin";
 import BytePortPlugin from "@/components/BytePortPlugin";
 import {AdminUpdateByteCodeRequest, AdminUpdateByteCodeResponse} from "@/models/admin";
@@ -409,7 +409,7 @@ function Byte({params}: { params: { id: string } }) {
     const [suggestionRange, setSuggestionRange] = useState<{ start_line: number, end_line: number } | null>(null);
     const [isHarderVersionPopupVisible, setIsHarderVersionPopupVisible] = useState(false);
 
-    const [journeyUnitData, setJourneyUnitData] = useState<JourneyUnit | null>(null);
+    const [journeyUnitData, setJourneyUnitData] = useState<Unit | null>(null);
 
     const tutorialState = useAppSelector(selectAuthStateTutorialState)
     const [runTutorial, setRunTutorial] = React.useState(!tutorialState.bytes && authState.authenticated)
@@ -1155,7 +1155,7 @@ function Byte({params}: { params: { id: string } }) {
             }
         });
         if (isJourney) {
-            getJourneyUnit(id).then((u: JourneyUnit | null) => {
+            getJourneyUnit(id).then((u: Unit | null) => {
                 // if (u !== null && !bytesState.handoutClosedByUser) {
                 //     setActiveSidebarTab("journeyHandout")
                 // }

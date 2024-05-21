@@ -1,7 +1,8 @@
 'use client'
 import * as React from "react"
-import {useEffect} from "react"
+import { useEffect } from "react"
 import {
+    Box,
     Button,
     ButtonBase,
     Card,
@@ -15,11 +16,11 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {getAllTokens, theme} from "@/theme";
+import { getAllTokens, theme } from "@/theme";
 import UserIcon from "@/icons/User/UserIcon";
 import HorseIcon from "@/icons/ProjectCard/Horse"
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
-import {QuestionMark} from "@mui/icons-material";
+import { KeyboardDoubleArrowUp, LockOutlined, QuestionMark } from "@mui/icons-material";
 import TrophyIcon from "@/icons/ProjectCard/Trophy";
 import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -35,6 +36,10 @@ import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image from "next/image";
+import { useAppSelector } from "@/reducers/hooks";
+import { selectAuthState } from "@/reducers/auth/auth";
+import Lock from "@mui/icons-material/Lock";
+import GoProDisplay from "../GoProDisplay";
 
 
 interface IProps {
@@ -66,6 +71,10 @@ interface IProps {
 }
 
 export default function ProjectCard(props: IProps) {
+    const authState = useAppSelector(selectAuthState);
+
+    const [goProPopup, setGoProPopup] = React.useState(false)
+
     const styles = {
         card: {
             width: props.width,
@@ -82,8 +91,10 @@ export default function ProjectCard(props: IProps) {
             borderRadius: "10px",
             // width: props.imageWidth,
             height: props.imageHeight,
+            width: "100%",
             minWidth: 200,
             backgroundImage: "linear-gradient(45deg, rgba(255,255,255,0) 45%, rgba(0,0,0,1) 91%), url(" + props.projectThumb + ")",
+            position: "relative",
             // objectFit: "fill",
         },
         date: {
@@ -94,7 +105,7 @@ export default function ProjectCard(props: IProps) {
             WebkitBoxOrient: 'vertical',
             color: theme.palette.text.secondary,
             fontWeight: 200,
-            fontSize: "0.6em",
+            fontSize: "0.55em",
             textAlign: "left",
             // paddingLeft: "10px",
         },
@@ -105,14 +116,15 @@ export default function ProjectCard(props: IProps) {
             // WebkitLineClamp: 1,
             WebkitBoxOrient: 'vertical',
             textAlign: "left",
-            fontSize: "1.1em",
+            fontSize: "1rem",
         },
         username: {
             textOverflow: "ellipsis",
             overflow: "hidden",
             whiteSpace: "nowrap",
             width: "9ch", // approximately 4 characters wide
-            fontSize: "0.8em",
+            fontSize: "0.65rem",
+            fontWeight: 400,
         },
     };
 
@@ -168,27 +180,27 @@ export default function ProjectCard(props: IProps) {
         switch (projectType) {
             case "Playground":
                 return (
-                    <HorseIcon sx={{width: "24px", height: "24px"}}/>
+                    <HorseIcon sx={{ width: "20px", height: "20px" }} />
                 )
             case "Casual":
                 return (
-                    <HoodieIcon sx={{width: "20px", height: "20px"}}/>
+                    <HoodieIcon sx={{ width: "14px", height: "14px" }} />
                 )
             case "Competitive":
                 return (
-                    <TrophyIcon sx={{width: "18px", height: "18px"}}/>
+                    <TrophyIcon sx={{ width: "16px", height: "16px" }} />
                 )
             case "Interactive":
                 return (
-                    <GraduationIcon sx={{width: "20px", height: "20px"}}/>
+                    <GraduationIcon sx={{ width: "16px", height: "16px" }} />
                 )
             case "Debug":
                 return (
-                    <DebugIcon sx={{width: "20px", height: "20px"}}/>
+                    <DebugIcon sx={{ width: "18px", height: "18px" }} />
                 )
             default:
                 return (
-                    <QuestionMark sx={{width: "20px", height: "20px"}}/>
+                    <QuestionMark sx={{ width: "18px", height: "18px" }} />
                 )
         }
     }
@@ -280,110 +292,146 @@ export default function ProjectCard(props: IProps) {
             `}
             </style>
             {hoverModal()}
-            <ButtonBase
-                href={`/${props.attempt ? "attempt" : "challenge"}/${props.projectId}`}
-                // onClick={props.onClick}
-                onMouseOver={() => {
-                    if (hoverStartRef.current !== null)
-                        return
-                    hoverStartRef.current = new Date()
-                }}
-                onMouseLeave={() => {
-                    hoverStartRef.current = null
-                }}
-            >
-                <Card sx={styles.card}>
-                    <CardMedia
-                        component="div"
-                        sx={styles.image}
-                    />
-                    <CardContent
-                        // sx={{width: "100%", height: "100%"}}
-                        sx={{
-                            paddingBottom: "4px",
-                            paddingTop: "10px",
-                            paddingLeft: "8px",
-                            paddingRight: "8px",
-                        }}
-                    >
-                        <div style={{
-                            position: "absolute",
-                            top: "12%",
-                            left: "90%",
-                            transform: "translate(-50%, -50%)",
-                            zIndex: 1,
-                            overflow: "hidden",
-                        }}>
+            <Card sx={styles.card}>
+                <ButtonBase
+                    href={`/${props.attempt ? "attempt" : "challenge"}/${props.projectId}`}
+                    // onClick={props.onClick}
+                    onMouseOver={() => {
+                        if (hoverStartRef.current !== null)
+                            return
+                        hoverStartRef.current = new Date()
+                    }}
+                    onMouseLeave={() => {
+                        hoverStartRef.current = null
+                    }}
+                >
+                    <Box sx={{ 
+                        display: "flex", 
+                        flexDirection: "column", 
+                        justifyContent: "center", 
+                        alignItems: "center", 
+                        width: "100%", 
+                        height: "fit-content",
+                    }}>
+                        <CardMedia
+                            component="div"
+                            sx={styles.image}
+                        >
                             <Tooltip
                                 title={`Renown ${props.renown + 1}`}
                             >
                                 <Image
                                     style={{
-                                        height: "7vh",
+                                        height: `calc(${props.imageHeight} / 4)`,
                                         width: "auto",
                                         opacity: "0.85",
                                         overflow: "hidden",
+                                        position: "absolute",
+                                        top: "10px",
+                                        right: "10px",
                                     }}
                                     src={imgSrc}
                                     alt={""}
                                 />
                             </Tooltip>
-                        </div>
-                        <Grid container rowSpacing={1} columnSpacing={2} justifyContent={"space-between"}>
-                            <Grid item xs={3}>
-                                <UserIcon
-                                    size={30}
-                                    userId={props.userId}
-                                    userTier={props.userTier}
-                                    userThumb={props.userThumb}
-                                    backgroundName={props.backgroundName}
-                                    backgroundPalette={props.backgroundPalette}
-                                    backgroundRender={props.backgroundRender}
-                                    pro={props.role !== null && props.role.toString() === "1"}
-                                />
-                                <Tooltip
-                                    title={`@${props.username}`}
-                                >
-                                    <Typography gutterBottom variant="caption" component="div" sx={styles.username}>
-                                        @{props.username}
-                                    </Typography>
-                                </Tooltip>
-                                <Typography gutterBottom variant="h6" component="div" sx={styles.date}>
-                                    {new Date(props.projectDate).toLocaleDateString()}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
-                                    {props.projectTitle}
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={9}>
-                                <Chip
-                                    sx={{float: "left"}}
-                                    icon={getProjectIcon(props.projectType)}
-                                    color="primary"
-                                    label={props.projectType}
-                                    variant="outlined"
-                                />
-                                {props.exclusive !== null && props.exclusive !== undefined && props.exclusive ? (
-                                    <AttachMoneyIcon/>
-                                ) : null}
-                            </Grid>
-                            {props.estimatedTime !== null && props.estimatedTime > 0 ? (
+                        </CardMedia>
+                        <CardContent
+                            // sx={{width: "100%", height: "100%"}}
+                            sx={{
+                                paddingBottom: "4px",
+                                paddingTop: "10px",
+                                paddingLeft: "8px",
+                                paddingRight: "8px",
+                                width: "100%",
+                            }}
+                        >
+                            <Grid container rowSpacing={1} columnSpacing={2} justifyContent={"space-between"}>
                                 <Grid item xs={3}>
-                                    <Tooltip title={"Estimated Tutorial Time"}>
-                                        <Typography
-                                            sx={{color: "grey"}}
-                                            color="primary"
-                                            variant="caption"
-                                        >{millisToTime(props.estimatedTime)}</Typography>
+                                    <UserIcon
+                                        size={30}
+                                        userId={props.userId}
+                                        userTier={props.userTier}
+                                        userThumb={props.userThumb}
+                                        backgroundName={props.backgroundName}
+                                        backgroundPalette={props.backgroundPalette}
+                                        backgroundRender={props.backgroundRender}
+                                        pro={props.role !== null && props.role.toString() === "1"}
+                                    />
+                                    <Tooltip
+                                        title={`@${props.username}`}
+                                    >
+                                        <Typography gutterBottom variant="caption" component="div" sx={styles.username}>
+                                            @{props.username}
+                                        </Typography>
                                     </Tooltip>
+                                    <Typography gutterBottom variant="h6" component="div" sx={styles.date}>
+                                        {new Date(props.projectDate).toLocaleDateString()}
+                                    </Typography>
                                 </Grid>
-                            ) : null}
+                                <Grid item xs={9}>
+                                    <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
+                                        {props.projectTitle}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                        </CardContent>
+                    </Box>
+                </ButtonBase>
+                <Grid container rowSpacing={1} columnSpacing={2} justifyContent={"space-between"}>
+                    <Grid item xs={6}>
+                        <Chip
+                            sx={{ float: "left", fontSize: "0.6rem", height: "28px" }}
+                            icon={getProjectIcon(props.projectType)}
+                            color="primary"
+                            label={props.projectType}
+                            variant="outlined"
+                        />
+                        {props.exclusive !== null && props.exclusive !== undefined && props.exclusive ? (
+                            <AttachMoneyIcon />
+                        ) : null}
+                    </Grid>
+                    {(authState.role > 1 || !authState.authenticated) && props.estimatedTime !== null && props.estimatedTime > 0 ? (
+                        <Grid item xs={3} sx={{ justifyContent: "right", alignItems: "center", display: "flex" }}>
+                            <Tooltip title={"Estimated Tutorial Time"}>
+                                <Typography
+                                    sx={{ color: "grey" }}
+                                    color="primary"
+                                    variant="caption"
+                                >{millisToTime(props.estimatedTime)}</Typography>
+                            </Tooltip>
                         </Grid>
-                    </CardContent>
-                </Card>
-            </ButtonBase>
+                    ) : null}
+                    {authState.authenticated && authState.role <= 1 ? (
+                        <Grid item xs={6} sx={{ justifyContent: "right", alignItems: "center", display: "flex" }}>
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={(e) => {
+                                    e.stopPropagation()
+                                    e.preventDefault()
+                                    setGoProPopup(true)
+                                }}
+                                startIcon={(
+                                    <KeyboardDoubleArrowUp sx={{ fontSize: "0.5rem" }} />
+                                )}
+                                size="small"
+                                sx={{
+                                    display: "inline-flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    p: 0.5,
+                                    minWidth: "0px",
+                                    lineHeight: "0px",
+                                    fontSize: "0.6rem",
+                                }}
+                            >
+                                Pro Advanced+
+                            </Button>
+                        </Grid>
+                    ) : null}
+                </Grid>
+            </Card>
+            <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     )
 }
@@ -411,4 +459,6 @@ ProjectCard.defaultProps = {
     role: null,
     animate: false,
     estimatedTime: 0,
+    onClick: () => { }
 }
+

@@ -37,7 +37,7 @@ import {
     PythonOriginal,
     RustOriginal
 } from "devicons-react";
-import {Task, Unit} from "@/models/journey/unit";
+import {Task, Unit} from "@/models/journey";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
 import FollowTheSignsIcon from '@mui/icons-material/FollowTheSigns';

@@ -1,3 +1,4 @@
+'use client'
 import React, {useState} from "react";
 import {Box, Card, CardContent, CardMedia, Tooltip, Typography} from "@mui/material";
 import JourneyDetourPopup from "./JourneyDetourPopup";

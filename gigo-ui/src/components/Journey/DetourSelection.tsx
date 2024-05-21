@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 import Carousel from "@/components/Carousel";
 import DetourCard from "./DetourCard";
-import {Unit} from "@/models/journey/unit";
+import {Unit} from "@/models/journey";
 import DetourSignIcon from "@/icons/Journey/DetourSign";
 import config from "@/config";
 import DetourMobileCard from "@/components/Journey/DetourMobileCard";

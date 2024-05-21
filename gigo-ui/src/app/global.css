@@ -1,11 +1,11 @@
 /* Custom scrollbar styles */
 ::-webkit-scrollbar {
-    width: 12px;
+    width: 6px;
     /* Adjust the width of the scrollbar */
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: #1c1c1a;
     /* Color of the scrollbar track */
 }
 
@@ -13,8 +13,6 @@
     background-color: #888;
     /* Color of the scrollbar thumb */
     border-radius: 10px;
-    /* Roundness of the scrollbar thumb */
-    border: 3px solid #f1f1f1;
     /* Padding around the scrollbar thumb */
 }
 

@@ -1,3 +1,4 @@
+'use client';
 import {useState, useEffect, useRef, RefObject} from 'react';
 
 type FetchCallback = () => Promise<void>;
@@ -13,6 +14,12 @@ type FetchCallback = () => Promise<void>;
 const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false, buffer: number = 1440, disableInfiniteScroll: RefObject<boolean> | null = null) => {
   const [isFetching, setIsFetching] = useState<boolean>(false);
   const exit = useRef<boolean>(false);
+  const [isClient, setIsClient] = useState<boolean>(false);
+  
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   async function loop() {
     while (!exit.current) {
@@ -22,24 +29,24 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
   }
 
   useEffect(() => {
-    console.log("useInfiniteScroll - hook")
+    if (!isClient) {
+      return;
+    }
+
     if (initialize && !isFetching && (disableInfiniteScroll !== null && !disableInfiniteScroll.current)) {
-      console.log("useInfiniteScroll - initializing")
       setIsFetching(true);
     }
     loop();
     return () => {
       exit.current = true;
     }
-  }, []);
+  }, [isClient]);
 
   useEffect(() => {
-    if (/*!isFetching || */(disableInfiniteScroll !== null && disableInfiniteScroll.current)) {
-      console.log("useInfiniteScroll - exiting: ", isFetching, disableInfiniteScroll)
+    if (!isFetching || (disableInfiniteScroll !== null && disableInfiniteScroll.current)) {
       setIsFetching(false);
       return;
     }
-    console.log("useInfiniteScroll - executing callback")
     // execute the callback function
     callback().then(() => setIsFetching(false));
   }, [isFetching, callback]);
@@ -48,7 +55,6 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
     if (typeof window === 'undefined') {
       return
     }
-
     if (
         window.innerHeight + document.documentElement.scrollTop < document.documentElement.scrollHeight - buffer ||
         isFetching ||
@@ -56,6 +62,7 @@ const useInfiniteScroll = (callback: FetchCallback, initialize: boolean = false,
     ) {
       return;
     }
+
     setIsFetching(true);
   }
 
