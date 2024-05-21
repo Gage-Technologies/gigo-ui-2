@@ -35,7 +35,8 @@ export default interface Post {
     has_access: boolean;
     start_time_millis: number;
     stripe_price_id: number | string;
-    post_title: "string"
+    post_title: "string";
+    tutorial_preview?: string;
 }
 
 export interface ProjectTutorial {

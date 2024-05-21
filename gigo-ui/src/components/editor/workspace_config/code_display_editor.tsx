@@ -37,8 +37,6 @@ function CodeDisplayEditor(props: Code_display_editor) {
 
     const monaco = useMonaco();
 
-    let navigate = useNavigate();
-
     const selectFile = async (file: any) => {
         if (!props.repoId || props.repoId === "" || !props.references || props.references === "")
             return

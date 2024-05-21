@@ -42,13 +42,10 @@ import { useNavigate } from "react-router-dom";
 import AttemptsCard from "@/components/Project/AttemptsCard";
 import { Chart } from "react-google-charts";
 import DiscussionCard from "@/components/Project/DiscussionCard";
-//import ThreadComment from "@/components/Project/ThreadComment";
-import SendIcon from '@mui/icons-material/Send';
 import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
-import { useParams } from "react-router";
-import Post, {ProjectTutorial} from "@/models/post"
+import Post from "@/models/post"
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import PostOverview from "@/components/Project/PostOverview";
 import PostOverviewMobile from "@/components/Project/PostOverviewMobile"
@@ -58,21 +55,8 @@ import CodeDisplayEditor from "@/components/editor/workspace_config/code_display
 import { LoadingButton } from "@mui/lab";
 import { ThreeDots } from "react-loading-icons";
 import Attempt from "@/models/attempt";
-import {
-    Discussion,
-    EmptyComment,
-    EmptyDiscussion,
-    EmptyThreadComment,
-    EmptyThreadReply,
-    ThreadReply,
-    Comment,
-    ThreadComment
-} from "@/models/discussions";
-import CommentCard from "@/components/Project/DiscussionComment";
-import ThreadCard from "@/components/Project/ThreadCard";
+
 import WorkspaceConfigEditor from "@/components/editor/workspace_config/editor";
-import LocalCafeOutlinedIcon from '@mui/icons-material/LocalCafeOutlined';
-import LocalCafeIcon from '@mui/icons-material/LocalCafe';
 import {v4} from "uuid";
 import * as yaml from 'js-yaml';
 
@@ -92,7 +76,6 @@ import renown7 from "@/img/renown/renown7.svg"
 import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
-import alternativeImage from "@/img/Black.png"
 import CardTutorial from "@/components/CardTutorial";
 import UserIcon from "@/icons/User/UserIcon";
 import {useSelector} from "react-redux";
@@ -151,10 +134,6 @@ function Challenge({params}: { params: { id: string } }) {
         themeButton: {
             justifyContent: "right"
         },
-        projectName: {
-            marginLeft: "2%",
-            marginTop: "10px",
-        },
         mainTabButton: {
             height: "4vh",
             maxHeight: "50px",
@@ -186,18 +165,10 @@ function Challenge({params}: { params: { id: string } }) {
 
     const [mainTab, setMainTab] = React.useState(window.location.hash.replace('#', '') !== "" ? window.location.hash.replace('#', '') : "project")
 
-    const [searchText, setSearchText] = React.useState("")
-
     const [minorTab, setMinorTab] = React.useState("overview")
-
-    const [discussionTab, setDiscussionTab] = React.useState("main")
 
     const [thread, setThread] = React.useState(false)
     const [purchasePopup, setPurchasePopup] = React.useState(false)
-
-    const [discTitle, setDiscTitle] = React.useState("")
-
-    const [commentBody, setCommentBody] = React.useState("")
 
     const [threadComment, setThreadComment] = React.useState("")
 
@@ -206,10 +177,6 @@ function Challenge({params}: { params: { id: string } }) {
     const [attempt, setAttempt] = React.useState([])
 
     const [closedAttempts, setClosedAttempts] = React.useState([])
-    const [selectedDiscussion, setSelectedDiscussion] = React.useState<Discussion>(EmptyDiscussion)
-    const [selectedComment, setSelectedComment] = React.useState<Comment>(EmptyComment)
-    const [selectedThread, setSelectedThread] = React.useState<ThreadComment>(EmptyThreadComment)
-    const [selectedReply, setSelectedReply] = React.useState<ThreadReply>(EmptyThreadReply)
 
     const [projectAttempts, setProjectAttempts] = React.useState([])
 
@@ -218,43 +185,17 @@ function Challenge({params}: { params: { id: string } }) {
     const [project, setProject] = React.useState<Post | null>(null)
     const [projectImage, setProjectImage] = React.useState<string | null>(null)
     const [projectTitle, setProjectTitle] = React.useState<string>("")
-    const [projectTutorial, setProjectTutorial] = React.useState<ProjectTutorial[] | null>(null)
     const [userAttempt, setUserAttempt] = React.useState<Attempt | null>(null)
     const [publishing, setPublishing] = React.useState(false)
     const [launchingWorkspace, setLaunchingWorkspace] = React.useState(false)
     const [imageGenLoad, setImageGenLoad] = React.useState<boolean>(false)
 
-    const [discussionOptions, setDiscussionOptions] = React.useState([])
-    const [discussionLeads, setDiscussionLeads] = React.useState<string[]>([])
-    const [commentLeads, setCommentLeads] = React.useState<string[]>([])
-    const [threadLeads, setThreadLeads] = React.useState<string[]>([])
-
-    const [discussions, setDiscussions] = React.useState<Discussion[]>([])
-    const [comments, setComments] = React.useState([])
-    const [threadComments, setThreadComments] = React.useState<ThreadComment[]>([])
-    const [threadReplies, setThreadReplies] = React.useState([])
-
-    const [discussionUpVotes, setDiscussionUpVotes] = React.useState<any[]>([])
-    const [commentUpVotes, setCommentUpVotes] = React.useState<string[]>([])
-    const [threadUpVotes, setThreadUpVotes] = React.useState<string[]>([])
-    const [replyUpVotes, setReplyUpVotes] = React.useState<string[]>([])
-
     const [threadArray, setThreadArray] = React.useState<any[]>([])
-    const [replyArray, setReplyArray] = React.useState<any[]>([])
 
-    const [coffeePostEdit, setCoffeePostEdit] = React.useState<string>("")
 
     const [wsConfig, setWsConfig] = React.useState("")
 
-    const [discussionReplies, setDiscussionReplies] = React.useState<any[]>([])
-
-    const [createDiscussion, setCreateDiscussion] = React.useState(false)
-    const [editDiscussionPopup, setEditDiscussionPopup] = React.useState(false);
-    const [editCommentPopup, setEditCommentPopup] = React.useState(false);
-    const [editCommentType, setEditCommentType] = React.useState(0);
-
     const [loadingEdit, setLoadingEdit] = React.useState(false)
-    const [filteredDiscussions, setFilteredDiscussions] = React.useState<any[]>([])
     const [deleteProject, setDeleteProject] = React.useState(false)
     const [editPopup, setEditPopup] = React.useState(false)
 
@@ -519,11 +460,8 @@ function Challenge({params}: { params: { id: string } }) {
         setChallengeType(projectResponse["post"]["post_type_string"])
         setProjectDesc(projectResponse["description"])
         setProjectEval(projectResponse["evaluation"])
-        setProjectTutorial(projectResponse["tutorials"])
         setAttempt(attemptResponse["attempts"])
         setClosedAttempts(closedAttemptResponse["attempts"])
-
-
     }
 
     const publishProject = async () => {
@@ -687,213 +625,10 @@ function Challenge({params}: { params: { id: string } }) {
         }
     };
 
-    const getDiscussions = async () => {
-        let discuss = call(
-            "/api/discussion/getDiscussions",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {post_id: id, skip: 0, limit: 50},
-            null,
-            config.rootPath
-        )
-
-        const [res] = await Promise.all([
-            discuss,
-        ])
-
-        if (res === undefined || res["discussions"] === undefined || res["lead_ids"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        setDiscussions(res["discussions"])
-        FilterDiscussions()
-
-        setCoffeePostEdit("")
-
-        if (discussionUpVotes.length === 0 && res["up_voted"] !== null) {
-            for (let i = 0; i < res["up_voted"].length; i++) {
-                discussionUpVotes.push(res["up_voted"][i])
-            }
-        }
-
-        if (discussionLeads.length === 0 && res["lead_ids"] !== null) {
-            for (let i = 0; i < res["lead_ids"].length; i++) {
-                discussionLeads.push(res["lead_ids"][i])
-            }
-        }
-
-        if (discussionLeads.length !== 0) {
-            let com = call(
-                "/api/discussion/getComments",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
-                {discussion_id: discussionLeads, skip: 0, limit: 50},
-                null,
-                config.rootPath
-            )
-
-            const [res2] = await Promise.all([
-                com,
-            ])
-
-            if (res2 === undefined || res2["comments"] === undefined || res2["lead_ids"] === undefined || res2["up_voted"] === undefined) {
-                if (sessionStorage.getItem("alive") === null)
-                    //@ts-ignore
-                    swal(
-                        "Server Error",
-                        "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                    );
-                return;
-            }
-
-            setComments(res2["comments"])
-            if (commentUpVotes.length === 0 && res2["up_voted"] !== null) {
-                for (let i = 0; i < res2["up_voted"].length; i++) {
-                    commentUpVotes.push(res2["up_voted"][i])
-                }
-            }
-
-            if (commentLeads.length === 0 && res2["lead_ids"] !== null) {
-                for (let i = 0; i < res2["lead_ids"].length; i++) {
-                    commentLeads.push(res2["lead_ids"][i])
-                }
-            }
-        }
-
-        if (commentLeads.length !== 0) {
-            let threadCom = call(
-                "/api/discussion/getThreads",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
-                {comment_id: commentLeads, skip: 0, limit: 15},
-                null,
-                config.rootPath
-            )
-
-            const [res3] = await Promise.all([
-                threadCom,
-            ])
-
-            if (res3 === undefined || res3["threads"] === undefined || res3["lead_ids"] === undefined || res3["up_voted"] === undefined) {
-                if (sessionStorage.getItem("alive") === null)
-                    //@ts-ignore
-                    swal(
-                        "Server Error",
-                        "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                    );
-                return;
-            }
-
-            setThreadComments(res3["threads"])
-
-            if (threadUpVotes.length === 0 && res3["up_voted"] !== null) {
-                for (let i = 0; i < res3["up_voted"].length; i++) {
-                    threadUpVotes.push(res3["up_voted"][i])
-                }
-            }
-
-            if (threadLeads.length === 0 && res3["lead_ids"] !== null) {
-                for (let i = 0; i < res3["lead_ids"].length; i++) {
-                    threadLeads.push(res3["lead_ids"][i])
-                }
-            }
-        }
-
-        if (threadLeads.length !== 0) {
-            let replies = call(
-                "/api/discussion/getThreadReply",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
-                {thread_id: threadLeads, skip: 0, limit: 15},
-                null,
-                config.rootPath
-            )
-
-            const [res4] = await Promise.all([
-                replies,
-            ])
-
-            if (res4 === undefined || res4["thread_reply"] === undefined || res4["up_voted"] === undefined) {
-                if (sessionStorage.getItem("alive") === null)
-                    //@ts-ignore
-                    swal(
-                        "Server Error",
-                        "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                    );
-                return;
-            }
-
-            setThreadReplies(res4["thread_reply"])
-
-        }
-    }
-
-    const getComments = async () => {
-        let com = call(
-            "/api/discussion/getComments",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {discussion_id: discussionLeads, skip: 0, limit: 50},
-            null,
-            config.rootPath
-        )
-
-        const [res2] = await Promise.all([
-            com,
-        ])
-
-        if (res2 === undefined || res2["comments"] === undefined || res2["lead_ids"] === undefined || res2["up_voted"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (commentUpVotes.length === 0 && res2["up_voted"] !== null) {
-            for (let i = 0; i < res2["up_voted"].length; i++) {
-                commentUpVotes.push(res2["up_voted"][i])
-            }
-        }
-
-        if (commentLeads.length === 0 && res2["lead_ids"] !== null) {
-            for (let i = 0; i < res2["lead_ids"].length; i++) {
-                commentLeads.push(res2["lead_ids"][i])
-            }
-        }
-
-        setDiscussionReplies(res2["comments"])
-    }
-
-
     useEffect(() => {
         setLoading(true)
 
         getProjectInformation()
-        getDiscussions().then(() => FilterDiscussions())
         setLoading(false)
     }, [id])
 
@@ -919,27 +654,6 @@ function Challenge({params}: { params: { id: string } }) {
         return originalString;
     }
 
-
-    const descriptionTab = () => {
-        let regex = /(?:!\[[^\]]*\]\((?!http)(.*?)\))|(?:<img\s[^>]*?src\s*=\s*['\"](?!http)(.*?)['\"][^>]*?>)/g;
-        let markdown = projectDesc
-        let match;
-        let finalString;
-        while ((match = regex.exec(markdown)) !== null) {
-            let imagePath = match[1] ? match[1] : match[2];
-            finalString = insertBeforeAll(imagePath, config.rootPath + "/static/git/p/" + id?.toString() + "/", projectDesc)
-            setProjectDesc(finalString)
-        }
-        return (
-            <MarkdownRenderer markdown={projectDesc} style={{
-                width: "70vw",
-                maxWidth: "1300px",
-                overflowWrap: "break-word",
-                borderRadius: "10px",
-                padding: "2em 3em"
-            }}/>
-        )
-    }
 
     /**
      * Convert millis duration to a well formatted time string with a min precision of minutes (ex: 1h2m)
@@ -1005,15 +719,15 @@ function Challenge({params}: { params: { id: string } }) {
     }
 
     const overviewTab = () => {
+
+
         if (!isMobile) {
-            if (projectTutorial !== null && project?.post_type === 0 && projectTutorial !== undefined) {
+            if (project?.tutorial_preview && project?.post_type === 0) {
                 return (
                     <MarkdownRenderer
                         markdown={
-                            projectTutorial.slice(0, 5)
-                                .map(x => `\n### Part ${x.number}\n\n` + x.content)
-                                .join("\n<br/><br/>") +
-                            "\n\n### Start the project to finish the tutorial!"
+                            project?.tutorial_preview +
+                            "<br/><br/>\n\n### Start the project to finish the tutorial!"
                         }
                         style={{
                             width: "70vw",
@@ -1030,14 +744,12 @@ function Challenge({params}: { params: { id: string } }) {
                 )
             }
         } else {
-            if (projectTutorial !== null && project?.post_type === 0) {
+            if (project?.tutorial_preview && project?.post_type === 0) {
                 return (
                     <MarkdownRenderer
                         markdown={
-                            projectTutorial.slice(0, 5)
-                                .map(x => `\n### Part ${x.number}\n\n` + x.content)
-                                .join("\n<br/><br/>") +
-                            "\n\n### Start the project to finish the tutorial!"
+                            project?.tutorial_preview +
+                            "<br/><br/>\n\n### Start the project to finish the tutorial!"
                         }
                         style={{
                             width: "104vw",
@@ -1056,7 +768,7 @@ function Challenge({params}: { params: { id: string } }) {
                         overflowWrap: "break-word",
                         borderRadius: "10px",
                         padding: "2em 3em"
-                    }}/>
+                    }} />
                 )
             }
         }
@@ -1082,15 +794,6 @@ function Challenge({params}: { params: { id: string } }) {
             }}/>
         )
     }
-
-    const defaultOptions = {
-        loop: true,
-        autoplay: true,
-        animationData: animationData,
-        rendererSettings: {
-            preserveAspectRatio: 'xMidYMid slice'
-        }
-    };
 
     const attemptTab = () => {
         return (
@@ -1332,9 +1035,9 @@ function Challenge({params}: { params: { id: string } }) {
     }
 
     const mainTabProject = () => {
-        let minorValues = ["overview", "description", "attempts"]
+        let minorValues = ["overview", "description"]
         if (project && project?.post_type !== 0) {
-            minorValues = ["overview", "description", "evaluation", "attempts"]
+            minorValues = ["overview", "description", "evaluation"]
         }
 
         if (isEphemeral) {
@@ -1348,25 +1051,7 @@ function Challenge({params}: { params: { id: string } }) {
 
         return (
             <div style={{display: "flex", width: "80vw", height: "auto"}}>
-                {!isMobile ? (
-                    <div style={{display: "flex", justifyContent: "left", paddingRight: "20px", height: "100%"}}>
-                        <Tabs
-                            orientation="vertical"
-                            value={minorTab}
-                            onChange={handleChange}
-                            aria-label="Vertical tabs"
-                        >
-                            {minorValues.map((minorValue) => {
-                                return <Tab label={minorValue} value={minorValue} key={minorValue} classes={minorValues}
-                                            sx={minorValue === "overview" && stepIndex === 2 ? {
-                                                color: "text.primary",
-                                                borderRadius: 1,
-                                                zIndex: "600000"
-                                            } : {color: "text.primary", borderRadius: 1}}/>;
-                            })}
-                        </Tabs>
-                    </div>
-                ) : null}
+
                 <div style={!isMobile ? {
                     display: "flex",
                     justifyContent: "center",
@@ -1402,10 +1087,8 @@ function Challenge({params}: { params: { id: string } }) {
                                 }}>
                                     <Image
                                         src={config.rootPath + project["thumbnail"]}
-                                        style={{
-                                            width: "inherit",
-                                            height: "inherit", borderRadius: "5px"
-                                        }}
+                                        width={100}
+                                        height={100}
                                         alt={"project thumbnail"}
                                     />
                                 </div>
@@ -1443,17 +1126,12 @@ function Challenge({params}: { params: { id: string } }) {
                                 zIndex: 6
                             }}>
                                 <div style={{width: "100%", position: "relative", height: "300px"}}>
-                                    {project !== null && userId === project["author_id"] && !isMobile ? (
+                                    {project !== null && !isMobile ? (
                                         <>
                                             <Image
                                                 src={config.rootPath + project["thumbnail"]}
-                                                width={100}
-                                                height={100}
-                                                style={{
-                                                    width: '100%',
-                                                    height: '250%',
-                                                    objectFit: 'cover'
-                                                }}
+                                                height={800}
+                                                width={1300}
                                                 alt={"project thumbnail"}
                                             />
                                             <Button
@@ -1650,8 +1328,8 @@ function Challenge({params}: { params: { id: string } }) {
                                     backgroundPalette={project !== null ? project["color_palette"] : null}
                                     backgroundRender={project !== null ? project["render_in_front"] : null}
                                     userTier={project !== null ? project["tier"] : ""}
-                                    description={project !== null && minorTab === "overview" ? project["description"] : ""}
-                                    exclusiveDescription={project !== null ? project["exclusive_description"] : null}
+                                    //description={project !== null && minorTab === "overview" ? project["description"] : ""}
+                                    //exclusiveDescription={project !== null ? project["exclusive_description"] : null}
                                     postDate={project !== null ? project["created_at"] : ""}
                                     userIsOP={currentUser}
                                     id={project !== null ? project["_id"] : 0}
@@ -1697,23 +1375,6 @@ function Challenge({params}: { params: { id: string } }) {
         } else if (minorTab === "overview") {
             return overviewTab()
         }
-    }
-
-    const mainTabSource = () => {
-        return (
-            <div style={{display: "flex", width: "80vw", height: "63vh"}}>
-                {project !== null ? (
-                    <CodeDisplayEditor repoId={project["repo_id"]}
-                                       references={"main"}
-                                       filepath={""}
-                                       height={"73vh"}
-                                       style={{display: "contents", flexDirection: "row", width: "75vw"}}
-                                       projectName={project["title"]}
-                    />
-                ) : (<ThreeDots/>)}
-                {/*<Editor theme={theme}/>*/}
-            </div>
-        )
     }
 
     const getConfig = async () => {
@@ -1862,1598 +1523,12 @@ function Challenge({params}: { params: { id: string } }) {
         }
     }
 
-    const mainTabEdit = () => {
-        return (
-            <div style={{display: "block", width: "80vw", height: "63vh", justifyContent: "center"}}>
-                <WorkspaceConfigEditor
-                    value={wsConfig}
-                    setValue={(e) => setWsConfig(e)}
-                    style={{
-                        float: "left",
-                        marginLeft: "40px",
-                        marginRight: "40px"
-                    }}
-                    width={"72.5vw"}
-                    height={"58vh"}
-                />
-                <LoadingButton variant={"contained"}
-                               loading={loadingEdit}
-                               sx={{
-                                   height: "4vh",
-                                   minHeight: "35px",
-                                   backgroundColor: theme.palette.primary.main,
-                                   width: "72.5vw",
-                                   marginLeft: "40px",
-                                   marginRight: "40px",
-                                   borderRadius: "10px",
-                                   fontSize: "1.2rem",
-                                   fontWeight: "bold",
-                                   textAlign: "center",
-                                   marginTop: "10px",
-                                   marginBottom: "10px"
-                               }}
-                               onClick={() => editConfig()}>
-                    Confirm Edit
-                </LoadingButton>
-                <Dialog
-                    open={editConfirm}
-                    onClose={() => setEditConfirm(false)}
-                >
-                    <DialogTitle>{"Apply Changes Now?"}</DialogTitle>
-                    <DialogContent>
-                        <DialogContentText>
-                            To ensure the changes take effect, they will be automatically applied after 24 hours.
-                            However, if you prefer, you can apply the changes immediately. Please note that applying a
-                            configuration change will require the workspace to re-initialize, resulting in the deletion
-                            of any data that has not been pushed to Git or specified within the configuration.
-                        </DialogContentText>
-                    </DialogContent>
-                    <DialogActions>
-                        <Button onClick={() => setEditConfirm(false)} color="primary">Apply Later</Button>
-                        <Button onClick={() => confirmEditConfig()} color={"error"}>
-                            Apply Changes Now
-                        </Button>
-                    </DialogActions>
-                </Dialog>
-            </div>
-        )
-    }
-
-    const lastIndexOf = (array: string | any[], key: string) => {
-        for (let i = array.length - 1; i >= 0; i--) {
-            if (array[i].threadId === key)
-                return i;
-        }
-        return -1;
-    };
-
-    const handlePostDiscussion = async (id: string, title: string, body: string) => {
-        if (title === "" || title === null || body === "" || body === null) {
-            return
-        }
-
-        let res = await call(
-            "/api/discussion/createDiscussion",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {post_id: id, title: title, body: body, tags: []},
-            null,
-            config.rootPath
-        )
-
-        const [disc] = await Promise.all([
-            res,
-        ])
-
-        if (disc === undefined || disc["message"] === undefined || disc["discussion"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (res["message"] === "You must be logged in to access the GIGO system.") {
-            let authState = Object.assign({}, initialAuthStateUpdate)
-            // @ts-ignore
-            dispatch(updateAuthState(authState))
-            router.push("/login?forward=" + encodeURIComponent(window.location.pathname))
-        }
-
-        if (res === undefined) {
-            swal("There has been an issue loading data. Please try again later.")
-        }
-
-        if (disc["message"] === "Discussion has been posted" && disc["discussion"] !== null) {
-            // Add the new discussion to the array
-            const updatedDiscussions = [...filteredDiscussions, disc["discussion"]];
-
-            setFilteredDiscussions(updatedDiscussions);
-        }
-
-        setCommentBody("")
-        setDiscTitle("")
-        handleDiscussionClose()
-
-        return
-    }
-
-
-    const handlePostComment = async (discussion: Discussion, body: string) => {
-        if (discussion === null || body === "") {
-            return
-        }
-
-        let res = await call(
-            "/api/discussion/createComment",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {discussion_id: selectedDiscussion["_id"], body},
-            null,
-            config.rootPath
-        )
-
-        const [com] = await Promise.all([
-            res,
-        ])
-
-        if (com === undefined || com["message"] === undefined || com["comment"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (com["message"] !== "Comment has been posted" || com["comment"] === null) {
-            if (sessionStorage.getItem("alive") === null) {
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    (com["message"] !== "internal server error occurred") ?
-                        com["message"] :
-                        "An unexpected error has occurred. We're sorry, we'll get right on that!"
-                );
-            }
-            swal(
-                "Server Error",
-                "We were unable to post your comment, please try again later!"
-            );
-            return;
-        }
-
-        discussionReplies.push(res["comment"])
-        setCommentBody("")
-        await getDiscussions().then(() => FilterDiscussions())
-
-        return
-    }
-
-    const handlePostThread = async (body: string) => {
-        if (body === "" || body === null) {
-            return
-        }
-
-        let res = await call(
-            "/api/discussion/createThreadComment",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {comment_id: selectedComment["_id"], body},
-            null,
-            config.rootPath
-        )
-
-        const [thr] = await Promise.all([
-            res,
-        ])
-
-        if (thr === undefined || thr["message"] === undefined || thr["thread_comment"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (thr["message"] !== "Comment has been posted" || thr["thread_comment"] === null) {
-            if (sessionStorage.getItem("alive") === null) {
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    (thr["message"] !== "internal server error occurred") ?
-                        thr["message"] :
-                        "An unexpected error has occurred. We're sorry, we'll get right on that!"
-                );
-            }
-            swal(
-                "Server Error",
-                "We were unable to post your comment, please try again later!"
-            );
-            return;
-        }
-
-        threadArray.push(thr["thread_comment"])
-        setCommentBody("")
-        await getDiscussions().then(() => FilterDiscussions())
-
-        return
-    }
-
-    const handleThreadReply = async (body: string) => {
-        if (body === "" || body === null) {
-            return
-        }
-
-        let res = await call(
-            "/api/discussion/createThreadReply",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {thread_id: selectedThread["_id"], body},
-            null,
-            config.rootPath
-        )
-
-        const [reply] = await Promise.all([
-            res,
-        ])
-
-        if (reply === undefined || reply["message"] === undefined || reply["thread_reply"] === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (reply["message"] !== "Reply has been posted" || reply["thread_reply"] === null) {
-            if (sessionStorage.getItem("alive") === null) {
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    (reply["message"] !== "internal server error occurred") ?
-                        reply["message"] :
-                        "An unexpected error has occurred. We're sorry, we'll get right on that!"
-                );
-            }
-            swal(
-                "Server Error",
-                "We were unable to post your comment, please try again later!"
-            );
-            return;
-        }
-
-        replyArray.push(reply["thread_reply"])
-        setCommentBody("")
-        await getDiscussions().then(() => FilterDiscussions())
-
-        return
-    }
-
-    const handleDiscussionSearch = async (e: any) => {
-        if (typeof e.target.value !== "string") {
-            return
-        }
-
-        let res = await call(
-            "/api/search/discussions",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {
-                query: e.target.value,
-                skip: 0,
-                limit: 5,
-                post_id: id,
-            }
-        )
-
-        if (res === undefined) {
-            swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
-                "We'll get crackin' on that right away!")
-            return
-        }
-
-        if (res["discussions"] === undefined) {
-            if (res["message"] === undefined) {
-                swal("Server Error", "Man... We don't know what happened, but there's some weird stuff going on. " +
-                    "We'll get working on this, come back in a few minutes")
-                return
-            }
-            if (res["message"] === "incorrect type passed for field query") {
-                return
-            }
-            swal("Server Error", res["message"])
-            return
-        }
-
-        setFilteredDiscussions(res["discussions"])
-    }
-
-    const handleCommentSearch = async (e: any) => {
-        if (typeof e.target.value !== "string") {
-            return
-        }
-
-        let res = await call(
-            "/api/search/comment",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {
-                query: e.target.value,
-                skip: 0,
-                limit: 5,
-                discussion_id: selectedDiscussion["_id"],
-            }
-        )
-
-        if (res === undefined) {
-            swal("Server Error", "We can't get in touch with the GIGO servers right now. Sorry about that! " +
-                "We'll get crackin' on that right away!")
-            return
-        }
-
-        if (res["comment"] === undefined) {
-            if (res["message"] === undefined) {
-                swal("Server Error", "Man... We don't know what happened, but there's some weird stuff going on. " +
-                    "We'll get working on this, come back in a few minutes")
-                return
-            }
-            if (res["message"] === "incorrect type passed for field query") {
-                return
-            }
-            swal("Server Error", res["message"])
-            return
-        }
-
-        setDiscussionReplies(res["comment"])
-    }
-
-    const goBack = () => {
-        getDiscussions().then(() => FilterDiscussions())
-        if (discussionTab === "comment") {
-            setSelectedDiscussion(EmptyDiscussion)
-            setDiscussionReplies([])
-            setDiscussionTab("main")
-        } else if (discussionTab === "thread") {
-            setSelectedThread(EmptyThreadComment)
-            setThreadArray([])
-            setDiscussionTab("comment")
-        } else {
-            setDiscussionTab("thread")
-            setReplyArray([])
-        }
-    }
-
-    const FilterDiscussions = () => {
-        const filteredDiscussion = discussions.reduce((acc: any, item: any) => {
-            if (Boolean(item.title) &&
-                item.title.toLowerCase().includes(searchText.toLowerCase())) {
-                return [item, ...acc]
-            }
-            return (
-                [...acc, item]
-            );
-        }, []);
-        setFilteredDiscussions(filteredDiscussion)
-    }
-
-
-    const handleSearchText = (text: string) => {
-        setSearchText(text)
-    }
-
-    const getDiscussionComments = async (discussion: React.SetStateAction<Discussion>) => {
-        setSelectedDiscussion(discussion)
-        setLoading(true)
-
-        for (let i = 0; i < comments.length; i++) {
-            if (comments[i]["discussion_id"] === (discussion as Discussion)["_id"]) {
-                discussionReplies.push(comments[i])
-            }
-        }
-
-        setDiscussionTab("comment")
-
-        setLoading(false)
-    }
-
-    const getCommentThreads = async (comment: Comment) => {
-        setDiscussionTab("thread")
-        setSelectedComment(comment as Comment)
-        setLoading(true)
-
-        for (let i = 0; i < threadComments.length; i++) {
-            if (threadComments[i]["comment_id"] === comment["_id"]) {
-                threadArray.push(threadComments[i])
-            }
-        }
-
-        setLoading(false)
-    }
-
-    const getThreadReplies = async (thread: ThreadComment) => {
-        setDiscussionTab("reply")
-        setSelectedThread(thread)
-        setLoading(true)
-
-        for (let i = 0; i < threadReplies.length; i++) {
-            if (threadReplies[i]["thread_comment_id"] === thread["_id"]) {
-                replyArray.push(threadReplies[i])
-            }
-        }
-
-        setLoading(false)
-    }
-
-    const [editDiscussion, setEditDiscussion] = React.useState(false)
-    const [newTitle, setNewTitle] = React.useState("")
-    const [newBody, setNewBody] = React.useState("")
-    const [newDiscussion, setNewDiscussion] = React.useState("")
-
-    const editDiscussions = async (id: string, discussionType: string) => {
-        if (newBody !== "" && newTitle !== "") {
-            let res = await call(
-                "/api/discussion/editDiscussions",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
-                { _id: id, discussion_type: discussionType, title: newTitle, body: newBody, tags: [] },
-                null,
-                config.rootPath
-            )
-
-            const [edit] = await Promise.all([
-                res,
-            ])
-
-            if (edit["message"] === "You must be logged in to access the GIGO system.") {
-                let authState = Object.assign({}, initialAuthStateUpdate)
-                // @ts-ignore
-                dispatch(updateAuthState(authState))
-                router.push("/login?forward="+encodeURIComponent(window.location.pathname))
-            }
-
-            if (edit === undefined || edit["message"] === undefined || edit["new_discussion"] === undefined) {
-                swal("\"There has been an issue editing your discussion. Please try again later.\"")
-            }
-
-            if (edit["message"] !== "Discussion has been successfully edited" || edit["new_discussion"] === null) {
-                swal("\"There has been an issue editing your discussion. Please try again later.\"")
-            }
-
-            if (edit["message"] === "Discussion has been successfully edited" && edit["new_discussion"] !== null) {
-                const editedDiscussion = edit["new_discussion"];
-
-                switch (discussionType) {
-                    case "discussion":
-                        const discussionIndex = filteredDiscussions.findIndex(discussion => discussion._id === id);
-                        if (discussionIndex !== -1) {
-                            const updatedDiscussions = [
-                                ...filteredDiscussions.slice(0, discussionIndex),
-                                editedDiscussion,
-                                ...filteredDiscussions.slice(discussionIndex + 1)
-                            ];
-                            setFilteredDiscussions(updatedDiscussions);
-                        }
-                        break;
-                    case "comment":
-                        const commentIndex = discussionReplies.findIndex(reply => reply._id === id);
-                        if (commentIndex !== -1) {
-                            const updatedDiscussionReplies = [
-                                ...discussionReplies.slice(0, commentIndex),
-                                editedDiscussion,
-                                ...discussionReplies.slice(commentIndex + 1)
-                            ];
-                            setDiscussionReplies(updatedDiscussionReplies);
-                        }
-                        break;
-                    case "thread_comment":
-                        const threadCommentIndex = threadArray.findIndex(thread => thread._id === id);
-                        if (threadCommentIndex !== -1) {
-                            const updatedThreadArray = [
-                                ...threadArray.slice(0, threadCommentIndex),
-                                editedDiscussion,
-                                ...threadArray.slice(threadCommentIndex + 1)
-                            ];
-                            setThreadArray(updatedThreadArray);
-                        }
-                        break;
-                    case "thread_reply":
-                        const threadReplyIndex = replyArray.findIndex(reply => reply._id === id);
-                        if (threadReplyIndex !== -1) {
-                            const updatedReplyArray = [
-                                ...replyArray.slice(0, threadReplyIndex),
-                                editedDiscussion,
-                                ...replyArray.slice(threadReplyIndex + 1)
-                            ];
-                            setReplyArray(updatedReplyArray);
-                        }
-                        break;
-                    default:
-                        ;
-                }
-            }
-
-            setEditDiscussion(false)
-            setNewTitle("")
-            setNewBody("")
-
-        }
-    }
-
-    const addCoffee = async (discId: string, discussionType: string) => {
-        let add = await call(
-            "/api/discussion/addCoffee",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            { _id: discId, discussion_type: discussionType },
-            null,
-            config.rootPath
-        )
-
-        const [res] = await Promise.all([
-            add,
-        ])
-
-        if (res === undefined || res["message"] === undefined) {
-            swal("\"There has been an issue. Please try again later.\"")
-        }
-
-        if (res["message"] !== "Coffee added to discussion") {
-            swal("\"There has been an issue. Please try again later.\"")
-        }
-
-        if (discussionType === "discussion") {
-            let newDiscussionUpVotes = discussionUpVotes.slice();
-            newDiscussionUpVotes.push(discId)
-            setDiscussionUpVotes(newDiscussionUpVotes)
-        } else if (discussionType === "comment") {
-            let newCommentUpVotes = commentUpVotes.slice();
-            newCommentUpVotes.push(discId)
-            setCommentUpVotes(newCommentUpVotes)
-        } else if (discussionType === "thread_comment") {
-            let newThreadUpVotes = threadUpVotes.slice();
-            newThreadUpVotes.push(discId)
-            setThreadUpVotes(newThreadUpVotes)
-        } else if (discussionType === "thread_reply") {
-            let newReplyUpVotes = replyUpVotes.slice();
-            newReplyUpVotes.push(discId)
-            setReplyUpVotes(newReplyUpVotes)
-        }
-    }
-
-    const removeCoffee = async (discId: string, discussionType: string) => {
-        let remove = await call(
-            "/api/discussion/removeCoffee",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            { _id: discId, discussion_type: discussionType },
-            null,
-            config.rootPath
-        )
-
-        const [res] = await Promise.all([
-            remove,
-        ])
-
-        if (res === undefined || res["message"] === undefined) {
-            swal("\"There has been an issue. Please try again later.\"")
-        }
-
-        if (res["message"] !== "Coffee removed from discussion") {
-            swal("\"There has been an issue. Please try again later.\"")
-        }
-
-
-        let index = -1
-
-        if (discussionType === "discussion") {
-            let fullUpvote = discussionUpVotes.slice();
-            let newFinalUpvote = fullUpvote.filter(data => data !== discId)
-            setDiscussionUpVotes(newFinalUpvote)
-        } else if (discussionType === "comment") {
-            let fullUpvote = commentUpVotes.slice();
-            let newFinalUpvote = fullUpvote.filter(data => data !== discId)
-            setCommentUpVotes(newFinalUpvote)
-        } else if (discussionType === "thread_comment") {
-            let fullUpvote = threadUpVotes
-            let index = fullUpvote.indexOf(discId)
-            if (index > -1) {
-                let finalThreadUpvote = fullUpvote.splice(index, 1)
-                setCommentUpVotes(finalThreadUpvote)
-            }
-        } else if (discussionType === "thread_reply") {
-            let fullUpvote = replyUpVotes
-            let index = fullUpvote.indexOf(discId)
-            if (index > -1) {
-                let finalReplyUpvote = fullUpvote.splice(index, 1)
-                setCommentUpVotes(finalReplyUpvote)
-            }
-        }
-    }
-
-    const handleCoffeeClick = async (coffee: number, isAdd: boolean, discussionType: string, obj: Discussion | Comment | ThreadComment) => {
-        if (discussionType === "discussion") {
-            let x = -1
-
-            let testingDiscussion = discussions
-
-
-            let index = testingDiscussion.map(x => x["_id"]).indexOf(obj["_id"])
-
-            if (isAdd) {
-                if (discussionUpVotes.includes(obj["_id"])) {
-                    x = Number(obj["coffee"]) - 1
-                    testingDiscussion[index]["coffee"] = x
-                    setDiscussions(testingDiscussion)
-                    FilterDiscussions()
-                    removeCoffee(obj["_id"], "discussion")
-                    return
-                }
-                x = Number(obj["coffee"]) + 1
-                testingDiscussion[index]["coffee"] = x
-                setDiscussions(testingDiscussion)
-                FilterDiscussions()
-                addCoffee(obj["_id"], "discussion")
-                return
-            } else {
-                if (Number(obj["coffee"]) <= 0) {
-                    x = Number(obj["coffee"]) + 1
-                    testingDiscussion[index]["coffee"] = x
-                    setDiscussions(testingDiscussion)
-                    FilterDiscussions()
-                    addCoffee(obj["_id"], "discussion")
-                    return
-                }
-                x = Number(obj["coffee"]) - 1
-                testingDiscussion[index]["coffee"] = x
-                setDiscussions(testingDiscussion)
-                FilterDiscussions()
-                removeCoffee(obj["_id"], "discussion")
-                return
-            }
-
-        } else if (discussionType === "comment") {
-            let x = -1
-
-            let testingDiscussion = discussionReplies
-
-            let index = discussionReplies.map(x => x["_id"]).indexOf(obj["_id"])
-
-            if (isAdd) {
-                if (commentUpVotes.includes(obj["_id"])) {
-                    x = Number(obj["coffee"]) - 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setDiscussionReplies(testingDiscussion)
-                    removeCoffee(obj["_id"], "comment")
-                    return
-                }
-                x = Number(obj["coffee"]) + 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setDiscussionReplies(testingDiscussion)
-                addCoffee(obj["_id"], "comment")
-                return
-            } else {
-                if (Number(obj["coffee"]) <= 0) {
-                    x = Number(obj["coffee"]) + 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setDiscussionReplies(testingDiscussion)
-                    addCoffee(obj["_id"], "comment")
-                    return
-                }
-                x = Number(obj["coffee"]) - 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setDiscussionReplies(testingDiscussion)
-                removeCoffee(obj["_id"], "comment")
-                return
-            }
-        } else if (discussionType === "thread_comment") {
-            let x = -1
-
-            let index = threadArray.map(x => x["_id"]).indexOf(obj["_id"])
-
-
-            let testingDiscussion = threadArray
-
-            if (isAdd) {
-                if (threadUpVotes.includes(obj["_id"])) {
-                    x = Number(obj["coffee"]) - 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setThreadArray(testingDiscussion)
-                    removeCoffee(obj["_id"], "thread_comment")
-                    return
-                }
-                x = Number(obj["coffee"]) + 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setThreadArray(testingDiscussion)
-                addCoffee(obj["_id"], "thread_comment")
-                return
-            } else {
-                if (Number(obj["coffee"]) <= 0) {
-                    x = Number(obj["coffee"]) + 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setThreadArray(testingDiscussion)
-                    addCoffee(obj["_id"], "thread_comment")
-                    return
-                }
-                x = Number(obj["coffee"]) - 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setThreadArray(testingDiscussion)
-                removeCoffee(obj["_id"], "thread_comment")
-                return
-            }
-
-        } else if (discussionType === "thread_reply") {
-            let x = -1
-
-            let index = replyArray.map(x => x["_id"]).indexOf(obj["_id"])
-
-            let testingDiscussion = replyArray
-
-            if (isAdd) {
-                if (replyUpVotes.includes(obj["_id"])) {
-                    x = Number(obj["coffee"]) - 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setReplyArray(testingDiscussion)
-                    removeCoffee(obj["_id"], "thread_reply")
-                    return
-                }
-                x = Number(obj["coffee"]) + 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setReplyArray(testingDiscussion)
-                addCoffee(obj["_id"], "thread_reply")
-                return
-            } else {
-                if (Number(obj["coffee"]) <= 0) {
-                    x = Number(obj["coffee"]) + 1
-                    testingDiscussion[index]["coffee"] = x.toString()
-                    setReplyArray(testingDiscussion)
-                    addCoffee(obj["_id"], "thread_reply")
-                    return
-                }
-                x = Number(obj["coffee"]) - 1
-                testingDiscussion[index]["coffee"] = x.toString()
-                setReplyArray(testingDiscussion)
-                removeCoffee(obj["_id"], "thread_reply")
-                return
-            }
-        }
-    }
-
-
-    const handleDiscussionOpen = () => {
-        setCreateDiscussion(true);
-    }
-
-    const handleDiscussionClose = () => {
-        setCreateDiscussion(false);
-    }
-
-    let renderDiscussionPopup = () => {
-        return (
-            <Dialog open={createDiscussion} onClose={handleDiscussionClose} maxWidth="xl">
-                <DialogTitle>Create A New Discussion Post</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Discussion Title"
-                        type="text"
-                        fullWidth
-                        onChange={e => setDiscTitle(e.target.value)}
-                        value={discTitle}
-                        required
-                        inputProps={{ maxLength: 86 }}
-                        helperText={discTitle.length === 86 ? 'Maximum character limit reached.' : ''}
-                        error={discTitle.length === 86}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Comment"
-                        type="text"
-                        fullWidth
-                        multiline
-                        rows={6}
-                        onChange={e => setCommentBody(e.target.value)}
-                        value={commentBody}
-                        required
-                        inputProps={{ maxLength: 2000 }}
-                        helperText={commentBody.length === 2000 ? 'Maximum character limit reached.' : ''}
-                        error={commentBody.length === 2000}
-                    />
-                </DialogContent>
-                <DialogActions sx={{ marginTop: "-20px" }}>
-                    <Button onClick={handleDiscussionClose}>
-                        Cancel
-                    </Button>
-                    <Button onClick={() => handlePostDiscussion(id as string, discTitle, commentBody)} disabled={!discTitle || !commentBody}>
-                        Submit
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        )
-    }
-
-    let renderEditDiscussionPopup = () => {
-        if (!selectedDiscussion) return null;
-        return (
-            <Dialog open={editDiscussionPopup} onClose={() => setEditDiscussionPopup(false)} maxWidth="xl">
-                <DialogTitle>Edit Discussion Post</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Title"
-                        type="text"
-                        fullWidth
-                        onChange={e => setNewTitle(e.target.value)}
-                        value={newTitle}
-                        required
-                        inputProps={{ maxLength: 86 }}
-                        helperText={discTitle.length === 86 ? 'Maximum character limit reached.' : ''}
-                        error={discTitle.length === 86}
-                    />
-                    <TextField
-                        margin="dense"
-                        label="Comment"
-                        type="text"
-                        fullWidth
-                        multiline
-                        rows={6}
-                        onChange={e => setNewBody(e.target.value)}
-                        value={newBody}
-                        required
-                        inputProps={{ maxLength: 2000 }}
-                        helperText={commentBody.length === 2000 ? 'Maximum character limit reached.' : ''}
-                        error={commentBody.length === 2000}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditDiscussionPopup(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={() => {
-                        editDiscussions(selectedDiscussion["_id"], "discussion");
-                        setEditDiscussionPopup(false);
-                    }}>
-                        Submit
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-
-    let renderEditCommentPopup = (type: number) => {
-        if ((!selectedComment && !selectedThread && !selectedReply) || editCommentType === 0) return null;
-        return (
-            <Dialog open={editCommentPopup} onClose={() => setEditCommentPopup(false)} maxWidth="xl">
-                <DialogTitle>Edit Comment</DialogTitle>
-                <DialogContent>
-                    <TextField
-                        autoFocus
-                        margin="dense"
-                        label="Comment"
-                        type="text"
-                        fullWidth
-                        multiline
-                        rows={6}
-                        onChange={e => setNewBody(e.target.value)}
-                        value={newBody}
-                        required
-                        inputProps={{ maxLength: 2000 }}
-                        helperText={commentBody.length === 2000 ? 'Maximum character limit reached.' : ''}
-                        error={commentBody.length === 2000}
-                    />
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => setEditCommentPopup(false)}>
-                        Cancel
-                    </Button>
-                    <Button onClick={() => {
-                        if (type === 1) {
-                            editDiscussions(selectedComment["_id"], "comment");
-                        } else if (type === 2) {
-                            editDiscussions(selectedThread["_id"], "thread_comment");
-                        } else if (type === 3) {
-                            editDiscussions(selectedReply["_id"], "thread_reply");
-                        }
-                        setEditCommentPopup(false);
-                    }}>
-                        Submit
-                    </Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
-
-
-    const mainTabDiscussions = () => {
-        let targetData = filteredDiscussions.length > 0 ? filteredDiscussions : discussions
-        if (discussionTab === "main") {
-            return (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Paper sx={!isMobile ? {
-                        padding: '2px 4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: "30vw",
-                        boxShadow: "none",
-                        transition: 'background-color 0.3s ease',
-                        '&:hover': {
-                            backgroundColor: '#F5F5F5',
-                        },
-                    } : {
-                        padding: '2px 4px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        width: "68vw",
-                        boxShadow: "none",
-                        transition: 'background-color 0.3s ease',
-                        '&:hover': {
-                            backgroundColor: '#F5F5F5',
-                        },
-                    }}>
-                        <SearchIcon style={{ marginRight: "5px", marginLeft: "6px" }} />
-                        <InputBase
-                            id="discussionInput"
-                            style={{
-                                marginLeft: '8px', // approximate equivalent of theme.spacing(1),
-                                flex: 1
-                            }}
-                            placeholder="Discussions"
-                            onChange={(e) => {
-                                const value = e.target.value;
-                                value === "" ? getDiscussions().then(() => FilterDiscussions()) : handleDiscussionSearch(e);
-                            }}
-                        />
-                    </Paper>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "start",
-                        flexDirection: "column",
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        height: "58vh",
-                        paddingTop: "2%"
-                    }}>
-                        {targetData.map((discussion) => (
-                            <div
-                                key={discussion["_id"]}
-                                style={{
-                                    display: "flex",
-                                    paddingBottom: "10px",
-                                    width: "80vw",
-                                    alignContent: "center",
-                                    alignItems: "center",
-                                    position: "relative"
-                                }}>
-                                <ButtonBase onClick={() => getDiscussionComments(discussion)}>
-                                    <DiscussionCard
-                                        userName={discussion["author"]}
-                                        userThumb={config.rootPath + "/static/user/pfp/" + discussion["author_id"]}
-                                        userId={discussion["author_id"]}
-                                        userTier={discussion["author_tier"]}
-                                        discussionTitle={discussion["title"]}
-                                        discussionSummary={discussion["body"]}
-                                        tags={discussion["tags"]}
-                                        discussionId={discussion["_id"]}
-                                        width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                        height={150}
-                                        backgroundName={discussion["name"]}
-                                        backgroundPalette={discussion["color_palette"]}
-                                        backgroundRender={discussion["render_in_front"]}
-                                        role={discussion["user_status"]}
-                                    />
-                                </ButtonBase>
-                                {discussion["author_id"] === callingId ? (
-                                    <Button
-                                        variant={`text`} color={"primary"} size={`small`}
-                                        sx={!isMobile ? {
-                                            height: "2.5vh",
-                                            minHeight: "4px",
-                                            right: (3.5 * window.innerWidth / 100) + 15,
-                                            bottom: "calc(35% - 10px)"
-                                        } : {
-                                            height: "2.5vh",
-                                            minHeight: "4px",
-                                            right: 20 * window.innerWidth / 100,
-                                            bottom: "45%"
-                                        }}
-                                        onClick={() => {
-                                            setSelectedDiscussion(discussion);
-                                            setNewTitle(discussion["title"]);
-                                            setNewBody(discussion["body"]);
-                                            setEditDiscussionPopup(true);
-                                        }}
-                                    >
-                                        Edit
-                                    </Button>
-                                ) : null}
-                                {discussionUpVotes.includes(discussion["_id"]) ? (
-                                    <IconButton onClick={() => handleCoffeeClick(discussion["coffee"], false, "discussion", discussion)}
-                                                sx={{ position: "absolute", bottom: "5%", left: "1%", marginTop: "10px" }}>
-                                        <Badge color="primary" badgeContent={discussion["coffee"]}
-                                               sx={{ height: "2.5vh", minHeight: "4px" }}
-                                               anchorOrigin={{
-                                                   vertical: 'top',
-                                                   horizontal: 'left',
-                                               }}>
-                                            <LocalCafeIcon />
-                                        </Badge>
-                                    </IconButton>
-                                ) : (
-                                    <IconButton onClick={() => handleCoffeeClick(discussion["coffee"], true, "discussion", discussion)}
-                                                sx={{ position: "absolute", bottom: "5%", left: "1%", marginTop: "10px" }}>
-                                        <Badge color="primary" badgeContent={discussion["coffee"]}
-                                               sx={{ height: "2.5vh", minHeight: "4px" }}
-                                               anchorOrigin={{
-                                                   vertical: 'top',
-                                                   horizontal: 'left',
-                                               }}>
-                                            <LocalCafeOutlinedIcon />
-                                        </Badge>
-                                    </IconButton>
-                                )}
-                            </div>
-                        ))}
-                    </div>
-                    {createDiscussion ? renderDiscussionPopup() : null}
-                    {selectedDiscussion && editDiscussionPopup ? renderEditDiscussionPopup() : null}
-                    {!createDiscussion && !editDiscussionPopup &&
-                      <div
-                        style={!isMobile ? {
-                            width: "80vw",
-                            minWidth: "175px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingTop: "1%"
-                        } : {
-                            width: "80vw",
-                            minWidth: "175px",
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            paddingTop: "1%",
-                        }}
-                      >
-                        <Button
-                          variant={"contained"} color={"primary"}
-                          sx={{ height: "4vh", minHeight: "35px", right: "4%", zIndex: "600000" }}
-                          onClick={() => handleDiscussionOpen()} className={'discussion'}
-                        >
-                          Start a Discussion
-                        </Button>
-                      </div>
-                    }
-                </div>
-            )
-        } else if (discussionTab === "comment") {
-            return (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <Grid item xs={"auto"}>
-                        <Paper style={!isMobile ? {
-                            padding: '2px 4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: "30vw"
-                        } : {
-                            padding: '2px 4px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            width: "68vw"
-                        }}>
-                            <SearchIcon style={{ marginRight: "5px", marginLeft: "6px" }} />
-                            <InputBase
-                                id="commentInput"
-                                style={{
-                                    marginLeft: '8px',
-                                    flex: 1
-                                }}
-                                placeholder="Comments"
-                                onChange={(e) => {
-                                    const value = e.target.value;
-                                    value === "" ? getComments() : handleCommentSearch(e);
-                                }}
-                            />
-                        </Paper>
-                    </Grid>
-                    <div>
-                        <Button onClick={() => goBack()}>
-                            Go Back
-                        </Button>
-                    </div>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "start",
-                        flexDirection: "column",
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        height: "58vh",
-                        paddingTop: ".5%",
-                    }}>
-                        <div style={{
-                            display: "flex",
-                            paddingBottom: "10px",
-                            width: "80vw",
-                            alignContent: "center",
-                            position: `relative`
-                        }}>
-                            <DiscussionCard userName={selectedDiscussion["author"]}
-                                            userThumb={config.rootPath + "/static/user/pfp/" + selectedDiscussion["author_id"]}
-                                            userId={selectedDiscussion["author_id"]}
-                                            userTier={selectedDiscussion["author_tier"]}
-                                            discussionTitle={selectedDiscussion["title"]}
-                                            discussionSummary={selectedDiscussion["body"]}
-                                            tags={selectedDiscussion["tags"]}
-                                            discussionId={selectedDiscussion["_id"]}
-                                            width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                            height={150} backgroundName={selectedDiscussion["name"]}
-                                            backgroundPalette={selectedDiscussion["color_palette"]}
-                                            backgroundRender={selectedDiscussion["render_in_front"]} role={selectedDiscussion["user_status"]} />
-                            {discussionUpVotes.includes(selectedDiscussion["_id"]) ? (
-                                <IconButton onClick={() => handleCoffeeClick(selectedDiscussion["coffee"], false, "discussion", selectedDiscussion)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedDiscussion["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeIcon />
-                                    </Badge>
-                                </IconButton>
-                            ) : (
-                                <IconButton onClick={() => handleCoffeeClick(selectedDiscussion["coffee"], true, "discussion", selectedDiscussion)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedDiscussion["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeOutlinedIcon />
-                                    </Badge>
-                                </IconButton>
-                            )}
-                        </div>
-                        {discussionReplies.map((comment) => {
-                            return (
-                                <div style={{
-                                    display: "flex",
-                                    paddingBottom: "10px",
-                                    width: "80vw",
-                                    alignContent: "center",
-                                    position: "relative"
-                                }}>
-                                    <ButtonBase onClick={() => getCommentThreads(comment)}>
-                                        <CommentCard userName={comment["author"]}
-                                                     userThumb={config.rootPath + "/static/user/pfp/" + comment["author_id"]}
-                                                     userId={comment["author_id"]}
-                                                     userTier={comment["author_tier"]}
-                                                     commentBody={comment["body"]}
-                                                     commentId={comment["_id"]}
-                                                     width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                                     height={150} backgroundName={comment["name"]}
-                                                     backgroundPalette={comment["color_palette"]}
-                                                     backgroundRender={comment["render_in_front"]} role={comment["user_status"]} />
-                                    </ButtonBase>
-                                    {comment["author_id"] === callingId ? (
-                                        <Button
-                                            variant={`text`} color={"primary"} size={`small`}
-                                            sx={!isMobile ? { position: 'absolute', right: "4%" } : { position: "absolute", top: "15%" }}
-                                            onClick={() => {
-                                                setSelectedComment(comment);
-                                                setNewBody(comment["body"]);
-                                                setEditCommentType(1)
-                                                setEditCommentPopup(true);
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    ) : null}
-                                    {commentUpVotes.includes(comment["_id"]) ? (
-                                        <IconButton
-                                            onClick={() => handleCoffeeClick(comment["coffee"], false, "comment", comment)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}
-                                        >
-                                            <Badge color="primary" badgeContent={comment["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton
-                                            onClick={() => handleCoffeeClick(comment["coffee"], true, "comment", comment)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}
-                                        >
-                                            <Badge color="primary" badgeContent={comment["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeOutlinedIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div style={{ width: "76vw" }}>
-                        <form noValidate autoComplete="off" style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "95%",
-                            paddingBottom: "2%"
-                        }} onSubmit={e => e.preventDefault()}>
-                            <TextField id={"outlined-basic"} label={"Comment"} variant={"outlined"} multiline={true}
-                                       style={{ width: "100%", }} onChange={e => setCommentBody(e.target.value)}
-                                       value={commentBody} />
-                            <div style={{ paddingTop: "1.5%" }}>
-                                <Button variant="contained" size={"large"} color="primary"
-                                        onClick={() => handlePostComment(selectedDiscussion, commentBody)} className={"commentInformation"} style={{ zIndex: "600000" }}>
-                                    <SendIcon />
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                    {renderEditCommentPopup(1)}
-                </div>
-            )
-        } else if (discussionTab === "thread") {
-            return (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={!isMobile ? { display: "flex", width: "80vw", justifyContent: "left", paddingBottom: "15px" } : { display: "flex", width: "68vw", justifyContent: "left", paddingBottom: "15px" }}>
-                        <SearchBar handleSearchText={handleSearchText} />
-                    </div>
-                    <div>
-                        <Button onClick={() => goBack()}>
-                            Go Back
-                        </Button>
-                    </div>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "start",
-                        flexDirection: "column",
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        height: "58vh",
-                        paddingTop: ".5%",
-                    }}>
-                        <div style={{
-                            marginBottom: ".8%",
-                            display: "flex",
-                            paddingBottom: "5px",
-                            width: "80vw",
-                            alignContent: "center",
-                            position: `relative`
-                        }}>
-                            <CommentCard userName={selectedComment["author"]}
-                                         userThumb={config.rootPath + "/static/user/pfp/" + selectedComment["author_id"]}
-                                         userId={selectedComment["author_id"]}
-                                         userTier={selectedComment["author_tier"]}
-                                         commentBody={selectedComment["body"]}
-                                         commentId={selectedComment["_id"]}
-                                         width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                         height={150} backgroundName={selectedComment["name"]}
-                                         backgroundPalette={selectedComment["color_palette"]}
-                                         backgroundRender={selectedComment["render_in_front"]} role={selectedComment["user_status"]} />
-                            {commentUpVotes.includes(selectedComment["_id"]) ? (
-                                <IconButton onClick={() => handleCoffeeClick(selectedComment["coffee"], false, "comment", selectedComment)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedComment["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeIcon />
-                                    </Badge>
-                                </IconButton>
-                            ) : (
-                                <IconButton onClick={() => handleCoffeeClick(selectedComment["coffee"], true, "comment", selectedComment)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedComment["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeOutlinedIcon />
-                                    </Badge>
-                                </IconButton>
-                            )}
-                        </div>
-                        {threadArray.map((thread) => {
-                            return (
-                                <div style={{
-                                    display: "flex",
-                                    paddingBottom: "10px",
-                                    width: "80vw",
-                                    alignContent: "center",
-                                    position: "relative"
-                                }}>
-                                    <ButtonBase onClick={() => getThreadReplies(thread)}>
-                                        <ThreadCard userName={thread["author"]}
-                                                    userThumb={config.rootPath + "/static/user/pfp/" + thread["author_id"]}
-                                                    userId={thread["author_id"]}
-                                                    userTier={thread["author_tier"]}
-                                                    threadBody={thread["body"]}
-                                                    threadId={thread["_id"]}
-                                                    width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                                    height={150} backgroundName={thread["name"]}
-                                                    backgroundPalette={thread["color_palette"]}
-                                                    backgroundRender={thread["render_in_front"]} role={thread["user_status"]} />
-                                    </ButtonBase>
-                                    {thread["author_id"] === callingId ? (
-                                        <Button
-                                            variant={`text`} color={"primary"} size={`small`}
-                                            sx={!isMobile ? { position: 'absolute', right: "4%" } : { position: "absolute", top: "15%" }}
-                                            onClick={() => {
-                                                setSelectedThread(thread);
-                                                setNewBody(thread["body"]);
-                                                setEditCommentType(2)
-                                                setEditCommentPopup(true);
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    ) : null}
-                                    {threadUpVotes.includes(thread["_id"]) ? (
-                                        <IconButton onClick={() => handleCoffeeClick(thread["coffee"], false, "thread_comment", thread)}
-                                                    sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                            <Badge color="primary" badgeContent={thread["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton onClick={() => handleCoffeeClick(thread["coffee"], true, "thread_comment", thread)}
-                                                    sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                            <Badge color="primary" badgeContent={thread["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeOutlinedIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div style={{ width: "76vw" }}>
-                        <form noValidate autoComplete="off" style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "95%",
-                            paddingBottom: "2%"
-                        }} onSubmit={e => e.preventDefault()}>
-                            <TextField id={"outlined-basic"} label={"Comment"} variant={"outlined"} multiline={true}
-                                       style={{ width: "100%", }} onChange={e => setCommentBody(e.target.value)}
-                                       value={commentBody} />
-                            <div style={{ paddingTop: "1.5%" }}>
-                                <Button variant="contained" size={"large"} color="primary"
-                                        onClick={() => handlePostThread(commentBody)} className={"thread"} style={{ zIndex: "600000" }}>
-                                    <SendIcon />
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                    {renderEditCommentPopup(2)}
-                </div>
-            )
-        } else if (discussionTab === "reply") {
-            return (
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={!isMobile ? { display: "flex", width: "80vw", justifyContent: "left", paddingBottom: "15px" } : { display: "flex", width: "68vw", justifyContent: "left", paddingBottom: "15px" }}>
-                        <SearchBar handleSearchText={handleSearchText} />
-                    </div>
-                    <div>
-                        <Button onClick={() => goBack()}>
-                            Go Back
-                        </Button>
-                    </div>
-                    <div style={{
-                        display: "flex",
-                        justifyContent: "start",
-                        flexDirection: "column",
-                        overflowY: "auto",
-                        overflowX: "hidden",
-                        height: "58vh",
-                        paddingTop: ".5%"
-                    }}>
-                        <div style={{
-                            marginBottom: ".8%",
-                            display: "flex",
-                            paddingBottom: "5px",
-                            width: "80vw",
-                            alignContent: "center",
-                            position: `relative`
-                        }}>
-                            <ThreadCard userName={selectedThread["author"]}
-                                        userThumb={config.rootPath + "/static/user/pfp/" + selectedThread["author_id"]}
-                                        userId={selectedThread["author_id"]}
-                                        userTier={selectedThread["author_tier"]}
-                                        threadBody={selectedThread["body"]}
-                                        threadId={selectedThread["_id"]}
-                                        width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                        height={150} backgroundName={selectedThread["name"]}
-                                        backgroundPalette={selectedThread["color_palette"]}
-                                        backgroundRender={selectedThread["render_in_front"]} role={selectedThread["user_status"]} />
-                            {threadUpVotes.includes(selectedThread["_id"]) ? (
-                                <IconButton onClick={() => handleCoffeeClick(selectedThread["coffee"], false, "thread_comment", selectedThread)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedThread["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeIcon />
-                                    </Badge>
-                                </IconButton>
-                            ) : (
-                                <IconButton onClick={() => handleCoffeeClick(selectedThread["coffee"], true, "thread_comment", selectedThread)}
-                                            sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                    <Badge color="primary" badgeContent={selectedThread["coffee"]}
-                                           sx={{ height: "2.5vh", minHeight: "4px" }}
-                                           anchorOrigin={{
-                                               vertical: 'top',
-                                               horizontal: 'left',
-                                           }}>
-                                        <LocalCafeOutlinedIcon />
-                                    </Badge>
-                                </IconButton>
-                            )}
-                        </div>
-                        {replyArray.map((reply) => {
-                            return (
-                                <div style={{
-                                    display: "flex",
-                                    paddingBottom: "10px",
-                                    width: "82.3vw",
-                                    alignContent: "center",
-                                    position: "relative"
-                                }}>
-                                    <ThreadCard userName={reply["author"]}
-                                                userThumb={config.rootPath + "/static/user/pfp/" + reply["author_id"]}
-                                                userId={reply["author_id"]}
-                                                userTier={reply["author_tier"]}
-                                                threadBody={reply["body"]}
-                                                threadId={reply["_id"]}
-                                                width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                                height={150} backgroundName={reply["name"]}
-                                                backgroundPalette={reply["color_palette"]}
-                                                backgroundRender={reply["render_in_front"]} role={reply["user_status"]} />
-                                    {reply["author_id"] === callingId ? (
-                                        <Button
-                                            variant={`text`} color={"primary"} size={`small`}
-                                            sx={!isMobile ? { position: 'absolute', right: "6%" } : { position: "absolute", top: "15%" }}
-                                            onClick={() => {
-                                                setSelectedReply(reply);
-                                                setNewBody(reply["body"]);
-                                                setEditCommentType(3)
-                                                setEditCommentPopup(true);
-                                            }}
-                                        >
-                                            Edit
-                                        </Button>
-                                    ) : null}
-                                    {replyUpVotes.includes(reply["_id"]) ? (
-                                        <IconButton onClick={() => handleCoffeeClick(reply["coffee"], false, "thread_reply", reply)}
-                                                    sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                            <Badge color="primary" badgeContent={reply["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    ) : (
-                                        <IconButton onClick={() => handleCoffeeClick(reply["coffee"], true, "thread_reply", reply)}
-                                                    sx={{ position: "absolute", bottom: "5%", left: "1%" }}>
-                                            <Badge color="primary" badgeContent={reply["coffee"]}
-                                                   sx={{ height: "2.5vh", minHeight: "4px" }}
-                                                   anchorOrigin={{
-                                                       vertical: 'top',
-                                                       horizontal: 'left',
-                                                   }}>
-                                                <LocalCafeOutlinedIcon />
-                                            </Badge>
-                                        </IconButton>
-                                    )}
-                                </div>
-                            )
-                        })}
-                    </div>
-                    <div style={{ width: "76vw" }}>
-                        <form noValidate autoComplete="off" style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "95%",
-                            paddingBottom: "2%"
-                        }} onSubmit={e => e.preventDefault()}>
-                            <TextField id={"outlined-basic"} label={"Comment"} variant={"outlined"} multiline={true}
-                                       style={{ width: "100%", }} onChange={e => setCommentBody(e.target.value)}
-                                       value={commentBody} />
-                            <div style={{ paddingTop: "1.5%" }}>
-                                <Button variant="contained" size={"large"} color="primary"
-                                        onClick={() => handleThreadReply(commentBody)}>
-                                    <SendIcon />
-                                </Button>
-                            </div>
-                        </form>
-                    </div>
-                    {renderEditCommentPopup(3)}
-                </div>
-            )
-        } else {
-            return <div>No Content Available</div>
-        }
-    }
-
     const mainTabHtml = () => {
         let renderFunc = mainTabProject
         if (mainTab === "source") {
-            renderFunc = mainTabSource
+            renderFunc = mainTabSourceCode
         } else if (mainTab === "edit") {
-            renderFunc = mainTabEdit
-        } else if (mainTab === "discussions") {
-            renderFunc = mainTabDiscussions
+            renderFunc = mainTabEditConfig
         }
 
         return (
@@ -3466,16 +1541,6 @@ function Challenge({params}: { params: { id: string } }) {
     const handleTabChange = (newValue: string) => {
         setMainTab(newValue);
         window.location.hash = "#" + newValue
-        if (newValue === "discussions") {
-            getDiscussions().then(() => FilterDiscussions())
-
-        }
-        setDiscussionTab("main")
-        setThread(false)
-        setSelectedComment(prevState => ({
-            ...prevState,
-            commentId: "",
-        }))
 
         if (newValue === "edit") {
             getConfig()
@@ -3631,52 +1696,6 @@ function Challenge({params}: { params: { id: string } }) {
             {
                 tutorial_key: "challenge"
             }
-        )
-    }
-
-    const threadTab = () => {
-        return (
-            <div style={{ width: "16.5vw", height: "65vh", overflow: "auto" }}>
-                <div>
-                    <Button onClick={() => setThread(false)}>
-                        Exit Thread
-                    </Button>
-                </div>
-                <div style={{ paddingTop: "10px" }}>
-                    {threadComments.map((comment: any, index) => {
-                        return (
-                            <div style={{ display: "flex", justifyContent: "center", paddingBottom: "5px" }}>
-                                <ThreadCard userName={comment["author"]}
-                                            userThumb={config.rootPath + "/static/user/pfp/" + comment["author_id"]}
-                                            userId={comment["author_id"]}
-                                            userTier={comment["author_tier"]}
-                                            threadBody={comment["body"]}
-                                            threadId={comment["_id"]}
-                                            width={!isMobile ? 77 * window.innerWidth / 100 : 70 * window.innerWidth / 100}
-                                            height={150} backgroundName={comment["name"]}
-                                            backgroundPalette={comment["color_palette"]}
-                                            backgroundRender={comment["render_in_front"]} role={comment["user_status"]} />
-                            </div>
-                        )
-                    })}
-                </div>
-                <div>
-                    <form noValidate autoComplete="off" style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        width: "95%",
-                        margin: `${theme.spacing(0)} auto`
-                    }} onSubmit={e => e.preventDefault()}>
-                        <TextField id={"outlined-basic"} label={"Comment"} variant={"outlined"} style={{ width: "100%" }}
-                                   onChange={e => setThreadComment(e.target.value)} value={threadComment} />
-                        <Button variant="contained" color="primary"
-                                onClick={() => handleThreadComment()}
-                        >
-                            <SendIcon />
-                        </Button>
-                    </form>
-                </div>
-            </div>
         )
     }
 
@@ -4286,7 +2305,7 @@ function Challenge({params}: { params: { id: string } }) {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    left: "50%",
+
                     transform: "translate(-50%, -50%)",
                     zIndex: 1000, // You may need to adjust this
                     position: "absolute",
@@ -4745,7 +2764,7 @@ function Challenge({params}: { params: { id: string } }) {
                         },
                     ]}
                 />
-                <Typography variant="h5" component="div" sx={styles.projectName} style={{ display: "flex", flexDirection: "row" }}>
+                <Typography variant="h5" component="div" style={{ display: "flex", flexDirection: "row" }}>
                     {editTitle ? (
                         <div style={{ display: "flex", flexDirection: "column" }}> {/* Flex container */}
                             <TextField
@@ -4929,24 +2948,6 @@ function Challenge({params}: { params: { id: string } }) {
                             mainTabHtml()
                         )}
                     </div>
-                    {thread ? (
-                        <div style={{ display: "flex", justifyContent: "right", paddingTop: "2%", paddingLeft: "1vw" }}>
-                            <Box
-                                sx={{
-                                    width: '18vw',
-                                    bgcolor: 'background2.default',
-                                    color: 'text.primary',
-                                    borderRadius: 1,
-                                    p: 3,
-                                    height: "68vh",
-                                }}
-                            >
-                                {threadTab()}
-                            </Box>
-                        </div>
-                    ) : (
-                        <></>
-                    )}
                 </div>
                 {/* add a 10vh buffer at the end of the page */}
                 <div style={{ height: "10vh" }} />
@@ -4954,382 +2955,391 @@ function Challenge({params}: { params: { id: string } }) {
         )
     }
 
-    const launchEphemeralWorkspace = async () => {
-        setLoadingEphemeral(true)
-        let promise = call(
-            "/api/ephemeral/create",
-            "post",
-            null,
-            null,
-            null,
-            //@ts-ignore
-            {
-                "commit": "main", // for now always 'main' - future will handle branches and commits
-                challenge_id: id,
-            },
-            null,
-            config.rootPath
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    // todo once layout is complete, implement ephemeral and possibly 'edit project metadata' functionality
+
+    const descriptionTab = () => {
+        let regex = /(?:!\[[^\]]*\]\((?!http)(.*?)\))|(?:<img\s[^>]*?src\s*=\s*['\"](?!http)(.*?)['\"][^>]*?>)/g;
+        let markdown = projectDesc
+        let match;
+        let finalString;
+        while ((match = regex.exec(markdown)) !== null) {
+            let imagePath = match[1] ? match[1] : match[2];
+            finalString = insertBeforeAll(imagePath, config.rootPath + "/static/git/p/" + id?.toString() + "/", projectDesc)
+            setProjectDesc(finalString)
+        }
+        return (
+            <MarkdownRenderer markdown={projectDesc} style={{
+                width: "100%",
+                overflowWrap: "break-word",
+                borderRadius: "10px",
+                padding: "1em"
+            }}/>
         )
-
-        const [res] = await Promise.all([promise])
-        if (res === undefined) {
-            if (sessionStorage.getItem("alive") === null)
-                //@ts-ignore
-                swal(
-                    "Server Error",
-                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                );
-            return;
-        }
-
-        if (res["workspace_id"] === undefined) {
-            // capitalize the message
-            let m = res["message"].charAt(0).toUpperCase() + res["message"].slice(1)
-            swal("Failed To Launch", m, "error")
-            setLoadingEphemeral(false)
-            return;
-        }
-
-
-        router.push(`/launchpad/${res['workspace_id']}`)
     }
 
-    const ephemeralLaunchButton = () => {
-        let sx = {
+    const tutorialTab = () => {
+        return (
+            <MarkdownRenderer
+                markdown={
+                    project?.tutorial_preview +
+                    "<br/><br/>\n\n### Start the project to finish the tutorial!"
+                }
+                style={{
+                    width: "100%",
+                    overflowWrap: "break-word",
+                    borderRadius: "10px",
+                    padding: "1em"
+                }}
+            />
+        )
+    }
+
+    const [activeTab, setActiveTab] = React.useState('description');
+    const handleProjectTabChange = (event: any, newValue: React.SetStateAction<string>) => {
+        setActiveTab(newValue);
+    };
+
+    let currentUser = false
+    if (project !== null && userId === project["author_id"]) {
+        currentUser = true
+    }
+
+    const mainTabProjectOverview = () => {
+        return (
+            <>
+                <Box sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    borderRadius: "10px",
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"
+                }}>
+                    <Typography variant="h5" component="div">
+                        {projectName}
+                    </Typography>
+                </Box>
+                {project !== null ? (
+                    <>
+                        <Box sx={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            overflow: "hidden"
+                        }}>
+                            <Image
+                                src={config.rootPath + project["thumbnail"]}
+                                height={1500}
+                                width={1500}
+                                alt={"project thumbnail"}
+                                style={{ width: "100%", height: "auto", objectFit: "cover", borderRadius: "10px" }}  // making image responsive
+                            />
+                        </Box>
+                    </>
+                ) : null}
+                <div style={{ height: "20px" }} />
+                {project !== null ? (
+                    <PostOverview
+                        userId={project["author_id"]}
+                        userName={project["author"]}
+                        width={"100%"}
+                        height={"100%"}
+                        userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
+                        backgroundName={project["name"]}
+                        backgroundPalette={project["color_palette"]}
+                        backgroundRender={project["render_in_front"]}
+                        userTier={project["tier"]}
+                        description={""}
+                        postDate={project["created_at"]}
+                        userIsOP={currentUser}
+                        id={project["_id"]}
+                        renown={project["tier"]}
+                        project={true}
+                        estimatedTime={project["estimated_tutorial_time_millis"]}
+                    />
+                ) : null}
+                <Box sx={{ mt: 1, mb: 1, width: "100%", border: "1px solid rgba(255,255,255,0.18)", borderRadius: "10px" }}>
+                    {project?.tutorial_preview && project?.post_type === 0 ? (
+                        <>
+                            <Tabs value={activeTab} onChange={handleProjectTabChange} centered>
+                                <Tab label="Description" value="description" />
+                                <Tab label="Tutorial" value="tutorial" />
+                            </Tabs>
+                            {activeTab === 'description' ? descriptionTab() : tutorialTab()}
+                        </>
+                    ) : (
+                        descriptionTab()
+                    )}
+                </Box>
+
+            </>
+        )
+    }
+
+    const mainTabSourceCode = () => {
+        return (
+            <div style={{display: "flex", width: "80vw"}}>
+                {project !== null ? (
+                    <CodeDisplayEditor repoId={project["repo_id"]}
+                                       references={"main"}
+                                       filepath={""}
+                                       height={"73vh"}
+                                       style={{display: "contents", flexDirection: "row", width: "75vw"}}
+                                       projectName={project["title"]}
+                    />
+                ) : (<ThreeDots/>)}
+                {/*<Editor theme={theme}/>*/}
+            </div>
+        )
+    }
+
+    const mainTabEditConfig = () => {
+        return (
+            <div style={{display: "flex", flexDirection: "column", justifyContent: "center", width: "50vw"}}>
+                <WorkspaceConfigEditor
+                    value={wsConfig}
+                    setValue={(e) => setWsConfig(e)}
+                    style={{
+                        float: "left",
+                    }}
+                    width={"auto"}
+                    height={"70vh"}
+                />
+                <LoadingButton variant={"contained"}
+                               loading={loadingEdit}
+                               sx={{
+                                   height: "4vh",
+                                   minHeight: "35px",
+                                   backgroundColor: theme.palette.primary.main,
+                                   width: "auto",
+                                   borderRadius: "10px",
+                                   fontSize: "1.2rem",
+                                   fontWeight: "bold",
+                                   textAlign: "center",
+                                   marginTop: "10px",
+                                   marginBottom: "10px"
+                               }}
+                               onClick={() => editConfig()}>
+                    Confirm Edit
+                </LoadingButton>
+                <Dialog
+                    open={editConfirm}
+                    onClose={() => setEditConfirm(false)}
+                >
+                    <DialogTitle>{"Apply Changes Now?"}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            To ensure the changes take effect, they will be automatically applied after 24 hours.
+                            However, if you prefer, you can apply the changes immediately. Please note that applying a
+                            configuration change will require the workspace to re-initialize, resulting in the deletion
+                            of any data that has not been pushed to Git or specified within the configuration.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setEditConfirm(false)} color="primary">Apply Later</Button>
+                        <Button onClick={() => confirmEditConfig()} color={"error"}>
+                            Apply Changes Now
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            </div>
+        )
+    }
+
+    const mainTabSwitch = () => {
+        let renderFunc = mainTabProjectOverview
+        if (mainTab === "source") {
+            renderFunc = mainTabSourceCode
+        } else if (mainTab === "edit") {
+            renderFunc = mainTabEditConfig
+        }
+
+        return renderFunc()
+    }
+
+    const tabButtons = () => {
+        let buttonStyle = {
             maxHeight: "50px",
             minHeight: "35px",
             fontSize: "0.8em",
         }
-
-        let buttonText = project !== null && project["has_access"] !== null && project["has_access"] === false ? "Buy Content" : "Launch"
-        let toolTipText = "Unknown Launch Time"
-        if (project && project["start_time_millis"] !== undefined && project["start_time_millis"] !== null && project["start_time_millis"] !== 0) {
-            toolTipText = `Estimated Launch Time: ${millisToTime(project["start_time_millis"])}`
-        }
-
         return (
-            <Tooltip title={toolTipText} placement={"top"} arrow disableInteractive enterDelay={200} leaveDelay={200}>
-                <LoadingButton
-                    loading={loadingEphemeral}
-                    variant="contained"
-                    color="secondary"
-                    sx={sx}
-                    className="attempt"
-                    onClick={() => launchEphemeralWorkspace()}
+            <>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                    onClick={() => handleTabChange("project")}
+                    disabled={mainTab === "project"}
                 >
-                    {buttonText}<RocketLaunchIcon sx={{ marginLeft: "10px" }} />
-                </LoadingButton>
-            </Tooltip>
+                    Project
+                </Button>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                    onClick={() => handleTabChange("source")}
+                    disabled={mainTab === "source"}
+                >
+                    Source Code
+                </Button>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                    onClick={() => handleTabChange("edit")}
+                    disabled={mainTab === "edit"}
+                >
+                    Edit Config
+                </Button>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                >
+                    Share
+                </Button>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                    color={"error"}
+                >
+                    Delete
+                </Button>
+            </>
         )
     }
 
-    const ephemeralTabBar = () => {
+    const renderDesktopChallenge = () => {
         return (
-            <>
-                <div style={!isMobile ? {
-                    display: "flex",
-                    justifyContent: "center",
+            <Box sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                maxWidth: "50vw",
+                width: "100%",
+                flexDirection: "column",
+                margin: "0 auto",
+            }}>
+                <Box sx={{
+                    paddingTop: "30px",
                     alignItems: "center",
-                    left: "51%",
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 1000, // You may need to adjust this
-                    ...(isScrolled ? {
-                        position: "fixed",
-                        top: "120px",
-                    } : {
-                        position: "absolute",
-                        top: editTitle ? "200px" : "160px"
-                    })
-                } : {
                     display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    left: "50%",
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 1000, // You may need to adjust this
-                    position: "absolute",
-                    ...(!isScrolled && {
-                        top: "275px"
-                    })
+                    flexDirection: "column",
+                    zIndex: 6,
+                    width: "100%",
                 }}>
-                    <Box
-                        sx={!isMobile ? {
+                    <Box sx={{
+                        height: "75px",
+                        borderRadius: "10px",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-around",
+                        alignItems: "center",
+                        flexWrap: "wrap",
+                        mb: 2,
+                        ...(isScrolled ? {
+                            position: "fixed",
+                            top: "100px",
+                            zIndex: 99,
                             p: 2,
-                            height: "8vh",
-                            minHeight: "70px",
-                            alignItems: "center",
-                            border: 1,
-                            borderRadius: "15px",
-                            borderColor: theme.palette.primary.dark + "75",
-                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
-                            width: 'fit-content',
-                            ...(isScrolled && {
-                                ...themeHelpers.frostedGlass,
-                                backgroundColor: "rgba(206,206,206,0.31)"
-                            })
+                            ...themeHelpers.frostedGlass,
+                            borderColor: theme.palette.primary.main
                         } : {
-                            p: 2,
-                            height: "20vh",
-                            minHeight: "70px",
-                            // width: "90%",
-                            alignItems: "center",
-                            border: 1,
-                            borderRadius: "15px",
-                            borderColor: theme.palette.primary.dark + "75",
-                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
-                            width: 'fit-content',
-                            // ...(isScrolled && {
-                            //     ...themeHelpers.frostedGlass,
-                            //     backgroundColor: "rgba(206,206,206,0.31)"
-                            // })
-                        }}
-                    >
-                        <Grid container
-                              direction="row"
-                              justifyContent="space-evenly"
-                              alignItems="center"
-                              spacing={2}
-                              sx={{
-                                  width: 'fit-content',  // Add this line
-                                  height: "100%",
-                              }}
-                        >
-                            {!isScrolled && renderTabButtons()}
-                            {project !== null ? (
-                                <Grid item xs={1}>
-                                    {ephemeralLaunchButton()}
-                                </Grid>
-                            ) : null}
-                        </Grid>
+                                width: "100%",
+                                maxWidth: "100%",
+                                border: `1px solid ${theme.palette.primary.main}`,
+                            }
+                        )
+                    }}>
+                        {!isScrolled && tabButtons()}
+                        {renderLaunchButton()}
                     </Box>
-                </div>
-                <Modal open={purchasePopup} onClose={() => setPurchasePopup(false)}>
-                    <Box
-                        sx={{
-                            width: "30vw",
-                            height: "20vh",
-                            justifyContent: "center",
-                            marginLeft: "40vw",
-                            marginTop: "40vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        <ProjectPayment price={project !== null ? project["stripe_price_id"] : ""} post={project !== null ? project["_id"].toString() : ""} />
-                    </Box>
-                </Modal>
-                <Modal open={deleteProject} onClose={() => setDeleteProject(false)}>
-                    <Box
-                        sx={{
-                            width: "30vw",
-                            height: "20vh",
-                            justifyContent: "center",
-                            marginLeft: "40vw",
-                            marginTop: "40vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                            <h4>Are you sure you want to delete this project?</h4>
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center" }}>
-                            <Button onClick={() => deleteProjectFunction()}>Confirm</Button>
-                            <Button onClick={() => setDeleteProject(false)}>Cancel</Button>
-                        </div>
-                    </Box>
-                </Modal>
-            </>
+                </Box>
+                {mainTabSwitch()}
+            </Box>
         )
     }
 
-    const ephemeralChallenge = () => {
-
+    const renderMobileChallenge = () => {
         return (
-            <>
-                {project !== null ? (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>{project["post_title"]}</title>
-                            <meta property="og:title" content={project["post_title"]} data-rh="true" />
-                            <meta property="og:description" content={project["description"]} data-rh="true" />
-                            <meta property="og:image" content={config.rootPath + project["thumbnail"]} data-rh="true" />
-                        </Helmet>
-                    </HelmetProvider>
-                ) : (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>{"Challenge"}</title>
-                            <meta property="og:image" content={"no image"} data-rh="true" />
-                        </Helmet>
-                    </HelmetProvider>
-                )}
-                {embedded ? <div style={{ paddingTop: "25px" }} /> : <></>}
-                <Typography variant="h5" component="div" sx={styles.projectName}>
-                    {projectName}
-                    {project !== null && project["post_type_string"] && (
-                        <Chip
-                            label={project["post_type_string"]}
-                            color="primary"
-                            variant="outlined"
-                            sx={{ marginLeft: "20px", marginTop: "5px" }}
-                            icon={getProjectIcon(project["post_type_string"])}
-                        />
-                    )}
-                </Typography>
-                {!isMobile ? (
-                    <div style={project !== null ? {} : { marginBottom: "110px" }}>
-                        {ephemeralTabBar()}
-                    </div>
-                ) : (
-                    <div style={{ marginTop: "25px" }}>
-                        {project !== null ? (
-                            <Typography component={"div"} sx={{
-                                width: "90%",
-                                height: "auto",
-                                display: "flex",
-                                flexDirection: "row"
-                            }}>
-                                <Typography style={{ display: "flex", flexDirection: "row", width: "85%" }}>
-                                    <div>
-                                        <UserIcon
-                                            userId={project !== null ? project["author_id"] : ""}
-                                            userTier={project !== null ? project["tier"] : ""}
-                                            userThumb={project !== null ? config.rootPath + "/static/user/pfp/" + project["author_id"] : ""}
-                                            backgroundName={project !== null ? project["name"] : null}
-                                            backgroundPalette={project !== null ? project["color_palette"] : null}
-                                            backgroundRender={project !== null ? project["render_in_front"] : null}
-                                            size={50}
-                                            imageTop={2}
-                                        />
-                                    </div>
-                                    <Typography variant="h5" component="div">
-                                        {project !== null ? project["author"] : ""}
-                                    </Typography>
-                                </Typography>
-                                <Typography variant="body1" color="text.primary" align="right">
-                                    {new Date(project !== null ? project["created_at"] : "").toLocaleString("en-us", { day: '2-digit', month: 'short', year: 'numeric' })}
-                                </Typography>
-                            </Typography>
-                        ) : (
-                            <Typography component={"div"} sx={{
-                                width: "90%",
-                                height: "auto",
-                                display: "flex",
-                                flexDirection: "row"
-                            }}>
-                                <Typography style={{ display: "flex", flexDirection: "row", width: "85%" }}>
-                                    <div>
-                                        <PersonIcon sx={{ width: "50px", height: "50px" }} />
-                                    </div>
-                                </Typography>
-                                <StyledDiv style={{ height: "24px", width: "40%", marginBottom: "12px", borderRadius: "20px", marginTop: "10px" }} />
-                            </Typography>
-                        )}
-                    </div>
-                )}
-                <div style={!isMobile ? {
-                    marginTop: "60px",
-                    ...(thread && {
-                        display: "flex",
-                        flexDirection: "row"
-                    })
-                } : {
-                    ...(thread && {
-                        display: "flex",
-                        flexDirection: "row"
-                    })
+            <Box>
+                <Box sx={{
+                    width: "100%",
+                    maxWidth: "100%",
+                    borderRadius: "10px",
+                    display: "flex",
+                    alignItems: "center",
                 }}>
-                    <div style={thread ? { display: "flex", justifyContent: "left", paddingTop: "2%", paddingLeft: "5px" } : !isMobile ? { display: "flex", justifyContent: "center", paddingTop: "2%" } : { display: "flex", justifyContent: "center", paddingTop: "2%", marginBottom: "150px" }}>
-                        {mainTab === "discussions" ? (
-                            <Box
-                                sx={!isMobile ? {
-                                    width: '80vw',
-                                    backgroundColor: theme.palette.background.paper,
-                                    borderRadius: 3,
-                                    p: 3,
-                                    height: "auto",
-                                    border: 1,
-                                    borderColor: theme.palette.primary.dark + "75",
-                                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);"
-                                } : {
-                                    width: '80vw',
-                                    backgroundColor: theme.palette.background.paper,
-                                    borderRadius: 3,
-                                    p: 3,
-                                    height: "100%",
-                                    border: 1,
-                                    borderColor: theme.palette.primary.dark + "75",
-                                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);"
-                                }}
-                            >
-                                {mainTabHtml()}
-                            </Box>
-                        ) : (
-                            mainTabHtml()
-                        )}
-                    </div>
-                    {thread ? (
-                        <div style={{ display: "flex", justifyContent: "right", paddingTop: "2%", paddingLeft: "1vw" }}>
-                            <Box
-                                sx={{
-                                    width: '18vw',
-                                    bgcolor: 'background2.default',
-                                    color: 'text.primary',
-                                    borderRadius: 1,
-                                    p: 3,
-                                    height: "68vh",
-                                }}
-                            >
-                                {threadTab()}
-                            </Box>
-                        </div>
+                    <Typography variant="h5">
+                        {projectName}
+                    </Typography>
+                </Box>
+                {project !== null ? (
+                    <>
+                        <Box sx={{
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            overflow: "hidden"
+                        }}>
+                            <Image
+                                src={config.rootPath + project["thumbnail"]}
+                                height={700}
+                                width={1200}
+                                alt={"project thumbnail"}
+                                style={{ width: "100%", height: "auto", objectFit: "cover" }}  // Making image responsive
+                            />
+                        </Box>
+                    </>
+                ) : null}
+                <div style={{ height: "20px" }} />
+                {project !== null ? (
+                    <PostOverview
+                        userId={project["author_id"]}
+                        userName={project["author"]}
+                        width={"100%"}
+                        height={"100%"}
+                        userThumb={config.rootPath + "/static/user/pfp/" + project["author_id"]}
+                        backgroundName={project["name"]}
+                        backgroundPalette={project["color_palette"]}
+                        backgroundRender={project["render_in_front"]}
+                        userTier={project["tier"]}
+                        description={""}
+                        postDate={project["created_at"]}
+                        userIsOP={currentUser}
+                        id={project["_id"]}
+                        renown={project["tier"]}
+                        project={true}
+                        estimatedTime={project["estimated_tutorial_time_millis"]}
+                    />
+                ) : null}
+                <Box sx={{ mt: 1, mb: 1, width: "100%", border: "1px solid rgba(255,255,255,0.18)", borderRadius: "10px" }}>
+                    {project?.tutorial_preview && project?.post_type === 0 ? (
+                        <>
+                            <Tabs value={activeTab} onChange={handleProjectTabChange} centered>
+                                <Tab label="Description" value="description" />
+                                <Tab label="Tutorial" value="tutorial" />
+                            </Tabs>
+                            {activeTab === 'description' ? descriptionTab() : tutorialTab()}
+                        </>
                     ) : (
-                        <div />
+                        descriptionTab()
                     )}
-                </div>
-                {/* add a 10vh buffer at the end of the page */}
-                <div style={{ height: "10vh" }} />
-            </>
-        )
-    }
+                </Box>
+            </Box>
 
-    useEffect(() => {
-        setShouldRenderCaptcha(true);
-    }, []);
-
-    const MemoCaptcha = React.useMemo(() => (
-        <CaptchaPage
-            setIsCaptchaVerified={(verified) => setIsCaptchaVerified(verified)}
-            redirectOnFailure={() => {
-                // redirect to this page but with no share query param
-                router.push(window.location.pathname);
-            }}
-        />
-    ), [])
-
-    if (shouldRenderCaptcha && !isCaptchaVerified && isEphemeral && !loggedIn && queryParams.get("share") !== null) {
-        return (
-            <>
-                {MemoCaptcha}
-            </>
         )
     }
 
     return (
-        <div style={{ overflow: "hidden" }}>
-            <ThemeProvider theme={theme}>
-                <CssBaseline>
-                    {isEphemeral ? ephemeralChallenge() : userChallenge()}
+        <ThemeProvider theme={theme}>
+            <CssBaseline>
+                    {isMobile ? renderMobileChallenge() : renderDesktopChallenge()}
                     {/* On mobile add a hovering button to launch the project */}
                     {isMobile && renderLaunchButtonMobile()}
-                </CssBaseline>
-            </ThemeProvider>
-        </div>
+            </CssBaseline>
+        </ThemeProvider>
     );
 }
 

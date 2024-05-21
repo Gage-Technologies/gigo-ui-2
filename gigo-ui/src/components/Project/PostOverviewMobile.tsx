@@ -99,7 +99,6 @@ export default function PostOverviewMobile(props: IProps) {
         setDescriptions(props.description)
     }, [props.description])
 
-    let navigate = useNavigate();
 
     const handleSubmit = async () => {
         if (descriptions.length > 500) {

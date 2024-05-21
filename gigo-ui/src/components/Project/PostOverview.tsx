@@ -18,7 +18,6 @@ interface IProps {
     userThumb: string,
     userId: string,
     userTier: string | number,
-    description: string,
     postDate: string | Date,
     userIsOP: boolean,
     id: string | number,
@@ -27,7 +26,6 @@ interface IProps {
     backgroundName: string | null,
     backgroundPalette: string | null,
     backgroundRender: boolean | null,
-    exclusiveDescription: string | null,
     estimatedTime: number | null,
 }
 
@@ -38,8 +36,7 @@ export default function PostOverview(props: IProps) {
         card: {
             display: 'flex',
             borderRadius: "18px",
-            marginLeft: "5px",
-            width: "95%",
+            width: "100%",
             height: "auto",
         },
         image: {
@@ -50,7 +47,6 @@ export default function PostOverview(props: IProps) {
         cardContent: {
             width: props.width,
             position: "relative",
-            zIndex: 10,
             borderRadius: "10px",
             borderTopLeftRadius: "10px; !important",
             boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.2);",
@@ -63,6 +59,7 @@ export default function PostOverview(props: IProps) {
             height: "auto",
             display: "flex",
             flexDirection: "row",
+            alignItems: "center",
         },
         userName: {
             maxWidth: typeof props.width === "number" ? props.width / 7 : props.width,
@@ -72,7 +69,7 @@ export default function PostOverview(props: IProps) {
             paddingRight: "2%",
             lineHeight: 2,
             height: "auto",
-            overflowY: "auto"
+            overflowY: "auto",
         },
         title: {
             fontSize: "20px",
@@ -101,13 +98,6 @@ export default function PostOverview(props: IProps) {
 
     const [editMode, setEditMode] = React.useState(false)
 
-    const [descriptions, setDescriptions] = React.useState(props.description)
-    // const [lottieBackground, setLottieBackground] = React.useState(null)
-
-    React.useEffect(() => {
-        setDescriptions(props.description)
-    }, [props.description])
-
     /**
      * Convert millis duration to a well formatted time string with a min precision of minutes (ex: 1h2m)
      */
@@ -131,38 +121,9 @@ export default function PostOverview(props: IProps) {
         return timeString.trim();
     };
 
-    const handleSubmit = async () => {
-        if (descriptions.length > 500) {
-            swal({
-                title: "Error",
-                text: "Description is too long",
-                icon: "error",
-            });
-        }
-        setEditMode(false)
-        if (props.description !== descriptions) {
-            let res = await call(
-                "/api/editDescription",
-                "post",
-                null,
-                null,
-                null,
-                //@ts-ignore
-                { id: props.id, project: props.project, description: descriptions },
-                null,
-                config.rootPath
-            )
-
-            if (res !== undefined && res["message"] === "Edit successful") {
-                swal("Description has been successfully edited")
-            }
-        }
-        //todo make api call to edit description
-    }
 
     const handleCancel = () => {
         setEditMode(false)
-        setDescriptions(props.description)
     }
 
     const shimmer = keyframes`
@@ -200,7 +161,7 @@ export default function PostOverview(props: IProps) {
                     </Typography>
                 ) : (
                     <Box sx={styles.sectionDisplay1}>
-                        <Typography style={{ display: "flex", flexDirection: "row", width: "85%" }}>
+                        <Typography style={{ display: "flex", flexDirection: "row", width: "85%", alignItems: "center" }}>
                             <div>
                                 <UserIcon
                                     userId={props.userId}
@@ -232,54 +193,7 @@ export default function PostOverview(props: IProps) {
                         </Box>
                     </Box>
                 )}
-                {descriptions !== "" ? (
-                    <>
-                        <Typography component={"div"} sx={styles.sectionDisplay2} color="white">
-                            {editMode && props.userIsOP ? (
-                                <TextField
-                                    label={descriptions.length + "/500"}
-                                    variant={`outlined`}
-                                    size={`medium`}
-                                    color={(descriptions.length > 500) ? "error" : "primary"}
-                                    fullWidth
-                                    required
-                                    value={descriptions}
-                                    sx={{
-                                        mt: 2
-                                    }}
-                                    inputProps={
-                                        styles.textField
-                                    }
-                                    multiline={true}
-                                    onChange={e =>
-                                        setDescriptions(e.target.value)
-                                    }>
-                                </TextField>
-                            ) : (
-                                <div>
-                                    {descriptions}
-                                </div>
-                            )}
-                        </Typography>
-                        <Typography component={"div"} style={{ width: props.width, display: "flex", justifyContent: "right" }}>
-                            {editMode ? (
-                                <div style={{ display: "flex", flexDirection: "row" }}>
-                                    <Button onClick={() => handleSubmit()}>
-                                        Submit
-                                    </Button>
-                                    <Button onClick={() => handleCancel()}>
-                                        Cancel
-                                    </Button>
-                                </div>
-                            ) : props.userIsOP ? (
-                                <Button onClick={() => setEditMode(true)}>
-                                    <EditIcon />
-                                </Button>
-
-                            ) : (<div />)}
-                        </Typography>
-                    </>
-                ) : props.postDate === "" ? (
+                {props.postDate === "" ? (
                     <div>
                         <StyledDiv style={{ height: "8px", width: "100%", marginBottom: "16px", borderRadius: "8px", marginTop: "24px" }} />
                         <StyledDiv style={{ height: "8px", width: "100%", marginBottom: "16px", borderRadius: "8px" }} />
