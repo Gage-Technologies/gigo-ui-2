@@ -48,7 +48,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
 
     const authState = useAppSelector(selectAuthState);
 
-    let premium = authState.role.toString()
+    let premium = authState.role > 0
 
     const [workspace, setWorkspace] = React.useState<Workspace | null>(cachedValues && cachedValues.workspace ? cachedValues.workspace : null);
     const [cpuUsagePercentage, setCpuUsagePercentage] = React.useState<number>(cachedValues ? cachedValues.cpuPercentage : 0);
@@ -361,7 +361,7 @@ const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
                             ) : null
                         }
                     </Box>
-                    {premium === "0" && (
+                    {premium && (
                         <div style={{
                             display: "flex",
                             flexDirection: "row",

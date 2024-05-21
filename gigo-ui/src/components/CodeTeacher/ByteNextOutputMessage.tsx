@@ -1,7 +1,7 @@
-import {alpha, Box, Button, CircularProgress, createTheme, PaletteMode, styled, Tooltip} from "@mui/material";
-import React, {useEffect, useState} from "react";
-import {getAllTokens} from "@/theme";
-import {useGlobalCtWebSocket} from "@/services/ct_websocket";
+import { alpha, CircularProgress, createTheme, PaletteMode, styled, Tooltip } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { getAllTokens } from "@/theme";
+import { useGlobalCtWebSocket } from "@/services/ct_websocket";
 import {
     CtByteNextOutputRequest,
     CtByteNextOutputResponse,
@@ -13,20 +13,21 @@ import {
     CtValidationErrorPayload
 } from "@/models/ct_websocket";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
-import {Typography} from "@mui/material";
-import {BugReportOutlined, Close} from "@mui/icons-material";
+import { Box, Typography, Button } from '@mui/material';
+import { BugReportOutlined, Close } from "@mui/icons-material";
 import * as byteSuccess from "../../img/byteSuccess.json"
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
-import {LoadingButton} from "@mui/lab";
-import {Player} from "@lottiefiles/react-lottie-player";
+import { LoadingButton } from "@mui/lab";
+import { Player } from "@lottiefiles/react-lottie-player";
 import config from "../../config";
 import BytesCard from "../BytesCard";
-import {useNavigate} from "react-router-dom";
-import {useAppSelector} from "@/reducers/hooks";
-import {selectAuthState} from "@/reducers/auth/auth";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/reducers/hooks";
+import { selectAuthState } from "@/reducers/auth/auth";
 import GoProDisplay from "../GoProDisplay";
-import {AwesomeButton} from "react-awesome-button";
+import { AwesomeButton } from "react-awesome-button";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
+import HeartDisabledIcon from "@/icons/HeartDisabledIcon";
 import {useRouter} from "next/navigation";
 
 export type ByteNextOutputMessageProps = {
@@ -36,6 +37,7 @@ export type ByteNextOutputMessageProps = {
     onExpand: () => void;
     onHide: () => void;
     onSuccess: () => void;
+    onFail: () => void;
     code: CtCodeFile[];
     byteId: string;
     description: string;
@@ -147,7 +149,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                     }}
                     onClick={() => expand()}
                 >
-                    <BugReportOutlined style={{fontSize: "24px"}}/>
+                    <BugReportOutlined style={{ fontSize: "24px" }} />
                 </HiddenButton>
             </span>
         </Tooltip>
@@ -165,7 +167,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                         marginLeft: props.mobile ? "0px" : "10px"
                     }}
                 >
-                    <BugReportOutlined style={{fontSize: "24px"}}/>
+                    <BugReportOutlined style={{ fontSize: "24px" }} />
                 </HiddenButton>
             </span>
         </Tooltip>
@@ -183,7 +185,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                         marginLeft: props.mobile ? "0px" : "10px"
                     }}
                 >
-                    <BugReportOutlined style={{fontSize: "24px"}}/>
+                    <BugReportOutlined style={{ fontSize: "24px" }} />
                 </HiddenLoadingButton>
             </span>
         </Tooltip>
@@ -223,6 +225,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                 setResponse("")
                 props.onSuccess()
             } else {
+                props.onFail()
                 setResponse(p.explanation)
             }
             expand()
@@ -231,7 +234,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
         })
     };
 
-    let premium = authState.role.toString()
+    let premium = authState.role > 0
     // //remove after testing
     // premium = "0"
 
@@ -245,7 +248,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
     }, [props.trigger])
 
     const loadingAnim = React.useMemo(() => (
-        <Box sx={{width: "100%", height: "fit-content"}}>
+        <Box sx={{ width: "100%", height: "fit-content" }}>
             <AnimCircularProgress
                 size={16}
                 sx={{
@@ -257,7 +260,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
     ), [])
 
     const headerLoadingAnim = React.useMemo(() => (
-        <AnimCircularProgress size={24}/>
+        <AnimCircularProgress size={24} />
     ), [])
 
     const renderExpanded = () => {
@@ -311,11 +314,11 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             }}
                             onClick={() => hide()}
                         >
-                            <Close/>
+                            <Close />
                         </Button>
                     ) : headerLoadingAnim}
                 </Box>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
                     <MarkdownRenderer
                         markdown={response}
                         style={{
@@ -324,17 +327,39 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             padding: '0px',
                         }}
                     />
-                    <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '10px'}}>
-                        {premium === "0" && (
+                    <Box sx={{ display: 'inline-flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                        {!premium && (
+                            <Box
+                                sx={{
+                                    display: 'inline-flex',
+                                    marginLeft: "8px",
+                                    maxWidth: "60%",
+                                }}
+                            >
+                                <HeartDisabledIcon style={{ fontSize: "36px" }} />
+                                <Typography variant="caption" color="error" style={{ marginLeft: "8px", fontSize: "0.6em" }}>
+                                    You lost a heart for this attempt.<br/>
+                                    Try asking Code Teacher for help!
+                                </Typography>
+                            </Box>
+                        )}
+                        {!premium && (
                             <Tooltip title={"Get Access to more coding help and resources by going pro"}>
-                                <Button onClick={(event) => {
-                                    setGoProPopup(true)
-                                }} variant={"outlined"}>
+                                <Button
+                                    onClick={(event) => {
+                                        setGoProPopup(true)
+                                    }}
+                                    variant={"outlined"}
+                                    sx={{
+                                        width: "100px",
+                                        marginLeft: "auto",
+                                    }}
+                                >
                                     Go Pro
                                 </Button>
                             </Tooltip>
                         )}
-                    </div>
+                    </Box>
                 </div>
                 {state === State.LOADING && response.length > 0 && loadingAnim}
             </Box>
@@ -368,7 +393,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                 />
                 {props.nextByte && (
                     <>
-                        <Typography component={Box} variant="h6" sx={{mb: 2}}>
+                        <Typography component={Box} variant="h6" sx={{ mb: 2 }}>
                             Next Up
                         </Typography>
                         <BytesCard
@@ -376,7 +401,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             bytesTitle={props.nextByte.name}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + props.nextByte._id}
                             onClick={() => navigate.push(`/byte/${props.nextByte._id}`)}
-                            style={{cursor: 'pointer', transition: 'transform 0.3s ease'}}
+                            style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             width="10vw"
@@ -510,7 +535,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                         height: "10vh",
                         '--button-raise-level': "10px"
                     }} type="primary" href={`/journey/main?last_task_id=${props.byteId}`}>
-                        <h1 style={{fontSize: "36px", paddingRight: "1vw", paddingLeft: "1vw"}}>
+                        <h1 style={{ fontSize: "36px", paddingRight: "1vw", paddingLeft: "1vw" }}>
                             Continue
                         </h1>
                     </AwesomeButton>
@@ -545,7 +570,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                                 }}
                             >
                                 Next Task
-                                <SkipNextIcon/>
+                                <SkipNextIcon />
                             </Button>
                         </div>
                     ) : (
@@ -606,7 +631,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                 }}
             >
                 {renderExpanded()}
-                <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
+                <GoProDisplay open={goProPopup} onClose={toggleProPopup} />
             </Box>
         )
     }

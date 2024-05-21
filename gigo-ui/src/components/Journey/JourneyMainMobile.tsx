@@ -42,6 +42,9 @@ import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
 import FollowTheSignsIcon from '@mui/icons-material/FollowTheSigns';
 import Fab from "@mui/material/Fab";
+import GoProDisplay from '@/components/GoProDisplay';
+import {Lock} from '@mui/icons-material';
+import { selectOutOfHearts } from '@/reducers/hearts/hearts';
 
 function JourneyMainMobile() {
     const [loadingMapData, setLoadingMapData] = useState(false);
@@ -49,11 +52,14 @@ function JourneyMainMobile() {
 
     const userId = useAppSelector(selectAuthStateId) as string
 
+    const outOfHearts = useAppSelector(selectOutOfHearts);
+
     const [unitData, setUnitData] = useState<Unit[]>([])
     const [nextUnit, setNextUnit] = useState<Unit>()
     const [taskData, setTaskData] = useState<Task[]>([])
     const unitRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
     const [currentUnit, setCurrentUnit] = useState<string | null>(null);
+    const [proPopupOpen, setProPopupOpen] = useState(false)
 
 
     function extractIdFromUrl(urlString: string): string | null {
@@ -519,7 +525,7 @@ function JourneyMainMobile() {
                 }} type="primary"
                                href={`/byte/${item.code_source_id}?journey`}
                 >
-                    {handleLanguage(item.lang)}
+                    {outOfHearts ? <Lock fontSize="large" sx={{width: '2em', height: '2em'}}/> :handleLanguage(item.lang)}
                 </AwesomeButton>
             );
         } else {
@@ -1193,7 +1199,10 @@ function JourneyMainMobile() {
         return <GetStarted/>;
     };
 
-    return pageContent()
+    return <>
+        {pageContent()}
+        <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)}/>
+    </>
 }
 
 function hexToRGBA(hex: any, alpha = 1) {

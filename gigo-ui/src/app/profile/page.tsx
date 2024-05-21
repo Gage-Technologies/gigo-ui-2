@@ -1228,7 +1228,7 @@ function Profile() {
                                     backgroundPalette={null}
                                     backgroundRender={null}
                                     profileButton={false}
-                                    pro={authState.role.toString() === "1"}
+                                    pro={authState.role > 0}
                                     mouseMove={false}
                                 />
                             </div>
@@ -1319,7 +1319,7 @@ function Profile() {
                                             backgroundPalette={authState.backgroundColor}
                                             backgroundRender={authState.backgroundRenderInFront}
                                             profileButton={false}
-                                            pro={authState.role.toString() === "1"}
+                                            pro={authState.role > 0}
                                             mouseMove={false}
                                         />
                                     </Box>
@@ -1342,7 +1342,7 @@ function Profile() {
                                             backgroundPalette={authState.backgroundColor}
                                             backgroundRender={authState.backgroundRenderInFront}
                                             profileButton={false}
-                                            pro={authState.role.toString() === "1"}
+                                            pro={authState.role > 0}
                                             mouseMove={false}
                                         />
                                         <Typography variant={"h4"} style={{

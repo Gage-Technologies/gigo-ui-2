@@ -116,6 +116,9 @@ import {decodeToken} from 'react-jwt';
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import Image from "next/image";
 import {Suspense} from "react";
+import HeartTracker from '@/components/HeartTracker';
+import GoProDisplay from '@/components/GoProDisplay';
+import { clearHeartsState } from '@/reducers/hearts/hearts';
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -196,6 +199,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const toggleButtonRef = React.useRef(null);
 
     const [renderDevelopment, setRenderDevelopment] = React.useState(config.development)
+    const [notificationsOpen, setNotificationsOpen] = React.useState(false)
+    const userButtonRef = React.useRef<HTMLButtonElement | null>(null);
+    const [goProPopup, setGoProPopup] = React.useState(false)
 
     const styles = {
         regular: {
@@ -439,6 +445,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         dispatch(clearMessageCache())
         dispatch(clearChatState())
         dispatch(clearBytesState())
+        dispatch(clearHeartsState())
     }
 
     const updateToken = async () => {
@@ -793,7 +800,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 backgroundPalette={authState.backgroundColor}
                 backgroundRender={authState.backgroundRenderInFront}
                 profileButton={false}
-                pro={authState.role.toString() === "1"}
+                pro={authState.role > 0}
                 mouseMove={false}
             />
         )
@@ -810,7 +817,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 backgroundPalette={authState.backgroundColor}
                 backgroundRender={authState.backgroundRenderInFront}
                 profileButton={false}
-                pro={authState.role.toString() === "1"}
+                pro={authState.role > 0}
                 mouseMove={false}
             />
         )
@@ -877,20 +884,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     </Button>
                     <TopSearchBar width={"35vw"} height={"auto"}/>
                     <Box sx={{flexGrow: 1}}/>
-                    {loggedIn ? (
-                        <Box>
-                            <NotificationPopup
-                                notificationCount={notificationCount}
-                                notifications={notifications}
-                                setNotifications={setNotifications}
-                                setNotificationCount={setNotificationCount}
-                            />
-                        </Box>
-                    ) : (
-                        <div/>
-                    )}
                     <div style={{width: "20px"}}/>
                     <Box sx={{width: "50px"}}/>
+                    {loggedIn && authState.role === 0 && (
+                        <HeartTracker
+                            openGoProPopup={() => setGoProPopup(true)}
+                        />
+                    )}
                     {loggedIn ? (
                         <Box sx={{
                             overflow: "hidden",
@@ -900,6 +900,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 aria-label="account of current user"
                                 onClick={handleMenu}
                                 variant="text"
+                                ref={userButtonRef}
                             >
                                 <Typography
                                     sx={{color: theme.palette.primary.contrastText, mr: 2, textTransform: "none"}}>
@@ -930,6 +931,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             >
                                 <MenuItem onClick={handleProfile}>Profile</MenuItem>
                                 <MenuItem onClick={handleSettings}>Account Settings</MenuItem>
+                                <MenuItem onClick={() => {
+                                    setAnchorEl(null);
+                                    setNotificationsOpen(true)
+                                }}>
+                                    Notifications ({notificationCount > 99 ? "99+" : notificationCount})
+                                </MenuItem>
                                 <MenuItem onClick={handleExclusiveContent}>Exclusive Content</MenuItem>
                                 {username === "gigo" && (
                                     <MenuItem onClick={handleCurateContent}>Curate Content</MenuItem>
@@ -1174,6 +1181,14 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Menu>
                         </Box>
                     )}
+                    <NotificationPopup
+                        open={notificationsOpen}
+                        onClose={() => { setAnchorEl(null); setNotificationsOpen(false) }}
+                        notificationCount={notificationCount}
+                        notifications={notifications}
+                        setNotifications={setNotifications}
+                        setNotificationCount={setNotificationCount}
+                    />
                 </Toolbar>
             </AppBar>
         )
@@ -1500,10 +1515,23 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     aria-label="account of current user"
                                     onClick={handleMenu}
                                     variant="text"
-                                    style={{position: "absolute", right: 0}}
+                                    style={{
+                                        position: "absolute",
+                                        right: authState.role === 0 ? "12px" : 0,
+                                        bottom: authState.role === 0 ? "8px" : 0
+                                    }}
                                 >
                                     {userIconMemoLarge}
                                 </Button>
+                                {authState.role === 0 && (
+                                    <Box sx={{
+                                        position: "absolute",
+                                        bottom: "2px",
+                                        right: 0
+                                    }}>
+                                        <HeartTracker openGoProPopup={() => setGoProPopup(true)} small={true} />
+                                    </Box>
+                                )}
                                 <Menu
                                     id="menu-appbar"
                                     anchorOrigin={{
@@ -2012,22 +2040,24 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton color={"primary"} sx={{
-                                borderRadius: 2,
-                            }} href={"/create-challenge"}>
-                                <ListItemIcon>
-                                    <AddIcon style={{color: theme.palette.text.primary}}/>
-                                </ListItemIcon>
-                                <Typography
-                                    component={"div"}
-                                    variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
-                                >
-                                    Create
-                                </Typography>
-                            </ListItemButton>
-                        </ListItem>
+                        {authState.authenticated && authState.role >= 2 && (
+                            <ListItem disablePadding>
+                                <ListItemButton color={"primary"} sx={{
+                                    borderRadius: 2,
+                                }} href={"/create-challenge"}>
+                                    <ListItemIcon>
+                                        <AddIcon style={{ color: theme.palette.text.primary }} />
+                                    </ListItemIcon>
+                                    <Typography
+                                        component={"div"}
+                                        variant={"body1"}
+                                        sx={{ fontSize: "0.8em" }}
+                                    >
+                                        Create
+                                    </Typography>
+                                </ListItemButton>
+                            </ListItem>
+                        )}
                         <ListItem disablePadding>
                             <ListItemButton color={"primary"} sx={{
                                 borderRadius: 2,
@@ -2063,14 +2093,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     </List>
                     <DrawerFooter>
                         <div style={{display: "flex", flexDirection: "column"}}>
-                            {authState.role.toString() === "0" ? (
-                                <div style={{
-                                    width: "100%",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    marginBottom: "4vh",
-                                    marginTop: "4vh"
-                                }}>
+                            {authState.role === 0 ? (
+                                <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: "4vh", marginTop: "4vh" }}>
                                     <AwesomeButton style={{
                                         width: "100%",
                                         '--button-primary-color': theme.palette.primary.main,
@@ -2079,7 +2103,20 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         '--button-primary-color-hover': theme.palette.primary.main,
                                         fontSize: "14px"
                                     }} type="primary" href={"/premium"}>
-                                        <Image src={premiumImage} alt=""/>
+                                        <Image alt={""} src={premiumImage} />
+                                    </AwesomeButton>
+                                </div>
+                            ) : authState.role < 3 ? (
+                                <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: "4vh", marginTop: "4vh" }}>
+                                    <AwesomeButton style={{
+                                        width: "100%",
+                                        '--button-primary-color': theme.palette.primary.main,
+                                        '--button-primary-color-dark': theme.palette.primary.dark,
+                                        '--button-primary-color-light': theme.palette.text.primary,
+                                        '--button-primary-color-hover': theme.palette.primary.main,
+                                        fontSize: "12px"
+                                    }} type="primary" href={"/premium"}>
+                                        Upgrade Membership
                                     </AwesomeButton>
                                 </div>
                             ) : null}
@@ -2430,6 +2467,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     memoizedChildren : null
             }
             {renderDevelopment && renderDevelopmentMarker()}
+            <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );
 }

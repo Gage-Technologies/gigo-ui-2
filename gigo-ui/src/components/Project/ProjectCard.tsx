@@ -355,7 +355,7 @@ export default function ProjectCard(props: IProps) {
                                         backgroundName={props.backgroundName}
                                         backgroundPalette={props.backgroundPalette}
                                         backgroundRender={props.backgroundRender}
-                                        pro={props.role !== null && props.role.toString() === "1"}
+                                        pro={props.role !== null && props.role > 0}
                                     />
                                     <Tooltip
                                         title={`@${props.username}`}

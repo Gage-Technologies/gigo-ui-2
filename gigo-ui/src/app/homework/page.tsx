@@ -353,7 +353,7 @@ const HomeworkHelperInit = ({ theme, toggleEditor, submit }: InitProps) => {
                     />
                 </SearchContainer>
             </InitStyledContainer>
-            {authState.authenticated && authState.role === 0 && renderGoProPlug()}
+            {authState.authenticated && authState.role < 1 && renderGoProPlug()}
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );

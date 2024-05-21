@@ -1566,7 +1566,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
 
 
 
-    let premium = authState.role.toString()
+    let premium = authState.role > 0
     // //remove after testing
     // premium = "0"
 
@@ -1763,7 +1763,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                     </Grid>
                     {/*<Grid item xs={"auto"}>*/}
                     <Grid item xs={"auto"}>
-                        {premium === "0" && (workspace === null || workspace.init_state !== 13 || workspace.state !== 1 || workspaceUrl === null || iframeUrl === null) && (
+                        {!premium && (workspace === null || workspace.init_state !== 13 || workspace.state !== 1 || workspaceUrl === null || iframeUrl === null) && (
                             <div style={{
                                 position: "absolute",
                                 top: 100,
@@ -1818,7 +1818,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                                 </div>
                             </div>
                         )}
-                        <Card sx={premium === "0" ? {
+                        <Card sx={!premium ? {
                             position: "absolute",
                             width: "35vw",
                             height: "77vh",
@@ -2049,7 +2049,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                                 </Card>
                             </Grid>
                         )}
-                        {premium === "0" && (
+                        {!premium && (
                             <Grid item xs={12}>
                                 <div style={{
                                     position: "fixed",

@@ -748,7 +748,7 @@ const HomeworkHelperActive = ({
                 display={"flex"}
                 flexDirection={"column"}
                 sx={{
-                    marginBottom: authState.authenticated && authState.role !== 1 ? "108px" : "100px",
+                    marginBottom: authState.authenticated && authState.role < 1 ? "108px" : "100px",
                     overflowY: "auto",
                     pb: 1,
                     width: "100%"
@@ -768,7 +768,7 @@ const HomeworkHelperActive = ({
                     width: "calc(100% - 50px)",
                 }}
             >
-                {authState.authenticated && authState.role !== 1 && (
+                {authState.authenticated && authState.role < 1 && (
                     <ButtonBase
                         sx={{
                             borderRadius: "8px",

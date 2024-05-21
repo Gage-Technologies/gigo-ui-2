@@ -837,7 +837,7 @@ function CreateProject() {
             params["workspace_config_create"] = true
         }
 
-        if (status === 1 && visibility === true) {
+        if (status > 0 && visibility === true) {
             //@ts-ignore
             params["project_visibility"] = 1
         }

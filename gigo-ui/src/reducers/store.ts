@@ -15,6 +15,7 @@ import bytesReducer from '../reducers/bytes/bytes'
 import journeyCreateUnitReducer from '../reducers/journeyCreate/journeyCreateUnit'
 import journeyCreateProjectReducer from '../reducers/journeyCreate/journeyCreateProject'
 import journeyDetourReducer from "../reducers/journeyDetour/journeyDetour"
+import heartsReducer from "../reducers/hearts/hearts"
 
 const persistConfig = {
     key: 'root',
@@ -41,7 +42,8 @@ const reducers = combineReducers({
     bytes: bytesReducer,
     journeyCreateUnit: journeyCreateUnitReducer,
     journeyCreateProject: journeyCreateProjectReducer,
-    journeyDetour: journeyDetourReducer
+    journeyDetour: journeyDetourReducer,
+    hearts: heartsReducer
 });
 
 // @ts-ignore

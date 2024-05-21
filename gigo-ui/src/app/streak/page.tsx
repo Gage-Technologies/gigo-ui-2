@@ -455,7 +455,7 @@ function Streak() {
         )
     }
 
-    let premium = authState.role.toString()
+    let premium = authState.role > 0
     // //remove after testing
     // premium = "0"
 
@@ -463,7 +463,7 @@ function Streak() {
     let renderStreakFreeze = () => {
         // Function to handle the click event, which sets goProPopup to true
         const handleGoProClick = () => {
-            if (premium === "0" && streakCount === 0) {
+            if (!premium && streakCount === 0) {
                 // Assuming you're using a functional component with hooks. For class components, use this.setState({ goProPopup: true })
                 setGoProPopup(true);
             }
@@ -472,27 +472,18 @@ function Streak() {
 
         const children = (
             <>
-                <h4 style={{marginBottom: "20px"}}>
-                    {streakCount + " Streak Freezes"}
-                </h4>
-                <div style={{
-                    position: 'relative',
-                    display: 'inline-block',
-                    width: "50%",
-                    marginTop: "10px",
-                    cursor: premium === "0" && streakCount === 0 ? 'pointer' : 'default'
-                }}
-                     onClick={premium === "0" && streakCount === 0 ? handleGoProClick : undefined} // Only add click handler if premium is "0"
+                <div style={{ position: 'relative', display: 'inline-block', width: "50%", marginTop: "10px", cursor: !premium && streakCount === 0 ? 'pointer' : 'default' }}
+                     onClick={!premium && streakCount === 0 ? handleGoProClick : undefined} // Only add click handler if premium is "0"
                 >
-                    <Image src={freeze} alt="freeze"
-                           style={{
-                               zIndex: 4,
-                               alignItems: "center",
-                               width: "100%",
-                               height: "auto",
-                               filter: premium === "0" && streakCount === 0 ? 'grayscale(100%)' : 'none',
-                           }}/>
-                    {premium === "0" && streakCount === 0 && (
+                    <img src={freeze} alt="image not found"
+                         style={{
+                             zIndex: 4,
+                             alignItems: "center",
+                             width: "100%",
+                             height: "auto",
+                             filter: !premium && streakCount === 0 ? 'grayscale(100%)' : 'none',
+                         }}/>
+                    {!premium && streakCount === 0 && (
                         <>
                             <Tooltip title={"Want more streak freezes? Go Pro"}>
                                 <div style={{
@@ -515,8 +506,12 @@ function Streak() {
                         </>
                     )}
                 </div>
+                <h3 style={{marginTop: "auto"}}>
+                    {streakCount + " Streak Freezes"}
+                </h3>
             </>
         );
+
 
         if (runTutorial && stepIndex === 3) {
             return (

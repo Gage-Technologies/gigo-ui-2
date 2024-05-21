@@ -46,8 +46,12 @@ import StarIcon from "@mui/icons-material/Star";
 import {useSearchParams} from "next/navigation";
 import JourneyMainMobile from '@/components/Journey/JourneyMainMobile';
 import Image from 'next/image'
+import { Lock } from '@mui/icons-material';
+import GoProDisplay from '@/components/GoProDisplay';
+import { selectOutOfHearts } from '@/reducers/hearts/hearts';
 
 function JourneyMain() {
+    const outOfHearts = useAppSelector(selectOutOfHearts);
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
@@ -61,6 +65,7 @@ function JourneyMain() {
     const [taskData, setTaskData] = useState<Task[]>([])
     const unitRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
     const [currentUnit, setCurrentUnit] = useState<string | null>(null);
+    const [proPopupOpen, setProPopupOpen] = useState(false)
 
 
     function extractIdFromUrl(urlString: string): string | null {
@@ -530,7 +535,7 @@ function JourneyMain() {
                 }} type="primary"
                                href={`/byte/${item.code_source_id}?journey`}
                 >
-                    {handleLanguage(item.lang)}
+                    {outOfHearts ? <Lock fontSize="large" sx={{width: '2em', height: '2em'}}/> :handleLanguage(item.lang)}
                 </AwesomeButton>
             );
         } else {
@@ -1313,7 +1318,11 @@ function JourneyMain() {
         }
     };
 
-    return pageContent()
+    return <>
+        {pageContent()}
+        <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)}/>
+    </>
+
 
 }
 
