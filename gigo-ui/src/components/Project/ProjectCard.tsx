@@ -304,6 +304,7 @@ export default function ProjectCard(props: IProps) {
                     onMouseLeave={() => {
                         hoverStartRef.current = null
                     }}
+                    sx={{width: "100%"}}
                 >
                     <Box sx={{ 
                         display: "flex", 
@@ -336,9 +337,8 @@ export default function ProjectCard(props: IProps) {
                             </Tooltip>
                         </CardMedia>
                         <CardContent
-                            // sx={{width: "100%", height: "100%"}}
                             sx={{
-                                paddingBottom: "4px",
+                                paddingBottom: "8px !important",
                                 paddingTop: "10px",
                                 paddingLeft: "8px",
                                 paddingRight: "8px",
