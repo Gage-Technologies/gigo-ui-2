@@ -9,11 +9,15 @@ import {AwesomeButton} from "react-awesome-button";
 import {useSearchParams} from "next/navigation";
 import {Box} from "@mui/material";
 import AboutPageJourneyMobile from "@/components/Pages/About/AboutPageJourneyMobile";
+import {fontSize} from "@mui/system";
+import {useAppSelector} from "@/reducers/hooks";
+import {selectAuthState} from "@/reducers/auth/auth";
 
 function AboutPageJourney() {
     const query = useSearchParams();
-    const chatOpen = query.get("chat") === "true";
-    const sidebarOpen = query.get("menu") === "true";
+    const authState = useAppSelector(selectAuthState);
+    const [sidebarOpen, setSidebarOpen] = React.useState(query.get("menu") === "true");
+    const [chatOpen, setChatOpen] = React.useState(query.get("chat") === "true" && authState.authenticated);
     let isMobile = query.get("viewport") === "mobile";
 
     const aspectRatio = useAspectRatio();
@@ -23,6 +27,48 @@ function AboutPageJourney() {
         flexDirection: 'column',
         backgroundImage: "#1c1c1a",
     };
+
+    const [width, setWidth] = useState('100vw'); // default value
+    const [left, setLeft] = useState('0%'); // default value
+
+
+    useEffect(() => {
+        const updateLeftOpen = () => {
+            setSidebarOpen(query.get("menu") === "true");
+        };
+
+        const updateRightOpen = () => {
+            setChatOpen(query.get("chat") === "true");
+        };
+
+
+        // Update leftOpen based on query parameter
+        updateLeftOpen();
+        updateRightOpen();
+
+        const calculateWidth = () => {
+            if (sidebarOpen) {
+                return  '80vw';
+            } else if (chatOpen) {
+                return  '75vw';
+            } else {
+                return  '100vw';
+            }
+        };
+        const calculateLeft = () => {
+            if (sidebarOpen) {
+                return  '15%';
+            } else if (chatOpen) {
+                return  '6%';
+            } else {
+                return  '0%';
+            }
+        };
+
+
+        setWidth(calculateWidth());
+        setLeft(calculateLeft());
+    }, [query, sidebarOpen, chatOpen]);
 
     const iconContainerStyles: React.CSSProperties = {
         width:
@@ -35,19 +81,33 @@ function AboutPageJourney() {
         zIndex: 0,
     };
 
+
     const vignetteStyles: React.CSSProperties = {
         width:
-            sidebarOpen
-                ? 'calc(95vw - 15vw)'
-                : chatOpen ? 'calc(95vw - 15vw)'
-                    : '100vw',
-        height: '102vh',
-        background: `radial-gradient(circle, rgba(0,0,0,0) 40%, ${hexToRGBA(theme.palette.background.default)} 70%, ${hexToRGBA(theme.palette.background.default)} 83%), linear-gradient(180deg, rgba(0,0,0,0) 51%, rgba(0,0,0,0) 52%, ${hexToRGBA(theme.palette.background.default)} 92%, ${hexToRGBA(theme.palette.background.default)}`, // Vignette gradient
+            aspectRatio === "21:9" ?
+                '100vw'
+            :
+                width,
+            //     sidebarOpen
+            //         ? 'calc(25w - 0vw)'
+            //         : chatOpen ? 'calc(100vw - 0vw)'
+            //             : '100vw',
+
+        height: aspectRatio !== '21:9' ? '100vh' : '120vh',
+        background: `radial-gradient(circle, rgba(0,0,0,0) 40%, ${hexToRGBA(theme.palette.background.default)} 70%, ${hexToRGBA(theme.palette.background.default)} 83%), 
+                 linear-gradient(180deg, rgba(0,0,0,0) 51%, rgba(0,0,0,0) 52%, ${hexToRGBA(theme.palette.background.default)} 92%, ${hexToRGBA(theme.palette.background.default)} 100%),
+                 linear-gradient(0deg, rgba(0,0,0,0) 30%, rgba(0,0,0,0) 30%, ${hexToRGBA(theme.palette.background.default)} 100%, ${hexToRGBA(theme.palette.background.default)} 90%)`, // Vignette gradient
         position: 'absolute',
-        left: '0%',
-        bottom: (aspectRatio !== '21:9') && (sidebarOpen || chatOpen) ? '-1%' : '-12%',
+        left:  aspectRatio === "21:9" ?
+            '0%'
+            :
+            left,
+        bottom: (aspectRatio !== '21:9') && (sidebarOpen || chatOpen) ? '-3%' :
+                    aspectRatio === '21:9' ? '-35%'
+                        : '-15%',
         zIndex: 2, // Set a higher zIndex to appear above the SVG
     };
+
 
 
     const iconStyles: React.CSSProperties = {
@@ -57,25 +117,25 @@ function AboutPageJourney() {
 
     const textStyles: React.CSSProperties = {
         position: 'absolute',
-        top: '20%',
+        top: '28%',
         left: '55%',
         transform: 'translate(-50%, -50%)',
-        fontSize: '300%',
+        fontSize: '3vw',
         fontWeight: 'bold',
         color: '#e4c8b5',
-        zIndex: 1,
+        zIndex: 4,
         whiteSpace: 'nowrap',
     };
 
     const textStyles2: React.CSSProperties = {
         position: 'absolute',
-        top: '20%',
+        top: '28%',
         left: '55.3%',
         transform: 'translate(-50%, -50%)',
-        fontSize: '300%',
+        fontSize: '3vw',
         fontWeight: 'bold',
         color: '#915d5d',
-        zIndex: 0.5,
+        zIndex: 3,
         whiteSpace: 'nowrap',
     };
 
@@ -98,16 +158,19 @@ function AboutPageJourney() {
     }
 
 
+    const buttonSize = aspectRatio === '21:9' ? '6vw' : '7vw';
+
     const buttonStyles: React.CSSProperties = {
         animation: 'godRays 5s infinite linear',
         backgroundRepeat: 'repeat',
         backgroundPosition: '50% 50%',
+        marginTop: "2%",
         position: 'absolute',
         top: '37.6%',
         left: '55.8%',
         transform: 'translate(-50%, -50%)',
-        width: aspectRatio === '21:9' ? '6%' : '7%', // Set width and height to the same value to create a circle
-        height: aspectRatio === '21:9' ? '15.4%' : '12.4%',
+        width: buttonSize,
+        height: buttonSize,
 
         backgroundColor: '#e9c6af',
         border: 'none',
@@ -125,8 +188,8 @@ function AboutPageJourney() {
         justifyContent: 'center', // To center the text inside the circle
         overflow: 'hidden', // Hide the overflowing part of the shine effect
         zIndex: 3, // Set a higher zIndex to appear above the SVG
-
     };
+
 
     const finalButtonStyles: React.CSSProperties = {
         backgroundColor: buttonHover ? '#58cc02' : '#4da902', /* Duolingo green */
@@ -159,12 +222,14 @@ function AboutPageJourney() {
                     onClick={() => window.location.href = '/journey'}
                 >
                     <div style={buttonShine}/>
-                    Get Started
+                    <p style={{fontSize: '1vw', margin: 0, padding: 0}}>Get Started</p>
+
                 </button>
                 <Box sx={{
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: 'center',
+                    zIndex: 5
                 }}>
                     <div style={{
                         fontFamily: 'Arial, sans-serif',
@@ -172,10 +237,10 @@ function AboutPageJourney() {
                         textAlign: 'left',
                         maxWidth: '80%'
                     }}>
-                        <h1 style={{textAlign: 'center'}}>GIGO Journey System</h1>
+                        <h1 style={{textAlign: 'center', zIndex: 4}}>GIGO Journey System</h1>
                         <br/>
                         <br/>
-                        <Grid container spacing={0}>
+                        <Grid container style={{zIndex: 4}} spacing={0}>
                             <Grid item xs={6}>
                                 <p>GIGO Journeys focus on delivering comprehensive programming education. The
                                     journey is structured to provide programmers of various skill levels with
