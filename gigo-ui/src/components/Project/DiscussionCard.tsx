@@ -115,7 +115,7 @@ export default function DiscussionCard(props: IProps) {
                         <Typography component={"div"} sx={styles.tags}>
                             {props.tags && props.tags.map((tag) => {
                                 return (
-                                    <Typography component={"div"} sx={styles.tag}>
+                                    <Typography component={"div"} sx={styles.tag} key={tag}>
                                         <Chip label={tag}/>
                                     </Typography>
                                 )

@@ -5,6 +5,7 @@ export default interface Post {
     author: string;
     author_id: string;
     tags: string[];
+    tag_strings: string[];
     created_at: Date;
     updated_at: Date;
     repo_id: string;

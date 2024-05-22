@@ -104,7 +104,7 @@ export default function RecommendedProjectsScroll() {
                                             height={"20vh"}
                                             imageHeight={"20vh"}
                                             // TODO mobile => make width 'fit-content'
-                                            width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? 'fit-content' : '20vw')}
+                                            width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : '20vw')}
                                             imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "23vw"}
                                             projectId={project["_id"]}
                                             projectTitle={project["title"]}

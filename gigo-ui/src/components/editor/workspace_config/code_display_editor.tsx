@@ -16,6 +16,7 @@ import { theme } from "@/theme";
 import Scrollbars from "react-custom-scrollbars";
 import { ThreeDots } from "react-loading-icons";
 import { PropaneTankSharp } from "@mui/icons-material";
+import FileSystemSidebar, { FileSystemItem } from "@/components/IDE/FileSystemSidebar";
 
 interface LanguageOption {
     name: string;
@@ -24,28 +25,29 @@ interface LanguageOption {
 }
 
 const languages: LanguageOption[] = [
-    {name: 'Go', extensions: ['go'], languageId: 6},
-    {name: 'Python', extensions: ['py', 'pytho', 'pyt'], languageId: 5},
+    { name: 'Go', extensions: ['go'], languageId: 6 },
+    { name: 'Python', extensions: ['py', 'pytho', 'pyt'], languageId: 5 },
     {
         name: 'C++',
         extensions: ['cpp', 'cc', 'cxx', 'hpp', 'c++', 'h'],
         languageId: 8,
     },
-    {name: 'HTML', extensions: ['html', 'htm'], languageId: 27},
-    {name: 'Java', extensions: ['java'], languageId: 2},
-    {name: 'JavaScript', extensions: ['js'], languageId: 3},
-    {name: 'JSON', extensions: ['json'], languageId: 1},
-    {name: 'Markdown', extensions: ['md'], languageId: 1},
-    {name: 'PHP', extensions: ['php'], languageId: 13},
-    {name: 'Rust', extensions: ['rs'], languageId: 14},
-    {name: 'SQL', extensions: ['sql'], languageId: 34},
-    {name: 'XML', extensions: ['xml'], languageId: 1},
-    {name: 'LESS', extensions: ['less'], languageId: 1},
-    {name: 'SASS', extensions: ['sass', 'scss'], languageId: 1},
-    {name: 'Clojure', extensions: ['clj'], languageId: 21},
-    {name: 'C#', extensions: ['cs'], languageId: 10},
-    {name: 'Shell', extensions: ['bash', 'sh'], languageId: 38},
-    {name: 'Toml', extensions: ['toml'], languageId: 14}
+    { name: 'HTML', extensions: ['html', 'htm'], languageId: 27 },
+    { name: 'Java', extensions: ['java'], languageId: 2 },
+    { name: 'JavaScript', extensions: ['js'], languageId: 3 },
+    { name: 'JSON', extensions: ['json'], languageId: 1 },
+    { name: 'Markdown', extensions: ['md'], languageId: 1 },
+    { name: 'PHP', extensions: ['php'], languageId: 13 },
+    { name: 'Rust', extensions: ['rs'], languageId: 14 },
+    { name: 'SQL', extensions: ['sql'], languageId: 34 },
+    { name: 'XML', extensions: ['xml'], languageId: 1 },
+    { name: 'LESS', extensions: ['less'], languageId: 1 },
+    { name: 'SASS', extensions: ['sass', 'scss'], languageId: 1 },
+    { name: 'Clojure', extensions: ['clj'], languageId: 21 },
+    { name: 'C#', extensions: ['cs'], languageId: 10 },
+    { name: 'Shell', extensions: ['bash', 'sh'], languageId: 38 },
+    { name: 'Toml', extensions: ['toml'], languageId: 14 },
+    { name: 'Yaml', extensions: ['yaml', 'yml'], languageId: 99 }
 ];
 
 const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
@@ -79,16 +81,18 @@ export interface Code_display_editor {
 }
 
 function CodeDisplayEditor(props: Code_display_editor) {
-    const [allFiles, setAllFiles] = React.useState([])
+    const [allFiles, setAllFiles] = React.useState<FileSystemItem[]>([])
     const [fileName, setFileName] = useState("")
-    const [chosenFile, setChosenFile] = useState({name: "", content: ""})
+    const [chosenFile, setChosenFile] = useState<FileSystemItem>({ name: "", content: undefined, path: "", type: "file" })
     const [loading, setLoading] = useState(false)
 
-    const selectFile = async (file: any) => {
+    const selectFile = async (file: FileSystemItem) => {
         if (!props.repoId || props.repoId === "" || !props.references || props.references === "")
             return
 
-        if (file["content"] === undefined || file["content"] === null || file["content"] === "") {
+        console.log("FILE Pre", file)
+
+        if (file.content === undefined || file.content === null || file.content === "") {
             let res = await call(
                 "/api/project/getProjectFiles",
                 "post",
@@ -96,14 +100,33 @@ function CodeDisplayEditor(props: Code_display_editor) {
                 null,
                 null,
                 // @ts-ignore
-                { repo_id: props.repoId, ref: props.references, filepath: file["path"] },
+                { repo_id: props.repoId, ref: props.references, filepath: file.path },
                 null,
                 config.rootPath
             )
-            file = { ...file, content: res["message"]["content"] };
+            file.content = res["message"]["content"];
         }
 
+        console.log("FILE", file)
+
         setChosenFile(file)
+    }
+
+    const getDirectoryData = async (filepath: string) => {
+        let res = await call(
+            "/api/project/getProjectDirectories",
+            "post",
+            null,
+            null,
+            null,
+            //@ts-ignore
+            { repo_id: props.repoId, ref: "main", filepath: filepath },
+            null,
+            config.rootPath
+        )
+        if (res !== undefined && res["message"] !== undefined) {
+            setAllFiles((f) => [...f, ...res["message"]])
+        }
     }
 
     const apiLoad = async () => {
@@ -246,10 +269,11 @@ function CodeDisplayEditor(props: Code_display_editor) {
         apiLoad()
     }, [props.references, props.repoId]);
 
-    const handleCurrentFileSideBar = (file: any) => {
+    const handleCurrentFileSideBar = (file: FileSystemItem) => {
         setLoading(true)
-        selectFile(file)
-        setLoading(false)
+        selectFile(file).then(() => {
+            setLoading(false)
+        })
     }
 
     //@ts-ignore
@@ -264,21 +288,25 @@ function CodeDisplayEditor(props: Code_display_editor) {
     const lang = mapFilePathToLangOption(chosenFile.name)
 
     return (
-        <div style={props.style}>
-            <div style={{ width: "50%", display: "flex", height: "73vh" }}>
-                <Sidebar
-                    selectedFile={chosenFile}
-                    handleFileSelect={handleCurrentFileSideBar}
-                    projectNames={props.projectName}
+        <Box display={"flex"} flexDirection={"row"} style={props.style}>
+            <Box style={{ width: "300px", display: "flex" }}>
+                <FileSystemSidebar
                     files={allFiles}
-                    repoId={props.repoId}
+                    height={"73vh"}
+                    onFolderExpand={async (item: FileSystemItem) => {
+                        const parentPathExists = allFiles.some(file => file.path !== item.path && file.path.startsWith(item.path));
+                        if (!parentPathExists) {
+                            await getDirectoryData(item.path);
+                        }
+                    }}
+                    onFileClick={(file: FileSystemItem) => handleCurrentFileSideBar(file)}
                 />
-            </div>
+            </Box>
             {
                 isMarkdown ? (
                     <Scrollbars
                         style={{
-                            height: props.height,
+                            minHeight: props.height,
                             width: "121vw",
                             border: `1px solid ${theme.palette.primary.contrastText}`,
                             borderRadius: 5,
@@ -295,7 +323,7 @@ function CodeDisplayEditor(props: Code_display_editor) {
                     >
                         {/*@ts-ignore*/}
                         <MarkdownRenderer markdown={chosenFile["content"]} style={{
-                            height: props.height,
+                            minHeight: props.height,
                             width: "60vw",
                             overflowWrap: "break-word",
                             padding: "2em 3em",
@@ -309,8 +337,9 @@ function CodeDisplayEditor(props: Code_display_editor) {
                                     border: `1px solid ${theme.palette.primary.contrastText}`,
                                     boxSizing: 'border-box',
                                     width: "121vw",
-                                    height: props.height,
-                                    borderRadius: "10px",
+                                    minHeight: props.height,
+                                    borderRadius: "5px",
+                                    position: "relative"
                                 }}
                             >
                                 <CircularProgress
@@ -318,8 +347,8 @@ function CodeDisplayEditor(props: Code_display_editor) {
                                     sx={{
                                         // center the spinner in the middle of the Box
                                         position: 'absolute',
-                                        top: '52vh',
-                                        left: '59vw',
+                                        top: '50%',
+                                        left: '50%',
                                         transform: 'translate(-50%, -50%)'
                                     }}
                                 />
@@ -328,12 +357,13 @@ function CodeDisplayEditor(props: Code_display_editor) {
                             <Editor
                                 parentStyles={{
                                     width: "121vw",
-                                    height: props.height,
-                                    borderRadius: "10px",
+                                    minHeight: props.height,
+                                    borderRadius: "5px",
+                                    overflowX: "auto"
                                 }}
-                                language={lang ? lang.extensions[0] : "py"}
+                                language={lang !== undefined ? lang.extensions[0] : "txt"}
                                 filePath={chosenFile.name}
-                                code={chosenFile.content}
+                                code={chosenFile.content || ""}
                                 theme={theme.palette.mode}
                                 readonly={true}
                                 onChange={(val, view) => { }}
@@ -345,15 +375,16 @@ function CodeDisplayEditor(props: Code_display_editor) {
                                 extensions={[]}
                                 wrapperStyles={{
                                     width: '100%',
+                                    maxWidth: "80vw",
                                     height: '100%',
-                                    borderRadius: "10px",
+                                    borderRadius: "5px",
                                     border: `1px solid ${theme.palette.primary.contrastText}`,
                                 }}
                             />
                         )
                     )
             }
-        </div>
+        </Box>
     )
 }
 

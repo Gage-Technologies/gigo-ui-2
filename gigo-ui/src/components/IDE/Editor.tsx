@@ -15,6 +15,7 @@ import { sql } from '@codemirror/lang-sql';
 import { xml } from '@codemirror/lang-xml';
 import { less } from '@codemirror/lang-less';
 import { sass } from '@codemirror/lang-sass';
+// import { yaml } from '@codemirror/lang-yaml';
 import { clojure } from '@nextjournal/lang-clojure';
 import { csharp } from '@replit/codemirror-lang-csharp';
 import { go } from '@codemirror/legacy-modes/mode/go';
@@ -156,6 +157,10 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
             case "c#":
             case "csharp":
                 return [csharp()];
+            // todo: figure out why this doesn't work
+            // case "yaml":
+            // case "yml":
+            //     return [yaml()];
             case "sh":
             case "shell":
             case "bash":
@@ -168,7 +173,7 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
         }
     }
 
-    let getLspData = (): {fp: string, root: string, code: string} | undefined => {
+    let getLspData = (): { fp: string, root: string, code: string } | undefined => {
         if (props.filePath === undefined || props.byteId === undefined || props.difficulty === undefined) {
             console.log("getLspData: filePath: ", props.filePath, " byteId: ", props.byteId, " difficulty: ", props.difficulty)
             return undefined
@@ -246,6 +251,10 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
             case "typescript":
             case "ts":
                 lang = "typescriptreact"
+                break
+            case "yaml":
+            case "yml":
+                lang = "yaml"
                 break
             // Additional cases for other languages and their extensions
             default:
