@@ -2,7 +2,7 @@
 import * as React from "react";
 import {useEffect} from "react";
 import {Box, Button, createTheme, CssBaseline, PaletteMode} from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import {initialAuthState, selectAuthState, updateAuthState} from "@/reducers/auth/auth";
 import config from "@/config";
@@ -22,12 +22,6 @@ import Image from "next/image";
 import {useRouter, useSearchParams} from "next/navigation";
 
 function AboutPagePremium() {
-    let userPref = localStorage.getItem('theme')
-
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     // load auth state from storage
     const authState = useAppSelector(selectAuthState);
 
@@ -204,7 +198,7 @@ function AboutPagePremium() {
                                     {/*<h4> Dont want To see it go?</h4>*/}
 
 
-                                    <h4>Don&#39;t want to see it go? Only $8/mo. Cancel anytime.</h4>
+                                    <h4>Don&#39;t want to see it go? Only $3/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
                                         '--button-primary-color': theme.palette.secondary.main,
@@ -223,7 +217,7 @@ function AboutPagePremium() {
                                     width: "90%"
                                 }}>
                                     <h1>Become a Pro</h1>
-                                    <h4>Only $8/mo. Cancel anytime.</h4>
+                                    <h4>Only $3/mo. Cancel anytime.</h4>
                                     <AwesomeButton style={{
                                         width: "auto",
                                         '--button-primary-color': theme.palette.secondary.main,

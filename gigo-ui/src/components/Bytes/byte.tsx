@@ -2939,7 +2939,7 @@ function Byte({params}: { params: { id: string } }) {
             {renderNewFilePopup()}
             {renderDeleteFilePopup()}
             {renderTutorial()}
-            <OutOfHearts open={outOfHearts} onClose={() => navigate.push("/journey/main")} onGoPro={() => setProPopupOpen(true)}/>
+            <OutOfHearts open={outOfHearts} onClose={() => navigate.push("/journey")} onGoPro={() => setProPopupOpen(true)}/>
             <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)}/>
         </>
     );

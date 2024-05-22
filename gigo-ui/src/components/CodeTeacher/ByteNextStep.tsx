@@ -10,7 +10,7 @@ import {
     styled,
     Tooltip
 } from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import {Close} from "@mui/icons-material";
 import {Typography} from "@mui/material";
@@ -57,13 +57,9 @@ enum State {
 }
 
 export default function ByteNextStep(props: ByteNextStepProps) {
-    let userPref = localStorage.getItem("theme");
     let authState = useAppSelector(selectAuthState);
     const bytesState = useAppSelector(selectBytesState)
-    const dispatch = useAppDispatch();
 
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [response, setResponse] = useState<string>("");
     const [state, setState] = useState<State>(State.WAITING)
     const [hidden, setHidden] = useState<boolean>(true);

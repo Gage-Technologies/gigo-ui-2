@@ -1,3 +1,5 @@
+'use client'
+
 import React, {useEffect, useState} from 'react';
 
 import {Box, Button, createTheme, PaletteMode, Typography, Grid, Paper, SxProps} from '@mui/material';
@@ -19,9 +21,7 @@ import Image from "next/image";
 const WelcomeMobilePage: React.FC = () => {
 
     const [showSubscription, setShowSubscription] = useState(false);
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+
     const query = useSearchParams();
     const forwardPath = query.get("forward") ? decodeURIComponent(query.get("forward") || "") : "";
 

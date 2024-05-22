@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useState } from "react";
 import {
     Box,
@@ -14,7 +16,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import NotificationsPausedIcon from '@mui/icons-material/NotificationsPaused';
 import {useRouter} from "next/navigation";
 
@@ -37,10 +39,6 @@ const NotificationPopup: React.FC<IProps> = ({
                                                  setNotificationCount,
                                              }) => {
     let navigate = useRouter();
-
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const acknowledgeNotification = async (notification_id: string) => {
         let res = await call(

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, Button, Modal, Grid, PaletteMode, createTheme } from '@mui/material';
 import HeartDisabledIcon from '@/icons/HeartDisabledIcon';
 import { DailyHearts } from '@/models/dailyHearts';
-import { getAllTokens } from '@/theme';
+import { theme } from '@/theme';
 
 interface Props {
   open: boolean;
@@ -11,10 +11,6 @@ interface Props {
 }
 
 const OutOfHeartsMobile = ({ open, onClose, onGoPro }: Props) => {
-  const userPref = localStorage.getItem('theme')
-  const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-  const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
   return (
     <Modal
       open={open}

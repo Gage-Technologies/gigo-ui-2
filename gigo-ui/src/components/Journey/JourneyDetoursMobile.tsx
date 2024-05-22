@@ -5,7 +5,7 @@ import {
     ThemeProvider, Typography, Button
 } from "@mui/material";
 import SearchBar from "@/components/SearchBar";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import DetourMobileCard from "@/components/Journey/DetourMobileCard";
 import call from "@/services/api-call";
 import config from "@/config";
@@ -24,9 +24,6 @@ interface JourneyGroups {
 }
 
 function JourneyDetoursMobile() {
-    const userPref = localStorage.getItem('theme');
-    const [mode] = useState<'light' | 'dark'>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const sections = useRef([]);
     const [activeTab, setActiveTab] = useState(0);
     const [searchText, setSearchText] = React.useState("")

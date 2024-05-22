@@ -1,3 +1,4 @@
+'use client'
 import * as React from "react";
 import {
     createTheme,
@@ -10,7 +11,7 @@ import {
     Typography,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import { keyframes } from "@emotion/react";
 import LinearProgress from "@mui/material/LinearProgress";
 import {useEffect} from "react";
@@ -35,15 +36,6 @@ interface IProps {
 }
 
 const XpPopup = (props: IProps) => {
-    let userPref = localStorage.getItem("theme");
-    // const [mode, _] = React.useState<PaletteMode>(
-    //     userPref === "light" ? "light" : "dark"
-    // );
-    // const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [showConfetti, setShowConfetti] = React.useState(false);
 
     const [startXP, setStartXP] = React.useState(props.oldXP);

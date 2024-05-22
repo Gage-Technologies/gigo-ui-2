@@ -9,15 +9,15 @@ import journeySide5 from "@/img/journey/journey-side-5.svg";
 import journeySide6 from "@/img/journey/journey-side-6.svg";
 import journeySide7 from "@/img/journey/journey-side-7.svg";
 import Image from 'next/image';
+import { theme } from "@/theme";
 
 // @ts-ignore
 function JourneyPortals({ currentIndex }) {
     const [animationData, setAnimationData] = useState(null);
     const [imageLoaded, setImageLoaded] = useState(false);
-    let userPref = localStorage.getItem('theme');
 
     useEffect(() => {
-        const url = userPref !== 'light'
+        const url = theme.palette.mode !== 'light'
             ? `${config.rootPath}/static/ui/lottie/general/journey-portal-dark.json`
             : `${config.rootPath}/static/ui/lottie/general/journey-portal-light.json`;
 
@@ -28,7 +28,7 @@ function JourneyPortals({ currentIndex }) {
                 setImageLoaded(true)
             })
             .catch(error => console.error(error));
-    }, [userPref]);
+    }, [theme.palette.mode]);
 
     const images = [
         journeySide1, journeySide2, journeySide3, journeySide4,

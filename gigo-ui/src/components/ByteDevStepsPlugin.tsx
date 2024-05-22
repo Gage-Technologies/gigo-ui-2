@@ -1,7 +1,9 @@
+'use client'
+
 import {alpha, Box, Button, createTheme, PaletteMode, styled, Tooltip} from "@mui/material";
 import React, {useState} from "react";
 import {Close, Explore, Flag} from "@mui/icons-material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import MarkdownRenderer from "./Markdown/MarkdownRenderer";
 import AboutBytesIcon from "@/icons/Bytes/AboutPage";
 
@@ -15,10 +17,6 @@ interface ByteDevStepsPluginProps {
 }
 
 function ByteDevStepsPlugin(props: ByteDevStepsPluginProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const HiddenButton = styled(Button)`
         background-color: transparent;
         padding: 8px;
@@ -100,7 +98,7 @@ function ByteDevStepsPlugin(props: ByteDevStepsPluginProps) {
                             width: "20px",
                             paddingTop: "2px",
                         }}
-                        miniIcon={userPref === 'light'}
+                        miniIcon={theme.palette.mode === 'light'}
                     />
                     <Box
                         sx={{

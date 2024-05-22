@@ -1,3 +1,4 @@
+'use client'
 import React, {useState, useRef, useEffect} from "react";
 import ReactDOM from "react-dom";
 import { Piece } from "avataaars";
@@ -23,6 +24,7 @@ import { DownloadIcon } from "./svg";
 import {IconButton} from "@mui/material";
 import {ArrowBackIos, ArrowForwardIos} from "@mui/icons-material";
 import ShuffleIcon from '@mui/icons-material/Shuffle';
+import { theme } from '@/theme';
 
 export default function Avataaar(props) {
   const canvasRef = useRef(null);
@@ -88,8 +90,6 @@ export default function Avataaar(props) {
     };
     img.src = url;
   };
-
-  let userPref = localStorage.getItem('theme')
 
 
   const onDownloadSVG = () => {
@@ -162,7 +162,7 @@ export default function Avataaar(props) {
                     <Tabpane selectedTab={selectedTab} type={option.type} key={i}>
                       {option.type !== 'avatarStyle' && option.type !== 'skin' && option.type !== 'skinColor' ? (
                           <IconButton disabled={!canScrollLeft} onClick={() => scrollPieces(type, 'prev')}>
-                            <ArrowBackIos style={userPref === 'light' ? {color: "black"} : {color: "white"}}/>
+                            <ArrowBackIos style={theme.palette.mode === 'light' ? {color: "black"} : {color: "white"}}/>
                           </IconButton>
                       ) : null}
 
@@ -188,7 +188,7 @@ export default function Avataaar(props) {
                       {
                         option.type !== 'avatarStyle' && option.type !== 'skin' && option.type !== 'skinColor' ? (
                             <IconButton disabled={!canScrollRight} onClick={() => scrollPieces(type, 'next')}>
-                              <ArrowForwardIos style={userPref === 'light' ? {color: "black"} : {color: "white"}}/>
+                              <ArrowForwardIos style={theme.palette.mode === 'light' ? {color: "black"} : {color: "white"}}/>
                             </IconButton>
                         ) : null
                       }

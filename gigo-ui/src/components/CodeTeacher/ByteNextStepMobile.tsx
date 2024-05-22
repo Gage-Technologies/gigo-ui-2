@@ -1,3 +1,5 @@
+'use client'
+
 import React, { useEffect, useState } from "react";
 import {
     Box,
@@ -15,7 +17,7 @@ import {
     Tooltip,
     alpha
 } from "@mui/material";
-import { getAllTokens, themeHelpers } from "@/theme";
+import { theme } from "@/theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import { Close } from "@mui/icons-material";
 import { Typography } from "@mui/material";
@@ -52,10 +54,7 @@ enum State {
 }
 
 export default function ByteNextStepMobile(props: ByteNextStepProps) {
-    let userPref = localStorage.getItem("theme");
     let authState = useAppSelector(selectAuthState);
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [response, setResponse] = useState<string>("");
     const [state, setState] = useState<State>(State.WAITING)
     const [hidden, setHidden] = useState<boolean>(true);

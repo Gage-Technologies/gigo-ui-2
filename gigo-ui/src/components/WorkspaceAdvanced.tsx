@@ -19,9 +19,7 @@ import {
     ThemeProvider,
     Typography
 } from "@mui/material";
-import {getAllTokens} from "@/theme";
-import {useParams} from "react-router";
-import call from "../services/api-call";
+import {theme} from "@/theme";
 import {Workspace, WorkspaceInitFailure} from "@/models/workspace";
 import config from "../config";
 import TwentyFortyEight from "../components/Games/TwentyFortyEight";
@@ -59,11 +57,6 @@ const WorkspaceAdvancedPage = ({params}: { params: { id: string } }) => {
 
     const dispatch = useDispatch();
     const cache = useSelector(selectCacheState);
-
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     // create state variables and initialize from cache if possible
     let [workspace, setWorkspace] = React.useState<Workspace | null>(

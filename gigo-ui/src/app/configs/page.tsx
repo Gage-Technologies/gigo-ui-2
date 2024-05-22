@@ -1,6 +1,6 @@
 'use client';
 import React, {SyntheticEvent, useEffect, useState} from 'react';
-import {themeHelpers, getAllTokens, isHoliday} from "@/theme";
+import {theme} from "@/theme";
 import {
     Autocomplete,
     Card,
@@ -15,9 +15,6 @@ import {
     Tooltip
 } from "@mui/material";
 import {Chip, Grid} from "@mui/material";
-import {useAppSelector} from "@/reducers/hooks";
-import {useNavigate} from "react-router-dom";
-import premiumImage from "../img/croppedPremium.png";
 import { Box, Typography, Button, List, ListItem, ListItemText, Divider } from '@mui/material';
 import { styled, alpha } from '@mui/material/styles';
 import DownloadIcon from '@mui/icons-material/Download';
@@ -96,9 +93,6 @@ const SearchBar = ({ handleWorkspaceConfigSearch }) => {
 
 
 function PublicConfigs() {
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [minorTab, setMinorTab] = React.useState<string>("Community")
     const [skip, setSkip] = React.useState(0);
     const [add, setAdd] = React.useState(false);
@@ -131,17 +125,6 @@ function PublicConfigs() {
     const [editId, setEditId] = React.useState<string>("");
 
     const [editMode, setEditMode] = React.useState<boolean>(false);
-    const colorMode = React.useMemo(
-        () => ({
-            // The dark mode switch would invoke this method
-            toggleColorMode: () => {
-                setMode((prevMode: PaletteMode) =>
-                    prevMode === 'light' ? 'dark' : 'light',
-                );
-            },
-        }),
-        [mode],
-    );
 
     const editButton = (title: string, description: string, tags: Tag[], languages: number[], id: string, content: string) => {
         setEditMode(true)
@@ -153,24 +136,7 @@ function PublicConfigs() {
         setEditLanguage(languages)
     }
 
-    // const wsConfigOptionsBaseState = [
-    //     {
-    //         _id: "0",
-    //         title: "Default",
-    //         content: DefaultWorkspaceConfig,
-    //         description: "Default workspace configuration provided by GIGO."
-    //     } as WorkspaceConfig
-    // ]
-    // const wsConfigOptionsBaseState = [
-    // ]
     const [wsConfigOptions, setWsConfigOptions] = React.useState<WorkspaceConfig[]>([])
-
-    const aspectRatio = useAspectRatio();
-    const handleTheme = () => {
-        colorMode.toggleColorMode();
-        localStorage.setItem('theme', mode === 'light' ? "dark" : 'light')
-        window.location.reload()
-    };
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setSkip(0)

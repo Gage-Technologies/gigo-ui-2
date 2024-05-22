@@ -1,3 +1,5 @@
+'use client'
+
 import {
     alpha,
     Box,
@@ -12,7 +14,7 @@ import {
 } from "@mui/material";
 import React, {useEffect, useRef, useState} from "react";
 import {ArrowDropDown, Close, OpenInBrowser, OpenInNew, Refresh} from "@mui/icons-material";
-import {getAllTokens} from "../theme";
+import {theme} from "../theme";
 import {Preview} from "@mui/icons-material";
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -36,10 +38,6 @@ interface BytePortPluginProps {
 }
 
 function BytePortPlugin(props: BytePortPluginProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const HiddenButton = styled(Button)`
         background-color: transparent;
         padding: 8px;

@@ -57,12 +57,12 @@ import { ThreeDots } from "react-loading-icons";
 import Attempt from "@/models/attempt";
 
 import WorkspaceConfigEditor from "@/components/editor/workspace_config/editor";
-import {v4} from "uuid";
+import { v4 } from "uuid";
 import * as yaml from 'js-yaml';
 
 import HorseIcon from "@/icons/ProjectCard/Horse"
 import HoodieIcon from "@/icons/ProjectCard/Hoodie";
-import {QuestionMark} from "@mui/icons-material";
+import { QuestionMark } from "@mui/icons-material";
 import TrophyIcon from "@/icons/ProjectCard/Trophy";
 import GraduationIcon from "@/icons/ProjectCard/Graduation";
 import ProjectPayment from "@/components/Stripe/projectPayment";
@@ -78,11 +78,11 @@ import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import CardTutorial from "@/components/CardTutorial";
 import UserIcon from "@/icons/User/UserIcon";
-import {useSelector} from "react-redux";
-import {selectCacheState} from "@/reducers/pageCache/pageCache";
-import styled, {keyframes} from 'styled-components';
+import { useSelector } from "react-redux";
+import { selectCacheState } from "@/reducers/pageCache/pageCache";
+import styled, { keyframes } from 'styled-components';
 import PersonIcon from "@mui/icons-material/Person";
-import {Helmet, HelmetProvider} from "react-helmet-async";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import CloseIcon from "@mui/icons-material/Close";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import CaptchaPage from "@/components/Project/CaptchaPage";
@@ -95,10 +95,10 @@ import Fab from '@mui/material/Fab';
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch';
 import CircularProgress from '@mui/material/CircularProgress';
 import DebugIcon from "@/icons/ProjectCard/Debug";
-import Image, {StaticImageData} from "next/image";
-import {useRouter, useSearchParams} from "next/navigation";
+import Image, { StaticImageData } from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
 
-function Challenge({params}: { params: { id: string } }) {
+function Challenge({ params }: { params: { id: string } }) {
     const [editTitle, setEditTitle] = React.useState(false);
     const [editImage, setEditImage] = React.useState(false);
     let urlParams = useSearchParams();
@@ -368,7 +368,7 @@ function Challenge({params}: { params: { id: string } }) {
                 post_id: id,
                 action: action,
                 session_id: sessionId,
-            })], {type: 'application/json'});
+            })], { type: 'application/json' });
 
             // Use navigator.sendBeacon to send the data to the server
             navigator.sendBeacon(config.rootPath + '/api/implicit/recordAction', blob);
@@ -383,7 +383,7 @@ function Challenge({params}: { params: { id: string } }) {
             null,
             null,
             //@ts-ignore
-            {post_id: id},
+            { post_id: id },
             null,
             config.rootPath
         )
@@ -395,7 +395,7 @@ function Challenge({params}: { params: { id: string } }) {
             null,
             null,
             //@ts-ignore
-            {project_id: id, skip: 0, limit: 15},
+            { project_id: id, skip: 0, limit: 15 },
             null,
             config.rootPath
         )
@@ -407,7 +407,7 @@ function Challenge({params}: { params: { id: string } }) {
             null,
             null,
             //@ts-ignore
-            {project_id: id, skip: 0, limit: 15},
+            { project_id: id, skip: 0, limit: 15 },
             null,
             config.rootPath
         )
@@ -476,7 +476,7 @@ function Challenge({params}: { params: { id: string } }) {
             null,
             null,
             //@ts-ignore
-            {project_id: project._id},
+            { project_id: project._id },
             null,
             config.rootPath
         )
@@ -791,13 +791,13 @@ function Challenge({params}: { params: { id: string } }) {
                 overflowWrap: "break-word",
                 borderRadius: "10px",
                 padding: "2em 3em"
-            }}/>
+            }} />
         )
     }
 
     const attemptTab = () => {
         return (
-            <div style={{overflowY: "auto", width: "50vw"}}>
+            <div style={{ overflowY: "auto", width: "50vw" }}>
                 <Typography variant={"h5"} style={{
                     textAlign: "center",
                     fontWeight: "bold",
@@ -809,21 +809,21 @@ function Challenge({params}: { params: { id: string } }) {
                 {attempt.length > 0 ? (
                     attempt.map((attempts) => {
                         return (
-                            <div style={{paddingBottom: "10px"}}>
+                            <div key={attempts["_id"]} style={{ paddingBottom: "10px" }}>
                                 <ButtonBase onClick={() => router.push("/attempt/" + attempts["_id"])}>
                                     <AttemptsCard attemptUser={attempts["author"]}
-                                                  userThumb={config.rootPath + "/static/user/pfp/" + attempts["author_id"]}
-                                                  userId={attempts["author_id"]} attemptTime={attempts["created_at"]}
-                                                  attemptLines={attempts["attemptLines"]}
-                                                  attemptPercentage={attempts["attemptPercentage"]}
-                                                  success={attempts["success"]}
-                                                  userTier={attempts["tier"]}
-                                                  backgroundName={attempts["name"]}
-                                                  backgroundPalette={attempts["color_palette"]}
-                                                  backgroundRender={attempts["render_in_front"]}
-                                                  width={"50vw"}
-                                                  height={"auto"}
-                                                  description={attempts["description"]}
+                                        userThumb={config.rootPath + "/static/user/pfp/" + attempts["author_id"]}
+                                        userId={attempts["author_id"]} attemptTime={attempts["created_at"]}
+                                        attemptLines={attempts["attemptLines"]}
+                                        attemptPercentage={attempts["attemptPercentage"]}
+                                        success={attempts["success"]}
+                                        userTier={attempts["tier"]}
+                                        backgroundName={attempts["name"]}
+                                        backgroundPalette={attempts["color_palette"]}
+                                        backgroundRender={attempts["render_in_front"]}
+                                        width={"50vw"}
+                                        height={"auto"}
+                                        description={attempts["description"]}
                                     />
                                 </ButtonBase>
                             </div>
@@ -839,11 +839,11 @@ function Challenge({params}: { params: { id: string } }) {
                     }}>
                         {/* Let's add a pretty message telling the user there are no attempts and encouraging them to make one */}
                         <Typography variant={"h5"}
-                                    style={{textAlign: "center", fontWeight: "bold", paddingBottom: "10px"}}>
+                            style={{ textAlign: "center", fontWeight: "bold", paddingBottom: "10px" }}>
                             No Attempts Yet!
                         </Typography>
                         <Typography variant={"h6"}
-                                    style={{textAlign: "center", fontWeight: "bold", paddingBottom: "10px"}}>
+                            style={{ textAlign: "center", fontWeight: "bold", paddingBottom: "10px" }}>
                             Be the first to attempt this challenge!
                         </Typography>
                     </div>
@@ -904,7 +904,7 @@ function Challenge({params}: { params: { id: string } }) {
                     options={{
                         title: "My Daily Activities"
                     }}
-                    rootProps={{"data-testid": "1"}}
+                    rootProps={{ "data-testid": "1" }}
                 />
             </div>
         )
@@ -967,7 +967,7 @@ function Challenge({params}: { params: { id: string } }) {
                             defaultValue={prompt}
                             value={prompt}
                             onChange={(e) => setPrompt(e.target.value)}
-                            inputProps={{maxLength: 120, minLength: 3}}
+                            inputProps={{ maxLength: 120, minLength: 3 }}
                             helperText={prompt.length > 119 ? 'Character limit reached' : promptError}
                             error={prompt.length > 119 || prompt === "" || prompt.length < 3}
                         />
@@ -1004,7 +1004,7 @@ function Challenge({params}: { params: { id: string } }) {
         }
 
         // clone the file so we don't read the same one we're going to upload
-        let clonedFile = new File([file], file.name, {type: file.type});
+        let clonedFile = new File([file], file.name, { type: file.type });
 
         // create file reader
         const reader = new FileReader();
@@ -1032,335 +1032,6 @@ function Challenge({params}: { params: { id: string } }) {
         } catch (e) {
             ;
         }
-    }
-
-    const mainTabProject = () => {
-        let minorValues = ["overview", "description"]
-        if (project && project?.post_type !== 0) {
-            minorValues = ["overview", "description", "evaluation"]
-        }
-
-        if (isEphemeral) {
-            minorValues = ["overview", "description"]
-        }
-
-        let currentUser = false
-        if (project !== null && userId === project["author_id"]) {
-            currentUser = true
-        }
-
-        return (
-            <div style={{display: "flex", width: "80vw", height: "auto"}}>
-
-                <div style={!isMobile ? {
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "90%"
-                } : {
-                    display: "flex",
-                    justifyContent: "center",
-                    width: "100%",
-                    position: "relative",
-                    flexDirection: "column"
-                }}>
-                    {isMobile ? (
-                        <div>
-                            <div style={{marginBottom: "50px"}}>
-                                <PostOverviewMobile
-                                    width={"100%"}
-                                    height={"100%"}
-                                    description={project !== null && minorTab === "overview" ? project["description"] : ""}
-                                    exclusiveDescription={project !== null ? project["exclusive_description"] : null}
-                                    postDate={project !== null ? project["created_at"] : ""}
-                                    userIsOP={currentUser}
-                                    id={project !== null ? project["_id"] : 0}
-                                    renown={project !== null ? project["tier"] : 0}
-                                    project={true}
-                                />
-                            </div>
-                            {project !== null ? (
-                                <div style={{
-                                    width: "100%",
-                                    position: "relative",
-                                    height: "300px",
-                                    marginBottom: "50px"
-                                }}>
-                                    <Image
-                                        src={config.rootPath + project["thumbnail"]}
-                                        width={100}
-                                        height={100}
-                                        alt={"project thumbnail"}
-                                    />
-                                </div>
-                            ) : (
-                                <StyledDiv style={{height: "200px", width: "inherit"}}/>
-                            )}
-
-                            <div style={!isMobile ? {
-                                overflow: "hidden",
-                                width: "70vw",
-                                maxWidth: "1300px",
-                                alignItems: "center",
-                                display: "flex",
-                                flexDirection: "column"
-                            } : {
-                                overflow: "break-word",
-                                width: "100%",
-                                maxWidth: "1300px",
-                                alignItems: "center",
-                                display: "flex",
-                                flexDirection: "column"
-                            }}>
-                                {minorTabDetermination()}
-                            </div>
-                        </div>
-                    ) : (
-                        <Card>
-                            <div style={{
-                                overflow: "hidden",
-                                width: "70vw",
-                                maxWidth: "1300px",
-                                alignItems: "center",
-                                display: "flex",
-                                flexDirection: "column",
-                                zIndex: 6
-                            }}>
-                                <div style={{width: "100%", position: "relative", height: "300px"}}>
-                                    {project !== null && !isMobile ? (
-                                        <>
-                                            <Image
-                                                src={config.rootPath + project["thumbnail"]}
-                                                height={800}
-                                                width={1300}
-                                                alt={"project thumbnail"}
-                                            />
-                                            <Button
-                                                onClick={() => setEditImage(true)}
-                                                style={{
-                                                    position: 'absolute',
-                                                    top: 0,
-                                                    right: 0
-                                                }}
-                                            >
-                                                <EditIcon/>
-                                            </Button>
-                                        </>
-                                    ) : null}
-                                </div>
-                                <Modal
-                                    aria-labelledby="transition-modal-title"
-                                    aria-describedby="transition-modal-description"
-                                    open={editImage}
-                                    onClose={() => setEditImage(false)}
-                                    closeAfterTransition
-                                    BackdropComponent={Backdrop}
-                                    BackdropProps={{
-                                        timeout: 500,
-                                    }}
-                                    style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center', // Add vertical scroll if content is longer than page height
-                                    }}
-                                >
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            padding: theme.spacing(2), // Provide padding to ensure the modal is slightly larger than its contents.
-                                            outlineColor: "black",
-                                            borderRadius: 1,
-                                            boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                                            backgroundColor: theme.palette.background.default,
-                                        }}
-                                    >
-                                        <Grid item xs={12}>
-                                            {imageGenLoad ? (
-                                                <LoadingImageUploadButton
-                                                    loading={true}
-                                                    disabled={true}
-                                                    // sx={{
-                                                    //     width: "30vw",
-                                                    //     height: "43vh"
-                                                    // }}
-                                                >
-                                                    Generating Image
-                                                </LoadingImageUploadButton>
-                                            ) : (
-                                                <Button
-                                                    color={"primary"}
-                                                    component="label"
-                                                    variant="outlined"
-                                                    sx={{
-                                                        width: "30vw",
-                                                        height: "43vh"
-                                                    }}
-                                                >
-                                                    <div style={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        alignItems: "center"
-                                                    }}>
-                                                        {projectImage == null || projectImage == "" ? (
-                                                            <h5 style={{color: "grey"}}>Upload Image</h5>
-                                                        ) : null}
-                                                        <Image
-                                                            key={projectImage}
-                                                            style={{
-                                                                height: projectImage === null ? "30vh" : "42vh",
-                                                                width: "auto",
-                                                                maxWidth: "29.5vw",
-                                                                opacity: projectImage === null ? "30%" : "100%",
-                                                                borderRadius: "10px"
-                                                            }}
-                                                            src={projectImage === null ? darkImageUploadIcon : projectImage}
-                                                            alt="upload icon"
-                                                            className={"background"}
-                                                        />
-                                                    </div>
-                                                    <input
-                                                        type="file"
-                                                        hidden
-                                                        accept="image/png, image/jpeg"
-                                                        onChange={(e) => {
-                                                            // exit if there are no files
-                                                            if (e.target.files === null) {
-                                                                return
-                                                            }
-
-                                                            // // copy initial state
-                                                            // let updateState = Object.assign({}, initialCreateProjectStateUpdate);
-                                                            // // update file in state update
-                                                            // updateState.thumbnail = e.target.files[0];
-                                                            // // execute state update
-                                                            // updateFormState(updateState)
-                                                            setUsedThumbnail(e.target.files[0])
-
-                                                            // update state for rendering the thumbnail
-                                                            loadFileToThumbnailImage(e.target.files[0])
-                                                        }}
-                                                    />
-                                                </Button>
-                                            )}
-                                        </Grid>
-                                        {!imageGenLoad ? (
-                                            <Grid item xs={12}>
-                                                <Tooltip title="Generate a unique image for your project using Magic">
-                                                    <Button
-                                                        variant="outlined"
-                                                        color="primary"
-                                                        sx={{
-                                                            width: "10vw",
-                                                            height: "45px",
-                                                            borderRadius: 1,
-                                                            left: "9.75vw",
-                                                            marginTop: "35px",
-                                                        }}
-                                                        className="generate"
-                                                        disabled={genLimitReached}
-                                                        onClick={() => {
-                                                            handleGenClickOpen();
-                                                        }}
-                                                    >
-                                                        {imageGenLoad ? imageGenLoad : "Generate Image"}
-                                                    </Button>
-                                                </Tooltip>
-                                            </Grid>
-                                        ) : null}
-                                        {!imageGenLoad ? (
-                                            <Grid item xs={12}>
-                                                <Tooltip title="Note : Only 3 images may be generated">
-                                                    <Button
-                                                        variant={`text`}
-                                                        color={"primary"}
-                                                        sx={{
-                                                            width: "10vw",
-                                                            height: "30px",
-                                                            borderRadius: 1,
-                                                            marginTop: "0px",
-                                                            marginBottom: "-25px",
-                                                            left: `9.75vw`,
-                                                        }}
-                                                        disabled={projectImage === null}
-                                                        onClick={() => {
-                                                            handleRemoveImage()
-                                                        }}
-                                                    >
-                                                        Remove Image
-                                                    </Button>
-                                                </Tooltip>
-                                            </Grid>
-                                        ) : null}
-                                        {renderGenImagePopup()}
-                                        {!imageGenLoad ? (
-                                            <Grid item xs={12}>
-                                                <Tooltip title="Update Image">
-                                                    <Button
-                                                        variant={`contained`}
-                                                        color={"primary"}
-                                                        sx={{
-                                                            width: "auto",
-                                                            height: "40px",
-                                                            borderRadius: 1,
-                                                            left: `-5vw`,
-                                                            position: "relative",
-                                                            marginTop: "-100px"
-                                                        }}
-                                                        disabled={projectImage === null}
-                                                        onClick={() => editProject(null, null, null, projectImage, null, null)}
-                                                    >
-                                                        Submit
-                                                    </Button>
-                                                </Tooltip>
-                                            </Grid>
-                                        ) : null}
-                                    </Box>
-                                </Modal>
-                                <PostOverview
-                                    userId={project !== null ? project["author_id"] : ""}
-                                    userName={project !== null ? project["author"] : ""}
-                                    width={"100%"}
-                                    height={"100%"}
-                                    userThumb={project !== null ? config.rootPath + "/static/user/pfp/" + project["author_id"] : ""}
-                                    backgroundName={project !== null ? project["name"] : null}
-                                    backgroundPalette={project !== null ? project["color_palette"] : null}
-                                    backgroundRender={project !== null ? project["render_in_front"] : null}
-                                    userTier={project !== null ? project["tier"] : ""}
-                                    //description={project !== null && minorTab === "overview" ? project["description"] : ""}
-                                    //exclusiveDescription={project !== null ? project["exclusive_description"] : null}
-                                    postDate={project !== null ? project["created_at"] : ""}
-                                    userIsOP={currentUser}
-                                    id={project !== null ? project["_id"] : 0}
-                                    renown={project !== null ? project["tier"] : 0}
-                                    project={true}
-                                    estimatedTime={project !== null ? project["estimated_tutorial_time_millis"] : null}
-                                />
-                                <div style={{height: "20px"}}/>
-                            </div>
-                            <div style={!isMobile ? {
-                                overflow: "hidden",
-                                width: "70vw",
-                                maxWidth: "1300px",
-                                alignItems: "center",
-                                display: "flex",
-                                flexDirection: "column"
-                            } : {
-                                overflow: "hidden",
-                                width: "70vw",
-                                maxWidth: "1300px",
-                                alignItems: "center",
-                                display: "flex",
-                                flexDirection: "column"
-                            }}>
-                                {minorTabDetermination()}
-                            </div>
-                        </Card>
-                    )}
-                </div>
-            </div>
-        )
     }
 
     const minorTabDetermination = () => {
@@ -1523,21 +1194,6 @@ function Challenge({params}: { params: { id: string } }) {
         }
     }
 
-    const mainTabHtml = () => {
-        let renderFunc = mainTabProject
-        if (mainTab === "source") {
-            renderFunc = mainTabSourceCode
-        } else if (mainTab === "edit") {
-            renderFunc = mainTabEditConfig
-        }
-
-        return (
-            <div style={{ width: "80vw" }}>
-                {renderFunc()}
-            </div>
-        )
-    }
-
     const handleTabChange = (newValue: string) => {
         setMainTab(newValue);
         window.location.hash = "#" + newValue
@@ -1546,25 +1202,6 @@ function Challenge({params}: { params: { id: string } }) {
             getConfig()
         }
     };
-
-    const handleThreadComment = () => {
-        let comment = threadArray
-        comment.push({
-            userName: "test user",
-            userThumb: "https://www.jackson-pollock.org/images/paintings/white-light.jpg",
-            userId: "2",
-            userTier: "purple",
-            threadId: "42269",
-            commentId: "424",
-            discussionId: "69",
-            discussionComment: threadComment,
-            commentNumber: "2",
-            commentLead: "false",
-            commentCoffee: 0
-        })
-        setThreadArray(comment)
-        setThreadComment("")
-    }
 
     const launchWorkspace = async (repoId: string, codeSourceId: string, codeSourceType: number) => {
         if (project == null) {
@@ -1611,7 +1248,7 @@ function Challenge({params}: { params: { id: string } }) {
             let authState = Object.assign({}, initialAuthStateUpdate)
             // @ts-ignore
             dispatch(updateAuthState(authState))
-            router.push("/login?forward="+encodeURIComponent(window.location.pathname))
+            router.push("/login?forward=" + encodeURIComponent(window.location.pathname))
         }
 
         // handle expected failure
@@ -1651,7 +1288,7 @@ function Challenge({params}: { params: { id: string } }) {
             let authState = Object.assign({}, initialAuthStateUpdate)
             // @ts-ignore
             dispatch(updateAuthState(authState))
-            router.push("/login?forward="+encodeURIComponent(window.location.pathname))
+            router.push("/login?forward=" + encodeURIComponent(window.location.pathname))
         }
 
 
@@ -1823,103 +1460,6 @@ function Challenge({params}: { params: { id: string } }) {
         )
     }
 
-    const renderTabButtons = () => {
-        return (
-            <>
-                <Grid item xs={1}>
-                    {project !== null ? (
-                        <Button variant="outlined" sx={styles.mainTabButton} disabled={mainTab === "project"} onClick={() => handleTabChange("project")}>
-                            Project
-                        </Button>
-                    ) : (
-                        <StyledDiv style={{ height: "35px", width: "100px", borderRadius: 2 }} />
-                    )}
-                </Grid>
-                {project !== null && project["has_access"] !== null && !project["has_access"] ? null : !isMobile ? (
-                    <Grid item xs={1}>
-                        {project !== null ? (
-                            <Button variant="outlined" sx={styles.mainTabButton} disabled={mainTab === "source"} className="sourceCode" onClick={() => handleTabChange("source")} style={stepIndex === 2 ? { zIndex: "600000" } : {}}>
-                                Source Code
-                            </Button>
-                        ) : (
-                            <StyledDiv style={{ height: "35px", width: "100px", borderRadius: 2 }} />
-                        )}
-                    </Grid>
-                ) : null}
-                <Grid item xs={1}>
-                    {project !== null ? (
-                        isEphemeral ? <></> : renderDiscussionButton()
-                    ) : (
-                        <StyledDiv style={{ height: "35px", width: "100px", borderRadius: 2 }} />
-                    )}
-                </Grid>
-                {project !== null && username === ownerName && !isMobile ? (
-                    <>
-                        <Grid item xs={1}>
-                            <Button variant="outlined" sx={styles.mainTabButton} disabled={mainTab === "edit"} onClick={() => handleTabChange("edit")}>
-                                Edit Config
-                            </Button>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Button variant="outlined" sx={styles.mainTabButton} disabled={mainTab === "edit"} onClick={() => shareLink()}>
-                                Share
-                            </Button>
-                            {sharePopup()}
-                        </Grid>
-                    </>
-                ) : (<div />)}
-                {(project !== null && !project.published && !project.deleted && !isMobile) && (
-                    <Grid item xs={1}>
-                        <Tooltip title="This Challenge is un-published. Publishing enables other users to see and Attempt this challenge.">
-                            <LoadingButton
-                                loading={publishing}
-                                variant="outlined"
-                                sx={{
-                                    height: "4vh",
-                                    maxHeight: "50px",
-                                    minHeight: "35px",
-                                    fontSize: "0.8em",
-                                    '&:hover': {
-                                        backgroundColor: theme.palette.primary.main + "25",
-                                    }
-                                }}
-                                onClick={() => {
-                                    setPublishing(true);
-                                    publishProject();
-                                }}
-                            >
-                                Publish
-                            </LoadingButton>
-                        </Tooltip>
-                    </Grid>
-                )}
-                {(project !== null && !project.deleted && userId === project["author_id"] && !isMobile) && (
-                    <Grid item xs={1}>
-                        <LoadingButton
-                            loading={publishing}
-                            color="error"
-                            variant="outlined"
-                            sx={{
-                                height: "4vh",
-                                maxHeight: "50px",
-                                minHeight: "35px",
-                                fontSize: "0.8em",
-                                '&:hover': {
-                                    backgroundColor: theme.palette.error.main + "25",
-                                }
-                            }}
-                            onClick={() => {
-                                setDeleteProject(true);
-                            }}
-                        >
-                            Delete
-                        </LoadingButton>
-                    </Grid>
-                )}
-            </>
-        )
-    }
-
     const checkEphemeral = async () => {
         let url = new URL(window.location.href);
         let challenge = url.pathname.split('/')
@@ -2021,7 +1561,7 @@ function Challenge({params}: { params: { id: string } }) {
     const renderLaunchButton = () => {
         let clickCallback = () => {
             if (!loggedIn) {
-                window.location.href = "/signup?forward="+encodeURIComponent(window.location.pathname)
+                window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
             }
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
@@ -2086,7 +1626,7 @@ function Challenge({params}: { params: { id: string } }) {
     const renderLaunchButtonMobile = () => {
         let clickCallback = () => {
             if (!loggedIn) {
-                window.location.href = "/signup?forward="+encodeURIComponent(window.location.pathname)
+                window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
             }
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
@@ -2284,343 +1824,6 @@ function Challenge({params}: { params: { id: string } }) {
         // window.location.reload();
     }
 
-    const renderTabBar = () => {
-        return (
-            <>
-                <div style={!isMobile ? {
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    left: "51%",
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 1000, // You may need to adjust this
-                    ...(isScrolled ? {
-                        position: "fixed",
-                        top: "120px",
-                    } : {
-                        position: "absolute",
-                        top: editTitle ? "200px" : "160px"
-                    })
-                } : {
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-
-                    transform: "translate(-50%, -50%)",
-                    zIndex: 1000, // You may need to adjust this
-                    position: "absolute",
-                    ...(!isScrolled && {
-                        top: "275px"
-                    })
-                }}>
-                    <Box
-                        sx={!isMobile ? {
-                            p: 2,
-                            height: "8vh",
-                            minHeight: "70px",
-                            alignItems: "center",
-                            border: 1,
-                            borderRadius: "15px",
-                            borderColor: theme.palette.primary.dark + "75",
-                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
-                            width: '100%',
-                            ...(isScrolled && {
-                                ...themeHelpers.frostedGlass,
-                                backgroundColor: "rgba(206,206,206,0.31)"
-                            })
-                        } : {
-                            p: 2,
-                            height: "20vh",
-                            minHeight: "70px",
-                            alignItems: "center",
-                            border: 1,
-                            borderRadius: "15px",
-                            borderColor: theme.palette.primary.dark + "75",
-                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
-                            width: 'fit-content',
-                            // ...(isScrolled && {
-                            //     ...themeHelpers.frostedGlass,
-                            //     backgroundColor: "rgba(206,206,206,0.31)"
-                            // })
-                        }}
-                    >
-                        <Grid container
-                              direction="row"
-                              justifyContent="space-evenly"
-                              alignItems="center"
-                              spacing={2}
-                              sx={{
-                                  width: 'fit-content',  // Add this line
-                                  height: "100%",
-                              }}
-                        >
-                            {!isScrolled && renderTabButtons()}
-                            {project !== null ? (
-                                <Grid item xs={1}>
-                                    {renderLaunchButton()}
-                                </Grid>
-                            ) : null}
-                        </Grid>
-                    </Box>
-                </div>
-                {project !== null && userId === project["author_id"] && !isMobile ? (
-                    <div style={{ paddingTop: "20px", marginLeft: "20px", paddingRight: "20px" }}>
-                        <Button variant="outlined" sx={styles.mainTabButton} style={{ marginLeft: "20px", }} onClick={() => setEditPopup(true)}>
-                            Edit Project Details
-                        </Button>
-                    </div>
-                ) : null}
-                <Modal
-                    aria-labelledby="transition-modal-title"
-                    aria-describedby="transition-modal-description"
-                    open={editPopup}
-                    onClose={() => setEditPopup(false)}
-                    closeAfterTransition
-                    BackdropComponent={Backdrop}
-                    BackdropProps={{
-                        timeout: 500,
-                    }}
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center', // Add vertical scroll if content is longer than page height
-                    }}
-                >
-                    <Box
-                        sx={{
-                            width: "40vw",
-                            height: "60vh",
-                            minHeight: "700px",
-                            minWidth: "400px",
-                            // justifyContent: "center",
-                            // marginLeft: "25vw",
-                            // marginTop: "5vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "space-evenly",
-                            alignItems: "center",
-                            boxShadow:
-                                "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        <h3>Edit Project Details</h3>
-                        <TextField
-                            value={projectTitle}
-                            onChange={(e) => setProjectTitle(e.target.value)}
-                            variant="outlined"
-                            size="medium"
-                            color={(projectTitle.length > 30) ? "error" : "primary"}
-                            fullWidth
-                            required
-                            sx={{ mt: 2 }}
-                            style={{ width: "auto" }}
-                            inputProps={styles.textField}
-                            multiline
-                        />
-                        {/*{project !== null && project["description"] !== null ? (*/}
-                        {/*    <TextField*/}
-                        {/*        label={project["description"].length + "/500"}*/}
-                        {/*        variant={`outlined`}*/}
-                        {/*        size={`medium`}*/}
-                        {/*        color={(project["description"].length > 500) ? "error" : "primary"}*/}
-                        {/*        fullWidth*/}
-                        {/*        required*/}
-                        {/*        value={project !== null ? project["description"] : ""}*/}
-                        {/*        sx={{*/}
-                        {/*            mt: 2,*/}
-                        {/*            width: "90%"*/}
-                        {/*        }}*/}
-                        {/*        inputProps={*/}
-                        {/*            styles.textField*/}
-                        {/*        }*/}
-                        {/*        multiline={true}*/}
-                        {/*        onChange={e =>*/}
-                        {/*            setDescription(e.target.value)*/}
-                        {/*        }>*/}
-                        {/*    </TextField>*/}
-                        {/*) : null}*/}
-                        <div style={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "space-evenly", marginTop: "10px" }}>
-                            {project !== null && project["post_type_string"] !== null && (
-                                <div style={{ display: "flex", flexDirection: "column", marginTop: "-50px" }}>
-                                    <h5>Renown</h5>
-                                    <ProjectRenown originalLabel={project["tier"] + 1} onProjectSelect={handleProjectSelectionRenown} />
-                                </div>
-                            )}
-                            {project !== null && project["post_type_string"] !== null && (
-                                <ProjectSelector originalLabel={project["post_type_string"]} onProjectSelect={handleProjectSelection} theme={theme} />
-                            )}
-                            {project !== null && (
-                                <Autocomplete
-                                    multiple
-                                    limitTags={5}
-                                    id="tagInputAutocomplete"
-                                    freeSolo={true}
-                                    options={tagOptions}
-                                    getOptionLabel={(option: Tag | string) => {
-                                        if (typeof option === "string") {
-                                            return option
-                                        }
-                                        return option.value
-                                    }}
-                                    isOptionEqualToValue={(option: string | Tag, value: string | Tag) => {
-                                        // return false if either of the inputs are user-defined values unless they are both
-                                        // user-defined values then we check if they are the same
-                                        if (typeof option === "string" || typeof value === "string") {
-                                            if (typeof option === "string" && typeof value === "string") {
-                                                return option.toLowerCase() === value.toLowerCase();
-                                            }
-                                            return false
-                                        }
-                                        return option._id === value._id;
-                                    }}
-                                    renderInput={(params) => (
-                                        <TextField {...params} label="Challenge Tags" placeholder="Challenge Tags" />
-                                    )}
-                                    onInputChange={(e) => {
-                                        handleTagSearch(e)
-                                    }}
-                                    onChange={(event: React.ChangeEvent<{}>, value: Array<Tag | string>) => {
-                                        const currentRemovedTags: Tag[] = [];
-                                        const currentAddedTags: Tag[] = [];
-
-                                        // Find out which tags were added
-                                        const newAddedTags = value.filter(tag => {
-                                            const t = typeof tag === "string"
-                                                ? { _id: "-1", value: tag, official: false, usage_count: 0 } as Tag
-                                                : tag;
-                                            return !projectTags.some(existingTag => existingTag.value === t.value);
-                                        });
-
-                                        newAddedTags.forEach(tag => {
-                                            if (removedTagsState.some(removedTag => removedTag.value === (typeof tag === "string" ? tag : tag.value))) {
-                                                const index = removedTagsState.findIndex(removedTag => removedTag.value === (typeof tag === "string" ? tag : tag.value));
-                                                if (index !== -1) removedTagsState.splice(index, 1);
-                                            } else {
-                                                if (typeof tag === "object") {
-                                                    currentAddedTags.push(tag as Tag);
-                                                } else {
-                                                    currentAddedTags.push({
-                                                        _id: "-1",
-                                                        value: tag,
-                                                        official: false,
-                                                        usage_count: 0
-                                                    } as Tag);
-                                                }
-                                            }
-                                        });
-
-                                        // Find out which tags were removed
-                                        const newRemovedTags = projectTags.filter(tag => !value.some(v => typeof v === "string" ? v === tag.value : v.value === tag.value));
-
-                                        newRemovedTags.forEach(tag => {
-                                            if (addedTagsState.some(addedTag => addedTag.value === tag.value)) {
-                                                const index = addedTagsState.findIndex(addedTag => addedTag.value === tag.value);
-                                                if (index !== -1) addedTagsState.splice(index, 1);
-                                            } else {
-                                                currentRemovedTags.push(tag);
-                                            }
-                                        });
-
-                                        // Update the projectTags
-                                        const tagArray: Tag[] = value.map(tag => {
-                                            if (typeof tag === "object") {
-                                                return tag as Tag;
-                                            } else {
-                                                return {
-                                                    _id: "-1",
-                                                    value: tag,
-                                                    official: false,
-                                                    usage_count: 0
-                                                } as Tag;
-                                            }
-                                        });
-
-                                        setProjectTags(tagArray);
-                                        setRemovedTagsState(currentRemovedTags);
-                                        setAddedTagsState(currentAddedTags);
-                                    }}
-                                    // @ts-ignore
-                                    value={projectTags}
-                                    style={{
-                                        width: "50%"
-                                    }}
-                                    className={"tags"}
-                                />
-                            )}
-                        </div>
-                        <div>
-                            <Button
-                                onClick={() => {
-                                    if (project) {
-                                        editProject(
-                                            null,
-                                            null,
-                                            projectRenown.toString() !== project["tier"].toString() ? projectRenown : null,
-                                            null,
-                                            removedTagsState.length > 0 ? removedTagsState : null,
-                                            addedTagsState.length > 0 ? addedTagsState : null
-                                        );
-                                    } else {
-                                        console.error("Project is null");
-                                        swal("Server Error","There was an error updating the project. Please try again later.", "error")
-                                    }
-                                }}
-                            >
-                                Submit
-                            </Button>
-                            <Button onClick={() => setEditPopup(false)}>
-                                Cancel
-                            </Button>
-                        </div>
-                    </Box>
-                </Modal>
-                <Modal open={purchasePopup} onClose={() => setPurchasePopup(false)}>
-                    <Box
-                        sx={{
-                            width: "30vw",
-                            height: "20vh",
-                            justifyContent: "center",
-                            marginLeft: "40vw",
-                            marginTop: "40vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        <ProjectPayment price={project !== null ? project["stripe_price_id"] : ""} post={project !== null ? project["_id"].toString() : ""} />
-                    </Box>
-                </Modal>
-                <Modal open={deleteProject} onClose={() => setDeleteProject(false)}>
-                    <Box
-                        sx={{
-                            width: "30vw",
-                            height: "20vh",
-                            justifyContent: "center",
-                            marginLeft: "40vw",
-                            marginTop: "40vh",
-                            outlineColor: "black",
-                            borderRadius: 1,
-                            boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                            backgroundColor: theme.palette.background.default,
-                        }}
-                    >
-                        <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                            <h4>Are you sure you want to delete this project?</h4>
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "row", width: "100%", justifyContent: "center" }}>
-                            <Button onClick={() => deleteProjectFunction()}>Confirm</Button>
-                            <Button onClick={() => setDeleteProject(false)}>Cancel</Button>
-                        </div>
-                    </Box>
-                </Modal>
-            </>
-        )
-    }
-
     const handleProjectSelection = (selectedProject: React.SetStateAction<string | null>) => {
         setChallengeType(selectedProject)
     };
@@ -2671,290 +1874,6 @@ function Challenge({params}: { params: { id: string } }) {
         setTagOptions(res["tags"])
     }
 
-    // const removedTags: Tag[] = [];
-    // const addedTags: Tag[] = [];
-
-    const projectTitleRef = React.useRef(); // Create a ref for the TextField
-
-    // const handleConfirmClick = () => {
-    //     // Update the projectTitle state with the current value of the TextField
-    //     const newProjectTitle = projectTitleRef.current.value;
-    //     setProjectTitle(newProjectTitle);
-    //     editProject(
-    //         newProjectTitle !== projectName ? newProjectTitle : null,
-    //         challengeType !== project["post_type_string"] ? challengeType : null,
-    //         null, null, null, null
-    //     );
-    // };
-
-    const userChallenge = () => {
-        return (
-            <>
-                {project !== null ? (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>{project["post_title"]}</title>
-                            <meta property="og:title" content={project["post_title"]} data-rh="true" />
-                            <meta property="og:description" content={project["description"]} data-rh="true" />
-                            <meta property="og:image" content={config.rootPath + project["thumbnail"]} data-rh="true" />
-                        </Helmet>
-                    </HelmetProvider>
-                ) : (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>{"Challenge"}</title>
-                            <meta property="og:image" content={"no image"} data-rh="true" />
-                        </Helmet>
-                    </HelmetProvider>
-                )}
-                {embedded ? <div style={{ paddingTop: "25px" }} /> : <></>}
-                <CardTutorial
-                    open={runTutorial}
-                    closeCallback={closeTutorialCallback}
-                    step={stepIndex}
-                    changeCallback={tutorialCallback}
-                    steps={[
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Let's get started with a Challenge!</h2>
-                                    <p style={styles.tutorialText}>Challenges are how lessons and projects are structured on GIGO. Finish the tutorial to learn how to start and interact with a challenge.</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>Challenges are grouped into 4 categories:</p>
-                                    <ul>
-                                        <li style={styles.tutorialText}>Interactive - A project that includes guided learning material such as tutorials or interactive lessons.</li>
-                                        <li style={styles.tutorialText}>Playground - A project with no goal that is meant to enable free experimentation.</li>
-                                        <li style={styles.tutorialText}>Casual - A project that has a predefined goal and evaluations but is not competitively ranked against other users.</li>
-                                        <li style={styles.tutorialText}>Competitive - Similar to Casual, but is ranked against other users.</li>
-                                        <li style={styles.tutorialText}>Debug - A project that is almost done but with a very bugs sprinkled in. Test your debugging skills by tacking back error and fixing them.</li>
-                                    </ul>
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Launch</h2>
-                                    <p style={styles.tutorialText}>On GIGO Attempts are how you accept a Challenge. Making an Attempt allows you to work on the project. Click the 'Launch' button on any Challenge to make an attempt and start working on the project!</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>When you make an Attempt, GIGO will create a copy of the project for you to work on. GIGO will then start a dedicated Workspace that you can use to work on the project. You can only make one Attempt on a Challenge, so bring your A game!</p>
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Talking about Challenges</h2>
-                                    <p style={styles.tutorialText}>Ask questions, raise issues, or converse about the project using the
-                                        'Discussions' tab at the top of the page.</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>Discussions are a great way to get help or share your thoughts on a project. When you complete an Attempt head over to Discussions to share your opinion or help others!</p>
-                                    <p style={styles.tutorialText}>Discussions are currently only available on desktop GIGO but we're working hard to bring them to mobile!</p>
-                                </div>
-                            )
-                        },
-                    ]}
-                />
-                <Typography variant="h5" component="div" style={{ display: "flex", flexDirection: "row" }}>
-                    {editTitle ? (
-                        <div style={{ display: "flex", flexDirection: "column" }}> {/* Flex container */}
-                            <TextField
-                                value={projectTitle}
-                                onChange={(e) => setProjectTitle(e.target.value)}
-                                variant="outlined"
-                                size="medium"
-                                color={(projectTitle.length > 50) ? "error" : "primary"}
-                                required
-                                sx={{ mt: 2 }}
-                                style={{ width: "140%", background: theme.palette.background.default, zIndex: 2000 }}
-                                inputProps={styles.textField}
-                            />
-                            {project !== null && userId === project["author_id"] && !isMobile && (
-                                <div> {/* Buttons */}
-                                    <Button
-                                        onClick={() => {
-                                            editProject(
-                                                projectTitle !== projectName ? projectTitle : null,
-                                                challengeType !== project["post_type_string"] ? challengeType : null, null, null, null, null
-                                            )
-                                            setEditTitle(false)
-                                        }}
-                                        variant="outlined"
-                                        color="secondary"
-                                        sx={{
-                                            marginRight: 2, // Adds horizontal spacing
-                                        }}
-                                    >
-                                        <CheckIcon />
-                                    </Button>
-                                    <Button
-                                        onClick={() => setEditTitle(false)}
-                                        color="error"
-                                        variant="outlined"
-                                        sx={{
-                                            height: "4vh",
-                                            maxHeight: "50px",
-                                            minHeight: "35px",
-                                            fontSize: "0.8em",
-                                            '&:hover': {
-                                                backgroundColor: theme.palette.error.main + "25",
-                                            }
-                                        }}
-                                    >
-                                        <CloseIcon />
-                                    </Button>
-                                </div>
-
-                            )}
-                        </div>
-                    ) : (
-                        <div>
-                            {projectName}
-                        </div>
-                    )}
-                    {project !== null && (
-                        <div>
-                            {editTitle ? (
-                                <div style={{ padding: "10px", marginLeft: "140%"}}>
-                                    <ProjectSelector  originalLabel={project["post_type_string"] === null ? "Casual" : project["post_type_string"]} onProjectSelect={handleProjectSelection} theme={theme} style={{
-                                        position: 'absolute', // or 'relative' based on your layout
-                                        transform: 'translateX(-50%)',
-                                        top: "12%",
-                                        marginLeft: "3%",
-                                        zIndex: 2000,
-                                        marginTop: '10px', // adjust as needed to position below the selector
-                                    }} />
-
-                                </div>
-                            ) : (
-                                <Chip
-                                    label={project["post_type_string"]}
-                                    color="primary"
-                                    variant="outlined"
-                                    sx={{ marginLeft: "20px", marginTop: "5px" }}
-                                    icon={getProjectIcon(project["post_type_string"])}
-                                />
-                            )}
-                        </div>
-                    )}
-                    {project !== null && userId === project["author_id"] && !isMobile ? (
-                        <div>
-                            {!editTitle ? (
-                                <Button onClick={() => setEditTitle(true)}>
-                                    <EditIcon />
-                                </Button>
-                            ) : null}
-                        </div>
-                    ) : null}
-                </Typography>
-                {!isMobile ? (
-                    <div style={project !== null ? {} : { marginBottom: "110px" }}>
-                        {renderTabBar()}
-                    </div>
-                ) : (
-                    <div style={{ marginTop: "25px" }}>
-                        {project !== null ? (
-                            <Typography component={"div"} sx={{
-                                width: "90%",
-                                height: "auto",
-                                display: "flex",
-                                flexDirection: "row"
-                            }}>
-                                <Typography sx={{ display: "flex", flexDirection: "row", width: "85%", ml: 2 }}>
-                                    <div>
-                                        <UserIcon
-                                            userId={project !== null ? project["author_id"] : ""}
-                                            userTier={project !== null ? project["tier"] : ""}
-                                            userThumb={project !== null ? config.rootPath + "/static/user/pfp/" + project["author_id"] : ""}
-                                            backgroundName={project !== null ? project["name"] : null}
-                                            backgroundPalette={project !== null ? project["color_palette"] : null}
-                                            backgroundRender={project !== null ? project["render_in_front"] : null}
-                                            size={50}
-                                            imageTop={2}
-                                        />
-                                    </div>
-                                    <Typography variant="h5" component="div">
-                                        {project !== null ? project["author"] : ""}
-                                    </Typography>
-                                </Typography>
-                                <Typography variant="body1" color="text.primary" align="right">
-                                    {new Date(project !== null ? project["created_at"] : "").toLocaleString("en-us", { day: '2-digit', month: 'short', year: 'numeric' })}
-                                </Typography>
-                            </Typography>
-                        ) : (
-                            <Typography component={"div"} sx={{
-                                width: "90%",
-                                height: "auto",
-                                display: "flex",
-                                flexDirection: "row"
-                            }}>
-                                <Typography style={{ display: "flex", flexDirection: "row", width: "85%" }}>
-                                    <div>
-                                        <PersonIcon sx={{ width: "50px", height: "50px" }} />
-                                    </div>
-                                </Typography>
-                                <StyledDiv style={{ height: "24px", width: "40%", marginBottom: "12px", borderRadius: "20px", marginTop: "10px" }} />
-                            </Typography>
-                        )}
-                    </div>
-                )}
-                <div style={!isMobile ? {
-                    marginTop: "60px",
-                    ...(thread && {
-                        display: "flex",
-                        flexDirection: "row"
-                    })
-                } : {
-                    ...(thread && {
-                        display: "flex",
-                        flexDirection: "row"
-                    })
-                }}>
-                    <div style={thread ? { display: "flex", justifyContent: "left", paddingTop: "2%", paddingLeft: "5px" } : !isMobile ? { display: "flex", justifyContent: "center", paddingTop: "2%" } : { display: "flex", justifyContent: "center", paddingTop: "2%", marginBottom: "150px" }}>
-                        {mainTab === "discussions" ? (
-                            <Box
-                                sx={!isMobile ? {
-                                    width: '80vw',
-                                    backgroundColor: theme.palette.background.paper,
-                                    borderRadius: 3,
-                                    p: 3,
-                                    height: "auto",
-                                    border: 1,
-                                    borderColor: theme.palette.primary.dark + "75",
-                                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);"
-                                } : {
-                                    width: '80vw',
-                                    backgroundColor: theme.palette.background.paper,
-                                    borderRadius: 3,
-                                    p: 3,
-                                    height: "100%",
-                                    border: 1,
-                                    borderColor: theme.palette.primary.dark + "75",
-                                    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);"
-                                }}
-                            >
-                                {mainTabHtml()}
-                            </Box>
-                        ) : (
-                            mainTabHtml()
-                        )}
-                    </div>
-                </div>
-                {/* add a 10vh buffer at the end of the page */}
-                <div style={{ height: "10vh" }} />
-            </>
-        )
-    }
-
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2977,7 +1896,7 @@ function Challenge({params}: { params: { id: string } }) {
                 overflowWrap: "break-word",
                 borderRadius: "10px",
                 padding: "1em"
-            }}/>
+            }} />
         )
     }
 
@@ -3082,16 +2001,16 @@ function Challenge({params}: { params: { id: string } }) {
 
     const mainTabSourceCode = () => {
         return (
-            <div style={{display: "flex", width: "80vw"}}>
+            <div style={{ display: "flex", width: "80vw" }}>
                 {project !== null ? (
                     <CodeDisplayEditor repoId={project["repo_id"]}
-                                       references={"main"}
-                                       filepath={""}
-                                       height={"73vh"}
-                                       style={{display: "contents", flexDirection: "row", width: "75vw"}}
-                                       projectName={project["title"]}
+                        references={"main"}
+                        filepath={""}
+                        height={"73vh"}
+                        style={{ display: "contents", flexDirection: "row", width: "75vw" }}
+                        projectName={project["title"]}
                     />
-                ) : (<ThreeDots/>)}
+                ) : (<ThreeDots />)}
                 {/*<Editor theme={theme}/>*/}
             </div>
         )
@@ -3099,7 +2018,7 @@ function Challenge({params}: { params: { id: string } }) {
 
     const mainTabEditConfig = () => {
         return (
-            <div style={{display: "flex", flexDirection: "column", justifyContent: "center", width: "50vw"}}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", width: "50vw" }}>
                 <WorkspaceConfigEditor
                     value={wsConfig}
                     setValue={(e) => setWsConfig(e)}
@@ -3110,20 +2029,20 @@ function Challenge({params}: { params: { id: string } }) {
                     height={"70vh"}
                 />
                 <LoadingButton variant={"contained"}
-                               loading={loadingEdit}
-                               sx={{
-                                   height: "4vh",
-                                   minHeight: "35px",
-                                   backgroundColor: theme.palette.primary.main,
-                                   width: "auto",
-                                   borderRadius: "10px",
-                                   fontSize: "1.2rem",
-                                   fontWeight: "bold",
-                                   textAlign: "center",
-                                   marginTop: "10px",
-                                   marginBottom: "10px"
-                               }}
-                               onClick={() => editConfig()}>
+                    loading={loadingEdit}
+                    sx={{
+                        height: "4vh",
+                        minHeight: "35px",
+                        backgroundColor: theme.palette.primary.main,
+                        width: "auto",
+                        borderRadius: "10px",
+                        fontSize: "1.2rem",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        marginTop: "10px",
+                        marginBottom: "10px"
+                    }}
+                    onClick={() => editConfig()}>
                     Confirm Edit
                 </LoadingButton>
                 <Dialog
@@ -3185,27 +2104,31 @@ function Challenge({params}: { params: { id: string } }) {
                 >
                     Source Code
                 </Button>
-                <Button
-                    variant={"outlined"}
-                    sx={buttonStyle}
-                    onClick={() => handleTabChange("edit")}
-                    disabled={mainTab === "edit"}
-                >
-                    Edit Config
-                </Button>
-                <Button
-                    variant={"outlined"}
-                    sx={buttonStyle}
-                >
-                    Share
-                </Button>
-                <Button
-                    variant={"outlined"}
-                    sx={buttonStyle}
-                    color={"error"}
-                >
-                    Delete
-                </Button>
+                {project && project["author_id"] === authState.id && (
+                    <>
+                        <Button
+                            variant={"outlined"}
+                            sx={buttonStyle}
+                            onClick={() => handleTabChange("edit")}
+                            disabled={mainTab === "edit"}
+                        >
+                            Edit Config
+                        </Button>
+                        <Button
+                            variant={"outlined"}
+                            sx={buttonStyle}
+                        >
+                            Share
+                        </Button>
+                        <Button
+                            variant={"outlined"}
+                            sx={buttonStyle}
+                            color={"error"}
+                        >
+                            Delete
+                        </Button>
+                    </>
+                )}
             </>
         )
     }
@@ -3246,10 +2169,10 @@ function Challenge({params}: { params: { id: string } }) {
                             ...themeHelpers.frostedGlass,
                             borderColor: theme.palette.primary.main
                         } : {
-                                width: "100%",
-                                maxWidth: "100%",
-                                border: `1px solid ${theme.palette.primary.main}`,
-                            }
+                            width: "100%",
+                            maxWidth: "100%",
+                            border: `1px solid ${theme.palette.primary.main}`,
+                        }
                         )
                     }}>
                         {!isScrolled && tabButtons()}
@@ -3335,9 +2258,9 @@ function Challenge({params}: { params: { id: string } }) {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
-                    {isMobile ? renderMobileChallenge() : renderDesktopChallenge()}
-                    {/* On mobile add a hovering button to launch the project */}
-                    {isMobile && renderLaunchButtonMobile()}
+                {isMobile ? renderMobileChallenge() : renderDesktopChallenge()}
+                {/* On mobile add a hovering button to launch the project */}
+                {isMobile && renderLaunchButtonMobile()}
             </CssBaseline>
         </ThemeProvider>
     );

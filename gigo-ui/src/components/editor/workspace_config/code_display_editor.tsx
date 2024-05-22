@@ -1,6 +1,7 @@
+'use client'
 import * as React from "react";
 import { Box, Button, CircularProgress, createTheme, PaletteMode } from "@mui/material";
-import Editor, { useMonaco } from "@monaco-editor/react";
+import Editor from "@/components/IDE/Editor";
 import { useEffect, useState } from "react";
 import { DefaultWorkspaceConfig } from "../../../models/workspace";
 import darkEditorTheme from "../themes/GitHub Dark.json"
@@ -11,10 +12,61 @@ import config from "../../../config";
 import Sidebar from "../../EditorComponents/Sidebar";
 import { useNavigate } from "react-router-dom";
 import MarkdownRenderer from "../../Markdown/MarkdownRenderer";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import Scrollbars from "react-custom-scrollbars";
 import { ThreeDots } from "react-loading-icons";
 import { PropaneTankSharp } from "@mui/icons-material";
+
+interface LanguageOption {
+    name: string;
+    extensions: string[];
+    languageId: number;
+}
+
+const languages: LanguageOption[] = [
+    {name: 'Go', extensions: ['go'], languageId: 6},
+    {name: 'Python', extensions: ['py', 'pytho', 'pyt'], languageId: 5},
+    {
+        name: 'C++',
+        extensions: ['cpp', 'cc', 'cxx', 'hpp', 'c++', 'h'],
+        languageId: 8,
+    },
+    {name: 'HTML', extensions: ['html', 'htm'], languageId: 27},
+    {name: 'Java', extensions: ['java'], languageId: 2},
+    {name: 'JavaScript', extensions: ['js'], languageId: 3},
+    {name: 'JSON', extensions: ['json'], languageId: 1},
+    {name: 'Markdown', extensions: ['md'], languageId: 1},
+    {name: 'PHP', extensions: ['php'], languageId: 13},
+    {name: 'Rust', extensions: ['rs'], languageId: 14},
+    {name: 'SQL', extensions: ['sql'], languageId: 34},
+    {name: 'XML', extensions: ['xml'], languageId: 1},
+    {name: 'LESS', extensions: ['less'], languageId: 1},
+    {name: 'SASS', extensions: ['sass', 'scss'], languageId: 1},
+    {name: 'Clojure', extensions: ['clj'], languageId: 21},
+    {name: 'C#', extensions: ['cs'], languageId: 10},
+    {name: 'Shell', extensions: ['bash', 'sh'], languageId: 38},
+    {name: 'Toml', extensions: ['toml'], languageId: 14}
+];
+
+const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
+    let parts = l.trim().split('.');
+    l = parts[parts.length - 1];
+    if (l === undefined) {
+        return undefined
+    }
+    for (let i = 0; i < languages.length; i++) {
+        if (l.toLowerCase() == languages[i].name.toLowerCase()) {
+            return languages[i]
+        }
+
+        for (let j = 0; j < languages[i].extensions.length; j++) {
+            if (l.toLowerCase() === languages[i].extensions[j]) {
+                return languages[i]
+            }
+        }
+    }
+    return undefined
+}
 
 export interface Code_display_editor {
     style?: object;
@@ -27,15 +79,10 @@ export interface Code_display_editor {
 }
 
 function CodeDisplayEditor(props: Code_display_editor) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [allFiles, setAllFiles] = React.useState([])
     const [fileName, setFileName] = useState("")
-    const [chosenFile, setChosenFile] = useState([])
+    const [chosenFile, setChosenFile] = useState({name: "", content: ""})
     const [loading, setLoading] = useState(false)
-
-    const monaco = useMonaco();
 
     const selectFile = async (file: any) => {
         if (!props.repoId || props.repoId === "" || !props.references || props.references === "")
@@ -196,14 +243,6 @@ function CodeDisplayEditor(props: Code_display_editor) {
     }
 
     useEffect(() => {
-        if (monaco) {
-            monaco.editor.defineTheme("gigo-default-light", lightEditorTheme)
-            monaco.editor.defineTheme("gigo-default-dark", darkEditorTheme)
-            monaco.editor.setTheme(mode === "light" ? "gigo-default-light" : "gigo-default-dark")
-        }
-    }, [monaco, mode]);
-
-    useEffect(() => { 
         apiLoad()
     }, [props.references, props.repoId]);
 
@@ -221,6 +260,8 @@ function CodeDisplayEditor(props: Code_display_editor) {
 
     if (!props.repoId || props.repoId === "" || !props.references || props.references === "")
         return null
+
+    const lang = mapFilePathToLangOption(chosenFile.name)
 
     return (
         <div style={props.style}>
@@ -269,7 +310,7 @@ function CodeDisplayEditor(props: Code_display_editor) {
                                     boxSizing: 'border-box',
                                     width: "121vw",
                                     height: props.height,
-                                    borderRadius: "5px",
+                                    borderRadius: "10px",
                                 }}
                             >
                                 <CircularProgress
@@ -285,27 +326,28 @@ function CodeDisplayEditor(props: Code_display_editor) {
                             </Box>
                         ) : (
                             <Editor
-                                options={{ readOnly: true }}
-                                height={props.height}
-                                width={"121vw"}
-                                path={
-                                    //@ts-ignore
-                                    chosenFile["name"]}
-                                value={
-                                    //@ts-ignore
-                                    chosenFile["content"]}
-                                //@ts-ignore
-                                language={chosenFile["name"] !== undefined ? findLangauge(chosenFile["name"]).toLowerCase() : ""}
-                                theme={mode === "light" ? "gigo-default-light" : "gigo-default-dark"}
-                                className={"yaml-editor"}
-                                wrapperProps={{
-                                    style: {
-                                        border: `1px solid ${theme.palette.primary.contrastText}`,
-                                        boxSizing: 'border-box',
-                                        width: "121vw",
-                                        height: props.height,
-                                        borderRadius: 5,
-                                    }
+                                parentStyles={{
+                                    width: "121vw",
+                                    height: props.height,
+                                    borderRadius: "10px",
+                                }}
+                                language={lang ? lang.extensions[0] : "py"}
+                                filePath={chosenFile.name}
+                                code={chosenFile.content}
+                                theme={theme.palette.mode}
+                                readonly={true}
+                                onChange={(val, view) => { }}
+                                onCursorChange={(bytePosition, line, column) => { }}
+                                lspUrl={undefined}
+                                byteId={""}
+                                difficulty={"easy"}
+                                diagnosticLevel={"error"}
+                                extensions={[]}
+                                wrapperStyles={{
+                                    width: '100%',
+                                    height: '100%',
+                                    borderRadius: "10px",
+                                    border: `1px solid ${theme.palette.primary.contrastText}`,
                                 }}
                             />
                         )

@@ -6,6 +6,7 @@ import {DefaultWorkspaceConfig} from "@/models/workspace";
 import darkEditorTheme from "../themes/GitHub Dark.json"
 import lightEditorTheme from "../themes/GitHub.json"
 import "../css/editor.css"
+import { theme } from "@/theme";
 
 export interface WorkspaceConfigEditorProps {
     value: string | undefined;
@@ -16,18 +17,15 @@ export interface WorkspaceConfigEditorProps {
 }
 
 function WorkspaceConfigEditor(props: WorkspaceConfigEditorProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-
     const monaco = useMonaco();
 
     useEffect(() => {
         if (monaco) {
             monaco.editor.defineTheme("gigo-default-light", lightEditorTheme)
             monaco.editor.defineTheme("gigo-default-dark", darkEditorTheme)
-            monaco.editor.setTheme(mode === "light" ? "gigo-default-light" : "gigo-default-dark")
+            monaco.editor.setTheme(theme.palette.mode === "light" ? "gigo-default-light" : "gigo-default-dark")
         }
-    }, [monaco, mode]);
+    }, [monaco, theme.palette.mode]);
 
     return (
         <div style={props.style}>
@@ -43,7 +41,7 @@ function WorkspaceConfigEditor(props: WorkspaceConfigEditorProps) {
                 width={props.width}
                 defaultValue={DefaultWorkspaceConfig}
                 defaultLanguage="yaml"
-                theme={mode === "light" ? "gigo-default-light" : "gigo-default-dark"}
+                theme={theme.palette.mode === "light" ? "gigo-default-light" : "gigo-default-dark"}
                 className={"yaml-editor"}
             />
         </div>

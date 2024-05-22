@@ -1,7 +1,9 @@
+'use client'
+
 import {alpha, Box, Button, createTheme, PaletteMode, styled, Tooltip} from "@mui/material";
 import React, {useState} from "react";
 import {Close, Description, Explore} from "@mui/icons-material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import MarkdownRenderer from "./Markdown/MarkdownRenderer";
 
 interface JourneyHandoutPluginProps {
@@ -13,10 +15,6 @@ interface JourneyHandoutPluginProps {
 }
 
 function JourneyHandoutPlugin(props: JourneyHandoutPluginProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const HiddenButton = styled(Button)`
         background-color: transparent;
         padding: 8px;

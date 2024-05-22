@@ -1,6 +1,8 @@
+'use client'
+
 import React, {useEffect, useRef, useState} from "react";
 import {Box, Button, createTheme, DialogActions, DialogContent, PaletteMode} from "@mui/material";
-import {getAllTokens, themeHelpers} from "../theme";
+import {theme, themeHelpers} from "../theme";
 import {styled} from "@mui/system";
 
 type TutorialStep = {
@@ -111,10 +113,6 @@ const OverlayTutorial: React.FC<OverlayProps> = ({ targetId }) => {
 };
 
 export default function CardTutorial(props: TutorialProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [moreInfoRendered, setMoreInfoRendered] = useState<boolean>(false);
 
     if (!props.open) {

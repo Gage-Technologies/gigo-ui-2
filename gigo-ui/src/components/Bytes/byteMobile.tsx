@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -17,7 +19,7 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import { Add, KeyboardArrowUp, PlayArrow } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import { useNavigate } from "react-router-dom";
@@ -260,10 +262,7 @@ const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
 const NextStepsTimeout = 15000; // 15 seconds
 
 function ByteMobile({params}: { params: { id: string } }) {
-    let userPref = localStorage.getItem('theme');
     const query = useSearchParams()
-    const [mode, _] = useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
 
@@ -1610,7 +1609,7 @@ function ByteMobile({params}: { params: { id: string } }) {
             {
                 icon: <ExploreIcon />,
                 name: 'Start Your Journey',
-                action: () => navigate.push('/journey/main')
+                action: () => navigate.push('/journey')
             },
             {
                 icon: <HelpIcon />,
@@ -2403,7 +2402,7 @@ function ByteMobile({params}: { params: { id: string } }) {
                                 language={programmingLanguages[byteData ? byteData.lang : 5]}
                                 filePath={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].file_name : ""}
                                 code={activeFileIdx >= 0 && code[activeFileIdx] ? code[activeFileIdx].content : ""}
-                                theme={mode}
+                                theme={theme.palette.mode}
                                 readonly={!authState.authenticated}
                                 onChange={(val, view) => handleEditorChange(val)}
                                 onCursorChange={(bytePosition, line, column) => setCursorPosition({
@@ -2499,7 +2498,7 @@ function ByteMobile({params}: { params: { id: string } }) {
                         </DialogContent>
                     </Dialog>
                 )}
-                <OutOfHeartsMobile open={outOfHearts} onClose={() => navigate.push("/journey/main")} onGoPro={() => setProPopupOpen(true)} />
+                <OutOfHeartsMobile open={outOfHearts} onClose={() => navigate.push("/journey")} onGoPro={() => setProPopupOpen(true)} />
                 <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)} />
             </CssBaseline>
         </ThemeProvider>

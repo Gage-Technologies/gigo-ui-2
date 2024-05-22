@@ -24,7 +24,7 @@ import {
     ThemeProvider,
     Typography
 } from "@mui/material";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import {
     initialAuthState,
@@ -60,10 +60,6 @@ import {useRouter} from "next/navigation";
 import Image from "next/image"
 
 function AccountSettings() {
-
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const [tab, setTab] = React.useState("user")
     const [deleteAccount, setDeleteAccount] = React.useState(false)
@@ -1394,7 +1390,7 @@ function AccountSettings() {
                                         height: "36px",
                                         marginLeft: "auto"
                                     }}
-                                    src={mode === "light" ? stripeBlack : stripeWhite}
+                                    src={theme.palette.mode === "light" ? stripeBlack : stripeWhite}
                                 />
                             </Box>
                             <Dialog open={open} onClose={handleClose}>

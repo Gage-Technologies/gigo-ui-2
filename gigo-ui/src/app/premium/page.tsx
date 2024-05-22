@@ -88,15 +88,12 @@ function PremiumDescription() {
     // load auth state from storage
     const authState = useAppSelector(selectAuthState);
 
-    const [inTrial, setInTrial] = React.useState(false)
     const [membership, setMembership] = React.useState(0)
-    const [membershipDates, setMembershipDates] = React.useState({ start: 0, last: 0, upcoming: 0 })
 
     const [goProPopup, setGoProPopup] = React.useState(false)
 
 
     let router = useRouter();
-    let dispatch = useAppDispatch();
 
     const getSubData = async () => {
         let follow = fetch(
@@ -121,44 +118,15 @@ function PremiumDescription() {
 
         let sub = res as Subscription
 
-        setMembershipDates({
-            start: sub.membershipStart,
-            last: sub.lastPayment,
-            upcoming: sub.upcomingPayment
-        })
-        setInTrial(sub.inTrial)
         setMembership(sub.current_subscription)
-
     }
 
-    const UnixDateConverter = (unixTimestamp: number) => {
-        let date = new Date(unixTimestamp * 1000);
-        let day = date.getDate();
-        let month = date.getMonth() + 1;
-        let year = date.getFullYear();
-
-        if (day === 0) {
-            return "N/A"
+    const handleButtonClick = () => {
+        if (authState.authenticated) {
+            setGoProPopup(true)
         } else {
-            return month + "/" + day + "/" + year;
+            router.push("/signup")
         }
-    }
-
-    const getCountdown = (upcomingDateInSeconds: number) => {
-        const upcomingDate = upcomingDateInSeconds * 1000; // Convert to milliseconds
-        const now = new Date().getTime();
-        const differenceInMilliseconds = upcomingDate - now;
-
-        if (differenceInMilliseconds <= 0) {
-            return "Expired";
-        }
-
-        const days = Math.floor(differenceInMilliseconds / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((differenceInMilliseconds % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((differenceInMilliseconds % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((differenceInMilliseconds % (1000 * 60)) / 1000);
-
-        return `${days}d ${hours}h ${minutes}m ${seconds}s`;
     }
 
     // Changed "Become A Pro" to "Stay A Pro"
@@ -207,7 +175,7 @@ function PremiumDescription() {
                                 hoverColor={theme.palette.secondary.light}
                                 secondaryColor={theme.palette.secondary.dark}
                                 textColor={theme.palette.text.primary}
-                                onClick={() => setGoProPopup(true)}
+                                onClick={handleButtonClick}
                                 sx={{
                                     mt: 2
                                 }}
@@ -224,7 +192,7 @@ function PremiumDescription() {
                                 hoverColor={theme.palette.secondary.light}
                                 secondaryColor={theme.palette.secondary.dark}
                                 textColor={theme.palette.text.primary}
-                                onClick={() => setGoProPopup(true)}
+                                onClick={handleButtonClick}
                                 sx={{
                                     mt: 2
                                 }}
@@ -313,7 +281,7 @@ function PremiumDescription() {
                         hoverColor={theme.palette.secondary.light}
                         secondaryColor={theme.palette.secondary.dark}
                         textColor={theme.palette.text.primary}
-                        onClick={() => setGoProPopup(true)}
+                        onClick={handleButtonClick}
                         sx={{
                             marginTop: 5,
                             marginBottom: 5
@@ -327,7 +295,7 @@ function PremiumDescription() {
                         hoverColor={theme.palette.primary.light}
                         secondaryColor={theme.palette.primary.dark}
                         textColor={theme.palette.text.primary}
-                        onClick={() => setGoProPopup(true)}
+                        onClick={handleButtonClick}
                         sx={{
                             marginTop: 5,
                             marginBottom: 5

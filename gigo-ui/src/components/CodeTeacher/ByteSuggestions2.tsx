@@ -1,3 +1,5 @@
+'use client'
+
 import {
     Box,
     Button,
@@ -10,7 +12,7 @@ import {
     alpha, Tooltip
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { getAllTokens, themeHelpers } from "../../theme";
+import { theme } from "@/theme";
 import { useGlobalCtWebSocket } from "../../services/ct_websocket";
 import {
     CtByteNextOutputRequest, CtByteNextOutputResponse, CtByteSuggestionRequest, CtByteSuggestionResponse,
@@ -24,9 +26,7 @@ import {Close, Done} from "@mui/icons-material";
 import ConstructionIcon from '@mui/icons-material/Construction';
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import { LoadingButton } from "@mui/lab";
-import { useNavigate } from "react-router-dom";
 import {ctHighlightCodeRangeFullLines, removeCtHighlightCodeRange} from "../IDE/Extensions/CtHighlightExtension";
-import ReactDOM from "react-dom";
 import {ReactCodeMirrorRef} from "@uiw/react-codemirror";
 
 export type ByteSuggestions2Props = {
@@ -50,9 +50,7 @@ enum State {
 }
 
 export default function ByteSuggestions2(props: ByteSuggestions2Props) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+
     const [response, setResponse] = useState<string>("");
     const [newCode, setNewCode] = useState<string>("");
     const [state, setState] = useState<State>(State.LOADING);

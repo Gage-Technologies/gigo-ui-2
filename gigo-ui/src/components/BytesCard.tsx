@@ -1,3 +1,5 @@
+'use client'
+
 import * as React from "react"
 import {
     Box,
@@ -14,7 +16,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import { themeHelpers, getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 
 import { useNavigate } from "react-router-dom";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
@@ -47,12 +49,6 @@ interface IProps {
 }
 
 export default function BytesCard(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    // let navigate = useNavigate();
-
     const styles = {
         card: {
             width: props.width,

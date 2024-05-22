@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Grid, Chip, Button} from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
-import {getAllTokens, themeHelpers} from "@/theme";
+import {theme, themeHelpers} from "@/theme";
 import config from "@/config";
 import JourneyMap from "./JourneysMap";
 import {useAppSelector} from "@/reducers/hooks";
@@ -12,6 +12,7 @@ import MuiAwesomeButton from "@/components/MuiAwesomeButton";
 import {Unit} from "@/models/journey";
 import DetourCard from "./DetourCard";
 import Image from "next/image";
+
 interface JourneyDetourPopupProps {
     open: boolean;
     onClose: () => void;
@@ -19,11 +20,6 @@ interface JourneyDetourPopupProps {
 }
 
 const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, unit }) => {
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     // Determine if it's a mobile view
     const isMobile = window.innerWidth < 1000;
 

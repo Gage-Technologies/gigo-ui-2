@@ -20,8 +20,7 @@ import {
     ThemeProvider,
     Typography
 } from "@mui/material";
-import { getAllTokens } from "@/theme";
-import call from "@/services/api-call";
+import { theme } from "@/theme";
 import { Workspace, WorkspaceInitFailure } from "@/models/workspace";
 import config from "@/config";
 import TwentyFortyEight from "@/components/Games/TwentyFortyEight";
@@ -96,11 +95,6 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
     const [showDesktopIframe, setShowDesktopIframe] = useState<string | null>(query.get("desktop"));
 
     let navigate = useRouter();
-
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     let [launchingAnim, setLaunchingAnim] = useState(false);
 

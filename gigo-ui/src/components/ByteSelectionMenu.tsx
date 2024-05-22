@@ -1,10 +1,11 @@
+'use client'
 import React, {useState} from 'react';
 import {Box, createTheme, Grid, List, ListItem, ListItemText, PaletteMode, Paper, Typography} from '@mui/material';
 import BytesCard from "./BytesCard";
 import config from "../config";
 import JourneyIcon from "@/icons/Bytes/JourneyIcon";
 import {AwesomeButton} from "react-awesome-button";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import {useAppSelector} from "@/reducers/hooks";
 import {useSearchParams} from "next/navigation";
 
@@ -26,10 +27,6 @@ interface ByteSelectionMenuProps {
 }
 
 const ByteSelectionMenu: React.FC<ByteSelectionMenuProps> = ({ bytes, onSelectByte }) => {
-    let userPref = localStorage.getItem('theme');
-    const [mode, _] = useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const query = useSearchParams();
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";

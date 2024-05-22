@@ -14,8 +14,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import { themeHelpers, getAllTokens } from "@/theme";
-import { useNavigate } from "react-router-dom";
+import { theme } from "@/theme";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
@@ -46,12 +45,6 @@ interface IProps {
 }
 
 export default function BytesCardSuccessPageMobile(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
-    let navigate = useNavigate();
-
     const styles = {
         card: {
             width: props.width,

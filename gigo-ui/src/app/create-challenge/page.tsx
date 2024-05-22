@@ -28,7 +28,7 @@ import {
     Tooltip,
     Typography
 } from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import LockIcon from '@mui/icons-material/Lock';
 import ReactGA from "react-ga4";
@@ -92,13 +92,6 @@ interface LocationState {
 function CreateProject() {
     // initialize navigation access
     let navigate = useRouter();
-
-    // retrieve theme from local storage
-    let userPref = localStorage.getItem('theme')
-
-    // configure theme
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const TutorialGenerateImageButton = styled(LoadingButton)`
         animation: tutorialAuraEffect 2s infinite alternate;

@@ -1,6 +1,6 @@
 import { alpha, CircularProgress, createTheme, PaletteMode, styled, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import { useGlobalCtWebSocket } from "@/services/ct_websocket";
 import {
     CtByteNextOutputRequest,
@@ -21,7 +21,6 @@ import { LoadingButton } from "@mui/lab";
 import { Player } from "@lottiefiles/react-lottie-player";
 import config from "../../config";
 import BytesCard from "../BytesCard";
-import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/reducers/hooks";
 import { selectAuthState } from "@/reducers/auth/auth";
 import GoProDisplay from "../GoProDisplay";
@@ -58,10 +57,7 @@ enum State {
 }
 
 export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps) {
-    let userPref = localStorage.getItem("theme");
     let authState = useAppSelector(selectAuthState);
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [response, setResponse] = useState<string>("");
     const [success, setSuccess] = useState<boolean | null>(null);
     const [state, setState] = useState<State>(State.LOADING);
@@ -534,7 +530,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                         '--button-hover-pressure': "4",
                         height: "10vh",
                         '--button-raise-level': "10px"
-                    }} type="primary" href={`/journey/main?last_task_id=${props.byteId}`}>
+                    }} type="primary" href={`/journey?last_task_id=${props.byteId}`}>
                         <h1 style={{ fontSize: "36px", paddingRight: "1vw", paddingLeft: "1vw" }}>
                             Continue
                         </h1>

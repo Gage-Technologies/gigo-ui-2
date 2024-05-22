@@ -3,10 +3,8 @@ import React, {useEffect, useState} from 'react';
 import {Box, Button, createTheme, Grid, PaletteMode, Paper, SxProps, Typography} from '@mui/material';
 import backgroundImage from '@/img/welcome-background.png';
 import {AwesomeButton} from "react-awesome-button"; // Adjust the import path according to your file structure
-import {getAllTokens} from "@/theme";
 import {LoadingButton} from "@mui/lab";
 import swal from "sweetalert";
-import call from "@/services/api-call";
 import config from "@/config";
 import styled, {css, keyframes} from 'styled-components';
 import {selectAuthState} from "@/reducers/auth/auth";
@@ -20,10 +18,6 @@ import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 const WelcomePage: React.FC = () => {
 
     const [showSubscription, setShowSubscription] = useState(false);
-    const navigate = useRouter();
-    let userPref = localStorage.getItem('theme')
-    const [mode, setMode] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const query = useSearchParams();
     const forwardPath = query.get("forward") ? decodeURIComponent(query.get("forward") || "") : "";
 

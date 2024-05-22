@@ -1,3 +1,5 @@
+'use client'
+
 //We copied this code, we are so sorry, but we cannot find where from anymore.
 //If this is your code, please claim it and let us know. We will give you credit.
 
@@ -10,6 +12,7 @@ import swal from "sweetalert";
 import call from "../../services/api-call";
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 // import Modal from "./Modal"
+import { theme } from "@/theme";
 
 const tileColors = ['#fffcbb', '#FFFCAB', '#ffef62', '#63a4f8', '#3D8EF7', '#2a63ac', '#84E8A2', '#29C18C', '#1c8762', '#af52bf', '#9c27b0', '#6d1b7b']
 const tileMargin = 10
@@ -42,8 +45,6 @@ export class TwentyFortyEight extends Component {
   constructor(props) {
     super(props)
 
-    const userPref = localStorage.getItem('theme');
-
     this.state = {
       tiles: {},
       score: 0,
@@ -51,7 +52,7 @@ export class TwentyFortyEight extends Component {
         show: false,
         buttons: []
       },
-      mode: userPref === 'light' ? 'light' : 'dark',
+      mode: theme.palette.mode === 'light' ? 'light' : 'dark',
       gameOver: false,
       highScore: this.props.highScore,
     }

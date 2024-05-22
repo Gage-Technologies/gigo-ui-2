@@ -30,8 +30,6 @@ interface IProps {
 }
 
 export default function PostOverview(props: IProps) {
-    let userPref = localStorage.getItem('theme')
-
     const styles = {
         card: {
             display: 'flex',

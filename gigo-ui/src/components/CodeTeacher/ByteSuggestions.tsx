@@ -1,3 +1,5 @@
+'use client'
+
 import React, { MutableRefObject, useEffect, useState } from "react";
 import {
     Box,
@@ -14,7 +16,7 @@ import {
     styled,
     Tooltip
 } from "@mui/material";
-import { getAllTokens, themeHelpers } from "../../theme";
+import { theme } from "@/theme";
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import { Close } from "@mui/icons-material";
 import { Typography } from "@mui/material";
@@ -41,10 +43,6 @@ export type ByteSuggestionProps = {
 };
 
 export default function ByteSuggestion(props: ByteSuggestionProps) {
-    let userPref = localStorage.getItem("theme");
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     const [SuggestionPortal, setSuggestionPortal] = React.useState<React.ReactPortal | null>(null)
 
     // const [startSuggestionLine, setStartSuggestionLine] = React.useState<number | null>(null)
@@ -184,7 +182,7 @@ export default function ByteSuggestion(props: ByteSuggestionProps) {
                     justifyContent: "space-evenly",
                     bottom: -10,
                     left: 0,
-                    backgroundColor: mode === 'dark' ? "#333338" : "#f5f5f5"
+                    backgroundColor: theme.palette.mode === 'dark' ? "#333338" : "#f5f5f5"
                 }}>
                     <Button onClick={() => {
                         props.closeCallback(startLine, endLine, null)

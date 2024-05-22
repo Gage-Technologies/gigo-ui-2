@@ -1,3 +1,5 @@
+'use client'
+
 import {
     alpha,
     Box,
@@ -35,7 +37,7 @@ import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import ctIcon from "../../img/codeTeacher/CT-icon.svg"
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import ForumIcon from '@mui/icons-material/Forum';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -96,10 +98,6 @@ export default function ByteChat(props: ByteChatProps) {
     let isMobile = query.get("viewport") === "mobile";
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";
-
-    let userPref = localStorage.getItem('theme');
-    const [mode, _] = useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -921,12 +919,12 @@ export default function ByteChat(props: ByteChatProps) {
                                 textTransform: 'none',
                                 p: 1,
                                 textAlign: "left",
-                                color: mode === "light" ? alpha("#1d1d1d", 0.6) : alpha(grey[300], 0.6),
-                                border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.2)}` : `1px solid ${alpha(grey[300], 0.2)}`,
+                                color: theme.palette.mode === "light" ? alpha("#1d1d1d", 0.6) : alpha(grey[300], 0.6),
+                                border: theme.palette.mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.2)}` : `1px solid ${alpha(grey[300], 0.2)}`,
                                 '&:hover': {
-                                    color: mode === "light" ? "#1d1d1d" : grey[300],
+                                    color: theme.palette.mode === "light" ? "#1d1d1d" : grey[300],
                                     backgroundColor: alpha(grey[500], 0.2),
-                                    border: mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.6)}` : `1px solid ${alpha(grey[500], 0.6)}`
+                                    border: theme.palette.mode === "light" ? `1px solid ${alpha("#1d1d1d", 0.6)}` : `1px solid ${alpha(grey[500], 0.6)}`
                                 }
                             }}
                             onClick={() => handleInitialQuestions(q, index)}

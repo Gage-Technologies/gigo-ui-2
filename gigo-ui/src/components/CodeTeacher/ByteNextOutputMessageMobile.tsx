@@ -10,7 +10,7 @@ import {
     alpha, Tooltip
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
-import { getAllTokens, themeHelpers } from "@/theme";
+import { theme } from "@/theme";
 import { useGlobalCtWebSocket } from "@/services/ct_websocket";
 import {
     CtByteNextOutputRequest, CtByteNextOutputResponse, CtCodeFile,
@@ -22,15 +22,11 @@ import {
 import MarkdownRenderer from "../Markdown/MarkdownRenderer";
 import { Typography } from "@mui/material";
 import { BugReportOutlined, Close } from "@mui/icons-material";
-import Lottie from "react-lottie";
 import * as byteSuccess from "@/img/byteSuccess.json"
 import CodeTeacherChatIcon from "./CodeTeacherChatIcon";
-import { truncate } from "fs/promises";
 import { LoadingButton } from "@mui/lab";
 import { Player } from "@lottiefiles/react-lottie-player";
 import config from "@/config";
-import BytesCard from "../BytesCard";
-import { useNavigate } from "react-router-dom";
 import BytesCardSuccessPageMobile from "../ByteCardSuccessPageMobile";
 import GoProDisplay from "../GoProDisplay";
 import {useAppSelector} from "@/reducers/hooks";
@@ -58,10 +54,7 @@ enum State {
 }
 
 export default function ByteNextOutputMessageMobile(props: ByteNextOutputMessageMobileProps) {
-    let userPref = localStorage.getItem("theme");
     let authState = useAppSelector(selectAuthState);
-    const [mode, _] = useState<PaletteMode>(userPref === "light" ? "light" : "dark");
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
     const [response, setResponse] = useState<string>("");
     const [success, setSuccess] = useState<boolean | null>(null);
     const [state, setState] = useState<State>(State.LOADING);
