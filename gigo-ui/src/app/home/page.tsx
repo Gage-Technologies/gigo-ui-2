@@ -212,7 +212,7 @@ async function Home({
                                    miniIcon={false}/>
                         Bytes Swipe
                     </Typography>
-                    <Button variant="text" href="/bytesMobile" sx={{
+                    <Button variant="text" href="/bytes" sx={{
                         fontSize: "0.8em",
                         fontWeight: "light",
                         textTransform: "lowercase",

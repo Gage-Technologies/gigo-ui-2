@@ -1,23 +1,40 @@
-'use client'
+'use client';
 import * as React from "react"
-import {Box, ButtonBase, Card, CardContent, Typography} from "@mui/material";
-import {theme} from "@/theme";
+import {
+    Box,
+    Button,
+    ButtonBase,
+    Card, CardActions,
+    CardContent,
+    CardMedia,
+    Chip,
+    createTheme, Dialog, Grid,
+    Icon,
+    PaletteMode,
+    SvgIcon,
+    Tooltip,
+    Typography
+} from "@mui/material";
+import { themeHelpers, getAllTokens } from "@/theme";
+import { useNavigate } from "react-router-dom";
 import BytesEasyBadge from "@/icons/Bytes/BytesEasyBadge";
 import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
-import Image from "next/image";
+import {useRouter} from "next/navigation";
 
 
 interface IProps {
+    role?: any | null;
     width?: number | string,
     height?: number | string,
-    imageWidth: number,
-    imageHeight: number,
+    imageWidth: number | string,
+    imageHeight: number | string,
     bytesId: string,
     bytesTitle: string,
     bytesThumb: string,
     bytesDesc: string,
+    onClick?: () => void,
     animate: boolean,
     style?: React.CSSProperties;
     onMouseEnter?: (e: React.MouseEvent<HTMLDivElement>) => void;
@@ -30,59 +47,44 @@ interface IProps {
     isHome?: boolean;
 }
 
-export default function BytesCardMobile({
-                                            width = "100%",
-                                            height = "550px",
-                                            imageWidth = 281,
-                                            imageHeight = 500,
-                                            bytesId = '',
-                                            bytesTitle = '',
-                                            bytesThumb = '',
-                                            bytesDesc = '',
-                                            animate = false,
-                                            style = {},
-                                            onMouseEnter = undefined,
-                                            onMouseLeave = undefined,
-                                            inByte = false,
-                                            completedEasy = false,
-                                            completedMedium = false,
-                                            completedHard = false,
-                                            language = "Python",
-                                            isHome = false
-                                        }) {
+export default function BytesCardMobile(props: IProps) {
+    let userPref = localStorage.getItem('theme')
+    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
+    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
+
+    let navigate = useRouter();
+
     const styles = {
         card: {
-            width: width,
+            width: props.width,
             // boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
             // backgroundColor: theme.palette.background.default
-            height: height,
+            height: props.height,
             border: "none",
             boxShadow: "none",
             backgroundColor: "transparent",
             backgroundImage: "none",
-            animation: animate ? 'auraEffect 2s infinite alternate' : 'none',
+            animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
         },
         image: {
             borderRadius: "10px",
-        },
-        imageContainer: {
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            position: "relative",
+            // width: props.imageWidth,
+            height: props.imageHeight,
+            width: props.imageWidth,
+            minWidth: "80vw",
+            objectFit: "cover",
         },
         title: {
             textOverflow: "ellipsis",
             overflow: "hidden",
             whiteSpace: "nowrap",
             display: 'block',
-            textAlign: "center",
+            textAlign: "left",
             fontSize: ".8em",
             margin: 0,
             paddingLeft: 0,
-            width: '100%',
+            maxWidth: '100%',
         },
         content: {
             display: 'flex',
@@ -104,7 +106,6 @@ export default function BytesCardMobile({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            width: '100%',
         },
     };
 
@@ -123,22 +124,17 @@ export default function BytesCardMobile({
             }
             `}
             </style>
-            <ButtonBase href={`/byte/${bytesId}`}>
+            <ButtonBase href={`/byte/${props.bytesId}`} onClick={props.onClick}>
                 <Card
                     sx={styles.card}
-                    style={style}
-                    onMouseEnter={onMouseEnter}
-                    onMouseLeave={onMouseLeave}
+                    style={props.style}
+                    onMouseEnter={props.onMouseEnter}
+                    onMouseLeave={props.onMouseLeave}
                 >
-                    <div style={styles.imageContainer as React.CSSProperties}>
-                        <div style={{position: "relative", width: "fit-content", height: "fit-content"}}>
-                            <Image
-                                alt={""}
-                                src={bytesThumb}
-                                style={styles.image as React.CSSProperties}
-                                width={imageWidth}
-                                height={imageHeight}
-                            />
+                    <div style={{ position: 'relative' }}>
+                        {/* @ts-ignore */}
+                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
+                        {!props.isHome && (
                             <Box
                                 display={"flex"}
                                 flexDirection={"column"}
@@ -152,37 +148,40 @@ export default function BytesCardMobile({
                                 }}
                             >
                                 <BytesHardBadge
-                                    finished={completedHard === undefined ? false : completedHard}
-                                    inByte={inByte}
+                                    finished={props.completedHard === undefined ? false : props.completedHard}
+                                    inByte={props.inByte}
+                                    sizeMultiplier={7}
                                 />
                                 <BytesMediumBadge
-                                    finished={completedMedium === undefined ? false : completedMedium}
-                                    inByte={inByte}
+                                    finished={props.completedMedium === undefined ? false : props.completedMedium}
+                                    inByte={props.inByte}
+                                    sizeMultiplier={7}
                                 />
                                 <BytesEasyBadge
-                                    finished={completedEasy === undefined ? false : completedEasy}
-                                    inByte={inByte}
+                                    finished={props.completedEasy === undefined ? false : props.completedEasy}
+                                    inByte={props.inByte}
+                                    sizeMultiplier={7}
                                 />
                             </Box>
-                            <Box
-                                display={"flex"}
-                                flexDirection={"column"}
-                                style={{
-                                    position: 'absolute',
-                                    bottom: '20px',
-                                    right: '10px',
-                                    height: "fit-content",
-                                    width: "fit-content",
-                                    gap: '10px',
-                                }}
-                            >
-                                <BytesLanguage language={language === undefined ? "Python" : language}/>
-                            </Box>
-                        </div>
+                        )}
+                        <Box
+                            display={"flex"}
+                            flexDirection={"column"}
+                            style={{
+                                position: 'absolute',
+                                bottom: '10px',
+                                right: '10px',
+                                height: "fit-content",
+                                width: "fit-content",
+                                gap: '10px',
+                            }}
+                        >
+                            <BytesLanguage language={props.language === undefined ? "Python" : props.language} />
+                        </Box>
                     </div>
                     <CardContent sx={styles.content}>
                         <Typography gutterBottom variant="h6" component="div" sx={styles.title}>
-                            {bytesTitle}
+                            {props.bytesTitle}
                         </Typography>
                     </CardContent>
                 </Card>
