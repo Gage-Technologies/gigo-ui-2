@@ -39,12 +39,12 @@ export async function generateMetadata(
     }
 
     return {
-        applicationName: `${attemptPromise.post.title} - Attempt - GIGO Dev`,
-        title: `${attemptPromise.post.title} - Attempt - GIGO Dev`,
+        applicationName: `${attemptPromise.post.title || attemptPromise.post.post_title} - Attempt - GIGO Dev`,
+        title: `${attemptPromise.post.title || attemptPromise.post.post_title} - Attempt - GIGO Dev`,
         description: attemptPromise.post.description,
         keywords: ['coding', 'programming', 'learning', 'challenges', 'developers', 'cloud development'],
         openGraph: {
-            title: `${attemptPromise.post.title} - Attempt - GIGO Dev`,
+            title: `${attemptPromise.post.title || attemptPromise.post.post_title} - Attempt - GIGO Dev`,
             description: attemptPromise.post.description,
             type: 'website',
             url: 'https://gigo.dev/attempt/' + params.id,
