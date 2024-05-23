@@ -26,6 +26,8 @@ import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import {LoadingButton} from "@mui/lab";
 import config from "@/config";
 import {useRouter} from "next/navigation";
+import {useState} from "react";
+import GoProDisplay from "@/components/GoProDisplay";
 
 const gradientAnimation = keyframes`
     0% {
@@ -82,6 +84,7 @@ export default function Tutorial() {
     const [openTooltip, setOpenTooltip] = React.useState(false);
     const [startingByte, setStartingByte] = React.useState(false);
     const [windowWidth, setWindowWidth] = React.useState(1200);
+    const [goProPopup, setGoProPopup] = useState(false)
 
     React.useEffect(() => {
         setWindowWidth(window.innerWidth);
@@ -94,6 +97,8 @@ export default function Tutorial() {
         }
         setRunTutorial(!tutorialState.home && authState.authenticated)
     }, [tutorialState])
+
+    const toggleProPopup = () => setGoProPopup(!goProPopup)
 
     const handleReferralButtonClick = async () => {
         try {
@@ -139,7 +144,7 @@ export default function Tutorial() {
             ),
             content: (
                 <>
-                    {authState.role != 1 && (
+                    {authState.role < 1 && (
                         <>
                             <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
                                 You&#39;ve received a free month of GIGO Pro!
@@ -151,7 +156,12 @@ export default function Tutorial() {
                                 flexDirection: 'column',
                                 mb: 2
                             }}>
-                                <TutorialClaimTrialButton />
+                                <Button onClick={(event) => {
+                                    setGoProPopup(true)
+                                    console.log("opening box")
+                                }} variant={"contained"}>
+                                    Claim Free Month
+                                </Button>
                             </Box>
                         </>
                     )}
@@ -420,7 +430,9 @@ export default function Tutorial() {
                     </Button>
                 )
                 }
+                <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
             </DialogActions>
         </Dialog>
+
     )
 }

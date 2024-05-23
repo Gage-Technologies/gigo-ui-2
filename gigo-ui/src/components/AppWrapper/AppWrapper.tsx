@@ -1910,38 +1910,38 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton color={"primary"} sx={{
-                                borderRadius: 2,
-                            }} href={"/active"}>
-                                <ListItemIcon>
-                                    <FolderIcon style={{color: theme.palette.text.primary,}}/>
-                                </ListItemIcon>
-                                <Typography
-                                    component={"div"}
-                                    variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
-                                >
-                                    Active
-                                </Typography>
-                            </ListItemButton>
-                        </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton color={"primary"} sx={{
-                                borderRadius: 2,
-                            }} href={"/following"}>
-                                <ListItemIcon>
-                                    <BookmarkIcon style={{color: theme.palette.text.primary,}}/>
-                                </ListItemIcon>
-                                <Typography
-                                    component={"div"}
-                                    variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
-                                >
-                                    Following
-                                </Typography>
-                            </ListItemButton>
-                        </ListItem>
+                        {/*<ListItem disablePadding>*/}
+                        {/*    <ListItemButton color={"primary"} sx={{*/}
+                        {/*        borderRadius: 2,*/}
+                        {/*    }} href={"/active"}>*/}
+                        {/*        <ListItemIcon>*/}
+                        {/*            <FolderIcon style={{color: theme.palette.text.primary,}}/>*/}
+                        {/*        </ListItemIcon>*/}
+                        {/*        <Typography*/}
+                        {/*            component={"div"}*/}
+                        {/*            variant={"body1"}*/}
+                        {/*            sx={{fontSize: "0.8em"}}*/}
+                        {/*        >*/}
+                        {/*            Active*/}
+                        {/*        </Typography>*/}
+                        {/*    </ListItemButton>*/}
+                        {/*</ListItem>*/}
+                        {/*<ListItem disablePadding>*/}
+                        {/*    <ListItemButton color={"primary"} sx={{*/}
+                        {/*        borderRadius: 2,*/}
+                        {/*    }} href={"/following"}>*/}
+                        {/*        <ListItemIcon>*/}
+                        {/*            <BookmarkIcon style={{color: theme.palette.text.primary,}}/>*/}
+                        {/*        </ListItemIcon>*/}
+                        {/*        <Typography*/}
+                        {/*            component={"div"}*/}
+                        {/*            variant={"body1"}*/}
+                        {/*            sx={{fontSize: "0.8em"}}*/}
+                        {/*        >*/}
+                        {/*            Following*/}
+                        {/*        </Typography>*/}
+                        {/*    </ListItemButton>*/}
+                        {/*</ListItem>*/}
                         <ListItem disablePadding>
                             <ListItemButton color={"primary"} sx={{
                                 borderRadius: 2,
@@ -2024,39 +2024,43 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
-                        <ListItem disablePadding>
-                            <ListItemButton color={"primary"} sx={{
-                                borderRadius: 2,
-                            }} href={"/configs"}>
-                                <ListItemIcon>
-                                    <CalculateIcon style={{color: theme.palette.text.primary}}/>
-                                </ListItemIcon>
-                                <Typography
-                                    component={"div"}
-                                    variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
-                                >
-                                    Configs
-                                </Typography>
-                            </ListItemButton>
-                        </ListItem>
+
                         {authState.authenticated && authState.role >= 2 && (
-                            <ListItem disablePadding>
-                                <ListItemButton color={"primary"} sx={{
-                                    borderRadius: 2,
-                                }} href={"/create-challenge"}>
-                                    <ListItemIcon>
-                                        <AddIcon style={{ color: theme.palette.text.primary }} />
-                                    </ListItemIcon>
-                                    <Typography
-                                        component={"div"}
-                                        variant={"body1"}
-                                        sx={{ fontSize: "0.8em" }}
-                                    >
-                                        Create
-                                    </Typography>
-                                </ListItemButton>
-                            </ListItem>
+                            <>
+                                    <ListItem disablePadding>
+                                        <ListItemButton color={"primary"} sx={{
+                                            borderRadius: 2,
+                                        }} href={"/create-challenge"}>
+                                            <ListItemIcon>
+                                                <AddIcon style={{ color: theme.palette.text.primary }} />
+                                            </ListItemIcon>
+                                            <Typography
+                                                component={"div"}
+                                                variant={"body1"}
+                                                sx={{ fontSize: "0.8em" }}
+                                            >
+                                                Create
+                                            </Typography>
+                                        </ListItemButton>
+                                    </ListItem>
+
+                                    <ListItem disablePadding>
+                                    <ListItemButton color={"primary"} sx={{
+                                        borderRadius: 2,
+                                    }} href={"/configs"}>
+                                        <ListItemIcon>
+                                            <CalculateIcon style={{color: theme.palette.text.primary}}/>
+                                        </ListItemIcon>
+                                        <Typography
+                                            component={"div"}
+                                            variant={"body1"}
+                                            sx={{fontSize: "0.8em"}}
+                                        >
+                                            Configs
+                                        </Typography>
+                                    </ListItemButton>
+                                </ListItem>
+                            </>
                         )}
                         <ListItem disablePadding>
                             <ListItemButton color={"primary"} sx={{
