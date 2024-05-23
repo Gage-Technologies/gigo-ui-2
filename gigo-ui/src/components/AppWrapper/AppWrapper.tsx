@@ -1838,6 +1838,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 <Button size={"small"} href={"/privacyPolicy"}>
                     Privacy Policy
                 </Button>
+                <Typography variant={"caption"} style={{ textAlign: "center", marginBottom: "4px", fontSize: "0.6em" }}>
+                    Made with Freedom in <span role="img" aria-label="Texas Flag">🏴󠁵󠁳󠁴󠁸󠁿</span>
+                </Typography>
             </div>
         )
     }

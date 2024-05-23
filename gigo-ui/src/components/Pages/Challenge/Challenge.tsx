@@ -95,6 +95,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image, { StaticImageData } from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import fetchWithUpload from "@/services/chunkUpload";
 
 interface ChallengeProps {
     params: { id: string };
@@ -115,8 +116,8 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const [editTitle, setEditTitle] = React.useState(false);
     const [editImage, setEditImage] = React.useState(false);
 
-    let urlParams = useSearchParams();
-    let isMobile = urlParams.get("viewport") === "mobile";
+    const queryParams = useSearchParams()
+    let isMobile = queryParams.get("viewport") === "mobile";
 
     const TutorialLaunchButton = styled(LoadingButton)`
         animation: auraEffect1 2s infinite alternate;
@@ -170,7 +171,6 @@ function Challenge({ params, ...props }: ChallengeProps) {
 
     // retrieve url params
     let id = params.id
-    const queryParams = new URLSearchParams(window.location.search)
 
     const dispatch = useAppDispatch();
     const cache = useSelector(selectCacheState);
@@ -1573,7 +1573,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const renderLaunchButtonMobile = () => {
         let clickCallback = () => {
             if (!loggedIn) {
-                window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
+                router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
             }
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
@@ -1698,8 +1698,13 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     swal("Success!", res["message"], "Updated project title/type")
                 }
             } else {
-                let res = await fetch(
+                if (usedThumbnail === null) {
+                    return
+                }
+
+                let res = await fetchWithUpload(
                     `${config.rootPath}/api/project/editProject`,
+                    usedThumbnail,
                     {
                         method: "POST",
                         headers: {
@@ -1707,37 +1712,13 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         },
                         body: JSON.stringify(params),
                         credentials: 'include'
+                    },
+                    (res) => {
+                        if (res === undefined) {
+                            swal("Server Error", "There has been an error updating your Challenge. Please try again later.")
+                        }
                     }
-                ).then((res) => res.json())
-
-                if (res === undefined) {
-                    if (sessionStorage.getItem("alive") === null)
-                        //@ts-ignore
-                        swal(
-                            "Server Error",
-                            "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
-                        );
-                    return;
-                }
-
-                if ("message" in res && res["message"] !== "File Upload Starting") {
-                    if (sessionStorage.getItem("alive") === null)
-                        //@ts-ignore
-                        swal(
-                            "Server Error",
-                            (res["message"] !== "internal server error occurred") ?
-                                res["message"] :
-                                "An unexpected error has occurred. We're sorry, we'll get right on that!"
-                        );
-                    return;
-                }
-
-                if ("message" in res && res["message"] === "success") {
-                    if (sessionStorage.getItem("alive") === null)
-                        //@ts-ignore
-                        swal("Success!", res["message"], "success")
-                    return;
-                }
+                )
             }
         } else {
             edit = fetch(
@@ -1769,8 +1750,6 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 }
             }
         }
-
-        // window.location.reload();
     }
 
     const handleProjectSelection = (selectedProject: React.SetStateAction<string | null>) => {

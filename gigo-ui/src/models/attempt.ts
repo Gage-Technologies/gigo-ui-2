@@ -1,5 +1,6 @@
 export default interface Attempt {
     _id: string;
+    title?: string;
     post_title: string;
     description: string;
     author: string;
@@ -19,4 +20,10 @@ export default interface Attempt {
     thumbnail: string;
     post_type: number;
     post_type_string: string;
+    exclusive_description: string;
+    name: string;
+    color_palette: string;
+    render_in_front: boolean;
+    estimated_tutorial_time_millis: number | null;
+    start_time_millis: number;
 }
