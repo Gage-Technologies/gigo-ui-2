@@ -508,6 +508,7 @@ function Byte({params}: { params: { id: string } }) {
                 return true
             }
             let p = JSON.parse(JSON.stringify(msg.payload)) as { files: { file_name: string, code: string }[] }
+            console.log("code files: ", p.files, " code: ", code)
             let newCode = p.files.map(x => {
                 return {file_name: x.file_name, content: x.code || 'Missing code'};
             });

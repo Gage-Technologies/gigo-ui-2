@@ -475,7 +475,7 @@ function Streak() {
                 <div style={{ position: 'relative', display: 'inline-block', width: "50%", marginTop: "10px", cursor: !premium && streakCount === 0 ? 'pointer' : 'default' }}
                      onClick={!premium && streakCount === 0 ? handleGoProClick : undefined} // Only add click handler if premium is "0"
                 >
-                    <img src={freeze} alt="image not found"
+                    <Image src={freeze} alt="image not found"
                          style={{
                              zIndex: 4,
                              alignItems: "center",
