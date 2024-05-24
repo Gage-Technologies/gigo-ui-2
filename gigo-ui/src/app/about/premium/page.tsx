@@ -4,8 +4,8 @@ import {
     CssBaseline,
 } from "@mui/material";
 
-import AboutPagePremium from "@/components/Pages/About/AboutPagePremium";
 import AboutPageSwitch from "@/components/Pages/About/AboutPageSwitch";
+import PremiumDescription from "@/app/premium/page";
 
 function About() {
     return (
@@ -17,7 +17,7 @@ function About() {
                 flexDirection: "column"
             }}>
                 <AboutPageSwitch/>
-                <AboutPagePremium />
+                <PremiumDescription />
             </Box>
         </CssBaseline>
     );
