@@ -1,16 +1,82 @@
-'use client';
-import { useSearchParams } from "next/navigation";
-import ByteMobile from "@/components/Bytes/byteMobile";
-import Byte from "@/components/Bytes/byte";
+import ByteViewportRouter from "@/components/Pages/Byte/ByteViewportRouter";
+import config from "@/config";
+import { Byte } from "@/models/bytes";
+import type { Metadata, ResolvingMetadata } from 'next'
 
-function HandleByte({ params }: { params: { id: string } }) {
-    const query = useSearchParams();
-    const isMobile = query.get("viewport") === "mobile";
+export async function generateMetadata(
+    { params }: { params: { id: string } },
+    parent: ResolvingMetadata
+): Promise<Metadata> {
 
-    if (isMobile) {
-        return <ByteMobile params={params} />;
+    const byte = await fetch(
+        `${config.rootPath}/api/bytes/getByte`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({byte_id: params.id}),
+            next: {revalidate: 86400 * 7}
+        }).then(async res => {
+            if (!res.ok) {
+                return null
+            }
+            const data = await res.json()
+            return data["rec_bytes"] as Byte
+        })
+
+    if (byte === null) {
+        return {}
     }
-    return <Byte params={params} />;
+
+    return {
+        applicationName: `${byte.name} - Byte - GIGO Dev`,
+        title: `${byte.name} - Byte - GIGO Dev`,
+        description: byte.description_medium,
+        keywords: ['coding', 'programming', 'learning', 'challenges', 'developers', 'cloud development'],
+        openGraph: {
+            title: `${byte.name} - Byte - GIGO Dev`,
+            description: byte.description_medium,
+            type: 'website',
+            url: 'https://gigo.dev/attempt/' + params.id,
+            images: [
+                {
+                    url: config.rootPath + "/static/bytes/t/" + byte._id,
+                    width: 250,
+                    height: 250,
+                    alt: `${byte.name} Thumbnail`,
+                },
+                {
+                    url: 'https://gigo.dev/logo192.png',
+                    width: 192,
+                    height: 192,
+                    alt: 'GIGO Dev Logo',
+                },
+            ],
+            siteName: 'GIGO Dev',
+        }
+    }
+}
+
+async function HandleByte({ params }: { params: { id: string } }) {
+    const byte = await fetch(
+        `${config.rootPath}/api/bytes/getByte`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({byte_id: params.id}),
+            next: {revalidate: 86400}
+        }).then(async res => {
+            if (!res.ok) {
+                return {} as Byte
+            }
+            const data = await res.json()
+            return data["rec_bytes"] as Byte
+        })
+
+    return <ByteViewportRouter byte={byte} params={params} />;
 }
 
 export default HandleByte;

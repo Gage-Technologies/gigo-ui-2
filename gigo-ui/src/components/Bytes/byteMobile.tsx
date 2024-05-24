@@ -37,7 +37,7 @@ import {
     WsResponseCode,
     WsValidationErrorPayload
 } from "@/models/websocket";
-import { ExecResponsePayload, OutputRow } from "@/models/bytes";
+import { Byte, ExecResponsePayload, OutputRow } from "@/models/bytes";
 import { programmingLanguages } from "@/services/vars";
 import { LoadingButton } from "@mui/lab";
 import Editor from "@/components/IDE/Editor";
@@ -114,26 +114,6 @@ interface InitialStatusMessage {
     workspace: Workspace;
     code_source: CodeSource;
     workspace_url: string
-}
-
-interface BytesData {
-    _id: string;
-    name: string;
-    lang: number;
-    color: string;
-    published: boolean;
-
-    description_easy: string;
-    outline_content_easy: string;
-    dev_steps_easy: string;
-
-    description_medium: string;
-    outline_content_medium: string;
-    dev_steps_medium: string;
-
-    description_hard: string;
-    outline_content_hard: string;
-    dev_steps_hard: string;
 }
 
 interface LanguageOption {
@@ -261,7 +241,14 @@ const mapFilePathToLangOption = (l: string): LanguageOption | undefined => {
 
 const NextStepsTimeout = 15000; // 15 seconds
 
-function ByteMobile({params}: { params: { id: string } }) {
+interface ByteProps {
+    params: {
+        id: string
+    },
+    byte: Byte
+}
+
+function ByteMobile({params, ...props}: ByteProps) {
     const query = useSearchParams()
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
@@ -271,6 +258,38 @@ function ByteMobile({params}: { params: { id: string } }) {
     const outOfHearts = useAppSelector(selectOutOfHearts);
 
     const [terminalVisible, setTerminalVisible] = useState(false);
+    const [journeySetupDone, setJourneySetupDone] = useState(false);
+
+    const determineDifficulty = React.useCallback(() => {
+        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
+
+        if (shouldSetToEasy) {
+            updateDifficulty(0)
+            setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
+            return 0
+        }
+
+        if (bytesState?.initialized) {
+            return bytesState?.byteDifficulty
+        }
+        if (authState.tier < 3) {
+            return 0
+        }
+        if (authState.tier < 6) {
+            return 1
+        }
+        return 2
+    }, [bytesState?.byteDifficulty, journeySetupDone, bytesState?.initialized])
+
+    const difficultyToString = (difficulty: number): string => {
+        if (difficulty === 0) {
+            return "easy"
+        }
+        if (difficulty === 1) {
+            return "medium"
+        }
+        return "hard"
+    }
 
     const containerStyleDefault: React.CSSProperties = {
         width: '100%',
@@ -338,25 +357,34 @@ function ByteMobile({params}: { params: { id: string } }) {
     const helpPopupClosedByUser = useAppSelector(selectHelpPopupClosedByUser);
     const navigate = useRouter();
 
+    const determinedDiff = determineDifficulty()
+    let outlineContent = props.byte.files_easy
+    if (determinedDiff === 1) {
+        outlineContent = props.byte.files_medium
+    } else if (determinedDiff === 2) {
+        outlineContent = props.byte.files_hard
+    }
+    let afi = outlineContent.length >= 1 ? 0 : -1;
+
     // Define the state for your data and loading state
-    const [byteData, setByteData] = useState<BytesData | null>(null);
+    const [byteData, setByteData] = useState<Byte | null>(props.byte);
     const [recommendedBytes, setRecommendedBytes] = useState(null);
-    const [code, setCode] = useState<CodeFile[]>([]);
+    const [code, setCode] = useState<CodeFile[]>(outlineContent);
 
     const [output, setOutput] = useState<OutputState | null>(null);
 
     const [lspActive, setLspActive] = React.useState(false)
     const [containerStyle, setContainerSyle] = useState<React.CSSProperties>(containerStyleDefault)
-    const [cursorPosition, setCursorPosition] = useState<{ row: number, column: number } | null>(null)
+    const [cursorPosition, setCursorPosition] = useState<{ row: number, column: number } | null>({row: 0, column: 0})
     const [codeBeforeCursor, setCodeBeforeCursor] = useState("");
-    const [codeAfterCursor, setCodeAfterCursor] = useState("");
+    const [codeAfterCursor, setCodeAfterCursor] = useState(afi >= 0 ? outlineContent[afi].content : "");
     const [outputPopup, setOutputPopup] = useState(false);
     const [byteAttemptId, setByteAttemptId] = useState("");
-    const [easyCode, setEasyCode] = useState<CodeFile[]>([]);
-    const [mediumCode, setMediumCode] = useState<CodeFile[]>([]);
-    const [hardCode, setHardCode] = useState<CodeFile[]>([]);
-    const [activeFile, setActiveFile] = useState("");
-    const [activeFileIdx, setActiveFileIdx] = useState(-1);
+    const [easyCode, setEasyCode] = useState<CodeFile[]>(props.byte.files_easy);
+    const [mediumCode, setMediumCode] = useState<CodeFile[]>(props.byte.files_medium);
+    const [hardCode, setHardCode] = useState<CodeFile[]>(props.byte.files_hard);
+    const [activeFile, setActiveFile] = useState(afi >= 0 ? outlineContent[afi].file_name : "");
+    const [activeFileIdx, setActiveFileIdx] = useState(afi);
     const typingTimerRef = useRef<null | NodeJS.Timeout>(null);
     const syncTimerRef = useRef<null | NodeJS.Timeout>(null);
     const [lastTimeTyped, setLastTimeTyped] = useState<number | null>(null);
@@ -401,7 +429,6 @@ function ByteMobile({params}: { params: { id: string } }) {
     const [helpPopupOpen, setHelpPopupOpen] = useState(false);
     const [shouldShowHelp, setShouldShowHelp] = useState(false);
 
-    const [journeySetupDone, setJourneySetupDone] = useState(false);
     const [journeyUnitData, setJourneyUnitData] = useState<JourneyUnit | null>(null);
 
     const [proPopupOpen, setProPopupOpen] = useState(false)
@@ -418,37 +445,6 @@ function ByteMobile({params}: { params: { id: string } }) {
     const isJourney = query.has('journey')
 
     let globalWs = useGlobalWebSocket();
-
-    const determineDifficulty = React.useCallback(() => {
-        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
-
-        if (shouldSetToEasy) {
-            updateDifficulty(0)
-            setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
-            return 0
-        }
-
-        if (bytesState?.initialized) {
-            return bytesState?.byteDifficulty
-        }
-        if (authState.tier < 3) {
-            return 0
-        }
-        if (authState.tier < 6) {
-            return 1
-        }
-        return 2
-    }, [bytesState?.byteDifficulty, journeySetupDone, bytesState?.initialized])
-
-    const difficultyToString = (difficulty: number): string => {
-        if (difficulty === 0) {
-            return "easy"
-        }
-        if (difficulty === 1) {
-            return "medium"
-        }
-        return "hard"
-    }
 
     const syncFs = React.useCallback(async (codeOverride?: CodeFile[], deleteFiles?: string[]) => {
         if (id === undefined || id === null || !byteData || !authState.authenticated) {
@@ -835,44 +831,6 @@ function ByteMobile({params}: { params: { id: string } }) {
         }
     };
 
-    // Function to fetch the full metadata of a byte
-    const getByte = async (byteId: string): Promise<any | null> => {
-        try {
-            const response = await call("/api/bytes/getByte",
-                "POST",
-                null,
-                null,
-                null,
-                // @ts-ignore
-                { byte_id: byteId },
-                null,
-                config.rootPath);
-            const [res] = await Promise.all([response]);
-
-            if (res && res["rec_bytes"]) {
-                let outlineContent = res["rec_bytes"][`files_${difficultyToString(determineDifficulty())}`]
-                setCode(outlineContent);
-                let afi = outlineContent.length >= 1 ? 0 : -1;
-                setActiveFileIdx(afi)
-                setActiveFile(afi >= 0 ? outlineContent[afi].file_name : "")
-                setCodeBeforeCursor("")
-                setCodeAfterCursor(outlineContent)
-                setCursorPosition({ row: 0, column: 0 })
-                setEasyCode(res["rec_bytes"]["files_easy"])
-                setMediumCode(res["rec_bytes"]["files_medium"])
-                setHardCode(res["rec_bytes"]["files_hard"])
-
-                setByteData(res["rec_bytes"])
-                return res["rec_bytes"]
-            } else {
-                swal("Byte Not Found", "The requested byte could not be found.");
-            }
-        } catch (error) {
-            swal("Error", "An error occurred while fetching the byte data.");
-        }
-        return null
-    };
-
     const startByteAttempt = async (byteId: string) => {
         try {
             const response = await call(
@@ -1122,7 +1080,7 @@ function ByteMobile({params}: { params: { id: string } }) {
     }, [authState.authenticated]);
 
     useEffect(() => {
-        if (id === undefined) {
+        if (id === undefined || byteData === null) {
             return
         }
 
@@ -1135,25 +1093,23 @@ function ByteMobile({params}: { params: { id: string } }) {
         setActivePorts([]);
         setLspActive(false);
         getRecommendedBytes()
-        getByte(id).then((byteData: any | null) => {
-            if (authState.authenticated && id && byteData !== null) {
-                startByteAttempt(id).then(async () => {
-                    // auto connect to the workspace if this is a journey task
-                    if (isJourney && !outOfHearts) {
-                        for (let i = 0; i < 5; i++) {
-                            let created = await createWorkspace(byteData._id);
-                            if (created) {
-                                break
-                            }
+        if (authState.authenticated && id && byteData !== null) {
+            startByteAttempt(id).then(async () => {
+                // auto connect to the workspace if this is a journey task
+                if (isJourney && !outOfHearts) {
+                    for (let i = 0; i < 5; i++) {
+                        let created = await createWorkspace(byteData._id);
+                        if (created) {
+                            break
+                        }
 
-                            if (i === 4) {
-                                break
-                            }
+                        if (i === 4) {
+                            break
                         }
                     }
-                });
-            }
-        });
+                }
+            });
+        }
         if (isJourney) {
             getJourneyUnit(id).then((u: JourneyUnit | null) => {
                 // if (u !== null && !bytesState.handoutClosedByUser) {
@@ -1684,55 +1640,6 @@ function ByteMobile({params}: { params: { id: string } }) {
             }
         )
     }
-
-    useEffect(() => {
-        if (id === undefined) {
-            return
-        }
-
-        setOutput(null)
-        setExecutingCode(false)
-        setTerminalVisible(false)
-        setUserHasModified(false)
-        setWorkspaceId("")
-        setWorkspaceState(null)
-        setLspActive(false)
-        getRecommendedBytes()
-        getByte(id).then(() => {
-            if (authState.authenticated && id) {
-                startByteAttempt(id);
-            }
-        });
-    }, [id]);
-
-    // useEffect(() => {
-    //     console.log("called useEffect")
-    //     if (parsedSymbols !== null && parsedSymbols.nodes.length > 0 && workspaceState === 1) {
-    //         console.log("updating extensions")
-    //         setEditorExtensions([ctCreateCodeActions(
-    //             alpha(theme.palette.text.primary, 0.6),
-    //             parsedSymbols,
-    //             loadingCodeCleanup,
-    //             (id: string, portal: React.ReactPortal) => {
-    //                 setCodeActionPortals((prevState) => {
-    //
-    //                     return prevState.some((x) => x.id === id) ?
-    //                         prevState.map((item) => item.id === id ? { ...item, portal } : item) :
-    //                         [...prevState, { id, portal }];
-    //                 })
-    //             },
-    //             (node: CtParseNode) => triggerCodeCleanup(node)
-    //         )])
-    //     }
-    //
-    //     // filter any code symbols from the portals that no longer exist
-    //     if (parsedSymbols !== null) {
-    //         setCodeActionPortals((prevState) => {
-    //             return prevState.filter(({id}) =>
-    //                 parsedSymbols.nodes.some((node) => node.id === id));
-    //         });
-    //     }
-    // }, [parsedSymbols, loadingCodeCleanup, workspaceState]);
 
     const renderStateIndicator = () => {
         let actionButton;

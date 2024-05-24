@@ -1,7 +1,5 @@
 'use client';
 import { useSearchParams } from "next/navigation";
-import ByteMobile from "@/components/Bytes/byteMobile";
-import Byte from "@/components/Bytes/byte";
 import AllBytesScrollMobile from "@/components/allBytesScrollMobile";
 import AllBytesScroll from "@/components/allBytesScroll";
 
