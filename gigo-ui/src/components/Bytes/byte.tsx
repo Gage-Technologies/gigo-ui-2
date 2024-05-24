@@ -502,22 +502,33 @@ function BytePage({params, ...props}: ByteProps) {
                 resolver(false);
                 return true
             }
-            let p = JSON.parse(JSON.stringify(msg.payload)) as { files: { file_name: string, code: string }[] }
-            console.log("code files: ", p.files, " code: ", code)
-            let newCode = p.files.map(x => {
-                return {file_name: x.file_name, content: x.code || 'Missing code'};
-            });
-            // override the active file with our current state since we don't want
-            // the editor to change because of unintended changes
-            if (activeFile !== undefined && activeFile !== null) {
-                // find the index of the active file in the code
-                let activeFileIndex = newCode.findIndex((x) => x.file_name === activeFile);
-                if (activeFileIndex !== -1) {
-                    // remove the active file from the code
-                    newCode.splice(activeFileIndex, 1);
-                    // add the active file back to the code at the activeFileIdx
-                    newCode.splice(activeFileIdx, 0, code[activeFileIndex]);
+            let newCode: { file_name: string, content: string }[] = [];
+            newCode = msg.payload.files.map((x: any) => {
+                return { file_name: x.file_name, content: x.code || 'Missing Code' }
+            })
+
+            // Find the index of the active file in the new code array
+            let newActiveFileIndex = newCode.findIndex(file => file.file_name === activeFile);
+
+            // If the active file exists in the new code array, update its content
+            if (newActiveFileIndex !== -1) {
+                newCode[newActiveFileIndex] = { file_name: activeFile, content: code[activeFileIdx].content };
+            } else {
+                // If the active file does not exist, insert it at its prior index or append it if the newCode array is too small
+                if (activeFileIdx < newCode.length) {
+                    newCode.splice(activeFileIdx, 0, { file_name: activeFile, content: code[activeFileIdx].content });
+                    newActiveFileIndex = activeFileIdx;
+                } else {
+                    newCode.push({ file_name: activeFile, content: code[activeFileIdx].content });
+                    newActiveFileIndex = newCode.length - 1;
                 }
+            }
+
+            // If the active file index has changed, move the file to its original index
+            if (newActiveFileIndex !== activeFileIdx && newActiveFileIndex !== -1) {
+                const temp = newCode[activeFileIdx];
+                newCode[activeFileIdx] = newCode[newActiveFileIndex];
+                newCode[newActiveFileIndex] = temp;
             }
 
             setCode(newCode)
@@ -584,6 +595,7 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const debouncedUpdateCode = React.useCallback(debounce((newCode: CodeFile[]) => {
+        console.log("updating code: ", newCode)
         globalWs.sendWebsocketMessage({
             sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
             type: WsMessageType.ByteUpdateCode,
