@@ -119,6 +119,7 @@ import {Suspense} from "react";
 import HeartTracker from '@/components/HeartTracker';
 import GoProDisplay from '@/components/GoProDisplay';
 import { clearHeartsState } from '@/reducers/hearts/hearts';
+import CheckIcon from "@mui/icons-material/Check";
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -823,6 +824,18 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         )
     }, [authState, thumbnail])
 
+    const [openTooltip, setOpenTooltip] = React.useState(false);
+    const handleReferralButtonClick = async () => {
+        try {
+            await navigator.clipboard.writeText(`https://gigo.dev/referral/${encodeURIComponent(authState.userName)}`);
+            setOpenTooltip(true);
+            setTimeout(() => {
+                setOpenTooltip(false);
+            }, 2000); // Tooltip will hide after 2 seconds
+        } catch (err) {
+            console.error('Failed to copy text: ', err);
+        }
+    };
 
     const renderAppBar = () => {
         if (isByteMobilePage) return null;
@@ -955,42 +968,61 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             <Modal open={showReferPopup} onClose={() => setShowReferPopup(false)}>
                                 <Box
                                     sx={{
-                                        width: "30vw",
-                                        minHeight: "340px",
-                                        height: "30vh",
-                                        justifyContent: "center",
-                                        marginLeft: "35vw",
-                                        marginTop: "35vh",
-                                        outlineColor: "black",
-                                        borderRadius: 1,
-                                        boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                                        backgroundColor: theme.palette.background.default,
+                                        width: { xs: '80vw', md: '30vw' },
+                                        minHeight: '340px',
+                                        height: { xs: 'auto', md: '30vh' },
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        position: 'relative',
+                                        margin: 'auto',
+                                        mt: { xs: '10vh', md: '35vh' },
+                                        borderRadius: 2,
+                                        boxShadow: 24,
+                                        bgcolor: 'background.default',
+                                        p: 4,
                                     }}
                                 >
-                                    <Button onClick={() => setShowReferPopup(false)}>
-                                        <CloseIcon/>
-                                    </Button>
-                                    <div style={{
-                                        width: "100%",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        flexDirection: "column"
+                                    <IconButton
+                                        onClick={() => setShowReferPopup(false)}
+                                        sx={{ position: 'absolute', top: 8, right: 8 }}
+                                    >
+                                        <CloseIcon />
+                                    </IconButton>
+                                    <Typography variant="h4" gutterBottom>
+                                        Refer a Friend
+                                    </Typography>
+                                    <Typography variant="h5" gutterBottom>
+                                        Give a Month, Get a Month
+                                    </Typography>
+                                    <Box sx={{
+                                        display: 'flex',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        flexDirection: 'column'
                                     }}>
-                                        <h3>Refer a Friend.</h3>
-                                        <h4>Give a Month, Get a Month.</h4>
-                                        <div style={{
-                                            display: "flex",
-                                            width: "100%",
-                                            flexDirection: "row",
-                                            justifyContent: "center"
-                                        }}>
-                                            <h5 style={{outline: "solid gray", borderRadius: "5px", padding: "8px"}}
-                                                id={"url"}>{referralLink.length > 50 ? referralLink.slice(0, 50) + "..." : referralLink}</h5>
-                                            <Button onClick={() => copyToClipboard()}>
-                                                <ContentCopyIcon/>
+                                        <Tooltip
+                                            open={openTooltip}
+                                            disableFocusListener
+                                            disableHoverListener
+                                            disableTouchListener
+                                            title={
+                                                <React.Fragment>
+                                                    <div style={{display: 'flex', alignItems: 'center'}}>
+                                                        Referral Link Copied
+                                                        <CheckIcon sx={{color: theme.palette.success.main, ml: 1}}/>
+                                                    </div>
+                                                </React.Fragment>
+                                            }
+                                            placement="top"
+                                            arrow
+                                        >
+                                            <Button variant="contained" onClick={handleReferralButtonClick}>
+                                                Referral Link
                                             </Button>
-                                        </div>
-                                    </div>
+                                        </Tooltip>
+                                    </Box>
                                 </Box>
                             </Modal>
                             <Modal open={openSetup} onClose={() => setOpenSetup(false)}>
