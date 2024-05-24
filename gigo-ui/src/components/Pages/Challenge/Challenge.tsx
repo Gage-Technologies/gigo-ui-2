@@ -600,7 +600,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             setRunTutorial(!tutorialState.challenge && loggedIn)
     }, [projectDesc])
 
-    const projectName = project !== null ? project["title"] : ""
+    const [projectName, setProjectName] = React.useState(project !== null ? project["title"] : "")
 
     const ownerName = project !== null ? project["author"] : ""
     const userId = useAppSelector(selectAuthStateId);
@@ -1340,27 +1340,27 @@ function Challenge({ params, ...props }: ChallengeProps) {
         switch (projectType) {
             case "Playground":
                 return (
-                    <HorseIcon sx={{ width: "24px", height: "24px" }} />
+                    <HorseIcon sx={{ width: "24px", height: "24px", color: theme.palette.primary.main}} />
                 )
             case "Casual":
                 return (
-                    <HoodieIcon sx={{ width: "20px", height: "20px" }} />
+                    <HoodieIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
                 )
             case "Competitive":
                 return (
-                    <TrophyIcon sx={{ width: "18px", height: "18px" }} />
+                    <TrophyIcon sx={{ width: "18px", height: "18px", color: theme.palette.primary.main}} />
                 )
             case "Interactive":
                 return (
-                    <GraduationIcon sx={{ width: "20px", height: "20px" }} />
+                    <GraduationIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}}/>
                 )
             case "Debug":
                 return (
-                    <DebugIcon sx={{ width: "20px", height: "20px" }} />
+                    <DebugIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
                 )
             default:
                 return (
-                    <QuestionMark sx={{ width: "20px", height: "20px" }} />
+                    <QuestionMark sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
                 )
         }
     }
@@ -1695,7 +1695,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 if (res["message"] !== "success") {
                     swal("There has been an issue loading data. Please try again later.")
                 } else {
-                    swal("Success!", res["message"], "Updated project title/type")
+                    swal("Success!", "Challenge Was Successfully Updated", "success")
                 }
             } else {
                 if (usedThumbnail === null) {
@@ -1744,7 +1744,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             if (res["message"] !== "success") {
                 swal("There has been an issue loading data. Please try again later.")
             } else {
-                swal("Success!", res["message"], "success")
+                swal("Success!", "Challenge Was Successfully Updated", "success")
                 if (title != null) {
 
                 }
@@ -1800,11 +1800,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
         setTagOptions(res["tags"])
     }
 
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-    // todo once layout is complete, implement ephemeral and possibly 'edit project metadata' functionality
+    // todo
 
     const descriptionTab = () => {
         let regex = /(?:!\[[^\]]*\]\((?!http)(.*?)\))|(?:<img\s[^>]*?src\s*=\s*['\"](?!http)(.*?)['\"][^>]*?>)/g;
@@ -1862,11 +1858,23 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     borderRadius: "10px",
                     display: "flex",
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
+                    position: "relative",
                 }}>
                     <Typography variant="h5" component="div">
                         {projectName}
                     </Typography>
+                    {project !== null &&
+                      <Tooltip title={project["post_type_string"]}>
+                        <Box sx={{
+                            position: "absolute",
+                            right: 0,
+                            marginRight: 2,
+                        }}>
+                            {getProjectIcon(project["post_type_string"])}
+                        </Box>
+                      </Tooltip>
+                    }
                 </Box>
                 {project !== null ? (
                     <>
@@ -2029,6 +2037,18 @@ function Challenge({ params, ...props }: ChallengeProps) {
         }
         return (
             <>
+                {project && project["author_id"] === authState.id && (
+                    <>
+                        <Button
+                            variant={"outlined"}
+                            sx={buttonStyle}
+                            onClick={() => setEditPopup(true)}
+                        >
+                            Edit Challenge
+                        </Button>
+
+                    </>
+                )}
                 <Button
                     variant={"outlined"}
                     sx={buttonStyle}
@@ -2055,12 +2075,6 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         >
                             Edit Config
                         </Button>
-                        {/* <Button
-                            variant={"outlined"}
-                            sx={buttonStyle}
-                        >
-                            Share
-                        </Button> */}
                         <Button
                             variant={"outlined"}
                             sx={buttonStyle}
@@ -2072,6 +2086,145 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     </>
                 )}
             </>
+        )
+    }
+
+    const editProjectDetails = () => {
+        return (
+            <Modal
+                aria-labelledby="transition-modal-title"
+                aria-describedby="transition-modal-description"
+                open={editPopup}
+                onClose={() => setEditPopup(false)}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{ timeout: 500 }}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+            >
+                <Box
+                    sx={{
+                        width: { xs: '90vw', md: '50vw' },
+                        height: 'auto',
+                        maxHeight: '80vh',
+                        overflowY: 'auto',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: 2
+                    }}
+                >
+                    <Typography id="transition-modal-title" variant="h6">
+                        Edit Project Details
+                    </Typography>
+                    <TextField
+                        value={projectName}
+                        onChange={(e) => setProjectName(e.target.value)}
+                        variant="outlined"
+                        size="medium"
+                        color={(projectName.length > 30) ? "error" : "primary"}
+                        fullWidth
+                        required
+                        label="Project Name"
+                        multiline
+                    />
+                    <Grid container spacing={2}>
+                        {project && project["post_type_string"] !== null && (
+                            <Grid item xs={12} md={6}>
+                                <Typography variant="h6">Renown</Typography>
+                                <ProjectRenown originalLabel={project["tier"] + 1} onProjectSelect={handleProjectSelectionRenown} />
+                            </Grid>
+                        )}
+                        {project && project["post_type_string"] !== null && (
+                            <Grid item xs={12} md={6}>
+                                <Typography variant="h6">Challenge Type</Typography>
+                                <ProjectSelector originalLabel={project["post_type_string"]} onProjectSelect={handleProjectSelection} theme={theme} />
+                            </Grid>
+                        )}
+                        {project && (
+                            <Grid item xs={12}>
+                                <Autocomplete
+                                    multiple
+                                    limitTags={5}
+                                    id="tagInputAutocomplete"
+                                    freeSolo
+                                    options={tagOptions}
+                                    getOptionLabel={(option: any) => typeof option === 'string' ? option : option.value}
+                                    isOptionEqualToValue={(option: any, value: any) => typeof option === 'string' ? option === value : option.value === value.value}
+                                    renderInput={(params) => <TextField {...params} label="Challenge Tags" placeholder="Challenge Tags" />}
+                                    onInputChange={(e) => handleTagSearch(e)}
+                                    onChange={(event, value) => {
+                                        const currentRemovedTags: any[] = [];
+                                        const currentAddedTags: any[] = [];
+                                        const newAddedTags = value.filter(tag => {
+                                            const t = typeof tag === 'string'
+                                                ? { _id: "-1", value: tag, official: false, usage_count: 0 }
+                                                : tag;
+                                            return !projectTags.some(existingTag => existingTag.value === t.value);
+                                        });
+                                        newAddedTags.forEach(tag => {
+                                            if (removedTagsState.some(removedTag => removedTag.value === (typeof tag === 'string' ? tag : tag.value))) {
+                                                const index = removedTagsState.findIndex(removedTag => removedTag.value === (typeof tag === 'string' ? tag : tag.value));
+                                                if (index !== -1) removedTagsState.splice(index, 1);
+                                            } else {
+                                                currentAddedTags.push(typeof tag === 'object' ? tag : {
+                                                    _id: "-1",
+                                                    value: tag,
+                                                    official: false,
+                                                    usage_count: 0
+                                                });
+                                            }
+                                        });
+                                        const newRemovedTags = projectTags.filter(tag => !value.some(v => typeof v === 'string' ? v === tag.value : v.value === tag.value));
+                                        newRemovedTags.forEach(tag => {
+                                            if (addedTagsState.some(addedTag => addedTag.value === tag.value)) {
+                                                const index = addedTagsState.findIndex(addedTag => addedTag.value === tag.value);
+                                                if (index !== -1) addedTagsState.splice(index, 1);
+                                            } else {
+                                                currentRemovedTags.push(tag);
+                                            }
+                                        });
+                                        const tagArray = value.map(tag => typeof tag === 'object' ? tag : {
+                                            _id: "-1",
+                                            value: tag,
+                                            official: false,
+                                            usage_count: 0
+                                        });
+                                        setProjectTags(tagArray);
+                                        setRemovedTagsState(currentRemovedTags);
+                                        setAddedTagsState(currentAddedTags);
+                                    }}
+                                    value={projectTags}
+                                />
+                            </Grid>
+                        )}
+                    </Grid>
+                    <Box display="flex" justifyContent="flex-end" gap={2}>
+                        <Button variant="contained" color="primary" onClick={() => {
+                            if (project) {
+                                editProject(
+                                    projectName,
+                                    challengeType,
+                                    projectRenown.toString() !== project["tier"].toString() ? projectRenown : null,
+                                    null,
+                                    removedTagsState.length > 0 ? removedTagsState : null,
+                                    addedTagsState.length > 0 ? addedTagsState : null
+                                );
+                            } else {
+                                console.error("Project is null");
+                                swal("Server Error", "There was an error updating the project. Please try again later.", "error");
+                            }
+                        }}>
+                            Submit
+                        </Button>
+                        <Button variant="outlined" color="secondary" onClick={() => setEditPopup(false)}>
+                            Cancel
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
         )
     }
 
@@ -2122,6 +2275,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     </Box>
                 </Box>
                 {mainTabSwitch()}
+                {editProjectDetails()}
             </Box>
         )
     }
