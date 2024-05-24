@@ -96,6 +96,7 @@ import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image, { StaticImageData } from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchWithUpload from "@/services/chunkUpload";
+import GoProDisplay from "@/components/GoProDisplay";
 
 interface ChallengeProps {
     params: { id: string };
@@ -240,6 +241,8 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const [tagOptions, setTagOptions] = React.useState<Tag[]>([])
     const [usedThumbnail, setUsedThumbnail] = React.useState<File | null>(null);
     const [deleteProjectLoading, setDeleteProjectLoading] = React.useState<boolean>(false);
+    const [goProPopup, setGoProPopup] = React.useState(false)
+    const [mobileLaunchTooltipOpen, setMobileLaunchTooltipOpen] = React.useState(false)
 
     const authState = useAppSelector(selectAuthState);
 
@@ -1510,6 +1513,10 @@ function Challenge({ params, ...props }: ChallengeProps) {
             if (!loggedIn) {
                 window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
             }
+            if (authState.role < 2) {
+                setGoProPopup(true)
+                return
+            }
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
                 return;
@@ -1532,9 +1539,32 @@ function Challenge({ params, ...props }: ChallengeProps) {
         }
 
         let buttonText = project !== null && project["has_access"] !== null && project["has_access"] === false ? "Buy Content" : "Launch"
-        let toolTipText = "Unknown Launch Time"
+        let toolTipText: React.ReactNode | string = "Unknown Launch Time"
         if (project !== undefined && project !== null && project["start_time_millis"] !== undefined && project["start_time_millis"] !== null && project["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(project["start_time_millis"])}`
+        }
+        if (authState.role < 2) {
+            toolTipText = (
+                <Box sx={{ position: "relative", width: "fit-content" }}>
+                    You must be Pro Advanced or Max to launch this Challenge
+                    <Button
+                        variant="contained"
+                        onClick={() => setGoProPopup(true)}
+                        sx={{
+                            fontSize: "0.8em",
+                            p: 0.5,
+                            minWidth: "0px",
+                            height: "30px",
+                            position: "absolute",
+                            right: "5px",
+                            bottom: "5px",
+                            pointerEvents: "auto"
+                        }}
+                    >
+                        Go Pro
+                    </Button>
+                </Box>
+            )
         }
 
         if (runTutorial && stepIndex === 1) {
@@ -1575,6 +1605,10 @@ function Challenge({ params, ...props }: ChallengeProps) {
             if (!loggedIn) {
                 router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
             }
+            if (authState.role < 2) {
+                setMobileLaunchTooltipOpen(true)
+                return
+            }
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
                 return;
@@ -1591,7 +1625,33 @@ function Challenge({ params, ...props }: ChallengeProps) {
         }
 
         return (
-            <Tooltip title={"Launch"}>
+            <Tooltip
+                open={mobileLaunchTooltipOpen}
+                onClose={() => setMobileLaunchTooltipOpen(false)}
+                title={authState.role < 2 ? (
+                    <Box>
+                        You must be Pro Advanced or Max to launch this Challenge <br />
+                        <Box sx={{ width: "100%", position: "relative", height: "30px" }}>
+                            <Button
+                                variant="contained"
+                                onClick={() => setGoProPopup(true)}
+                                sx={{
+                                    fontSize: "0.8rem",
+                                    p: 0.5,
+                                    minWidth: "0px",
+                                    height: "30px",
+                                    position: "absolute",
+                                    right: "5px",
+                                    pointerEvents: "auto"
+                                }}
+                            >
+                                Go Pro
+                            </Button>
+                        </Box>
+                    </Box>
+                ) : "Launch"}
+                leaveTouchDelay={3000}
+            >
                 <Fab
                     disabled={launchingWorkspace}
                     color="secondary"
@@ -2427,6 +2487,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             {/* On mobile add a hovering button to launch the project */}
             {isMobile && renderLaunchButtonMobile()}
             {renderDeleteDialog()}
+            <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );
 }

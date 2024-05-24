@@ -1596,7 +1596,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             flexDirection: "column",
                                             alignItems: "center",
                                             justifyContent: "center",
-                                            position: "absolute",
                                             top: "30vh",
                                             left: "5vw",
                                             outline: "none",

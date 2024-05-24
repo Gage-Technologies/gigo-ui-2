@@ -1238,9 +1238,32 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         }
 
         let buttonText = "Launch"
-        let toolTipText = "Unknown Launch Time"
+        let toolTipText: React.ReactNode | string = "Unknown Launch Time"
         if (attempt !== null && attempt["start_time_millis"] !== undefined && attempt["start_time_millis"] !== null && attempt["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(attempt["start_time_millis"])}`
+        }
+        if (authState.role < 2) {
+            toolTipText = (
+                <Box sx={{ position: "relative", width: "fit-content" }}>
+                    You must be Pro Advanced or Max to launch this Challenge
+                    <Button
+                        variant="contained"
+                        onClick={() => setGoProPopup(true)}
+                        sx={{
+                            fontSize: "0.8em",
+                            p: 0.5,
+                            minWidth: "0px",
+                            height: "30px",
+                            position: "absolute",
+                            right: "5px",
+                            bottom: "5px",
+                            pointerEvents: "auto"
+                        }}
+                    >
+                        Go Pro
+                    </Button>
+                </Box>
+            )
         }
 
         return (
@@ -1266,7 +1289,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
             }
 
             if (authState.role < 2) {
-                setGoProPopup(true)
+                setMobileLaunchTooltipOpen(true)
                 return
             }
 
@@ -1274,7 +1297,33 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         }
 
         return (
-            <Tooltip title={"Launch"}>
+            <Tooltip
+                open={mobileLaunchTooltipOpen}
+                onClose={() => setMobileLaunchTooltipOpen(false)}
+                title={authState.role < 2 ? (
+                    <Box>
+                        You must be Pro Advanced or Max to launch this Challenge <br />
+                        <Box sx={{ width: "100%", position: "relative", height: "30px" }}>
+                            <Button
+                                variant="contained"
+                                onClick={() => setGoProPopup(true)}
+                                sx={{
+                                    fontSize: "0.8rem",
+                                    p: 0.5,
+                                    minWidth: "0px",
+                                    height: "30px",
+                                    position: "absolute",
+                                    right: "5px",
+                                    pointerEvents: "auto"
+                                }}
+                            >
+                                Go Pro
+                            </Button>
+                        </Box>
+                    </Box>
+                ) : "Launch"}
+                leaveTouchDelay={3000}
+            >
                 <Fab
                     disabled={isLoading}
                     color="secondary"
@@ -1490,6 +1539,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
             {/* On mobile add a hovering button to launch the project */}
             {isMobile && renderLaunchButtonMobile()}
             {renderCloseConfirmation()}
+            <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );
 }
