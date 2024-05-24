@@ -207,6 +207,16 @@ function BytePage({params, ...props}: ByteProps) {
 
     const [terminalVisible, setTerminalVisible] = useState(false);
     const [journeySetupDone, setJourneySetupDone] = useState(false);
+    const dispatch = useAppDispatch();
+
+    const updateDifficulty = (difficulty: number) => {
+        // copy the existing state
+        let state = Object.assign({}, initialBytesStateUpdate)
+        // update the state
+        state.initialized = true
+        state.byteDifficulty = difficulty
+        dispatch(updateBytesState(state))
+    }
 
     const determineDifficulty = React.useCallback(() => {
         const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
@@ -364,8 +374,6 @@ function BytePage({params, ...props}: ByteProps) {
         }
     };
 
-    // Define the state and dispatch hook
-    const dispatch = useAppDispatch();
     const navigate = useRouter();
 
     const determinedDiff = determineDifficulty()
@@ -1558,16 +1566,6 @@ function BytePage({params, ...props}: ByteProps) {
         s.background = `linear-gradient(to bottom, ${color1} 0%, ${color2} 20%, ${color3} 40%, transparent 70%)`;
         setContainerSyle(s);
     }, [byteData]);
-
-
-    const updateDifficulty = (difficulty: number) => {
-        // copy the existing state
-        let state = Object.assign({}, initialBytesStateUpdate)
-        // update the state
-        state.initialized = true
-        state.byteDifficulty = difficulty
-        dispatch(updateBytesState(state))
-    }
 
     const getNextByte = () => {
         if (recommendedBytes === null) {

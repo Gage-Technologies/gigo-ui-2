@@ -259,6 +259,19 @@ function ByteMobile({params, ...props}: ByteProps) {
 
     const [terminalVisible, setTerminalVisible] = useState(false);
     const [journeySetupDone, setJourneySetupDone] = useState(false);
+    const dispatch = useAppDispatch();
+
+    let  id  = params.id;
+    const isJourney = query.has('journey')
+
+    const updateDifficulty = (difficulty: number) => {
+        // copy the existing state
+        let state = Object.assign({}, initialBytesStateUpdate)
+        // update the state
+        state.initialized = true
+        state.byteDifficulty = difficulty
+        dispatch(updateBytesState(state))
+    }
 
     const determineDifficulty = React.useCallback(() => {
         const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
@@ -351,9 +364,6 @@ function ByteMobile({params, ...props}: ByteProps) {
         maxWidth: '100%',
     };
 
-
-    // Define the state and dispatch hook
-    const dispatch = useAppDispatch();
     const helpPopupClosedByUser = useAppSelector(selectHelpPopupClosedByUser);
     const navigate = useRouter();
 
@@ -438,11 +448,6 @@ function ByteMobile({params, ...props}: ByteProps) {
     });
 
     let ctWs = useGlobalCtWebSocket();
-
-    let  id  = params.id;
-
-
-    const isJourney = query.has('journey')
 
     let globalWs = useGlobalWebSocket();
 
@@ -1465,16 +1470,6 @@ function ByteMobile({params, ...props}: ByteProps) {
         s.background = `linear-gradient(to bottom, ${color1} 0%, ${color2} 20%, ${color3} 40%, transparent 70%)`;
         setContainerSyle(s);
     }, [byteData]);
-
-
-    const updateDifficulty = (difficulty: number) => {
-        // copy the existing state
-        let state = Object.assign({}, initialBytesStateUpdate)
-        // update the state
-        state.initialized = true
-        state.byteDifficulty = difficulty
-        dispatch(updateBytesState(state))
-    }
 
     const getNextByte = () => {
         if (recommendedBytes === null) {

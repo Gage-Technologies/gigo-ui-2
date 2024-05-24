@@ -56,6 +56,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { initialAuthStateUpdate, selectAuthState, selectAuthStateId } from "@/reducers/auth/auth";
 import fetchWithUpload from "@/services/chunkUpload";
 import Image from "next/image";
+import { revalidatePath } from "next/cache";
 
 
 interface AttemptProps {
@@ -176,6 +177,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 "We'll get crackin' on that right away!")
             return
         }
+        revalidatePath('/attempt/' + id)
     }
 
     const loadFileToThumbnailImage = (file: File) => {
@@ -832,7 +834,8 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 body: JSON.stringify({
                     "commit": "main", // for now always 'main' - future will handle branches and commits
                     "repo": attempt["repo_id"],  // available in attempt or project
-                })
+                }),
+                credentials: "include"
             }
         ).then((res) => res.json())
 
@@ -853,7 +856,8 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 },
                 body: JSON.stringify({
                     "project": attempt["_id"], // available in attempt or project
-                })
+                }),
+                credentials: "include"
             }
         ).then((res) => res.json())
 
@@ -893,7 +897,8 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                     "commit": "main", // for now always 'main' - future will handle branches and commits
                     "repo": attempt["repo_id"],  // available in attempt or project
                     "content": wsConfig
-                })
+                }),
+                credentials: "include"
             }
         ).then((res) => res.json())
 

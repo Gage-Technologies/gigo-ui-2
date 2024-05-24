@@ -15,11 +15,11 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import HomeIcon from "@mui/icons-material/Home";
 import ExploreIcon from "@mui/icons-material/Explore";
 import Drawer from "@mui/material/Drawer";
-import {styled} from "@mui/material/styles";
-import {usePathname, useRouter, useSearchParams} from 'next/navigation';
-import {AppBarProps as MuiAppBarProps} from "@mui/material/AppBar/AppBar";
-import {BoxProps as MuiBoxProps} from "@mui/material/Box/Box";
-import {AwesomeButton} from "react-awesome-button";
+import { styled } from "@mui/material/styles";
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar/AppBar";
+import { BoxProps as MuiBoxProps } from "@mui/material/Box/Box";
+import { AwesomeButton } from "react-awesome-button";
 import 'react-awesome-button/dist/styles.css';
 import premiumImage from "../../img/croppedPremium.png"
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
@@ -49,11 +49,11 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import CalculateIcon from '@mui/icons-material/Calculate';
 import FolderIcon from '@mui/icons-material/Folder';
 import UserIcon from "@/icons/User/UserIcon";
-import {Holiday, holiday, theme, themeHelpers} from "@/theme";
+import { Holiday, holiday, theme, themeHelpers } from "@/theme";
 import TopSearchBar from "../TopSearchBar";
 import config from "@/config";
 import swal from "sweetalert";
-import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
+import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import {
     initialAuthState,
     initialAuthStateUpdate,
@@ -71,7 +71,7 @@ import {
     TutorialState,
     updateAuthState,
 } from "@/reducers/auth/auth";
-import {isChrome} from "react-device-detect";
+import { isChrome } from "react-device-detect";
 import {
     ChatBubbleOutline,
     FolderOutlined,
@@ -80,7 +80,7 @@ import {
     LocalFireDepartment,
     Quiz
 } from "@mui/icons-material";
-import {Icon as IconifyIcon} from "@iconify/react";
+import { Icon as IconifyIcon } from "@iconify/react";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChatContainer from "../Chat/ChatContainer";
@@ -90,36 +90,37 @@ import {
     selectAppWrapperClosedMobileWelcomeBanner,
     updateAppWrapper
 } from "@/reducers/appWrapper/appWrapper";
-import {clearProjectState} from "@/reducers/createProject/createProject";
-import {clearSearchParamsState} from "@/reducers/searchParams/searchParams";
-import {clearJourneyFormState} from "@/reducers/journeyForm/journeyForm";
+import { clearProjectState } from "@/reducers/createProject/createProject";
+import { clearSearchParamsState } from "@/reducers/searchParams/searchParams";
+import { clearJourneyFormState } from "@/reducers/journeyForm/journeyForm";
 import Notification from "@/models/notification";
 import NotificationPopup from "../NotificationPopup";
-import {clearCache} from "@/reducers/pageCache/pageCache";
+import { clearCache } from "@/reducers/pageCache/pageCache";
 import CloseIcon from "@mui/icons-material/Close";
-import {clearChatState} from "@/reducers/chat/chat";
-import {clearMessageCache} from "@/reducers/chat/cache";
+import { clearChatState } from "@/reducers/chat/chat";
+import { clearMessageCache } from "@/reducers/chat/cache";
 // @ts-ignore
-import {SocialIcon} from 'react-social-icons/component';
+import { SocialIcon } from 'react-social-icons/component';
 import 'react-social-icons/github'
 import 'react-social-icons/discord'
 import 'react-social-icons/x'
 import 'react-social-icons/medium'
 import 'react-social-icons/reddit'
 import Snackbar from '@mui/material/Snackbar';
-import {RecordWebUsage, WebTrackingEvent} from '@/models/web_usage';
-import {useTracking} from 'react-tracking';
+import { RecordWebUsage, WebTrackingEvent } from '@/models/web_usage';
+import { useTracking } from 'react-tracking';
 import Pro from '@/icons/Pro';
 import DevSpaceControls from '../DevSpaceControls';
-import {sleep} from '@/services/utils';
-import {decodeToken} from 'react-jwt';
-import {clearBytesState} from "@/reducers/bytes/bytes";
+import { sleep } from '@/services/utils';
+import { decodeToken } from 'react-jwt';
+import { clearBytesState } from "@/reducers/bytes/bytes";
 import Image from "next/image";
-import {Suspense} from "react";
+import { Suspense } from "react";
 import HeartTracker from '@/components/HeartTracker';
 import GoProDisplay from '@/components/GoProDisplay';
 import { clearHeartsState } from '@/reducers/hearts/hearts';
 import CheckIcon from "@mui/icons-material/Check";
+import texasFlag from "@/img/texas-flag.svg"
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -141,7 +142,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setIsClient(true)
     }, [])
 
-    const {trackEvent} = useTracking({}, {
+    const { trackEvent } = useTracking({}, {
         dispatch: (data: any) => {
             fetch(
                 `${config.rootPath}/api/recordUsage`,
@@ -260,7 +261,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     console.log("holiday: ", holidayStyle)
 
 
-    const DrawerHeader = styled('div')(({theme}) => ({
+    const DrawerHeader = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
         padding: theme.spacing(0, 1),
@@ -268,7 +269,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         justifyContent: 'flex-end',
     }));
 
-    const DrawerFooter = styled('div')(({theme}) => ({
+    const DrawerFooter = styled('div')(({ theme }) => ({
         display: 'flex',
         alignItems: 'center',
         padding: theme.spacing(0, 1),
@@ -286,13 +287,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             setRightOpen(false);
         }
 
-        router.push(pathname + "?" + q.toString(), {scroll: false});
+        router.push(pathname + "?" + q.toString(), { scroll: false });
     };
     const handleDrawerClose = () => {
         setLeftOpen(false);
         let q = new URLSearchParams(query);
         q.delete("menu");
-        router.push(pathname + "?" + q.toString(), {scroll: false});
+        router.push(pathname + "?" + q.toString(), { scroll: false });
     };
 
     const handleChatButton = () => {
@@ -314,7 +315,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             setLeftOpen(false);
         }
 
-        router.push(pathname + "?" + q.toString(), {scroll: false});
+        router.push(pathname + "?" + q.toString(), { scroll: false });
     }
 
     const handleCloseMobileWelcomeBanner = () => {
@@ -331,7 +332,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const AppBar = styled(MuiAppBar, {
         shouldForwardProp: (prop) => prop !== 'leftopen' && prop !== 'rightopen',
-    })<AppBarProps>(({theme, leftopen, rightopen}) => ({
+    })<AppBarProps>(({ theme, leftopen, rightopen }) => ({
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
             duration: theme.transitions.duration.leavingScreen,
@@ -366,7 +367,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const ContentContainer = styled(Box, {
         shouldForwardProp: (prop) => prop !== 'leftOpen' && prop !== 'rightOpen',
-    })<ContentContainerProps>(({theme, leftOpen, rightOpen}) => ({
+    })<ContentContainerProps>(({ theme, leftOpen, rightOpen }) => ({
         overflowX: 'hidden',
         transition: theme.transitions.create(['margin', 'width'], {
             easing: theme.transitions.easing.sharp,
@@ -711,13 +712,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 }}
             >
                 <Typography variant="h5"
-                            component="h2"
-                            align="center"
-                            style={{
-                                marginTop: "-10px",
-                                marginBottom: "10px",
-                                color: theme.palette.text.primary,
-                            }}>
+                    component="h2"
+                    align="center"
+                    style={{
+                        marginTop: "-10px",
+                        marginBottom: "10px",
+                        color: theme.palette.text.primary,
+                    }}>
                     Report Issue
                 </Typography>
                 <TextField
@@ -760,10 +761,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         }
 
         return (
-            <div style={{width: "100%", display: "flex", justifyContent: "center"}}>
+            <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                 <Tooltip title={"Restart Tutorial. Click to close at any point."}>
                     <Button onClick={() => restartTutorialClick()}>
-                        <HelpOutlineIcon height={"25"} width={"25"}/>
+                        <HelpOutlineIcon height={"25"} width={"25"} />
                     </Button>
                 </Tooltip>
             </div>
@@ -872,17 +873,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
-                            sx={{mr: 2}}
+                            sx={{ mr: 2 }}
                             onClick={() => leftOpen ? handleDrawerClose() : handleDrawerOpen()}
                         >
-                            <MenuIcon style={{color: gigoColor}}/>
+                            <MenuIcon style={{ color: gigoColor }} />
                         </IconButton>
                     ) : (
-                        <div/>
+                        <div />
                     )}
-                    <Button href={"/home"} style={{color: theme.palette.text.primary, zIndex: "600000"}}>
+                    <Button href={"/home"} style={{ color: theme.palette.text.primary, zIndex: "600000" }}>
                         <Box>
-                            <Typography variant="h6" component="span" style={{color: gigoColor}}>
+                            <Typography variant="h6" component="span" style={{ color: gigoColor }}>
                                 GIGO
                             </Typography>
                             <Typography variant="caption" component="span" style={{
@@ -895,10 +896,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Typography>
                         </Box>
                     </Button>
-                    <TopSearchBar width={"35vw"} height={"auto"}/>
-                    <Box sx={{flexGrow: 1}}/>
-                    <div style={{width: "20px"}}/>
-                    <Box sx={{width: "50px"}}/>
+                    <TopSearchBar width={"35vw"} height={"auto"} />
+                    <Box sx={{ flexGrow: 1 }} />
+                    <div style={{ width: "20px" }} />
+                    <Box sx={{ width: "50px" }} />
                     {loggedIn && authState.role === 0 && (
                         <HeartTracker
                             openGoProPopup={() => setGoProPopup(true)}
@@ -916,7 +917,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 ref={userButtonRef}
                             >
                                 <Typography
-                                    sx={{color: theme.palette.primary.contrastText, mr: 2, textTransform: "none"}}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
                                     {username}
                                 </Typography>
                                 {userIconMemoLarge}
@@ -960,8 +961,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 <MenuItem onClick={() => setShowReferPopup(true)}>Refer A Friend</MenuItem>
                                 {inTrial && !hasPaymentInfo && (
                                     <MenuItem onClick={() => setOpenSetup(true)}>
-                                        <h4 style={{color: "red", paddingRight: "5px"}}>Finish Setup</h4>
-                                        <ErrorIcon style={{color: "orange"}}/>
+                                        <h4 style={{ color: "red", paddingRight: "5px" }}>Finish Setup</h4>
+                                        <ErrorIcon style={{ color: "orange" }} />
                                     </MenuItem>
                                 )}
                             </Menu>
@@ -1009,9 +1010,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             disableTouchListener
                                             title={
                                                 <React.Fragment>
-                                                    <div style={{display: 'flex', alignItems: 'center'}}>
+                                                    <div style={{ display: 'flex', alignItems: 'center' }}>
                                                         Referral Link Copied
-                                                        <CheckIcon sx={{color: theme.palette.success.main, ml: 1}}/>
+                                                        <CheckIcon sx={{ color: theme.palette.success.main, ml: 1 }} />
                                                     </div>
                                                 </React.Fragment>
                                             }
@@ -1043,13 +1044,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         background: 'linear-gradient(45deg, #142623 30%, #306c57)'
                                     }}
                                 >
-                                    <Box mb={2} style={{position: "absolute", top: 5, right: 10}}>
+                                    <Box mb={2} style={{ position: "absolute", top: 5, right: 10 }}>
                                         <Button onClick={() => setOpenSetup(false)}>
-                                            <CloseIcon/>
+                                            <CloseIcon />
                                         </Button>
                                     </Box>
-                                    <div style={{display: "flex", flexDirection: "row", alignItems: "center"}}>
-                                        <Image alt={""} src={proGorilla} width={170} height={130}/>
+                                    <div style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                                        <Image alt={""} src={proGorilla} width={170} height={130} />
                                         <div style={{
                                             display: "flex",
                                             flexDirection: "column",
@@ -1065,17 +1066,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                                 fontStyle: "italic",
                                                 color: "#9dbab0"
                                             }}>PRO</h1>
-                                            <h1 style={{fontWeight: "300", color: "#9dbab0"}}>GIGO</h1>
+                                            <h1 style={{ fontWeight: "300", color: "#9dbab0" }}>GIGO</h1>
                                         </div>
                                     </div>
-                                    <div style={{height: "15px"}}/>
+                                    <div style={{ height: "15px" }} />
                                     <Card style={{
                                         background: 'linear-gradient(45deg, #2c473f 30%, #376454)',
                                         borderRadius: "12%"
                                     }}>
                                         <Typography id="pro-membership-modal-title" variant="h6" component="h2"
-                                                    color={"#829c93"} textAlign="center" mb={3} marginTop={"10px"}
-                                                    marginBottom={"-5px"}>
+                                            color={"#829c93"} textAlign="center" mb={3} marginTop={"10px"}
+                                            marginBottom={"-5px"}>
                                             Keep enjoying these features
                                         </Typography>
                                         <CardContent>
@@ -1088,13 +1089,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                                 backgroundColor: "#648378",
                                                 height: "110px"
                                             }}>
-                                                <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
+                                                <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                                                     {/* Replace with actual icon */}
-                                                    <Image alt={""} src={codeTeacher} width={50} height={50}/>
+                                                    <Image alt={""} src={codeTeacher} width={50} height={50} />
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"
-                                                                style={{fontWeight: "bold", color: "#9dbab0"}}>
+                                                        style={{ fontWeight: "bold", color: "#9dbab0" }}>
                                                         Code Teacher
                                                     </Typography>
                                                     <Typography variant="body2" color="#9dbab0">
@@ -1113,13 +1114,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                                 backgroundColor: "#648378",
                                                 height: "110px"
                                             }}>
-                                                <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
+                                                <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                                                     {/* Replace with actual icon */}
-                                                    <Image alt={""} src={resources} width={50} height={50}/>
+                                                    <Image alt={""} src={resources} width={50} height={50} />
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"
-                                                                style={{fontWeight: "bold", color: "#9dbab0"}}>
+                                                        style={{ fontWeight: "bold", color: "#9dbab0" }}>
                                                         Improved Resource Limit
                                                     </Typography>
                                                     <Typography variant="body2" color="#9dbab0">
@@ -1138,13 +1139,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                                 backgroundColor: "#648378",
                                                 height: "110px"
                                             }}>
-                                                <Box sx={{mr: 2, display: 'flex', alignItems: 'center'}}>
+                                                <Box sx={{ mr: 2, display: 'flex', alignItems: 'center' }}>
                                                     {/* Replace with actual icon */}
-                                                    <Image alt={""} src={privateWorkspace} width={50} height={50}/>
+                                                    <Image alt={""} src={privateWorkspace} width={50} height={50} />
                                                 </Box>
                                                 <Box>
                                                     <Typography variant="subtitle1"
-                                                                style={{fontWeight: "bold", color: "#9dbab0"}}>
+                                                        style={{ fontWeight: "bold", color: "#9dbab0" }}>
                                                         Private Projects
                                                     </Typography>
                                                     <Typography variant="body2" color="#9dbab0">
@@ -1153,7 +1154,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                                 </Box>
                                             </Box>
                                         </CardContent>
-                                        <CardContent style={{textAlign: "center", marginTop: "-10px"}}>
+                                        <CardContent style={{ textAlign: "center", marginTop: "-10px" }}>
                                             <AwesomeButton href={"/premium"} style={{
                                                 '--button-primary-color': "#628277",
                                                 '--button-primary-color-dark': "#4e6c61",
@@ -1181,7 +1182,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Modal>
                         </Box>
                     ) : (
-                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <Tooltip title={"Login or Create Account!"}>
                                 <Button
                                     size="large"
@@ -1302,17 +1303,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             edge="start"
                             color="inherit"
                             aria-label="open drawer"
-                            sx={{mr: 2}}
+                            sx={{ mr: 2 }}
                             onClick={() => leftOpen ? handleDrawerClose() : handleDrawerOpen()}
                         >
-                            <MenuIcon style={{color: gigoColor}}/>
+                            <MenuIcon style={{ color: gigoColor }} />
                         </IconButton>
                     ) : (
-                        <div/>
+                        <div />
                     )}
-                    <Button href={"/home"} style={{color: theme.palette.text.primary, zIndex: "600000"}}>
+                    <Button href={"/home"} style={{ color: theme.palette.text.primary, zIndex: "600000" }}>
                         <Box>
-                            <Typography variant="h6" component="span" style={{color: gigoColor}}>
+                            <Typography variant="h6" component="span" style={{ color: gigoColor }}>
                                 GIGO
                             </Typography>
                             <Typography variant="caption" component="span" style={{
@@ -1340,10 +1341,10 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             New accounts get 1 month of Pro!
                         </Button>
                     )}
-                    <Box sx={{flexGrow: 1}}/>
+                    <Box sx={{ flexGrow: 1 }} />
 
-                    <div style={{width: "20px"}}/>
-                    <Box sx={{width: "50px"}}/>
+                    <div style={{ width: "20px" }} />
+                    <Box sx={{ width: "50px" }} />
                     {loggedIn ? (
                         <Box sx={{
                             overflow: "hidden",
@@ -1355,7 +1356,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 variant="text"
                             >
                                 <Typography
-                                    sx={{color: theme.palette.primary.contrastText, mr: 2, textTransform: "none"}}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
                                     {username}
                                 </Typography>
                                 {userIconMemoSmall}
@@ -1382,7 +1383,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             </Menu>
                         </Box>
                     ) : (
-                        <Box sx={{display: {xs: 'none', md: 'flex'}}}>
+                        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
                             <Tooltip title={"Login or Create Account!"}>
                                 <Button
                                     size="large"
@@ -1422,12 +1423,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setRightOpen(false);
         let q = new URLSearchParams(query);
         q.delete("menu");
-        router.push(pathname + "?" + q.toString(), {scroll: false});
+        router.push(pathname + "?" + q.toString(), { scroll: false });
     }
 
     const actions = [
         {
-            icon: <InfoOutlined/>, name: 'About', action: () => {
+            icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
                 router.push('/about')
             }
@@ -1439,22 +1440,22 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             }
         },
         {
-            icon: <HomeOutlined/>, name: 'Home', action: () => {
+            icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
                 router.push('/home')
             }
         },
         {
-            icon: <FolderOutlined/>, name: 'Active', action: () => {
+            icon: <FolderOutlined />, name: 'Active', action: () => {
                 closeChat();
                 router.push('/active')
             }
         },
         {
-            icon: <ChatBubbleOutline/>, name: 'Chat', action: handleChatButton
+            icon: <ChatBubbleOutline />, name: 'Chat', action: handleChatButton
         },
         {
-            icon: <AutoStoriesIcon/>, name: 'Articles', action: () => {
+            icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
                 router.push('/articles')
             }
@@ -1463,7 +1464,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const actionsLoggedOut = [
         {
-            icon: <InfoOutlined/>, name: 'About', action: () => {
+            icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
                 router.push('/about')
             }
@@ -1475,13 +1476,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             }
         },
         {
-            icon: <HomeOutlined/>, name: 'Home', action: () => {
+            icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
                 router.push('/home')
             }
         },
         {
-            icon: <AutoStoriesIcon/>, name: 'Articles', action: () => {
+            icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
                 router.push('/articles')
             }
@@ -1524,9 +1525,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <Toolbar
                         sx={holidayStyle}
                     >
-                        <Button href={"/home"} style={{color: theme.palette.text.primary, zIndex: "600000"}}>
+                        <Button href={"/home"} style={{ color: theme.palette.text.primary, zIndex: "600000" }}>
                             <Box>
-                                <Typography variant="h6" component="span" style={{color: gigoColor}}>
+                                <Typography variant="h6" component="span" style={{ color: gigoColor }}>
                                     GIGO
                                 </Typography>
                                 <Typography variant="caption" component="span" style={{
@@ -1539,7 +1540,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </Box>
                         </Button>
-                        <TopSearchBar width={"35vw"} height={"auto"}/>
+                        <TopSearchBar width={"35vw"} height={"auto"} />
                         {loggedIn ? (
                             <>
                                 <Button
@@ -1656,9 +1657,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 <IconButton
                                     aria-label="login-signup"
                                     onClick={handleMenu}
-                                    sx={{position: "absolute", right: "15px", width: "48px", height: "48px"}}
+                                    sx={{ position: "absolute", right: "15px", width: "48px", height: "48px" }}
                                 >
-                                    <LoginIcon/>
+                                    <LoginIcon />
                                 </IconButton>
                                 <Menu
                                     id="menu-appbar"
@@ -1680,7 +1681,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <Snackbar
                         open={!mobileWelcomeBannerClosed && pathname !== "" && pathname !== "/" && pathname !== "/home"}
                         key={"mobile-welcom-notification"}
-                        anchorOrigin={{vertical: 'top', horizontal: 'center'}}
+                        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                     >
                         <Box
                             sx={{
@@ -1708,7 +1709,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 size="small"
                                 onClick={handleCloseMobileWelcomeBanner}
                             >
-                                <CloseIcon/>
+                                <CloseIcon />
                             </IconButton>
                             <Typography
                                 variant="h6"
@@ -1780,8 +1781,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 {loggedIn ? (
                     <SpeedDial
                         ariaLabel="SpeedDial"
-                        sx={{position: 'fixed', bottom: 16, right: 16}}
-                        icon={<MenuIcon/>}
+                        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                        icon={<MenuIcon />}
                         open={speedDialOpen}
                         onOpen={() => setSpeedDialOpen(true)}
                         onClose={() => setSpeedDialOpen(false)}
@@ -1798,8 +1799,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 ) : (
                     <SpeedDial
                         ariaLabel="SpeedDial Logged Out"
-                        sx={{position: 'fixed', bottom: 16, right: 16}}
-                        icon={<MenuIcon/>}
+                        sx={{ position: 'fixed', bottom: 16, right: 16 }}
+                        icon={<MenuIcon />}
                         open={speedDialOpen}
                         onOpen={() => setSpeedDialOpen(true)}
                         onClose={() => setSpeedDialOpen(false)}
@@ -1820,8 +1821,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const renderSocials = () => {
         return (
-            <div style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
-                <div style={{display: "flex", flexDirection: "row"}}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <div style={{ display: "flex", flexDirection: "row" }}>
                     <SocialIcon
                         network="github"
                         url="https://github.com/Gage-Technologies/gigo.dev"
@@ -1876,8 +1877,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 <Button size={"small"} href={"/privacyPolicy"}>
                     Privacy Policy
                 </Button>
-                <Typography variant={"caption"} style={{ textAlign: "center", marginBottom: "4px", fontSize: "0.6em" }}>
-                    Made with Freedom in <span role="img" aria-label="Texas Flag">🏴󠁵󠁳󠁴󠁸󠁿</span>
+                <Typography variant={"caption"} style={{ textAlign: "center", marginBottom: "4px", fontSize: "0.6em", display: "inline-flex" }}>
+                    Made with Freedom in
+                    <Tooltip title="Texas">
+                        <Image
+                            src={texasFlag}
+                            alt="Texas Flag"
+                            width={16}
+                            height={16}
+                            style={{ marginLeft: "4px" }}
+                        />
+                    </Tooltip>
                 </Typography>
             </div>
         )
@@ -1913,7 +1923,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         flexGrow: 1
                     }}
                 >
-                    <DrawerHeader/>
+                    <DrawerHeader />
                     <List
                         sx={{
                             flexGrow: 1
@@ -1924,12 +1934,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/home"}>
                                 <ListItemIcon>
-                                    <HomeIcon style={{color: theme.palette.text.primary,}}/>
+                                    <HomeIcon style={{ color: theme.palette.text.primary, }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Home
                                 </Typography>
@@ -1940,12 +1950,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/journey"}>
                                 <ListItemIcon>
-                                    <ExploreIcon style={{color: theme.palette.text.primary,}}/>
+                                    <ExploreIcon style={{ color: theme.palette.text.primary, }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Journey
                                 </Typography>
@@ -1988,12 +1998,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/profile"}>
                                 <ListItemIcon>
-                                    <AccountBoxIcon style={{color: theme.palette.text.primary,}}/>
+                                    <AccountBoxIcon style={{ color: theme.palette.text.primary, }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Profile
                                 </Typography>
@@ -2004,12 +2014,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/streak"}>
                                 <ListItemIcon>
-                                    <LocalFireDepartment style={{color: theme.palette.text.primary,}}/>
+                                    <LocalFireDepartment style={{ color: theme.palette.text.primary, }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Stats
                                 </Typography>
@@ -2037,12 +2047,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/documentation"}>
                                 <ListItemIcon>
-                                    <FeedIcon style={{color: theme.palette.text.primary,}}/>
+                                    <FeedIcon style={{ color: theme.palette.text.primary, }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Docs
                                 </Typography>
@@ -2054,12 +2064,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             }} href={"/about"}>
                                 <ListItemIcon>
                                     <IconifyIcon icon="mdi:about" color={theme.palette.text.primary} width="25"
-                                                 height="25"/>
+                                        height="25" />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     About
                                 </Typography>
@@ -2068,34 +2078,34 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
                         {authState.authenticated && authState.role >= 2 && (
                             <>
-                                    <ListItem disablePadding>
-                                        <ListItemButton color={"primary"} sx={{
-                                            borderRadius: 2,
-                                        }} href={"/create-challenge"}>
-                                            <ListItemIcon>
-                                                <AddIcon style={{ color: theme.palette.text.primary }} />
-                                            </ListItemIcon>
-                                            <Typography
-                                                component={"div"}
-                                                variant={"body1"}
-                                                sx={{ fontSize: "0.8em" }}
-                                            >
-                                                Create
-                                            </Typography>
-                                        </ListItemButton>
-                                    </ListItem>
-
-                                    <ListItem disablePadding>
+                                <ListItem disablePadding>
                                     <ListItemButton color={"primary"} sx={{
                                         borderRadius: 2,
-                                    }} href={"/configs"}>
+                                    }} href={"/create-challenge"}>
                                         <ListItemIcon>
-                                            <CalculateIcon style={{color: theme.palette.text.primary}}/>
+                                            <AddIcon style={{ color: theme.palette.text.primary }} />
                                         </ListItemIcon>
                                         <Typography
                                             component={"div"}
                                             variant={"body1"}
-                                            sx={{fontSize: "0.8em"}}
+                                            sx={{ fontSize: "0.8em" }}
+                                        >
+                                            Create
+                                        </Typography>
+                                    </ListItemButton>
+                                </ListItem>
+
+                                <ListItem disablePadding>
+                                    <ListItemButton color={"primary"} sx={{
+                                        borderRadius: 2,
+                                    }} href={"/configs"}>
+                                        <ListItemIcon>
+                                            <CalculateIcon style={{ color: theme.palette.text.primary }} />
+                                        </ListItemIcon>
+                                        <Typography
+                                            component={"div"}
+                                            variant={"body1"}
+                                            sx={{ fontSize: "0.8em" }}
                                         >
                                             Configs
                                         </Typography>
@@ -2108,12 +2118,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/articles"}>
                                 <ListItemIcon>
-                                    <AutoStoriesIcon style={{color: theme.palette.text.primary}}/>
+                                    <AutoStoriesIcon style={{ color: theme.palette.text.primary }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Articles
                                 </Typography>
@@ -2124,12 +2134,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 borderRadius: 2,
                             }} href={"/homework"}>
                                 <ListItemIcon>
-                                    <Quiz style={{color: theme.palette.text.primary}}/>
+                                    <Quiz style={{ color: theme.palette.text.primary }} />
                                 </ListItemIcon>
                                 <Typography
                                     component={"div"}
                                     variant={"body1"}
-                                    sx={{fontSize: "0.8em"}}
+                                    sx={{ fontSize: "0.8em" }}
                                 >
                                     Homework
                                 </Typography>
@@ -2137,7 +2147,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         </ListItem>
                     </List>
                     <DrawerFooter>
-                        <div style={{display: "flex", flexDirection: "column"}}>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
                             {authState.role === 0 ? (
                                 <div style={{ width: "100%", display: "flex", justifyContent: "center", marginBottom: "4vh", marginTop: "4vh" }}>
                                     <AwesomeButton style={{
@@ -2201,19 +2211,19 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 anchor="left"
                 open={leftOpen || homePageLockedDrawer}
             >
-                <DrawerHeader/>
+                <DrawerHeader />
                 <List>
                     <ListItem disablePadding>
                         <ListItemButton color={"primary"} sx={{
                             borderRadius: 2,
                         }} href={"/home"}>
                             <ListItemIcon>
-                                <HomeIcon style={{color: theme.palette.text.primary,}}/>
+                                <HomeIcon style={{ color: theme.palette.text.primary, }} />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Home
                             </Typography>
@@ -2224,12 +2234,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             borderRadius: 2,
                         }} href={"/journey/detour"}>
                             <ListItemIcon>
-                                <ExploreIcon style={{color: theme.palette.text.primary,}}/>
+                                <ExploreIcon style={{ color: theme.palette.text.primary, }} />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Journey
                             </Typography>
@@ -2241,12 +2251,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         }} href={"/about"}>
                             <ListItemIcon>
                                 <IconifyIcon icon="mdi:about" color={theme.palette.text.primary} width="25"
-                                             height="25"/>
+                                    height="25" />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 About
                             </Typography>
@@ -2257,12 +2267,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             borderRadius: 2,
                         }} href={"/documentation"}>
                             <ListItemIcon>
-                                <FeedIcon style={{color: theme.palette.text.primary,}}/>
+                                <FeedIcon style={{ color: theme.palette.text.primary, }} />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Docs
                             </Typography>
@@ -2273,12 +2283,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             borderRadius: 2,
                         }} href={"/articles"}>
                             <ListItemIcon>
-                                <AutoStoriesIcon style={{color: theme.palette.text.primary}}/>
+                                <AutoStoriesIcon style={{ color: theme.palette.text.primary }} />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Articles
                             </Typography>
@@ -2289,12 +2299,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             borderRadius: 2,
                         }} href={"/homework"}>
                             <ListItemIcon>
-                                <Quiz style={{color: theme.palette.text.primary}}/>
+                                <Quiz style={{ color: theme.palette.text.primary }} />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Homework
                             </Typography>
@@ -2305,12 +2315,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                             borderRadius: 2,
                         }} href={"/premium"}>
                             <ListItemIcon>
-                                <Pro/>
+                                <Pro />
                             </ListItemIcon>
                             <Typography
                                 component={"div"}
                                 variant={"body1"}
-                                sx={{fontSize: "0.8em"}}
+                                sx={{ fontSize: "0.8em" }}
                             >
                                 Pro
                             </Typography>
@@ -2350,14 +2360,14 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 (rightOpen) ?
                                     (
                                         <KeyboardDoubleArrowRightIcon
-                                            style={{color: theme.palette.primary.main}}
+                                            style={{ color: theme.palette.primary.main }}
                                             fontSize={"large"}
                                         />
                                     )
                                     :
                                     (
                                         <KeyboardDoubleArrowLeftIcon
-                                            style={{color: theme.palette.primary.main}}
+                                            style={{ color: theme.palette.primary.main }}
                                             fontSize={"large"}
                                         />
                                     )
@@ -2384,8 +2394,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     anchor="right"
                     open={rightOpen}
                 >
-                    <DrawerHeader/>
-                    <ChatContainer/>
+                    <DrawerHeader />
+                    <ChatContainer />
                 </Drawer>
             </>
         )
@@ -2423,8 +2433,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
         if (holiday === Holiday.Christmas && (!onHomePage || loggedIn)) {
             return (
-                <Suspense fallback={<div/>}>
-                    <Snowfall/>
+                <Suspense fallback={<div />}>
+                    <Snowfall />
                 </Suspense>
             )
         }
@@ -2438,9 +2448,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
         if (holiday === Holiday.NewYears && (!onHomePage || loggedIn)) {
             return (
-                <Suspense fallback={<div/>}>
+                <Suspense fallback={<div />}>
                     <Confetti gravity={0.01} numberOfPieces={100} wind={0.001}
-                              colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1}/>
+                        colors={['#ad7832', '#dcb468', '#716c6c', '#8e8888']} friction={1} />
                 </Suspense>
             )
         }
@@ -2476,7 +2486,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                         }
                     }}
                 >
-                    <CloseIcon/>
+                    <CloseIcon />
                 </IconButton>
                 <Typography variant="h6" color="text.primary">
                     Development Site

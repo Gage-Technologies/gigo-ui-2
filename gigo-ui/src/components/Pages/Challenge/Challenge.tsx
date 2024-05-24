@@ -97,6 +97,7 @@ import Image, { StaticImageData } from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchWithUpload from "@/services/chunkUpload";
 import GoProDisplay from "@/components/GoProDisplay";
+import { revalidatePath } from "next/cache";
 
 interface ChallengeProps {
     params: { id: string };
@@ -1336,6 +1337,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
         stateUpdate.deleted = true
         setProject(stateUpdate)
         setDeleteProject(false)
+        revalidatePath('/challenge/' + project._id)
         swal("Project Deleted", "This project will no longer be searchable.")
     }
 
@@ -1756,6 +1758,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     swal("There has been an issue loading data. Please try again later.")
                 } else {
                     swal("Success!", "Challenge Was Successfully Updated", "success")
+                    revalidatePath('/challenge/' + project._id)
                 }
             } else {
                 if (usedThumbnail === null) {
@@ -1777,6 +1780,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         if (res === undefined) {
                             swal("Server Error", "There has been an error updating your Challenge. Please try again later.")
                         }
+                        revalidatePath('/challenge/' + project._id)
                     }
                 )
             }
@@ -1805,9 +1809,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 swal("There has been an issue loading data. Please try again later.")
             } else {
                 swal("Success!", "Challenge Was Successfully Updated", "success")
-                if (title != null) {
-
-                }
+                revalidatePath('/challenge/' + project._id)
             }
         }
     }
