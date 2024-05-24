@@ -2313,18 +2313,17 @@ function CreateProject() {
                                         width={400}
                                         height={400}
                                         style={{
-                                            height: thumbnail === null ? "30vh" : "42vh",
-                                            width: "auto",
+                                            height: thumbnail === null ? "300px" : "400px",
+                                            width: "400px",
                                             maxWidth: "29.5vw",
                                             opacity: thumbnail === null ? "30%" : "100%",
                                             borderRadius: "10px"
                                         }}
                                         src={thumbnail === null ? `${config.rootPath}/cloudstore/images/dark_image_upload2.svg` : thumbnail}
                                         alt="upload icon"
-                                        className={"background"}
                                     />
                                 </div>
-                                <input
+                            <input
                                     type="file"
                                     hidden
                                     accept="image/png, image/jpeg"
@@ -2350,7 +2349,7 @@ function CreateProject() {
                     </Grid>
                     <Grid item xs={12}>
                         <Tooltip title="Generate a unique image for your project using Magic">
-                            <GenerateImageButton
+                        <GenerateImageButton
                                 variant={`outlined`}
                                 color={"primary"}
                                 sx={{
