@@ -19,7 +19,9 @@ const nextConfig = withBundleAnalyzer({
     ],
     serverActions: process.env.NODE_ENV === 'development' ? {
       allowedOrigins: ["ui-dev.gigo.dev:33001"]
-    } : {}
+    } : {
+      allowedOrigins: ["dev.gigo.dev", "gigo.dev", "www.gigo.dev"]
+    }
   },
 });
 
