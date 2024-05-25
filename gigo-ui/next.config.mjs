@@ -20,4 +20,13 @@ const nextConfig = withBundleAnalyzer({
   },
 });
 
-export default MillionLint.next({ rsc: true })(nextConfig);
+export default MillionLint.next({ 
+  rsc: true, 
+  filter: {
+    exclude: [
+      "**/node_modules/**/*",
+      "**/components/Pages/Login/*.tsx",
+      "**/components/Pages/Signup/*.tsx",
+    ]
+  }
+})(nextConfig);
