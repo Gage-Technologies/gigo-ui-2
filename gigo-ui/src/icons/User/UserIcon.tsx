@@ -1,13 +1,14 @@
 'use client'
-import React, {useEffect} from "react"
-import {ButtonBase} from "@mui/material";
+import React, { useEffect } from "react"
+import { ButtonBase } from "@mui/material";
 import Badge from '@mui/material/Badge';
 import config from "../../config";
 import LottieAnimation from "../../components/LottieAnimation";
 import ProBannerCircle from "@/components/Pro/ProBannerCircle";
-import {Buffer} from 'buffer';
+import { Buffer } from 'buffer';
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 
 interface IProps {
     size: number,
@@ -64,7 +65,7 @@ export default function UserIcon(props: IProps) {
 
     useEffect(() => {
         if (props.backgroundName && props.backgroundPalette) {
-            fetch(`${config.rootPath}/static/ui/lottie/user_backgrounds/${props.backgroundPalette}_${props.backgroundName}.json`, {credentials: 'include'})
+            fetch(`${config.rootPath}/static/ui/lottie/user_backgrounds/${props.backgroundPalette}_${props.backgroundName}.json`, { credentials: 'include' })
                 .then(data => {
                     data.json().then(json => {
                         setLottieBackground(json)
@@ -83,10 +84,10 @@ export default function UserIcon(props: IProps) {
 
     const internalContent = () => {
         return (
-            <div style={{position: "relative"}}> {/* Common Parent */}
+            <div style={{ position: "relative" }}> {/* Common Parent */}
                 <Badge
                     overlap="circular"
-                    anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     variant="dot"
                     style={{
                         position: "absolute",
@@ -105,13 +106,23 @@ export default function UserIcon(props: IProps) {
                             height={scaleSize(1.2)}
                         />
                     )}
-                    <Image alt={""} src={svgData} height={props.size} width={props.size} style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        zIndex: 1 // Adjust as needed
-                    }}/>
+                    {svgData === "" ? (
+                        <SheenPlaceholder height={props.size} width={props.size} sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            borderRadius: "50%"
+                        }} />
+                    ) : (
+                        <Image alt={""} src={svgData} height={props.size} width={props.size} style={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            zIndex: 1 // Adjust as needed
+                        }} />
+                    )}
                 </Badge>
                 {lottieBackground !== null && props.backgroundName && props.backgroundPalette && (
                     <div>
@@ -177,11 +188,11 @@ export default function UserIcon(props: IProps) {
                     :
                     <Badge
                         overlap="circular"
-                        anchorOrigin={{vertical: 'bottom', horizontal: 'right'}}
+                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                         variant="dot"
                     >
                         {/*<Avatar alt={ProfileIcon}             src={finalSrc === "undefined" ? ProfileIcon : finalSrc}/>*/}
-                        <div style={{position: "relative", width: props.size, height: props.size}}>
+                        <div style={{ position: "relative", width: props.size, height: props.size }}>
                             <Image alt={""} src={props.userThumb} width={props.size} height={props.size}></Image>
                         </div>
                     </Badge>

@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import {alpha, Box, styled} from '@mui/material';
+import {alpha, Box, styled, SxProps} from '@mui/material';
 
 const SheenAnimation = styled(Box)(({theme}) => ({
     backgroundColor: theme.palette.action.focus,
@@ -40,15 +40,16 @@ const SheenAnimation = styled(Box)(({theme}) => ({
 interface SheenPlaceholderProps {
     width?: string | number;
     height?: string | number;
+    sx?: SxProps;
 }
 
-const SheenPlaceholder: React.FC<SheenPlaceholderProps> = ({width = '100%', height = '16px'}) => {
+const SheenPlaceholder: React.FC<SheenPlaceholderProps> = ({width = '100%', height = '16px', sx}) => {
     return (
         <SheenAnimation
             sx={{
                 width,
                 height,
-                // Optional: Additional styles can be applied here
+                ...sx
             }}
         />
     );
