@@ -333,7 +333,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                                 }}
                             >
                                 <HeartDisabledIcon style={{ fontSize: "36px" }} />
-                                <Typography variant="caption" color="error" style={{ marginLeft: "8px", fontSize: "0.6em" }}>
+                                <Typography variant="caption" color="error" style={{ marginLeft: "8px", fontSize: "0.5em" }}>
                                     You lost a heart for this attempt.<br/>
                                     Try asking Code Teacher for help!
                                 </Typography>
