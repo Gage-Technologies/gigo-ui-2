@@ -1,4 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer'
+import MillionLint from "@million/lint";
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -19,4 +20,4 @@ const nextConfig = withBundleAnalyzer({
   },
 });
 
-export default nextConfig;
+export default MillionLint.next({ rsc: true })(nextConfig);
