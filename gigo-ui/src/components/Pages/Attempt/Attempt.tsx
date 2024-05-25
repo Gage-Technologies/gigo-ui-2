@@ -56,7 +56,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { initialAuthStateUpdate, selectAuthState, selectAuthStateId } from "@/reducers/auth/auth";
 import fetchWithUpload from "@/services/chunkUpload";
 import Image from "next/image";
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from "@/actions/revalidatePath";
 
 
 interface AttemptProps {

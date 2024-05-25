@@ -457,13 +457,19 @@ export default function TopSearchBar({
     const [sinceDate, setSinceDate] = React.useState("")
     const [untilDate, setUntilDate] = React.useState("")
     const [advOpen, setAdvOpen] = React.useState(false)
+
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const menuRef = React.useRef<null | HTMLDivElement>(null);
     const open = Boolean(anchorEl);
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        setAnchorEl(event.currentTarget);
-        setOptionsOpen(true)
-        setAdvOpen(false)
+        const searchContainer = document.getElementById('search-container');
+        if (searchContainer) {
+            setAnchorEl(searchContainer);
+        } else {
+            setAnchorEl(event.currentTarget);
+        }
+        setOptionsOpen(true);
+        setAdvOpen(false);
     };
     const handleClose = () => {
         setAnchorEl(null);
@@ -1875,6 +1881,7 @@ export default function TopSearchBar({
         return (
             <>
                 <Search
+                    id="search-container"
                     style={{
                         width: width,
                         minWidth: 320,
@@ -1969,6 +1976,14 @@ export default function TopSearchBar({
                     onClose={handleClose}
                     MenuListProps={{
                         'aria-labelledby': 'basic-button',
+                    }}
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'right',
+                    }}
+                    transformOrigin={{
+                        vertical: 'top',
+                        horizontal: 'left',
                     }}
                 >
                     {

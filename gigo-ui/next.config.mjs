@@ -17,9 +17,13 @@ const nextConfig = withBundleAnalyzer({
       '@mui/icons-material',
       'lodash-es'
     ],
+    serverActions: process.env.NODE_ENV === 'development' ? {
+      allowedOrigins: ["ui-dev.gigo.dev:33001"]
+    } : {}
   },
 });
 
+// TODO: reduce the excluded pages
 export default MillionLint.next({ 
   rsc: true, 
   filter: {
@@ -27,6 +31,8 @@ export default MillionLint.next({
       "**/node_modules/**/*",
       "**/components/Pages/Login/*.tsx",
       "**/components/Pages/Signup/*.tsx",
+      "**/app/profile/*.tsx",
+      "**/app/user/*.tsx",
     ]
   }
 })(nextConfig);

@@ -2525,7 +2525,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         <>
             {!isByteMobilePage ? appBarRenderer() : null}
             {loggedIn ? renderSidebar() : renderLoggedOutSidebar()}
-            {renderChatSideBar()}
+            {/* {renderChatSideBar()} */}
             {
                 // we only render the children on mobile if the chat bar is not open
                 !(isMobile && rightOpen) ?

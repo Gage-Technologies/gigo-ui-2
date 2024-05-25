@@ -97,7 +97,7 @@ import Image, { StaticImageData } from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import fetchWithUpload from "@/services/chunkUpload";
 import GoProDisplay from "@/components/GoProDisplay";
-import { revalidatePath } from "next/cache";
+import { revalidatePath } from "@/actions/revalidatePath";
 
 interface ChallengeProps {
     params: { id: string };
