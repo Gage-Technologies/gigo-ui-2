@@ -30,7 +30,7 @@ function Active() {
 
     const [incomplete, setIncomplete] = React.useState([]);
 
-    const [loading, setLoading] = React.useState(false)
+    const [loading, setLoading] = React.useState(true)
 
     const [firstLoad, setFirstLoad] = React.useState(true)
 
@@ -38,10 +38,6 @@ function Active() {
 
 
     const getActiveProjects = async () => {
-        let activeData = [];
-        let challengingData = [];
-        let incompleteData = [];
-
         if (firstLoad) {
             let active = fetch(
                 `${config.rootPath}/api/active/pastWeek`,
@@ -119,9 +115,10 @@ function Active() {
     }
 
     useEffect(() => {
-        setLoading(true)
-        getActiveProjects().then(r => console.log("here: ", r))
-        setLoading(false)
+        if (!loading) {
+            setLoading(true)
+        }
+        getActiveProjects().then(() => setLoading(false))
     }, [])
 
     const PastProjects = () => {
@@ -408,7 +405,7 @@ function Active() {
                 p: 2
             }}
         >
-            {loading || pastWeek.length > 0 && (
+            {(firstLoad || loading || pastWeek.length > 0) && (
                 <Box
                     sx={{
                         display: 'flex',
@@ -424,7 +421,7 @@ function Active() {
                     {PastProjects()}
                 </Box>
             )}
-            {loading || mostChallenging.length > 0 && (
+            {(firstLoad || loading || mostChallenging.length > 0) && (
                 <Box
                     sx={{
                         display: 'flex',
@@ -440,7 +437,7 @@ function Active() {
                     {Challenges()}
                 </Box>
             )}
-            {loading || incomplete.length > 0 && (
+            {(firstLoad || loading || incomplete.length > 0) && (
                 <Box
                     sx={!isMobile ? {
                         display: 'flex',
@@ -466,7 +463,7 @@ function Active() {
                     {Started()}
                 </Box>
             )}
-            {!loading && pastWeek.length === 0 && mostChallenging.length === 0 && incomplete.length === 0 && (
+            {!firstLoad && !loading && pastWeek.length === 0 && mostChallenging.length === 0 && incomplete.length === 0 && (
                 <Box
                     sx={{
                         display: 'flex',

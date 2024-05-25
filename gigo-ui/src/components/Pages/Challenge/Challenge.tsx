@@ -1569,6 +1569,10 @@ function Challenge({ params, ...props }: ChallengeProps) {
             )
         }
 
+        if (project?.deleted) {
+            toolTipText = "This challenge has been deleted."
+        }
+
         if (runTutorial && stepIndex === 1) {
             return (
                 <Tooltip title={toolTipText} placement={"top"} arrow disableInteractive enterDelay={200} leaveDelay={200}>
@@ -1579,6 +1583,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         sx={sx}
                         className="attempt"
                         onClick={clickCallback}
+                        disabled={project?.deleted}
                     >
                         {buttonText}<RocketLaunchIcon sx={{ marginLeft: "10px" }} />
                     </TutorialLaunchButton>
@@ -1595,6 +1600,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     sx={sx}
                     className="attempt"
                     onClick={clickCallback}
+                    disabled={project?.deleted}
                 >
                     {buttonText}<RocketLaunchIcon sx={{ marginLeft: "10px" }} />
                 </LoadingButton>
@@ -1611,6 +1617,11 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 setMobileLaunchTooltipOpen(true)
                 return
             }
+
+            if (project?.deleted) {
+                return
+            }
+
             if (project !== null && project["has_access"] !== null && project["has_access"] === false) {
                 setPurchasePopup(true);
                 return;
@@ -1655,7 +1666,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 leaveTouchDelay={3000}
             >
                 <Fab
-                    disabled={launchingWorkspace}
+                    disabled={launchingWorkspace || project?.deleted}
                     color="secondary"
                     aria-label="launch-mobile"
                     sx={{ position: "fixed", bottom: 16, left: 16, zIndex: 6000 }}
@@ -1923,8 +1934,8 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     alignItems: "center",
                     position: "relative",
                 }}>
-                    <Typography variant="h5" component="div">
-                        {projectName}
+                    <Typography variant="h5" component="div" style={{ color: project?.deleted ? "grey" : "inherit" }}>
+                        {projectName} {project?.deleted && <span style={{ fontSize: "0.7em", textTransform: "none" }}>[deleted]</span>}
                     </Typography>
                     {project !== null &&
                       <Tooltip title={project["post_type_string"]}>
@@ -1938,7 +1949,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                       </Tooltip>
                     }
                 </Box>
-                {project !== null ? (
+                {project !== null && (!project?.deleted || currentUser) ? (
                     <>
                         <Box sx={{
                             width: "100%",
@@ -1965,7 +1976,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     </>
                 ) : null}
                 <div style={{ height: "20px" }} />
-                {project !== null ? (
+                {project !== null && (!project?.deleted || currentUser) ? (
                     <PostOverview
                         userId={project["author_id"]}
                         userName={project["author"]}
@@ -2099,18 +2110,6 @@ function Challenge({ params, ...props }: ChallengeProps) {
         }
         return (
             <>
-                {project && project["author_id"] === authState.id && (
-                    <>
-                        <Button
-                            variant={"outlined"}
-                            sx={buttonStyle}
-                            onClick={() => setEditPopup(true)}
-                        >
-                            Edit Challenge
-                        </Button>
-
-                    </>
-                )}
                 <Button
                     variant={"outlined"}
                     sx={buttonStyle}
@@ -2123,7 +2122,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     variant={"outlined"}
                     sx={buttonStyle}
                     onClick={() => handleTabChange("source")}
-                    disabled={mainTab === "source"}
+                    disabled={mainTab === "source" || (project?.deleted && !currentUser)}
                 >
                     Source Code
                 </Button>
@@ -2133,14 +2132,23 @@ function Challenge({ params, ...props }: ChallengeProps) {
                             variant={"outlined"}
                             sx={buttonStyle}
                             onClick={() => handleTabChange("edit")}
-                            disabled={mainTab === "edit"}
+                            disabled={mainTab === "edit" || project?.deleted}
                         >
                             Edit Config
                         </Button>
                         <Button
                             variant={"outlined"}
                             sx={buttonStyle}
+                            onClick={() => setEditPopup(true)}
+                            disabled={project?.deleted}
+                        >
+                            Edit Challenge
+                        </Button>
+                        <Button
+                            variant={"outlined"}
+                            sx={buttonStyle}
                             color={"error"}
+                            disabled={project?.deleted}
                             onClick={() => setDeleteProject(true)}
                         >
                             Delete
@@ -2352,11 +2360,11 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     display: "flex",
                     alignItems: "center",
                 }}>
-                    <Typography variant="h5" sx={{ width: "100%", textAlign: "center" }}>
-                        {projectName}
+                    <Typography variant="h5" component="div" style={{ width: "100%", textAlign: "center", color: project?.deleted ? "grey" : "inherit" }}>
+                        {projectName} {project?.deleted && <span style={{ fontSize: "0.7em", textTransform: "none" }}>[deleted]</span>}
                     </Typography>
                 </Box>
-                {project !== null ? (
+                {project !== null && (!project?.deleted || currentUser) ? (
                     <Box
                         display={"flex"}
                         flexDirection={"column"}
@@ -2387,7 +2395,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                     </Box>
                 ) : null}
                 <div style={{ height: "20px" }} />
-                {project !== null ? (
+                {project !== null && (!project?.deleted || currentUser) ? (
                     <Box display={"flex"} flexDirection={"column"} alignItems={"center"} sx={{ width: "100%" }}>
                         <Box sx={{ width: "calc(100% - 20px)" }}>
                             <PostOverview

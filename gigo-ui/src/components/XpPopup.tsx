@@ -82,7 +82,7 @@ const XpPopup = (props: IProps) => {
                 setExtraXP(0);
                 setCurrentLevel(currentLevel);
                 setNextLevel(nextLevel);
-            },1800)
+            },300)
         }
     }, [])
 
@@ -158,7 +158,10 @@ const XpPopup = (props: IProps) => {
             )
         } else {
             return (
-                <div>
+                <Box display={"flex"} flexDirection={"column"} alignItems={"center"} justifyContent={"center"} sx={{
+                    height: "100%",
+                    width: "100%",
+                }}>
                     <div
                         style={{
                             display: "flex",
@@ -166,9 +169,7 @@ const XpPopup = (props: IProps) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Fade cascade damping={1e-1} direction={"left"}>
-                            <h1>{"You Earned " + xpTitle + " XP"}</h1>
-                        </Fade>
+                        <Typography variant={"h3"}>{"You Earned " + xpTitle + " XP"}</Typography>
                     </div>
                     <div style={{height: "5vh"}}/>
                     <div
@@ -199,7 +200,7 @@ const XpPopup = (props: IProps) => {
                     <div style={{display: "flex", alignItems: "end", justifyContent: "center"}}>
                         <Button variant={"contained"}
                                 sx={{
-                                    width: "25%",
+                                    width: "200px",
                                     height: "60px",
                                     backgroundColor: "#29C18C",
                                     color: "white",
@@ -221,7 +222,7 @@ const XpPopup = (props: IProps) => {
                             Confirm
                         </Button>
                     </div>
-                </div>
+                </Box>
             )
         }
     }
@@ -244,6 +245,7 @@ const XpPopup = (props: IProps) => {
                             boxShadow:
                                 "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
                             backgroundColor: theme.palette.background.default,
+                            zIndex: 100000,
                         }}
                     >
                         {renderXPPopup()}

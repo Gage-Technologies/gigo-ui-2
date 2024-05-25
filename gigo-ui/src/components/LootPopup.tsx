@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from "react";
-import {createTheme, CssBaseline, PaletteMode, ThemeProvider, Box, Modal} from "@mui/material";
+import {createTheme, CssBaseline, PaletteMode, ThemeProvider, Box, Modal, Typography} from "@mui/material";
 import {theme} from "@/theme";
 import { useEffect} from "react";
 import Lottie from "react-lottie";
@@ -174,18 +174,18 @@ const LootPopup = (props: IProps) => {
                 return (
                     <div>
                         <div style={{zIndex: 4}}>
-                            <h1>You Won A Streak Freeze</h1>
+                            <Typography variant="h3" gutterBottom>{"You Won A Streak Freeze"}</Typography>
                         </div>
-                        <div style={{zIndex: 4}}>
+                        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{zIndex: 4}}>
                             {/*<Slide direction={"up"} triggerOnce={true}>*/}
                             {/*    <Rotate triggerOnce={true} cascade={true} damping={0.1}>*/}
                             {/*        <img src={freeze} alt="freeze" style={{zIndex: 4}}/>*/}
                             {/*    </Rotate>*/}
                             {/*</Slide>*/}
                             <Slide triggerOnce={true}>
-                                <Image src={freeze} alt="freeze" style={{zIndex: 4}}/>
+                                <Image src={freeze} alt="freeze" style={{zIndex: 4}} height={200} width={200}/>
                             </Slide>
-                        </div>
+                        </Box>
                         <div style={{height: "100px"}}/>
                         <div style={{height: "100%", width: "100%", display: "flex", alignItems: "end", justifyContent: "center", zIndex: 6}}>
                             <Button variant={"contained"}
@@ -202,7 +202,7 @@ const LootPopup = (props: IProps) => {
                 return (
                     <div>
                         <div style={{zIndex: 4}}>
-                            <h1>You Won An Avatar Background</h1>
+                            <Typography variant="h3" gutterBottom>{"You Won An Avatar Background"}</Typography>
                         </div>
                         <div style={{width: "100%", display: "flex", justifyContent: "center", zIndex: 4}}>
                             <h4>{
@@ -221,8 +221,8 @@ const LootPopup = (props: IProps) => {
                                                 rendererSettings: {
                                                     preserveAspectRatio: 'xMidYMid slice'
                                                 }
-                                            }} width={window.innerHeight / 2}
-                                                height={window.innerHeight / 2} isClickToPauseDisabled={true} style={{zIndex: 4}}/>
+                                            }} width={"calc(100vh / 4)"}
+                                                height={"calc(100vh / 4)"} isClickToPauseDisabled={true} style={{zIndex: 4}}/>
                                     </div>
                                 ) : null}
                             </Rotate>
@@ -243,15 +243,15 @@ const LootPopup = (props: IProps) => {
                 return (
                     <div>
                         <div style={{zIndex: 4}}>
-                            <h1>You Won A Double XP Boost</h1>
+                            <Typography variant="h3" gutterBottom>{"You Won A Double XP Boost"}</Typography>
                         </div>
-                        <div style={{zIndex: 4}}>
+                        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{zIndex: 4}}>
                                 <Rotate triggerOnce={true}>
                                     <Lottie options={xpBoostOptions} isClickToPauseDisabled={true}
-                                            width={window.innerHeight / 2}
-                                            height={window.innerHeight / 2} style={{zIndex: 4}}/>
+                                            width={"calc(100vh / 4)"}
+                                            height={"calc(100vh / 4)"} style={{zIndex: 4}}/>
                                 </Rotate>
-                        </div>
+                        </Box>
                         <div style={{height: "100px"}}/>
                         <div style={{height: "100%", width: "100%", display: "flex", alignItems: "end", justifyContent: "center", zIndex: 6}}>
                             <Button variant={"contained"}
@@ -268,15 +268,15 @@ const LootPopup = (props: IProps) => {
                 return (
                     <div>
                         <div style={{zIndex: 4}}>
-                            <h1>You Won A Free Month</h1>
+                            <Typography variant="h3" gutterBottom>{"You Won A Free Month"}</Typography>
                         </div>
-                        <div style={{zIndex: 4}}>
+                        <Box display={"flex"} justifyContent={"center"} alignItems={"center"} sx={{zIndex: 4}}>
                                 <Rotate triggerOnce={true}>
                                     <Lottie options={freeWeekOptions} isClickToPauseDisabled={true}
-                                            width={window.innerHeight / 2}
-                                            height={window.innerHeight / 2} style={{zIndex: 4}}/>
+                                            width={"calc(100vh / 4)"}
+                                            height={"calc(100vh / 4)"} style={{zIndex: 4}}/>
                                 </Rotate>
-                        </div>
+                        </Box>
                         <div style={{height: "100px"}}/>
                         <div style={{height: "100%", width: "100%", display: "flex", alignItems: "end", justifyContent: "center", zIndex: 6}}>
                             <Button variant={"contained"}
@@ -309,6 +309,7 @@ const LootPopup = (props: IProps) => {
                             borderRadius: 1,
                             boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
                             backgroundColor: theme.palette.background.default,
+                            padding: 5
                             // outline: `solid`
                         }}
                     >

@@ -1961,12 +1961,22 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
-                        {/*<ListItem disablePadding>*/}
-                        {/*    <ListItemButton color={"primary"} sx={{*/}
-                        {/*        borderRadius: 2,*/}
-                        {/*    }} href={"/active"}>*/}
-                        {/*        <ListItemIcon>*/}
-                        {/*            <FolderIcon style={{color: theme.palette.text.primary,}}/>*/}
+                        <ListItem disablePadding>
+                            <ListItemButton color={"primary"} sx={{
+                                borderRadius: 2,
+                            }} href={"/active"}>
+                                <ListItemIcon>
+                                    <FolderIcon style={{ color: theme.palette.text.primary, }} />
+                                </ListItemIcon>
+                                <Typography
+                                    component={"div"}
+                                    variant={"body1"}
+                                    sx={{ fontSize: "0.8em" }}
+                                >
+                                    Active
+                                </Typography>
+                            </ListItemButton>
+                        </ListItem>
                         {/*        </ListItemIcon>*/}
                         {/*        <Typography*/}
                         {/*            component={"div"}*/}

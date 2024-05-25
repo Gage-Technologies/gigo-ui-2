@@ -11,6 +11,13 @@ export async function generateMetadata(
     { params }: { params: { id: string } },
     parent: ResolvingMetadata
 ): Promise<Metadata> {
+    const headers: any = {
+        "Content-Type": "application/json",
+    }
+
+    if (checkSessionStatus(cookies().get('gigoAuthToken'))) {
+        headers['Cookie'] = getSessionCookies(cookies());
+    }
 
     // fetch data
     let attemptPromise: {
@@ -21,9 +28,7 @@ export async function generateMetadata(
         `${config.rootPath}/api/attempt/get`,
         {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
+            headers: headers,
             body: JSON.stringify({ attempt_id: params.id }),
             next: {revalidate: 86400}
         }

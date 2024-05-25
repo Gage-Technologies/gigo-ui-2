@@ -1001,12 +1001,12 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             <LoadingButton
                 variant={"outlined"}
                 sx={stepIndex === 3 ? {
-                    height: "40px", zIndex: "600000",
+                    height: "40px", zIndex: "1000",
                     '&:hover': {
                         backgroundColor: theme.palette.primary.main + "25",
                     }
                 } : {
-                    height: "40px", zIndex: "600000",
+                    height: "40px", zIndex: "1000",
                     '&:hover': {
                         backgroundColor: theme.palette.primary.main + "25",
                     }
@@ -1024,7 +1024,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                     <LoadingButton
                         variant={"outlined"}
                         sx={{
-                            height: "4.662vh", zIndex: "600000", top: "-1vh", width: "3.69vw",
+                            height: "4.662vh", zIndex: "1000", top: "-1vh", width: "3.69vw",
                             '&:hover': {
                                 backgroundColor: theme.palette.warning.main + "25",
                             }
@@ -1053,7 +1053,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                     <LoadingButton
                         variant={"outlined"}
                         sx={{
-                            height: "40px", zIndex: "600000",
+                            height: "40px", zIndex: "1000",
                             '&:hover': {
                                 backgroundColor: theme.palette.primary.main + "25",
                             }
@@ -1105,9 +1105,9 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                     <LoadingButton
                         variant={"outlined"}
                         sx={stepIndex === 3 ? {
-                            height: "40px", zIndex: "600000",
+                            height: "40px", zIndex: "1000",
                         } : {
-                            height: "40px", zIndex: "600000",
+                            height: "40px", zIndex: "1000",
                         }}
                         disabled
                     >
@@ -2480,12 +2480,12 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             <LoadingButton
                 variant={"outlined"}
                 sx={stepIndex === 3 ? {
-                    height: "40px", zIndex: "600000",
+                    height: "40px", zIndex: "1000",
                     '&:hover': {
                         backgroundColor: theme.palette.primary.main + "25",
                     }
                 } : {
-                    height: "40px", zIndex: "600000",
+                    height: "40px", zIndex: "1000",
                     '&:hover': {
                         backgroundColor: theme.palette.primary.main + "25",
                     }

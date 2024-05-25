@@ -1198,6 +1198,13 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 >
                     Source Code
                 </Button>
+                <Button
+                    variant={"outlined"}
+                    sx={buttonStyle}
+                    href={"/challenge/" + attempt["post_id"]}
+                >
+                    Challenge
+                </Button>
                 {attempt && attempt["author_id"] === authState.id && (
                     <>
                         <Button

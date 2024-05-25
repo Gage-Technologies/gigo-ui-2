@@ -116,7 +116,7 @@ function AccountSettings() {
 
     const [workspaceRunStart, setWorkspaceRunStart] = React.useState(true)
 
-    const [workspaceUpdateInterval, setWorkspaceUpdateInterval] = React.useState("0")
+    const [workspaceUpdateInterval, setWorkspaceUpdateInterval] = React.useState(0)
 
     const [workspaceLogging, setWorkspaceLogging] = React.useState(true)
 
@@ -422,7 +422,7 @@ function AccountSettings() {
                 setNewEmail(res["user"]["email"])
                 setNewPhone(res["user"]["phone"])
                 setWorkspaceRunStart(res["user"]["workspace_settings"]["auto_git"]["runOnStart"])
-                setWorkspaceUpdateInterval(res["user"]["workspace_settings"]["auto_git"]["updateInterval"])
+                setWorkspaceUpdateInterval(parseInt(res["user"]["workspace_settings"]["auto_git"]["updateInterval"]))
                 setWorkspaceLogging(res["user"]["workspace_settings"]["auto_git"]["logging"])
                 setWorkspaceSilent(res["user"]["workspace_settings"]["auto_git"]["silent"])
                 setWorkspaceCommitMessage(res["user"]["workspace_settings"]["auto_git"]["commitMessage"])
@@ -1467,8 +1467,9 @@ function AccountSettings() {
                                     value={workspaceUpdateInterval}
                                     required={false}
                                     margin={`normal`}
+                                    type="number"
                                     InputLabelProps={{ shrink: true }}
-                                    onChange={e => setWorkspaceUpdateInterval(e.target.value)}
+                                    onChange={e => setWorkspaceUpdateInterval(parseInt(e.target.value, 10))}
                                 >
                                 </TextField>
                                 <Typography variant="caption" display="block" gutterBottom>

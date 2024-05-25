@@ -263,7 +263,7 @@ export default function DocumentationUI({markdownContent, selectedNode}: any) {
                                 bgColor={pathname.includes("extension/afk_setting/extension_afk_setting_6.md") ? theme.palette.background.paper : undefined}
                             />
                         </StyledTreeItem>
-                        <StyledTreeItem
+                        {/* <StyledTreeItem
                             id={"15"}
                             itemId="15"
                             labelText="Pro"
@@ -289,16 +289,17 @@ export default function DocumentationUI({markdownContent, selectedNode}: any) {
                                 href={`/documentation/pro/pro_purchase_2.md`}
                                 bgColor={pathname.includes("pro/pro_purchase_2.md") ? theme.palette.background.paper : undefined}
                             />
-                        </StyledTreeItem>
+                        </StyledTreeItem> */}
                     </SimpleTreeView>
                 </Grid>
                 <Grid item xs={9.5}>
-                    <div style={{backgroundColor: "#1c1c1a"}}>
+                    <div style={{backgroundColor: "#1c1c1a", paddingTop: "16px", paddingLeft: "16px"}}>
                         <MarkdownRenderer markdown={markdownContent} style={{
                             overflowWrap: 'break-word',
                             borderRadius: '10px',
                             paddingBottom: '10px',
-                            backgroundColor: "#1c1c1a"
+                            backgroundColor: "#1c1c1a",
+                            maxWidth: "1000px"
                         }}/>
                     </div>
                 </Grid>
