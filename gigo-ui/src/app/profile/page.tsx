@@ -1379,7 +1379,13 @@ function Profile() {
                                 ) : null}
                                 {window.innerWidth <= 1000 ? (
                                     <div style={{marginBottom: "20px"}}>
-                                        <Grid item style={{display: "flex", flexDirection: "row", paddingLeft: "100%", width: "100vw"}}>
+                                        <Grid item style={{
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            paddingLeft: "10%",
+                                            width: "80vw",
+                                            alignItems: "center"
+                                        }}>
                                             <Image
                                                 alt="renown"
                                                 style={!isMobile ? {
@@ -1387,20 +1393,36 @@ function Profile() {
                                                     width: "auto",
                                                     overflow: "hidden",
                                                 } : {
-                                                    height: "60px",
+                                                    height: "80px",
                                                     overflow: "hidden",
                                                 }}
                                                 src={renownImg}
                                             />
-                                            <Box display="flex" flexDirection="column" alignItems="left" marginLeft={"25px"}>
-                                                <Typography variant="h4" sx={{transform: "translate(-1.5vw, 0)", fontSize: "24px"}}>
+                                            <Box display="flex" flexDirection="column" alignItems="left"
+                                                 marginLeft={"10px"}>
+                                                <Typography variant="h4" sx={{ fontSize: "18px", whiteSpace: "nowrap" }}>
                                                     {`Renown ${userData === null ? "N/A" : userData["tier"] + 1}`}
                                                 </Typography>
-                                                <Typography sx={{paddingRight: "10px", fontSize: "10px"}} variant="h6">{`${currentXp} / ${maxXp} XP`}</Typography>
+
+                                                <Typography sx={{fontSize: "14px"}}
+                                                            variant="h6">{`${currentXp} / ${maxXp} XP`}</Typography>
                                             </Box>
                                         </Grid>
-                                        <div style={{display: "flex", width: "100vw", paddingTop: "-50px", position: "relative", paddingLeft: "30%"}}>
-                                            <Box sx={{ flexGrow: 1, alignItems: 'flex-end', display: 'flex', zIndex: 2, justifyContent: "start", marginLeft: "20%"}}>
+                                        <div style={{
+                                            display: "flex",
+                                            width: "100vw",
+                                            justifyContent: "center",
+                                            paddingTop: "10px",
+                                            position: "relative"
+                                        }}>
+                                            <Box sx={{
+                                                flexGrow: 1,
+                                                display: 'flex',
+                                                zIndex: 2,
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                position: "relative"
+                                            }}>
                                                 <ProgressBar
                                                     padding={"10px"}
                                                     completed={(currentXp - minXp) / (maxXp - minXp) * 100}
@@ -1412,7 +1434,7 @@ function Profile() {
                                                     barContainerClassName={"container"}
                                                     bgColor={barColor}
                                                 />
-                                                <Grid item sx={{transform: "translate(-5vw, 3vh)", zIndex: 1}}>
+                                                <Grid item sx={{transform: "translate(-5vw, 1vh)", zIndex: 1}}>
                                                     <Box position="relative">
                                                         <Image
                                                             alt="level"
@@ -1441,6 +1463,7 @@ function Profile() {
                                             </Box>
                                         </div>
                                     </div>
+
                                 ) : null}
                                 {editBackgroundModal()}
                                 <div style={{height: "10px"}}/>
@@ -1539,7 +1562,7 @@ function Profile() {
                                                     style={{
                                                         color: "white",
                                                         position: "absolute",
-                                                        top: "50%",
+                                                        top: "40%",
                                                         left: "50%",
                                                         transform: "translate(-35%, -90%)",
                                                         zIndex: 2,
