@@ -2194,7 +2194,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         onChange={(e) => setProjectName(e.target.value)}
                         variant="outlined"
                         size="medium"
-                        color={(projectName.length > 30) ? "error" : "primary"}
+                        color={(projectName.length > 50) ? "error" : "primary"}
                         fullWidth
                         required
                         label="Project Name"
