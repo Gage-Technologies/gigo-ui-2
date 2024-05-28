@@ -1687,7 +1687,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
                                                         padding: "10px",
                                                         borderRadius: "5px",
                                                         overflowX: "auto",
-                                                        maxWidth: "33vw"
+                                                        maxWidth: aspectRatio === "21:9" ? "99%" : "33vw"
                                                     }}>
                                                         {workspaceError.stderr.trim() !== "" ? workspaceError.stderr : "An unknown error has occurred."}
                                                     </pre>
