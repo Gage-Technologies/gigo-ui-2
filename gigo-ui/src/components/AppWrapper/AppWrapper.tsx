@@ -1453,9 +1453,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             }
         },
         {
-            icon: <ChatBubbleOutline />, name: 'Chat', action: handleChatButton
-        },
-        {
             icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
                 router.push('/articles')

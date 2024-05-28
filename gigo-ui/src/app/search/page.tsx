@@ -328,10 +328,10 @@ async function SearchMain({ searchParams: rawSearchParams }: { searchParams?: { 
                             href="/journey/detour"
                             sx={{
                                 ml: 2,
-                                fontSize: "0.8rem",
+                                fontSize: "0.9rem",
                                 fontWeight: 400,
                                 p: 0.8,
-                                minWidth: "0px",
+                                minWidth: "80px",
                                 lineHeight: "0",
                                 height: "20px"
                             }}
