@@ -74,7 +74,7 @@ const titleStyle = {
                 <Grid container spacing={0}>
                     <Grid item xs={12}>
                         <div style={{display: 'flex', justifyContent: 'center'}}>
-                            <Image alt={""} src={JourneyUnit} style={{borderRadius: "25px", width: "80%", padding: "10px"}}/>
+                            <Image alt={""} src={JourneyUnit} style={{borderRadius: "25px", width: "80%", padding: "10px", height: "100%"}}/>
                         </div>
                         <h2 style={textStyle as React.CSSProperties}>Mapped Learning</h2>
                         <p style={textStyle as React.CSSProperties}>
