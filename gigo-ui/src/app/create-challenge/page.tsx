@@ -2426,7 +2426,7 @@ function CreateProject() {
                             }}
                         />
                     </Grid>
-                    <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                         <div style={{
                             display: "flex",
                             flexDirection: "row",
@@ -2453,7 +2453,7 @@ function CreateProject() {
                                         <div style={{
                                             textAlign: 'center',
                                             marginTop: '8px'
-                                        }}> {/* Center the button and add some spacing */}
+                                        }}>
                                             <Button variant="outlined" onClick={() => setGoProPopup(true)}
                                                     style={{width: "75%"}}
                                                     color="primary">
@@ -2468,7 +2468,7 @@ function CreateProject() {
                             )}
                         </div>
                         {renderVisibilityExplanationPopover()}
-                    </Grid>
+                    </Grid> */}
                     <Grid item xs={12}>
                         <Button
                             variant={`outlined`}

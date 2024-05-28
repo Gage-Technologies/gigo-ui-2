@@ -495,6 +495,7 @@ function Login(this: any) {
                         sx={{
                             maxWidth: "375px",
                             mt: "3.5vh",
+                            minWidth: "275px",
                         }}
                     >
                     </TextField>
@@ -515,7 +516,8 @@ function Login(this: any) {
                         sx={{
                             maxWidth: "375px",
                             mt: "3.5vh",
-                            paddingBottom: "1.5vw"
+                            paddingBottom: "1.5vw",
+                            minWidth: "275px",
                         }}
                         InputProps={{
                             endAdornment: <ShowButton />

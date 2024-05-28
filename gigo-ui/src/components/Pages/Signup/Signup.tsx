@@ -1544,6 +1544,7 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
                             size={!isMobile ? `medium` : `small`}
                             sx={{
                                 maxWidth: "375px",
+                                minWidth: "275px",
                             }}
                             value={username}
                             onChange={e => {
@@ -1569,6 +1570,7 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
                             size={!isMobile ? `medium` : `small`}
                             sx={{
                                 maxWidth: "375px",
+                                minWidth: "275px",
                             }}
                             value={email}
                             onChange={e => setEmail(e.target.value)}
@@ -1588,6 +1590,7 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
                             size={!isMobile ? `medium` : `small`}
                             sx={{
                                 maxWidth: "375px",
+                                minWidth: "275px",
                             }}
                             value={password}
                             onChange={e => setPassword(e.target.value)}
@@ -1610,6 +1613,7 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
                             size={!isMobile ? `medium` : `small`}
                             sx={{
                                 maxWidth: "375px",
+                                minWidth: "275px",
                             }}
                             value={confirmPass}
                             onChange={e => setConfirmPass(e.target.value)}
