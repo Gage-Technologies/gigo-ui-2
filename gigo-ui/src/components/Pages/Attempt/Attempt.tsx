@@ -1378,23 +1378,33 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                         alignItems: "center",
                         flexWrap: "wrap",
                         mb: 2,
-                        ...(isScrolled ? {
+                        width: "100%",
+                        maxWidth: "100%",
+                        border: `1px solid ${theme.palette.primary.main}`,
+                    }}>
+                        {tabButtons()}
+                        {renderLaunchButton()}
+                    </Box>
+                    {isScrolled && (
+                        <Box sx={{
+                            height: "75px",
+                            borderRadius: "10px",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            mb: 2,
                             position: "fixed",
                             top: "100px",
                             zIndex: 99,
                             p: 2,
                             ...themeHelpers.frostedGlass,
                             borderColor: theme.palette.primary.main
-                        } : {
-                            width: "100%",
-                            maxWidth: "100%",
-                            border: `1px solid ${theme.palette.primary.main}`,
-                        }
-                        )
-                    }}>
-                        {!isScrolled && tabButtons()}
-                        {renderLaunchButton()}
-                    </Box>
+                        }}>
+                            {renderLaunchButton()}
+                        </Box>
+                    )}
                 </Box>
                 {mainTabSwitch()}
             </Box>

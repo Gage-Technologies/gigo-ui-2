@@ -539,6 +539,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         authState.tutorialState = state
         // @ts-ignore
         dispatch(updateAuthState(authState))
+        router.refresh()
     }
 
     const reportIssue = async () => {

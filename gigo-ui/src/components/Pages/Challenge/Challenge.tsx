@@ -1345,27 +1345,27 @@ function Challenge({ params, ...props }: ChallengeProps) {
         switch (projectType) {
             case "Playground":
                 return (
-                    <HorseIcon sx={{ width: "24px", height: "24px", color: theme.palette.primary.main}} />
+                    <HorseIcon sx={{ width: "24px", height: "24px", color: theme.palette.primary.main }} />
                 )
             case "Casual":
                 return (
-                    <HoodieIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
+                    <HoodieIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main }} />
                 )
             case "Competitive":
                 return (
-                    <TrophyIcon sx={{ width: "18px", height: "18px", color: theme.palette.primary.main}} />
+                    <TrophyIcon sx={{ width: "18px", height: "18px", color: theme.palette.primary.main }} />
                 )
             case "Interactive":
                 return (
-                    <GraduationIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}}/>
+                    <GraduationIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main }} />
                 )
             case "Debug":
                 return (
-                    <DebugIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
+                    <DebugIcon sx={{ width: "20px", height: "20px", color: theme.palette.primary.main }} />
                 )
             default:
                 return (
-                    <QuestionMark sx={{ width: "20px", height: "20px", color: theme.palette.primary.main}} />
+                    <QuestionMark sx={{ width: "20px", height: "20px", color: theme.palette.primary.main }} />
                 )
         }
     }
@@ -1938,15 +1938,15 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         {projectName} {project?.deleted && <span style={{ fontSize: "0.7em", textTransform: "none" }}>[deleted]</span>}
                     </Typography>
                     {project !== null &&
-                      <Tooltip title={project["post_type_string"]}>
-                        <Box sx={{
-                            position: "absolute",
-                            right: 0,
-                            marginRight: 2,
-                        }}>
-                            {getProjectIcon(project["post_type_string"])}
-                        </Box>
-                      </Tooltip>
+                        <Tooltip title={project["post_type_string"]}>
+                            <Box sx={{
+                                position: "absolute",
+                                right: 0,
+                                marginRight: 2,
+                            }}>
+                                {getProjectIcon(project["post_type_string"])}
+                            </Box>
+                        </Tooltip>
                     }
                 </Box>
                 {project !== null && (!project?.deleted || currentUser) ? (
@@ -2326,23 +2326,33 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         alignItems: "center",
                         flexWrap: "wrap",
                         mb: 2,
-                        ...(isScrolled ? {
+                        width: "100%",
+                        maxWidth: "100%",
+                        border: `1px solid ${theme.palette.primary.main}`,
+                    }}>
+                        {tabButtons()}
+                        {renderLaunchButton()}
+                    </Box>
+                    {isScrolled && (
+                        <Box sx={{
+                            height: "75px",
+                            borderRadius: "10px",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-around",
+                            alignItems: "center",
+                            flexWrap: "wrap",
+                            mb: 2,
                             position: "fixed",
                             top: "100px",
                             zIndex: 99,
                             p: 2,
                             ...themeHelpers.frostedGlass,
                             borderColor: theme.palette.primary.main
-                        } : {
-                            width: "100%",
-                            maxWidth: "100%",
-                            border: `1px solid ${theme.palette.primary.main}`,
-                        }
-                        )
-                    }}>
-                        {!isScrolled && tabButtons()}
-                        {renderLaunchButton()}
-                    </Box>
+                        }}>
+                            {renderLaunchButton()}
+                        </Box>
+                    )}
                 </Box>
                 {mainTabSwitch()}
                 {editProjectDetails()}
@@ -2493,6 +2503,62 @@ function Challenge({ params, ...props }: ChallengeProps) {
 
     return (
         <>
+            <CardTutorial
+                open={runTutorial}
+                closeCallback={closeTutorialCallback}
+                step={stepIndex}
+                changeCallback={tutorialCallback}
+                steps={[
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Let&apos;s get started with a Challenge!</h2>
+                                <p style={styles.tutorialText}>Challenges are how lessons and projects are structured on GIGO. Finish the tutorial to learn how to start and interact with a challenge.</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>Challenges are grouped into 4 categories:</p>
+                                <ul>
+                                    <li style={styles.tutorialText}>Interactive - A project that includes guided learning material such as tutorials or interactive lessons.</li>
+                                    <li style={styles.tutorialText}>Playground - A project with no goal that is meant to enable free experimentation.</li>
+                                    <li style={styles.tutorialText}>Casual - A project that has a predefined goal and evaluations but is not competitively ranked against other users.</li>
+                                    <li style={styles.tutorialText}>Competitive - Similar to Casual, but is ranked against other users.</li>
+                                    <li style={styles.tutorialText}>Debug - A project that is almost done but with a very bugs sprinkled in. Test your debugging skills by tacking back error and fixing them.</li>
+                                </ul>
+                            </div>
+                        )
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Launch</h2>
+                                <p style={styles.tutorialText}>On GIGO Attempts are how you accept a Challenge. Making an Attempt allows you to work on the project. Click the &apos;Launch&apos; button on any Challenge to make an attempt and start working on the project!</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>When you make an Attempt, GIGO will create a copy of the project for you to work on. GIGO will then start a dedicated Workspace that you can use to work on the project. You can only make one Attempt on a Challenge, so bring your A game!</p>
+                            </div>
+                        )
+                    },
+                    // {
+                    //     content: (
+                    //         <div>
+                    //             <h2 style={styles.tutorialHeader}>Talking about Challenges</h2>
+                    //             <p style={styles.tutorialText}>Ask questions, raise issues, or converse about the project using the
+                    //                 &apos;Discussions&apos; tab at the top of the page.</p>
+                    //         </div>
+                    //     ),
+                    //     moreInfo: (
+                    //         <div>
+                    //             <p style={styles.tutorialText}>Discussions are a great way to get help or share your thoughts on a project. When you complete an Attempt head over to Discussions to share your opinion or help others!</p>
+                    //             <p style={styles.tutorialText}>Discussions are currently only available on desktop GIGO but we&apos;re working hard to bring them to mobile!</p>
+                    //         </div>
+                    //     )
+                    // },
+                ]}
+            />
             {isMobile ? renderMobileChallenge() : renderDesktopChallenge()}
             {/* On mobile add a hovering button to launch the project */}
             {isMobile && renderLaunchButtonMobile()}

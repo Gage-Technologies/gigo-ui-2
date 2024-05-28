@@ -48,7 +48,7 @@ import * as wsModels from "@/models/websocket";
 import IframeRenderer from "@/components/IframeRenderer";
 import proGorillaCrown from "@/img/pro-pop-up-icon-plain.svg"
 import GoProDisplay from "@/components/GoProDisplay";
-import {useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 interface InitialStatusMessage {
@@ -60,7 +60,7 @@ interface InitialStatusMessage {
 
 
 
-const WorkspacePage = ({params}: { params: { id: string } }) => {
+const WorkspacePage = ({ params }: { params: { id: string } }) => {
     let query = useSearchParams();
     const authState = useAppSelector(selectAuthState);
 
@@ -150,7 +150,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
     // };
 
     useEffect(() => {
-        fetch(`${config.rootPath}/static/ui/lottie/general/launch-pad-smoke.json`, {credentials: 'include'})
+        fetch(`${config.rootPath}/static/ui/lottie/general/launch-pad-smoke.json`, { credentials: 'include' })
             .then(data => {
                 data.json().then(json => {
                     setAnimationData(json)
@@ -160,7 +160,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
     }, [])
 
     useEffect(() => {
-        fetch(`${config.rootPath}/static/ui/lottie/general/launch-page-stopped.json`, {credentials: 'include'})
+        fetch(`${config.rootPath}/static/ui/lottie/general/launch-page-stopped.json`, { credentials: 'include' })
             .then(data => {
                 data.json().then(json => {
                     setAnimationDataStopped(json)
@@ -170,7 +170,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
     }, [])
 
     useEffect(() => {
-        fetch(`${config.rootPath}/static/ui/lottie/general/rocket.json`, {credentials: 'include'})
+        fetch(`${config.rootPath}/static/ui/lottie/general/rocket.json`, { credentials: 'include' })
             .then(data => {
                 data.json().then(json => {
                     setFullRocket(json)
@@ -431,7 +431,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             `${config.rootPath}/api/workspace/getHighestScore`,
             {
                 method: "POST",
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: '{}',
                 credentials: 'include'
             }
@@ -463,7 +463,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             `${config.rootPath}/api/workspace/startWorkspace`,
             {
                 method: "POST",
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     workspace_id: id,
                 }),
@@ -483,7 +483,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             let authState = Object.assign({}, initialAuthStateUpdate)
             // @ts-ignore
             dispatch(updateAuthState(authState))
-            navigate.push("/login?forward="+encodeURIComponent(window.location.pathname))
+            navigate.push("/login?forward=" + encodeURIComponent(window.location.pathname))
         }
     }
 
@@ -496,7 +496,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             `${config.rootPath}/api/workspace/stopWorkspace`,
             {
                 method: "POST",
-                headers: {'Content-Type': 'application/json'},
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     workspace_id: id,
                 }),
@@ -515,7 +515,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             let authState = Object.assign({}, initialAuthStateUpdate)
             // @ts-ignore
             dispatch(updateAuthState(authState))
-            navigate.push("/login?forward="+encodeURIComponent(window.location.pathname))
+            navigate.push("/login?forward=" + encodeURIComponent(window.location.pathname))
         }
     }
 
@@ -863,7 +863,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify( {
+                body: JSON.stringify({
                     highest_score: num.toString(),
                 }),
                 credentials: 'include'
@@ -1808,7 +1808,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                                     height: "100px", // Image size
                                     width: "100px", // Image size
                                 }}>
-                                    <Image src={proGorillaCrown} alt={"GIGO Pro"} style={{ width: "100%", height: "auto" }}/>
+                                    <Image src={proGorillaCrown} alt={"GIGO Pro"} style={{ width: "100%", height: "auto" }} />
                                 </div>
                             </div>
                         )}
@@ -1822,7 +1822,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                             boxShadow: "none",
                             //@ts-ignore
                             top: document.getElementById("pro-banner") === null ? "17.5%" : document.getElementById("pro-banner").offsetHeight + 75 + "px"
-                        } :{
+                        } : {
                             position: "absolute",
                             width: "35vw",
                             height: "77vh",
@@ -2069,7 +2069,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                                         alignItems: "flex-start", // Left align the title and subtitle
                                         width: "calc(100% - 120px)", // Adjust width to prevent overlap with image, assuming image width + some padding
                                     }}>
-                                        <h2 style={{margin: "0 0 10px 0", textAlign: "left"}}>Want to learn faster?</h2>
+                                        <h2 style={{ margin: "0 0 10px 0", textAlign: "left" }}>Want to learn faster?</h2>
                                         <p style={{
                                             textAlign: "left",
                                             margin: "0",
@@ -2099,7 +2099,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                                         width: "100px", // Image size
                                     }}>
                                         <Image src={proGorillaCrown} alt={"GIGO Pro"}
-                                               style={{width: "100%", height: "auto"}}/>
+                                            style={{ width: "100%", height: "auto" }} />
                                     </div>
                                 </div>
                             </Grid>
@@ -2148,6 +2148,8 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
             // @ts-ignore
             const iframeContent = iframe.contentWindow || iframe.contentDocument;
 
+            console.log("frame:", iframe)
+
             if (iframeContent.document) {
                 const oldStyle = iframeContent.document.getElementById('dynamicStyle');
                 if (oldStyle) {
@@ -2160,55 +2162,57 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                 const currentAriaLabels = ariaLabels[stepIndex];
                 const selector = currentAriaLabels.map(label => `*[${label}]`).join(', ');
 
+                console.log("selector:", selector)
+
                 let auraEffect = `
-                @keyframes auraEffect {
-                    0% {
-                        box-shadow: inset 0 0 1px #fff, inset 0 0 2px #fff, inset 0 0 3px #007bff, inset 0 0 4px #007bff, inset 0 0 5px #007bff, inset 0 0 6px #007bff;
+                    @keyframes auraEffect {
+                        0% {
+                            box-shadow: inset 0 0 1px #fff, inset 0 0 2px #fff, inset 0 0 3px #007bff, inset 0 0 4px #007bff, inset 0 0 5px #007bff, inset 0 0 6px #007bff;
+                        }
+                        100% {
+                            box-shadow: inset 0 0 3px #fff, inset 0 0 6px #fff, inset 0 0 9px #007bff, inset 0 0 15px #007bff, inset 0 0 20px #007bff, inset 0 0 23px #007bff;
+                        }
                     }
-                    100% {
-                        box-shadow: inset 0 0 3px #fff, inset 0 0 6px #fff, inset 0 0 9px #007bff, inset 0 0 15px #007bff, inset 0 0 20px #007bff, inset 0 0 23px #007bff;
-                    }
-                }
-            `;
+                `;
 
                 if (currentAriaLabels.includes('aria-label="Code Teacher"')) {
                     auraEffect = `
-                    @keyframes auraEffect {
-                      0% {
-                        box-shadow: 
-                          inset 0 0 5px #fff, 
-                          inset 0 0 10px #fff, 
-                          inset 0 0 15px #1c8762, 
-                          inset 0 0 20px #007bff, 
-                          inset 0 0 25px #1c8762, 
-                          inset 0 0 30px #1c8762,
-                          0 0 5px #1c8762, 
-                          0 0 10px #1c8762; 
-                      }
-                      100% {
-                        box-shadow: 
-                          inset 0 0 10px #fff, 
-                          inset 0 0 15px #fff, 
-                          inset 0 0 20px #1c8762, 
-                          inset 0 0 25px #1c8762, 
-                          inset 0 0 30px #1c8762, 
-                          inset 0 0 35px #1c8762,
-                          0 0 15px #1c8762, 
-                          0 0 20px #1c8762; 
-                      }
-                    }
-                    ${selector} {
-                        animation: auraEffect .5s infinite alternate;
-                    }
-                `;
+                        @keyframes auraEffect {
+                        0% {
+                            box-shadow: 
+                            inset 0 0 5px #fff, 
+                            inset 0 0 10px #fff, 
+                            inset 0 0 15px #1c8762, 
+                            inset 0 0 20px #007bff, 
+                            inset 0 0 25px #1c8762, 
+                            inset 0 0 30px #1c8762,
+                            0 0 5px #1c8762, 
+                            0 0 10px #1c8762; 
+                        }
+                        100% {
+                            box-shadow: 
+                            inset 0 0 10px #fff, 
+                            inset 0 0 15px #fff, 
+                            inset 0 0 20px #1c8762, 
+                            inset 0 0 25px #1c8762, 
+                            inset 0 0 30px #1c8762, 
+                            inset 0 0 35px #1c8762,
+                            0 0 15px #1c8762, 
+                            0 0 20px #1c8762; 
+                        }
+                        }
+                        ${selector} {
+                            animation: auraEffect .5s infinite alternate;
+                        }
+                    `;
                 }
 
                 style.textContent = `
-                ${auraEffect}
-                ${selector} {
-                    animation: auraEffect 1.5s infinite alternate;
-                }
-            `;
+                    ${auraEffect}
+                    ${selector} {
+                        animation: auraEffect 1.5s infinite alternate;
+                    }
+                `;
                 iframeContent.document.head.appendChild(style);
             }
         };
@@ -2466,7 +2470,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                         <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                             {renderBody()}
                         </div>
-                        <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
+                        <GoProDisplay open={goProPopup} onClose={toggleProPopup} />
                     </>
                 )}
                 {xpPopup ? (xpPopupMemo) : null}
@@ -2732,7 +2736,7 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
                         <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                             {renderBodyMobile()}
                         </div>
-                        <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
+                        <GoProDisplay open={goProPopup} onClose={toggleProPopup} />
                     </div>
                 )}
                 {xpPopup && window.innerWidth > 1000 ? (xpPopupMemo) : null}
@@ -2742,115 +2746,113 @@ const WorkspacePage = ({params}: { params: { id: string } }) => {
 
     let renderer = window.innerWidth > 1000 ? renderDesktop : renderMobile
 
+    console.log("run tutorial", runTutorial)
 
-    // @ts-ignore
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline>
-                <CardTutorial
-                    open={runTutorial && queryParams.has("editor") && queryParams.get("editor") === "true"}
-                    closeCallback={closeTutorialCallback}
-                    step={stepIndex}
-                    changeCallback={tutorialCallback}
-                    steps={[
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>This is Your DevSpace!</h2>
-                                    <p style={styles.tutorialText}>DevSpaces are preconfigured development environments running on VSCode, allowing you to launch straight into writing and running code</p>
-                                </div>
-                            ),
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Need to Go Somewhere?</h2>
-                                    <p style={styles.tutorialText}>DevSpaces will close after 10 minutes of inactivity. On the left you can see the activity bar, use our AFK feature to give you an hour of idle time.</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>To save resources, we automatically close DevSpaces after 10 minutes of idle time. If you want to go make lunch or simply know you will take a long time on another tab, you can use the AFK function to allow up to an hour of idle time.</p>
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Interactive Tutorials</h2>
-                                    <p style={styles.tutorialText}>Some GIGO projects are designed to be a tutorial, use this extension to easily fly through each step</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>GIGO provides interactive DevSpaces for programmers to design a tutorial for others to learn how to create a specific project. This extension allows the user to have the tutorial on the side and go through step by step alongside their code. You can also create your own tutorial using this extension by clicking the plus sign when you`&#39;`re in the tutorial extension tab.</p>
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Check Your Streak!</h2>
-                                    <p style={styles.tutorialText}>You can check your streak status for today and get a preview of how your week has gone</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>Streaks are a way to keep track on your progress everyday. If you program for at least 30 minutes a day, your streak will go up. While in a DevSpace, there will be an animation that pops up to inform you that you have reached your streak for the day. Get to coding and make that streak go higher!</p>
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Learn with Code Teacher!</h2>
-                                    <p style={styles.tutorialText}>Code Teacher is your personal Magic assistant available to help you inside your DevSpace.</p>
-                                </div>
-                            ),
-                            moreInfo: (
-                                <div>
-                                    <p style={styles.tutorialText}>Code Teacher is an advanced AI assistant understands the context of your project to offer real-time guidance. Whether you`&#39;`re stuck on a bug, unsure how to implement a function, or simply want to understand your code better, Code Teacher is there to help. Free users will gain access to 3 questions a day. Pro users, however, get full access to Code Teacher. </p>
+        <>
+            <CardTutorial
+                open={runTutorial && queryParams.has("editor") && queryParams.get("editor") === "true"}
+                closeCallback={closeTutorialCallback}
+                step={stepIndex}
+                changeCallback={tutorialCallback}
+                steps={[
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>This is Your DevSpace!</h2>
+                                <p style={styles.tutorialText}>DevSpaces are preconfigured development environments running on VSCode, allowing you to launch straight into writing and running code</p>
+                            </div>
+                        ),
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Need to Go Somewhere?</h2>
+                                <p style={styles.tutorialText}>DevSpaces will close after 10 minutes of inactivity. On the left you can see the activity bar, use our AFK feature to give you an hour of idle time.</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>To save resources, we automatically close DevSpaces after 10 minutes of idle time. If you want to go make lunch or simply know you will take a long time on another tab, you can use the AFK function to allow up to an hour of idle time.</p>
+                            </div>
+                        )
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Interactive Tutorials</h2>
+                                <p style={styles.tutorialText}>Some GIGO projects are designed to be a tutorial, use this extension to easily fly through each step</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>GIGO provides interactive DevSpaces for programmers to design a tutorial for others to learn how to create a specific project. This extension allows the user to have the tutorial on the side and go through step by step alongside their code. You can also create your own tutorial using this extension by clicking the plus sign when you`&#39;`re in the tutorial extension tab.</p>
+                            </div>
+                        )
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Check Your Streak!</h2>
+                                <p style={styles.tutorialText}>You can check your streak status for today and get a preview of how your week has gone</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>Streaks are a way to keep track on your progress everyday. If you program for at least 30 minutes a day, your streak will go up. While in a DevSpace, there will be an animation that pops up to inform you that you have reached your streak for the day. Get to coding and make that streak go higher!</p>
+                            </div>
+                        )
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Learn with Code Teacher!</h2>
+                                <p style={styles.tutorialText}>Code Teacher is your personal Magic assistant available to help you inside your DevSpace.</p>
+                            </div>
+                        ),
+                        moreInfo: (
+                            <div>
+                                <p style={styles.tutorialText}>Code Teacher is an advanced AI assistant understands the context of your project to offer real-time guidance. Whether you`&#39;`re stuck on a bug, unsure how to implement a function, or simply want to understand your code better, Code Teacher is there to help. Free users will gain access to 3 questions a day. Pro users, however, get full access to Code Teacher. </p>
 
-                                </div>
-                            )
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Need A Terminal?</h2>
-                                    <p style={styles.tutorialText}>Navigate the highlighted menu in the top left of the DevSpace, click `&#39;`Terminal`&#39;`, then `&#39;`New Terminal`&#39;`. Better yet, there is a keyboard shortcut: Ctrl + Shift + `</p>
-                                </div>
-                            ),
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Access Your Project Files</h2>
-                                    <p style={styles.tutorialText}>This is where you manage all of the files for you code in your DevSpace. Here, you can edit code, create new files, create new folders, and more.</p>
-                                </div>
-                            ),
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Install More Extensions</h2>
-                                    <p style={styles.tutorialText}>VSCode offers a vast library of extensions. Here, you can search for more extensions to install or disable any that are currently installed. Your DevSpace comes with a few extensions already installed, so it is recommended to keep those enabled.</p>
-                                </div>
-                            ),
-                        },
-                        {
-                            content: (
-                                <div>
-                                    <h2 style={styles.tutorialHeader}>Happy Coding!</h2>
-                                    <p style={styles.tutorialText}>Now that you know the basics, you can jump right in and get to coding!</p>
-                                </div>
-                            ),
-                        },
-                    ]}
-                />
-                {renderer()}
-            </CssBaseline>
-        </ThemeProvider>
+                            </div>
+                        )
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Need A Terminal?</h2>
+                                <p style={styles.tutorialText}>Navigate the highlighted menu in the top left of the DevSpace, click `&#39;`Terminal`&#39;`, then `&#39;`New Terminal`&#39;`. Better yet, there is a keyboard shortcut: Ctrl + Shift + `</p>
+                            </div>
+                        ),
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Access Your Project Files</h2>
+                                <p style={styles.tutorialText}>This is where you manage all of the files for you code in your DevSpace. Here, you can edit code, create new files, create new folders, and more.</p>
+                            </div>
+                        ),
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Install More Extensions</h2>
+                                <p style={styles.tutorialText}>VSCode offers a vast library of extensions. Here, you can search for more extensions to install or disable any that are currently installed. Your DevSpace comes with a few extensions already installed, so it is recommended to keep those enabled.</p>
+                            </div>
+                        ),
+                    },
+                    {
+                        content: (
+                            <div>
+                                <h2 style={styles.tutorialHeader}>Happy Coding!</h2>
+                                <p style={styles.tutorialText}>Now that you know the basics, you can jump right in and get to coding!</p>
+                            </div>
+                        ),
+                    },
+                ]}
+            />
+            {renderer()}
+        </>
     )
 }
 

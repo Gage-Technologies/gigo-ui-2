@@ -1,5 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer'
-import MillionLint from "@million/lint";
+// import MillionLint from "@million/lint";
 const withBundleAnalyzer = bundleAnalyzer({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -25,16 +25,18 @@ const nextConfig = withBundleAnalyzer({
   },
 });
 
+export default nextConfig;
+
 // TODO: reduce the excluded pages
-export default MillionLint.next({ 
-  rsc: true, 
-  filter: {
-    exclude: [
-      "**/node_modules/**/*",
-      "**/components/Pages/Login/*.tsx",
-      "**/components/Pages/Signup/*.tsx",
-      "**/app/profile/*.tsx",
-      "**/app/user/*.tsx",
-    ]
-  }
-})(nextConfig);
+// export default MillionLint.next({ 
+//   rsc: true, 
+//   filter: {
+//     exclude: [
+//       "**/node_modules/**/*",
+//       "**/components/Pages/Login/*.tsx",
+//       "**/components/Pages/Signup/*.tsx",
+//       "**/app/profile/*.tsx",
+//       "**/app/user/*.tsx",
+//     ]
+//   }
+// })(nextConfig);

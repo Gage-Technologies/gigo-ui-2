@@ -1,19 +1,20 @@
 import 'typeface-poppins';
 import "./home/globals.css";
 import './global.css';
-import {AppRouterCacheProvider} from '@mui/material-nextjs/v13-appRouter';
-import {ThemeProvider} from '@mui/material/styles';
-import {theme} from "@/theme";
+import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
+import { ThemeProvider } from '@mui/material/styles';
+import { theme } from "@/theme";
 import StoreProvider from "@/app/StoreProvider";
 import AppWrapper from "@/components/AppWrapper/AppWrapper";
-import {WebSocketProvider} from "@/services/websocket";
-import {CtWebSocketProvider} from "@/services/ct_websocket";
+import { WebSocketProvider } from "@/services/websocket";
+import { CtWebSocketProvider } from "@/services/ct_websocket";
 import type { Metadata, Viewport } from 'next'
 import React from "react";
-import {CssBaseline} from "@mui/material";
-import {GoogleOAuthProvider} from "@react-oauth/google";
+import { CssBaseline } from "@mui/material";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 import config from "@/config";
 import GoogleProvider from "@/app/GoogleProvider";
+import WebTracking from '@/components/WebTracking';
 
 export const metadata: Metadata = {
     applicationName: 'GIGO Dev',
@@ -42,31 +43,33 @@ export const viewport: Viewport = {
 }
 
 export default function Layout({
-                                   children,
-                               }: Readonly<{
+    children,
+}: Readonly<{
     children: React.ReactNode;
 }>) {
     return (
         <html lang="en">
-        <body>
-        <AppRouterCacheProvider>
-            <StoreProvider>
-                <WebSocketProvider>
-                    <CtWebSocketProvider>
-                        <GoogleProvider>
-                            <ThemeProvider theme={theme}>
-                                <CssBaseline>
-                                    <AppWrapper>
-                                        {children}
-                                    </AppWrapper>
-                                </CssBaseline>
-                            </ThemeProvider>
-                        </GoogleProvider>
-                    </CtWebSocketProvider>
-                </WebSocketProvider>
-            </StoreProvider>
-        </AppRouterCacheProvider>
-        </body>
+            <body>
+                <AppRouterCacheProvider>
+                    <StoreProvider>
+                        <WebSocketProvider>
+                            <CtWebSocketProvider>
+                                <GoogleProvider>
+                                    <WebTracking>
+                                        <ThemeProvider theme={theme}>
+                                            <CssBaseline>
+                                                <AppWrapper>
+                                                    {children}
+                                                </AppWrapper>
+                                            </CssBaseline>
+                                        </ThemeProvider>
+                                    </WebTracking>
+                                </GoogleProvider>
+                            </CtWebSocketProvider>
+                        </WebSocketProvider>
+                    </StoreProvider>
+                </AppRouterCacheProvider>
+            </body>
         </html>
     );
 }
