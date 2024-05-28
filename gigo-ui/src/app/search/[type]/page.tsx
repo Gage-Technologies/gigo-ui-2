@@ -298,10 +298,11 @@ function SearchMain({
                     <Grid container spacing={2}>
                         {challengeData.map((post, index) => (
                             <Grid item xs={12} md={6} lg={3} key={`challenge:${index}: ${post._id}`}    >
-                                <ButtonBase href={"/challenge/" + post._id} sx={{ borderRadius: "10px" }}>
+                                <ButtonBase href={"/challenge/" + post._id} sx={{ borderRadius: "10px", width: "100%" }}>
                                     <ProjectCard
                                         height={"20vh"}
                                         imageHeight={"20vh"}
+                                        width={isMobile ? '100%' : undefined}
                                         projectId={post._id}
                                         projectTitle={post.title}
                                         projectDesc={post.description}
