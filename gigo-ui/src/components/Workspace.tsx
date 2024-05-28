@@ -966,7 +966,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
         }
     `;
 
-    const [left, setLeft] = useState('45vw'); // default value
+    const [left, setLeft] = useState(aspectRatio === '21:9' ? '36vw' : '45vw'); // default value
 
     useEffect(() => {
         const updateLeftOpen = () => {
@@ -988,7 +988,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
             } else if (rightOpen) {
                 return aspectRatio === '21:9' ? '31vw' : '37vw';
             } else {
-                return aspectRatio === '21:9' ? '36%' : '45vw';
+                return aspectRatio === '21:9' ? '36vw' : '45vw';
             }
         };
 
@@ -1146,7 +1146,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
                         width: "55vh",
                         height: "3vh",
                         top: "80%",
-                        left: left,
+                        left: (!leftOpen && aspectRatio == "21:9") ? '36vw' : left,
                         minHeight: "7px",
                         borderRadius: 5,
                         transform: "rotate(270deg)",
