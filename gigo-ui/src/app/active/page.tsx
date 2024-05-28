@@ -160,7 +160,7 @@ function Active() {
                                     //@ts-ignore
                                     pastWeek.map((project, index) => {
                                         return (
-                                            <div key={index}>
+                                            <div key={index} style={{ width: "100%" }}>
                                                 {project["_id"] !== "-1" ? (
                                                     <ProjectCard
                                                         width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : 'calc(20vw - 32px)')}
@@ -262,7 +262,7 @@ function Active() {
                                     //@ts-ignore
                                     mostChallenging.map((project, index) => {
                                         return (
-                                            <div key={index}>
+                                            <div key={index} style={{ width: "100%" }}>
                                                 <ProjectCard
                                                     width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : 'calc(20vw - 32px)')}
                                                     imageWidth={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : "calc(20vw - 32px)")}
@@ -336,7 +336,7 @@ function Active() {
                                 //@ts-ignore
                                 incomplete.map((project, index) => {
                                     return (
-                                        <div key={index}>
+                                        <div key={index} style={{ width: "100%" }}>
                                             {project["_id"] !== "-1" ? (
                                                 <ProjectCard
                                                     width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : 'calc(20vw - 32px)')}
@@ -364,8 +364,8 @@ function Active() {
                                             ) : (
                                                 // <div>challenge</div>
                                                 <ProjectCard
-                                                    width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? 'fit-content' : 'calc(20vw - 32px)')}
-                                                    imageWidth={(chatOpen || sidebarOpen) ? "16vw" : "calc(20vw - 32px)"}
+                                                    width={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : 'calc(20vw - 32px)')}
+                                                    imageWidth={(chatOpen || sidebarOpen) ? "16vw" : (isMobile ? '100%' : "calc(20vw - 32px)")}
                                                     projectId={project["post_id"]}
                                                     projectTitle={project["post_title"]}
                                                     projectDesc={project["description"]}
