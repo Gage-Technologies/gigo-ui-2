@@ -2,6 +2,7 @@
 import pad from "@/img/launch-pad.svg";
 
 import React from "react";
+import Image from "next/image"
 
 function LaunchPadIcon(props: any) {
     const aspectRatio = props.aspectRatio || '16:9';
@@ -12,7 +13,7 @@ function LaunchPadIcon(props: any) {
 
     return (
         <div style={{...props.style, width: props.width, height: props.height, paddingBottom, position: 'relative'}}>
-            <img alt="" src={pad} style={{position: 'absolute', width: '150%', height: '150%'}} />
+            <Image width={800} height={800} alt="" src={pad} style={{position: 'absolute', width: '150%', height: '150%'}} />
         </div>
     );
 
