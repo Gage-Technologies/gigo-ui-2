@@ -1437,7 +1437,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytesMobile')
+                router.push('/bytes')
             }
         },
         {
@@ -1470,7 +1470,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytesMobile')
+                router.push('/bytes')
             }
         },
         {
