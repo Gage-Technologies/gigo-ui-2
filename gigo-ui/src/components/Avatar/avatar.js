@@ -129,6 +129,7 @@ export default function Avataaar(props) {
           color: 'white',              // Text color
           borderRadius: '8px',         // Rounded edges
           fontFamily: 'Poppins, sans-serif', // Poppins font
+          marginBottom: "10px"
         }}>
           Randomize Avatar
           <ShuffleIcon/>
@@ -150,7 +151,7 @@ export default function Avataaar(props) {
           </Tabs>
         </div>
         {props.creation === undefined && (
-            <Tabpanes style={window.innerWidth > 1000 ? { position: 'relative', top: '15px' } : {display: "flex", width: "85%", justifyContent: "center", top: "15px"}}>
+            <Tabpanes style={window.innerWidth > 1000 ? { position: 'relative', top: '15px', right: "15%" } : {display: "flex", width: "85%", justifyContent: "center", top: "15px"}}>
               {options.map((option, i) => {
                 const { type } = option;
                 const startIndex = visibleIndices[type]?.startIndex || 0;

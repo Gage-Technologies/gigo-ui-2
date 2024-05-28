@@ -1574,7 +1574,8 @@ function AccountSettings() {
                     variant="outlined"
                     onClick={() => updateAvatarSettings()}
                     sx={{
-                        mt: 4
+                        mt: 4,
+                        right: "3%"
                     }}
                 >
                     Set Avatar
