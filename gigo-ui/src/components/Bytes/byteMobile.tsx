@@ -74,7 +74,7 @@ import LinkIcon from "@mui/icons-material/Link";
 import HelpIcon from '@mui/icons-material/Help';
 import CloseIcon from "@mui/icons-material/Close";
 import { styled } from "@mui/system";
-import {BugReportOutlined} from "@mui/icons-material";
+import { BugReportOutlined } from "@mui/icons-material";
 import { Circle } from "@mui/icons-material";
 import ConstructionIcon from '@mui/icons-material/Construction';
 import BlockIcon from '@mui/icons-material/Block';
@@ -94,7 +94,7 @@ import OutOfHeartsMobile from "@/components/OutOfHeartsMobile";
 import GoProDisplay from "@/components/GoProDisplay";
 import { decrementHeartsState, selectOutOfHearts } from "@/reducers/hearts/hearts";
 import HeartTracker from "@/components/HeartTracker";
-import {useRouter, useSearchParams} from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 
 interface MergedOutputRow {
@@ -248,7 +248,7 @@ interface ByteProps {
     byte: Byte
 }
 
-function ByteMobile({params, ...props}: ByteProps) {
+function ByteMobile({ params, ...props }: ByteProps) {
     const query = useSearchParams()
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
@@ -261,7 +261,7 @@ function ByteMobile({params, ...props}: ByteProps) {
     const [journeySetupDone, setJourneySetupDone] = useState(false);
     const dispatch = useAppDispatch();
 
-    let  id  = params.id;
+    let id = params.id;
     const isJourney = query.has('journey')
 
     const updateDifficulty = (difficulty: number) => {
@@ -385,7 +385,7 @@ function ByteMobile({params, ...props}: ByteProps) {
 
     const [lspActive, setLspActive] = React.useState(false)
     const [containerStyle, setContainerSyle] = useState<React.CSSProperties>(containerStyleDefault)
-    const [cursorPosition, setCursorPosition] = useState<{ row: number, column: number } | null>({row: 0, column: 0})
+    const [cursorPosition, setCursorPosition] = useState<{ row: number, column: number } | null>({ row: 0, column: 0 })
     const [codeBeforeCursor, setCodeBeforeCursor] = useState("");
     const [codeAfterCursor, setCodeAfterCursor] = useState(afi >= 0 ? outlineContent[afi].content : "");
     const [outputPopup, setOutputPopup] = useState(false);
@@ -520,8 +520,29 @@ function ByteMobile({params, ...props}: ByteProps) {
                 newCode[newActiveFileIndex] = temp;
             }
 
-            setCode(newCode)
-            debouncedUpdateCode(newCode)
+            // check if the newCode is different from the old code
+            const normalizeCode = (codeArray: CodeFile[]) => {
+                return codeArray
+                    .map(file => ({ ...file, content: file.content.trim() }))
+                    .sort((a, b) => a.file_name.localeCompare(b.file_name));
+            };
+
+            const hashContent = (codeArray: CodeFile[]) => {
+                return codeArray.reduce((acc, file) => {
+                    return acc + file.file_name + file.content;
+                }, '');
+            };
+
+            const oldCodeNormalized = normalizeCode(code);
+            const newCodeNormalized = normalizeCode(newCode);
+            const oldCodeHash = hashContent(oldCodeNormalized);
+            const newCodeHash = hashContent(newCodeNormalized);
+
+            if (oldCodeHash !== newCodeHash) {
+                setCode(newCode)
+                debouncedUpdateCode(newCode)
+            }
+            
             resolver(true);
             return true
         })

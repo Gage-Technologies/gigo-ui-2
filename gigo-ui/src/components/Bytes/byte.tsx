@@ -539,8 +539,29 @@ function BytePage({params, ...props}: ByteProps) {
                 newCode[newActiveFileIndex] = temp;
             }
 
-            setCode(newCode)
-            debouncedUpdateCode(newCode)
+            // check if the newCode is different from the old code
+            const normalizeCode = (codeArray: CodeFile[]) => {
+                return codeArray
+                    .map(file => ({ ...file, content: file.content.trim() }))
+                    .sort((a, b) => a.file_name.localeCompare(b.file_name));
+            };
+
+            const hashContent = (codeArray: CodeFile[]) => {
+                return codeArray.reduce((acc, file) => {
+                    return acc + file.file_name + file.content;
+                }, '');
+            };
+
+            const oldCodeNormalized = normalizeCode(code);
+            const newCodeNormalized = normalizeCode(newCode);
+            const oldCodeHash = hashContent(oldCodeNormalized);
+            const newCodeHash = hashContent(newCodeNormalized);
+
+            if (oldCodeHash !== newCodeHash) {
+                setCode(newCode)
+                debouncedUpdateCode(newCode)
+            }
+
             resolver(true);
             return true
         })
