@@ -1193,7 +1193,7 @@ function BytePage({params, ...props}: ByteProps) {
         };
     }, []);
 
-    const startTypingTimer = () => {
+    const startTypingTimer = React.useCallback(() => {
         setNextStepsPopup(false)
         setLastTimeTyped(Date.now());
         if (typingTimerRef.current) {
@@ -1210,7 +1210,7 @@ function BytePage({params, ...props}: ByteProps) {
         syncTimerRef.current = setInterval(() => {
             syncFs()
         }, 1000);
-    };
+    }, [syncFs])
 
 
     useEffect(() => {
@@ -1612,7 +1612,8 @@ function BytePage({params, ...props}: ByteProps) {
         })
         setSuggestionRange(null)
         setLoadingCodeCleanup(null)
-    }, [activeFile])
+        startTypingTimer()
+    }, [activeFile, startTypingTimer])
 
 
     const portPluginMemo = React.useMemo(() => (

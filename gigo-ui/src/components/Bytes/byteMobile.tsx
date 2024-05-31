@@ -1149,7 +1149,7 @@ function ByteMobile({params, ...props}: ByteProps) {
         };
     }, []);
 
-    const startTypingTimer = () => {
+    const startTypingTimer = React.useCallback(() => {
         setNextStepsPopup(false)
         setLastTimeTyped(Date.now());
         if (typingTimerRef.current) {
@@ -1165,7 +1165,7 @@ function ByteMobile({params, ...props}: ByteProps) {
         syncTimerRef.current = setTimeout(() => {
             syncFs()
         }, 1000);
-    };
+    }, [syncFs])
 
     useEffect(() => {
         switch (bytesState?.byteDifficulty) {
