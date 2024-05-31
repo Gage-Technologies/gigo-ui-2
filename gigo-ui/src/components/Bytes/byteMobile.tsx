@@ -1149,6 +1149,15 @@ function ByteMobile({params, ...props}: ByteProps) {
         };
     }, []);
 
+    const clearTypingTimers = () => {
+        if (typingTimerRef.current) {
+            clearTimeout(typingTimerRef.current);
+        }
+        if (syncTimerRef.current) {
+            clearInterval(syncTimerRef.current);
+        }
+    }
+
     const startTypingTimer = React.useCallback(() => {
         setNextStepsPopup(false)
         setLastTimeTyped(Date.now());
@@ -1185,6 +1194,7 @@ function ByteMobile({params, ...props}: ByteProps) {
                 setActiveFileIdx(hardCode.length > 0 ? 0 : -1)
                 break
         }
+        clearTypingTimers()
     }, [bytesState?.byteDifficulty])
 
     useEffect(() => {
