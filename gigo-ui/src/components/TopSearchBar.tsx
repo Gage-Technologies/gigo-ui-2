@@ -23,11 +23,11 @@ import {
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import React, {Suspense, SyntheticEvent} from "react";
-import {useRouter, useSearchParams} from "next/navigation";
+import React, { Suspense, SyntheticEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import Menu from "@mui/material/Menu";
-import {programmingLanguages} from "@/services/vars";
-import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
+import { programmingLanguages } from "@/services/vars";
+import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import UserIcon from "@/icons/User/UserIcon";
 import {
     clearSearchParamsState,
@@ -56,9 +56,9 @@ import {
 import Tag from "../models/tag";
 import swal from "sweetalert";
 import User from "../models/user";
-import {selectAuthState} from "@/reducers/auth/auth";
+import { selectAuthState } from "@/reducers/auth/auth";
 import config from "../config";
-import {theme} from "@/theme";
+import { theme } from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -69,19 +69,22 @@ import renown7 from "../img/renown/renown7.svg"
 import renown8 from "../img/renown/renown8.svg"
 import renown9 from "../img/renown/renown9.svg"
 import renown10 from "../img/renown/renown10.svg"
-import {grey} from "@mui/material/colors";
-import {debounce} from "lodash";
+import { grey } from "@mui/material/colors";
+import { debounce, stubTrue } from "lodash";
 import Image from "next/image";
 import SuspenseFallback from "@/components/SuspenseFallback";
+import JourneyDetourPopup from "./Journey/JourneyDetourPopup";
+import { Unit as JourneyUnit } from "@/models/journey";
+import JourneyDetourMobilePopup from "./Journey/JourneyDetourMobilePopup";
 
 
 interface SearchOption {
-    type: "challenge" | "user" | "byte";
+    type: "challenge" | "user" | "byte" | "journeyUnit";
     content: any;
 }
 
 
-const Search = styled('div')(({theme}) => ({
+const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
     backgroundColor: alpha(theme.palette.primary.contrastText, 0.15),
@@ -99,7 +102,7 @@ const Search = styled('div')(({theme}) => ({
     },
 }));
 
-const SearchIconWrapper = styled('div')(({theme}) => ({
+const SearchIconWrapper = styled('div')(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -110,7 +113,7 @@ const SearchIconWrapper = styled('div')(({theme}) => ({
     color: theme.palette.primary.contrastText
 }));
 
-const FilterIconButton = styled(IconButton)(({theme}) => ({
+const FilterIconButton = styled(IconButton)(({ theme }) => ({
     padding: theme.spacing(0, 2),
     height: '100%',
     position: 'absolute',
@@ -122,7 +125,7 @@ const FilterIconButton = styled(IconButton)(({theme}) => ({
     zIndex: 1000,
 }));
 
-const SearchLoading = styled(CircularProgress)(({theme}) => ({
+const SearchLoading = styled(CircularProgress)(({ theme }) => ({
     padding: theme.spacing(0, 2),
     position: 'absolute',
     color: theme.palette.primary.contrastText,
@@ -130,7 +133,7 @@ const SearchLoading = styled(CircularProgress)(({theme}) => ({
     zIndex: 1000,
 }));
 
-const StyledInputBase = styled(InputBase)(({theme}) => ({
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
     color: theme.palette.primary.contrastText,
     '& .MuiInputBase-input': {
         padding: theme.spacing(1, 1, 1, 0),
@@ -173,9 +176,9 @@ interface IProps {
 
 // initialize redux states
 export default function TopSearchBar({
-                                         width = "35vw",
-                                         height = "auto",
-                                     }: IProps) {
+    width = "35vw",
+    height = "auto",
+}: IProps) {
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
 
@@ -249,6 +252,7 @@ export default function TopSearchBar({
     const [searchPending, setSearchPending] = React.useState<boolean>(false);
     const optionsRef = React.useRef<HTMLDivElement>(null);
     const autoCompleteRef = React.useRef<HTMLDivElement>(null);
+    const [detourPopupData, setDetourPopupData] = React.useState<JourneyUnit | null>(null);
 
     const clearState = () => {
         dispatch(clearSearchParamsState())
@@ -493,8 +497,8 @@ export default function TopSearchBar({
         };
 
         const isClickWithinElement = (event: MouseEvent, element: HTMLElement) => {
-            const {left, top, right, bottom} = element.getBoundingClientRect();
-            const {clientX, clientY} = event;
+            const { left, top, right, bottom } = element.getBoundingClientRect();
+            const { clientX, clientY } = event;
 
             return (
                 clientX >= left &&
@@ -757,10 +761,23 @@ export default function TopSearchBar({
             }
         ).then(res => res.json())
 
-        const [res, res2, res3] = await Promise.all([
+        let journeyUnits = fetch(
+            `${config.rootPath}/api/search/journeyUnits`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(params),
+                credentials: 'include'
+            }
+        ).then(res => res.json())
+
+        const [res, res2, res3, res4] = await Promise.all([
             posts,
             users,
-            bytes
+            bytes,
+            journeyUnits
         ])
 
 
@@ -770,7 +787,7 @@ export default function TopSearchBar({
             return
         }
 
-        if (res["challenges"] === undefined || res2["users"] === undefined || res3["posts"] === undefined) {
+        if (res["challenges"] === undefined || res2["users"] === undefined || res3["posts"] === undefined || res4["units"] === undefined) {
             if (res["message"] === undefined) {
                 swal("Server Error", "Man... We don't know what happened, but there's some weird stuff going on. " +
                     "We'll get working on this, come back in a few minutes")
@@ -782,11 +799,13 @@ export default function TopSearchBar({
 
 
         // @ts-ignore
-        let finalSearchOptions = res3["posts"].map(x => ({type: "byte", content: x})).
+        let finalSearchOptions = res4["units"].map(x => ({ type: "journeyUnit", content: x })).
             // @ts-ignore
-            concat(res["challenges"].map(x => ({type: "challenge", content: x}))).
+            concat(res3["posts"].map(x => ({ type: "byte", content: x }))).
             // @ts-ignore
-            concat(res2["users"].map(x => ({type: "user", content: x})))
+            concat(res["challenges"].map(x => ({ type: "challenge", content: x }))).
+            // @ts-ignore
+            concat(res2["users"].map(x => ({ type: "user", content: x })))
         setSearchOptions(JSON.parse(JSON.stringify(finalSearchOptions)))
         setOptionsOpen(true)
         setSearchPending(false)
@@ -907,7 +926,7 @@ export default function TopSearchBar({
                             }}
                             value={searchParams.languages === null ? [] : searchParams.languages}
                             renderInput={(params) => (
-                                <TextField {...params} placeholder="Select"/>
+                                <TextField {...params} placeholder="Select" />
                             )}
                             sx={{
                                 width: "17vw",
@@ -1135,7 +1154,7 @@ export default function TopSearchBar({
                                 return option.user_name
                             }}
                             renderInput={(params) => (
-                                <TextField {...params} placeholder="Search"/>
+                                <TextField {...params} placeholder="Search" />
                             )}
                             onInputChange={(e) => {
                                 handleAuthorSearch(e)
@@ -1460,7 +1479,7 @@ export default function TopSearchBar({
                                 return option.value
                             }}
                             renderInput={(params) => (
-                                <TextField {...params} label="Search"/>
+                                <TextField {...params} label="Search" />
                             )}
                             onInputChange={(e) => {
                                 handleTagSearch(e)
@@ -1555,25 +1574,33 @@ export default function TopSearchBar({
     }
 
     const renderGroup = (params: any) => {
-        let color = !isMobile
-            ?
-            params.group.toLowerCase() === "challenge" ? theme.palette.primary.main : params.group.toLowerCase() === "user" ? theme.palette.secondary.main : theme.palette.mode === "light" ? grey[900] : grey[300]
-            :
-            null;
+        let color: string | null = grey[300].toString();
+        if (params.group.toLowerCase() === "journeyunit") {
+            color = "#ffef62";
+        }
+        if (params.group.toLowerCase() === "user") {
+            color = theme.palette.secondary.main;
+        }
+        if (params.group.toLowerCase() === "challenge") {
+            color = theme.palette.primary.main;
+        }
 
-        let text = !isMobile
-            ?
-            params.group
-            :
-            null;
+        let text: string | null = params.group
+        if (params.group.toLowerCase() === "journeyunit") {
+            text = "Detours"
+        }
 
-        // let textColor = params.group.toLowerCase() === "post" ? theme.palette.primary.main : theme.palette.secondary.main;
-        // this is important if we are using gradients
-        // @ts-ignore
-        let textColor = params.group.toLowerCase() === "challenge" ? theme.palette.primary.light : params.group.toLowerCase() === "user" ? theme.palette.secondary.light : grey[300];
-        if (theme.palette.mode === "light")
-            // @ts-ignore
-            textColor = params.group.toLowerCase() === "challenge" ? theme.palette.primary.dark : params.group.toLowerCase() === "user" ? theme.palette.secondary.dark : grey[900];
+
+        let textColor: string | null = grey[300].toString();
+        if (params.group.toLowerCase() === "journeyunit") {
+            textColor = "#ffef62";
+        }
+        if (params.group.toLowerCase() === "user") {
+            textColor = theme.palette.secondary.main;
+        }
+        if (params.group.toLowerCase() === "challenge") {
+            textColor = theme.palette.primary.main;
+        }
 
         const gradientBackground = {
             background: `linear-gradient(45deg, ${color}20 20%, transparent 100%, transparent 100%)`,
@@ -1725,7 +1752,7 @@ export default function TopSearchBar({
                                 router.refresh()
                             }}
                         >
-                            <div style={{display: "flex", flexDirection: "row", width: "95%", justifyContent: "left"}}>
+                            <div style={{ display: "flex", flexDirection: "row", width: "95%", justifyContent: "left" }}>
                                 <div>
                                     <UserIcon
                                         userId={
@@ -1783,6 +1810,87 @@ export default function TopSearchBar({
                                 />
                             </Tooltip>
                         </Button>
+                    </Card>
+                </div>
+            )
+        }
+
+        if (option.type === "journeyUnit") {
+            return (
+                <div style={{
+                    paddingBottom: '10px',
+                    paddingLeft: '10px',
+                }}>
+                    <Card sx={{
+                        display: 'flex',
+                        textAlign: "left",
+                        width: "99%",
+                        height: 75,
+                        border: 1,
+                        borderColor: "#ffef6275",
+                        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
+                        backgroundColor: "transparent",
+                        backgroundImage: "none",
+                        cursor: 'pointer',
+                        '&:hover': {
+                            backgroundColor: "#ffef6225",
+                        },
+                        padding: 0
+                    }}
+                        onClick={() => {
+                            setDetourPopupData(option.content)
+                        }}>
+                        <CardMedia
+                            component="img"
+                            sx={{
+                                position: 'relative',
+                                bottom: '16px',
+                                width: '110px',
+                                height: '110px',
+                                objectFit: 'cover',
+                                borderRadius: '10px',
+                                clipPath: 'polygon(50% 20%, 100% 35%, 100% 65%, 50% 80%, 0 65%, 0 35%)',
+                                marginLeft: "4px"
+                            }}
+                            // @ts-ignore
+                            image={config.rootPath + "/static/junit/t/" + option.content._id}
+                            alt="Journey Unit Image"
+                        />
+                        <Box sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, ml: 2 }}>
+                            <CardContent
+                                sx={{
+                                    padding: "0px"
+                                }}
+                            >
+                                <Typography variant="h5" component="div" sx={{
+                                    fontSize: "16px",
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 1,
+                                    WebkitBoxOrient: 'vertical',
+                                    lineHeight: "28px",
+                                }}>
+                                    {
+                                        //@ts-ignore
+                                        option.content.name
+                                    }
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{
+                                    fontSize: "12px",
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    display: '-webkit-box',
+                                    WebkitLineClamp: 2,
+                                    WebkitBoxOrient: 'vertical',
+                                }}>
+                                    {
+                                        //@ts-ignore
+                                        option.content.description
+                                    }
+                                </Typography>
+                            </CardContent>
+                        </Box>
                     </Card>
                 </div>
             )
@@ -1888,7 +1996,7 @@ export default function TopSearchBar({
                     }}
                 >
                     <SearchIconWrapper>
-                        <SearchIcon/>
+                        <SearchIcon />
                     </SearchIconWrapper>
                     {searchPending ? (
                         <SearchLoading size={32} sx={{
@@ -1897,7 +2005,7 @@ export default function TopSearchBar({
                             marginTop: "5px",
                             minWidth: 0,
                             padding: 1,
-                        }}/>
+                        }} />
                     ) : (
                         <FilterIconButton sx={{
                             color: theme.palette.primary.contrastText,
@@ -1905,7 +2013,7 @@ export default function TopSearchBar({
                             minWidth: 0,
                             padding: 1,
                         }} onClick={handleClick}>
-                            <FilterListIcon/>
+                            <FilterListIcon />
                         </FilterIconButton>
                     )}
                     <form onSubmit={e => handleSubmit(e)}>
@@ -1913,7 +2021,7 @@ export default function TopSearchBar({
                             freeSolo
                             id="search-query"
                             ref={autoCompleteRef}
-                            PopperComponent={({children, ...popperProps}) => (
+                            PopperComponent={({ children, ...popperProps }) => (
                                 <Popper {...popperProps} ref={optionsRef}>
                                     {children}
                                 </Popper>
@@ -1933,6 +2041,8 @@ export default function TopSearchBar({
                                         return option.content.name
                                     case "user":
                                         return option.content.user_name
+                                    case "journeyUnit":
+                                        return option.content.name
                                 }
                             }}
                             groupBy={(option) =>
@@ -1961,9 +2071,9 @@ export default function TopSearchBar({
                                 }
                             }
                             renderInput={(params) => {
-                                const {InputLabelProps, InputProps, ...rest} = params;
+                                const { InputLabelProps, InputProps, ...rest } = params;
                                 return <StyledInputBase {...params.InputProps} {...rest}
-                                                        placeholder="Search for Challenges!"/>
+                                    placeholder="Search for Challenges!" />
                             }}
                         />
                     </form>
@@ -2023,7 +2133,7 @@ export default function TopSearchBar({
                     }}
                 >
                     <SearchIconWrapper>
-                        <SearchIcon/>
+                        <SearchIcon />
                     </SearchIconWrapper>
                     {/*TODO: This is the options for search*/}
                     <form onSubmit={e => handleSubmit(e)}>
@@ -2031,7 +2141,7 @@ export default function TopSearchBar({
                             freeSolo
                             id="search-query"
                             ref={autoCompleteRef}
-                            PopperComponent={({children, ...popperProps}) => (
+                            PopperComponent={({ children, ...popperProps }) => (
                                 <Popper
                                     {...popperProps}
                                     ref={optionsRef}
@@ -2045,98 +2155,181 @@ export default function TopSearchBar({
                             open={optionsOpen}
                             onOpen={() => setOptionsOpen(true)}
                             onClose={() => setOptionsOpen(false)}
-                            options={searchOptions.filter(x => x.type === "challenge")}
+                            options={searchOptions.filter(x => x.type === "journeyUnit" || x.type === "byte")}
                             getOptionLabel={(option: SearchOption | string) => {
                                 if (typeof option === "string") {
                                     return option
                                 }
-                                return option.content.title
+                                return option.content.name
                             }}
                             filterOptions={(options) => options}
-                            renderOption={(props, option) => (
-                                <div
-                                    style={{
-                                        paddingBottom: '10px',
-                                        paddingLeft: '10px',
-                                    }}
-                                >
-                                    {/* @ts-ignore */}
-                                    {(
+                            renderGroup={renderGroup}
+                            groupBy={(option) =>
+                                // @ts-ignore
+                                option.type
+                            }
+                            renderOption={(props, option) => {
+                                if (typeof option === "string") {
+                                    return option
+                                }
+
+                                if (option.type === "byte") {
+                                    return (
                                         <Card sx={{
                                             display: 'flex',
                                             textAlign: "left",
-                                            width: "99%",
-                                            height: 75,
-                                            border: 1,
-                                            borderColor: theme.palette.primary.main + "75",
-                                            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
                                             backgroundColor: "transparent",
                                             backgroundImage: "none",
+                                            boxShadow: "none",
                                             cursor: 'pointer',
+                                            width: "85px",
                                             '&:hover': {
-                                                backgroundColor: theme.palette.primary.main + "25",
-                                            }
+                                                // @ts-ignore
+                                                backgroundColor: alpha(grey[300], 0.25),
+                                            },
+                                            height: "100%"
                                         }}>
                                             <Button
-                                                sx={{width: "100%"}}
+                                                sx={{
+                                                    height: "100%",
+                                                    width: "100%",
+                                                    "&:hover": {
+                                                        backgroundColor: "none"
+                                                    }
+                                                }}
                                                 onClick={async () => {
                                                     // @ts-ignore
-                                                    await handleSearchCompleted(option.content._id)
-                                                    // @ts-ignore
-                                                    router.push("/challenge/" + option.content._id)
+                                                    router.push("/byte/" + option.content._id)
                                                 }}
                                             >
-                                                <CardMedia
-                                                    component="img"
-                                                    // @ts-ignore
-                                                    image={config.rootPath + option.content.thumbnail}
-                                                    alt="No Image"
+                                                <Box
+                                                    display={'flex'}
+                                                    justifyContent={'center'}
+                                                    flexDirection={'column'}
                                                     sx={{
-                                                        borderRadius: "10px",
-                                                        height: 60,
-                                                        width: 220,
-                                                        minWidth: 100,
-                                                        paddingLeft: "-10px",
-                                                    }}
-                                                />
-                                                <CardContent
-                                                    sx={{
+                                                        height: "100%",
                                                         width: "100%",
-                                                        height: "170%",
-                                                        paddingTop: "20px",
-                                                        paddingBottom: "15px",
                                                     }}
                                                 >
-                                                    <Typography align="left" variant="inherit" component="div" sx={{
-                                                        textOverflow: "ellipsis",
-                                                        overflow: "hidden",
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 1,
-                                                        WebkitBoxOrient: 'vertical',
-                                                    }}>
+                                                    <Image
+                                                        // @ts-ignore
+                                                        src={config.rootPath + "/static/bytes/t/" + option.content._id}
+                                                        alt="No Image"
+                                                        height={120}
+                                                        width={70}
+                                                        style={{
+                                                            borderRadius: "10px",
+                                                        }}
+                                                    />
+                                                    <Typography
+                                                        align="left"
+                                                        variant="body2"
+                                                        component={Box}
+                                                        sx={{
+                                                            textOverflow: "wrap",
+                                                            overflow: "hidden",
+                                                            fontSize: ".6rem",
+                                                            color: grey[300],
+                                                            height: "100%",
+                                                            width: "100%",
+                                                        }}
+                                                    >
                                                         {
                                                             // @ts-ignore
-                                                            option.content.title
+                                                            option.content.name
                                                         }
                                                     </Typography>
-                                                    <Typography variant="body2" color="text.secondary" sx={{
-                                                        textOverflow: "ellipsis",
-                                                        overflow: "hidden",
-                                                        display: '-webkit-box',
-                                                        WebkitLineClamp: 2,
-                                                        WebkitBoxOrient: 'vertical',
-                                                    }}>
-                                                        {
-                                                            // @ts-ignore
-                                                            option.content.description
-                                                        }
-                                                    </Typography>
-                                                </CardContent>
+                                                </Box>
                                             </Button>
                                         </Card>
-                                    )}
-                                </div>
-                            )}
+                                    )
+                                }
+
+                                return (
+                                    <div
+                                        style={{
+                                            paddingBottom: '10px',
+                                            paddingLeft: '10px',
+                                        }}
+                                    >
+                                        {/* @ts-ignore */}
+                                        {(
+                                            <Card sx={{
+                                                display: 'flex',
+                                                textAlign: "left",
+                                                width: "99%",
+                                                height: 75,
+                                                border: 1,
+                                                borderColor: "#ffef6275",
+                                                boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1);",
+                                                backgroundColor: "transparent",
+                                                backgroundImage: "none",
+                                                cursor: 'pointer',
+                                                '&:hover': {
+                                                    backgroundColor: "#ffef6225",
+                                                }
+                                            }}>
+                                                <Button
+                                                    sx={{ width: "100%" }}
+                                                    onClick={async () => {
+                                                        // @ts-ignore
+                                                        setDetourPopupData(option.content)
+                                                    }}
+                                                >
+                                                    <CardMedia
+                                                        component="img"
+                                                        // @ts-ignore
+                                                        image={config.rootPath + `/static/junit/t/${option.content._id}`}
+                                                        alt="No Image"
+                                                        sx={{
+                                                            clipPath: "polygon(50% 20%, 100% 35%, 100% 65%, 50% 80%, 0 65%, 0 35%)",
+                                                            borderRadius: "10px",
+                                                            height: "110px",
+                                                            width: "110px",
+                                                            paddingLeft: "-10px",
+                                                            objectFit: "cover",
+                                                        }}
+                                                    />
+                                                    <CardContent
+                                                        sx={{
+                                                            width: "100%",
+                                                            height: "170%",
+                                                            paddingTop: "20px",
+                                                            paddingBottom: "15px",
+                                                        }}
+                                                    >
+                                                        <Typography align="left" variant="inherit" component="div" sx={{
+                                                            textOverflow: "ellipsis",
+                                                            overflow: "hidden",
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 1,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            color: "white",
+                                                        }}>
+                                                            {
+                                                                // @ts-ignore
+                                                                option.content.name
+                                                            }
+                                                        </Typography>
+                                                        <Typography variant="body2" color="text.secondary" sx={{
+                                                            textOverflow: "ellipsis",
+                                                            overflow: "hidden",
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                        }}>
+                                                            {
+                                                                // @ts-ignore
+                                                                option.content.description
+                                                            }
+                                                        </Typography>
+                                                    </CardContent>
+                                                </Button>
+                                            </Card>
+                                        )}
+                                    </div>
+                                )
+                            }}
                             onInputChange={(e) => {
                                 handleSearchSubmit(e)
                             }}
@@ -2155,8 +2348,8 @@ export default function TopSearchBar({
                                 }
                             }
                             renderInput={(params) => {
-                                const {InputLabelProps, InputProps, ...rest} = params;
-                                return <StyledInputBase {...params.InputProps} {...rest} placeholder="Search"/>
+                                const { InputLabelProps, InputProps, ...rest } = params;
+                                return <StyledInputBase {...params.InputProps} {...rest} placeholder="Search" />
                             }}
                         />
                     </form>
@@ -2199,10 +2392,16 @@ export default function TopSearchBar({
         )
     }
     return (
-        <Suspense fallback={<SuspenseFallback/>}>
+        <Suspense fallback={<SuspenseFallback />}>
             <div>
                 {!isMobile ? fullSizedSearch() : mobileSearch()}
             </div>
+            {detourPopupData !== null && (
+                isMobile ? (
+                    <JourneyDetourMobilePopup open={detourPopupData !== null} onClose={() => setDetourPopupData(null)} unit={detourPopupData} />
+                ) : (
+                    <JourneyDetourPopup open={detourPopupData !== null} onClose={() => setDetourPopupData(null)} unit={detourPopupData} />
+                ))}
         </Suspense>
     )
 }

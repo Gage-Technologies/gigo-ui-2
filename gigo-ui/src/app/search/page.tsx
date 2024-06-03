@@ -178,11 +178,7 @@ async function SearchMain({ searchParams: rawSearchParams }: { searchParams?: { 
                 'Content-Type': 'application/json',
                 'Cookie': getSessionCookies(cookies())
             },
-            body: JSON.stringify({
-                query: searchParams["q"] || "",
-                skip: 0,
-                limit: 16
-            }),
+            body: JSON.stringify(params),
             credentials: 'include'
         }
     ).then(async (response) => {

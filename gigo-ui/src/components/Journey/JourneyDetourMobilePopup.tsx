@@ -65,7 +65,7 @@ const JourneyDetourMobilePopup: React.FC<JourneyDetourPopupProps> = ({ open, onC
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({detour_unit_id: unit._id, user_id: userId, task_id: reduxIdState,}),
+                body: JSON.stringify({detour_unit_id: unit._id, user_id: userId, task_id: typeof reduxIdState === "string" ? reduxIdState : `${reduxIdState}`}),
                 credentials: 'include'
             }
         ).then(async (response) => response.json())
