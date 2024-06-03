@@ -95,7 +95,6 @@ export type ByteChatProps = {
 export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisibility: (isVisible: boolean) => void }) {
     let ctWs = useGlobalCtWebSocket();
     let authState = useAppSelector(selectAuthState);
-    const bytesState = useAppSelector(selectBytesState)
     const thumbnail = useAppSelector(selectAuthStateThumbnail);
 
     const dispatch = useAppDispatch();

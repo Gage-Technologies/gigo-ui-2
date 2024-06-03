@@ -196,6 +196,8 @@ function BytePage({params, ...props}: ByteProps) {
     const query = useSearchParams()
     const isJourney = query.get("journey") !== null
 
+    let id = params.id;
+
     const [xpPopup, setXpPopup] = React.useState(false)
     const [xpData, setXpData] = React.useState(null)
     const [nodeBelow, setNodeBelow] = React.useState(null)
@@ -203,28 +205,53 @@ function BytePage({params, ...props}: ByteProps) {
     const authState = useAppSelector(selectAuthState);
     const bytesState = useAppSelector(selectBytesState)
     const outOfHearts = useAppSelector(selectOutOfHearts);
-    let isMobile = query.get("viewport") === "mobile";
 
     const [terminalVisible, setTerminalVisible] = useState(false);
     const [journeySetupDone, setJourneySetupDone] = useState(false);
     const dispatch = useAppDispatch();
 
-    const updateDifficulty = (difficulty: number) => {
+    const navigate = useRouter();
+
+    const updateDifficulty = (difficulty: number, reload: boolean = true) => {
         // copy the existing state
         let state = Object.assign({}, initialBytesStateUpdate)
         // update the state
         state.initialized = true
         state.byteDifficulty = difficulty
         dispatch(updateBytesState(state))
+
+        if (reload) {
+            const params = new URLSearchParams(query)
+            params.set("difficulty", difficultyToString(difficulty))
+            navigate.replace(`/byte/${id}?${params.toString()}`)
+            navigate.refresh()
+        }
     }
 
     const determineDifficulty = React.useCallback(() => {
-        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
+        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0) && !query.has("difficulty");
 
         if (shouldSetToEasy) {
-            updateDifficulty(0)
+            updateDifficulty(0, false)
             setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
             return 0
+        }
+
+        if (query.has("difficulty")) {
+            let diff = 0
+            if (query.get("difficulty") === "medium") {
+                diff = 1
+            } else if (query.get("difficulty") === "hard") {
+                diff = 2
+            }
+
+            if (!bytesState?.initialized || bytesState?.byteDifficulty !== diff || (isJourney && !journeySetupDone)) {
+                updateDifficulty(diff, false)
+            }
+            if (isJourney && !journeySetupDone) {
+                setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
+            }
+            return diff
         }
 
         if (bytesState?.initialized) {
@@ -374,8 +401,6 @@ function BytePage({params, ...props}: ByteProps) {
         }
     };
 
-    const navigate = useRouter();
-
     const determinedDiff = determineDifficulty()
     let outlineContent = props.byte.files_easy
     if (determinedDiff === 1) {
@@ -458,13 +483,6 @@ function BytePage({params, ...props}: ByteProps) {
     const [runTutorial, setRunTutorial] = React.useState(!tutorialState.bytes && authState.authenticated)
     const [stepIndex, setStepIndex] = React.useState(0)
     const [proPopupOpen, setProPopupOpen] = useState(false)
-
-    // const location = useLocation();
-    // const queryParams = new URLSearchParams(location.search);
-
-    // let {id} = useParams();
-
-    let id = params.id;
 
     let ctWs = useGlobalCtWebSocket();
 

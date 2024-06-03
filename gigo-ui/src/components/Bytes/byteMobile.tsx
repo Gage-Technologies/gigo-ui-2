@@ -264,22 +264,48 @@ function ByteMobile({ params, ...props }: ByteProps) {
     let id = params.id;
     const isJourney = query.has('journey')
 
-    const updateDifficulty = (difficulty: number) => {
+    const navigate = useRouter();
+
+    const updateDifficulty = (difficulty: number, reload: boolean = true) => {
         // copy the existing state
         let state = Object.assign({}, initialBytesStateUpdate)
         // update the state
         state.initialized = true
         state.byteDifficulty = difficulty
         dispatch(updateBytesState(state))
+
+        if (reload) {
+            const params = new URLSearchParams(query)
+            params.set("difficulty", difficultyToString(difficulty))
+            navigate.replace(`/byte/${id}?${params.toString()}`)
+            navigate.refresh()
+        }
     }
 
     const determineDifficulty = React.useCallback(() => {
-        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0);
+        const shouldSetToEasy = isJourney && !journeySetupDone && (!bytesState?.initialized || bytesState?.byteDifficulty !== 0) && !query.has("difficulty");
 
         if (shouldSetToEasy) {
-            updateDifficulty(0)
+            updateDifficulty(0, false)
             setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
             return 0
+        }
+
+        if (query.has("difficulty")) {
+            let diff = 0
+            if (query.get("difficulty") === "medium") {
+                diff = 1
+            } else if (query.get("difficulty") === "hard") {
+                diff = 2
+            }
+
+            if (!bytesState?.initialized || bytesState?.byteDifficulty !== diff || (isJourney && !journeySetupDone)) {
+                updateDifficulty(diff, false)
+            }
+            if (isJourney && !journeySetupDone) {
+                setJourneySetupDone(true); // Mark the journey setup as completed to prevent re-execution.
+            }
+            return diff
         }
 
         if (bytesState?.initialized) {
@@ -365,7 +391,6 @@ function ByteMobile({ params, ...props }: ByteProps) {
     };
 
     const helpPopupClosedByUser = useAppSelector(selectHelpPopupClosedByUser);
-    const navigate = useRouter();
 
     const determinedDiff = determineDifficulty()
     let outlineContent = props.byte.files_easy
