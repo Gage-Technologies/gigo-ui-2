@@ -47,6 +47,7 @@
     "@mui/styles": "^5.15.16",
     "@mui/x-data-grid": "^6.0.4",
     "@mui/x-tree-view": "^7.3.1",
+    "@next/third-parties": "^14.2.3",
     "@nextjournal/lang-clojure": "^1.0.0",
     "@ramonak/react-progress-bar": "^5.0.3",
     "@react-oauth/google": "^0.6.0",

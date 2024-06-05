@@ -15,6 +15,8 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import config from "@/config";
 import GoogleProvider from "@/app/GoogleProvider";
 import WebTracking from '@/components/WebTracking';
+import { GoogleAnalytics } from '@next/third-parties/google'
+
 
 export const metadata: Metadata = {
     applicationName: 'GIGO Dev',
@@ -70,6 +72,7 @@ export default function Layout({
                     </StoreProvider>
                 </AppRouterCacheProvider>
             </body>
+            <GoogleAnalytics gaId="G-38KBFJZ6M6" />
         </html>
     );
 }
