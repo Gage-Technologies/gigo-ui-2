@@ -187,7 +187,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const hasSubscription = useAppSelector(selectAuthStateHasSubscription)
     const alreadyCancelled = useAppSelector(selectAuthStateAlreadyCancelled)
 
-    const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true");
+    const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true" && !isMobile);
     const [rightOpen, setRightOpen] = React.useState(query.get("chat") === "true" && authState.authenticated);
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const [reportPopup, setReportPopup] = React.useState(false)
@@ -424,17 +424,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     };
 
     const handleCreateAccount = () => {
-        router.push("/signup?forward=" + encodeURIComponent(pathname))
+        router.push(`/signup?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
     }
 
     const handleLogin = () => {
-        router.push("/login?forward=" + encodeURIComponent(pathname))
+        router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
     }
 
 
     const handleProfile = () => {
         setAnchorEl(null);
-        router.push("/profile")
+        router.push(`/profile?viewport=${isMobile ? "mobile" : "desktop"}`)
     };
 
     const clearReducers = () => {
@@ -612,7 +612,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 clearReducers()
             }
             if (data["message"] !== undefined && data["message"] === "success") {
-                router.push("/login?forward=" + forwardPath)
+                router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${forwardPath}`)
             }
             const persistOptions = {};
             // persistStore(store, persistOptions).purge()
@@ -651,7 +651,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const handleSettings = () => {
         setAnchorEl(null);
-        router.push("/settings")
+        router.push(`/settings?viewport=${isMobile ? "mobile" : "desktop"}`)
     };
 
     React.useEffect(() => {
@@ -674,9 +674,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setAnchorEl(null);
         if (exclusiveAgreement || window.sessionStorage.getItem('exclusiveAgreement') === "true") {
             window.sessionStorage.setItem("exclusiveProject", "true")
-            router.push("/create-challenge")
+            router.push(`/create-challenge?viewport=${isMobile ? "mobile" : "desktop"}`)
         } else {
-            router.push("/aboutExclusive")
+            router.push(`/aboutExclusive?viewport=${isMobile ? "mobile" : "desktop"}`)
         }
     }, [isClient])
 
@@ -684,7 +684,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setAnchorEl(null);
 
         if (username === "gigo") {
-            router.push("/curateAdmin")
+            router.push(`/curateAdmin?viewport=${isMobile ? "mobile" : "desktop"}`)
         }
     };
 
@@ -1245,7 +1245,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 let authState = Object.assign({}, initialAuthStateUpdate)
                 // @ts-ignore
                 dispatch(updateAuthState(authState))
-                router.push("/login?forward=" + encodeURIComponent(pathname))
+                router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
             }
 
             if (data["return url"] !== undefined) {
@@ -1329,7 +1329,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     </Button>
                     {loggedIn ? renderDevSpaceControls() : (
                         <Button onClick={async () => {
-                            router.push("/signup?forward=" + encodeURIComponent(pathname))
+                            router.push(`/signup?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
                         }} sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -1431,31 +1431,31 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
-                router.push('/about')
+                router.push(`/about?viewport=mobile`)
             }
         },
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytes')
+                router.push(`/bytes?viewport=mobile`)
             }
         },
         {
             icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
-                router.push('/home')
+                router.push(`/home?viewport=mobile`)
             }
         },
         {
             icon: <FolderOutlined />, name: 'Active', action: () => {
                 closeChat();
-                router.push('/active')
+                router.push(`/active?viewport=mobile`)
             }
         },
         {
             icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
-                router.push('/articles')
+                router.push(`/articles?viewport=mobile`)
             }
         },
     ];
@@ -1464,25 +1464,25 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
-                router.push('/about')
+                router.push(`/about?viewport=mobile`)
             }
         },
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytes')
+                router.push(`/bytes?viewport=mobile`)
             }
         },
         {
             icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
-                router.push('/home')
+                router.push(`/home?viewport=mobile`)
             }
         },
         {
             icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
-                router.push('/articles')
+                router.push(`/articles?viewport=mobile`)
             }
         },
     ];
