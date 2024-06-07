@@ -144,27 +144,27 @@ export default function Tutorial() {
             ),
             content: (
                 <>
-                    {authState.role < 1 && (
-                        <>
-                            <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
-                                You&#39;ve received a free month of GIGO Pro!
-                            </Typography>
-                            <Box sx={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                flexDirection: 'column',
-                                mb: 2
-                            }}>
-                                <Button onClick={(event) => {
-                                    setGoProPopup(true)
-                                    console.log("opening box")
-                                }} variant={"contained"}>
-                                    Claim Free Month
-                                </Button>
-                            </Box>
-                        </>
-                    )}
+                    {/*{authState.role < 1 && (*/}
+                    {/*    <>*/}
+                    {/*        <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>*/}
+                    {/*            You&#39;ve received a free month of GIGO Pro!*/}
+                    {/*        </Typography>*/}
+                    {/*        <Box sx={{*/}
+                    {/*            display: 'flex',*/}
+                    {/*            justifyContent: 'center',*/}
+                    {/*            alignItems: 'center',*/}
+                    {/*            flexDirection: 'column',*/}
+                    {/*            mb: 2*/}
+                    {/*        }}>*/}
+                    {/*            <Button onClick={(event) => {*/}
+                    {/*                setGoProPopup(true)*/}
+                    {/*                console.log("opening box")*/}
+                    {/*            }} variant={"contained"}>*/}
+                    {/*                Claim Free Month*/}
+                    {/*            </Button>*/}
+                    {/*        </Box>*/}
+                    {/*    </>*/}
+                    {/*)}*/}
                     <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
                         Give a month, Get a month! For every friend you refer, both of you get a free month of GIGO
                         Pro!

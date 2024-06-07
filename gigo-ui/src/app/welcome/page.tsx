@@ -296,10 +296,10 @@ const WelcomePage: React.FC = () => {
                             <Typography variant={"h4"} style={{color: "white"}} align={"center"}>
                                 Try GIGO Pro
                             </Typography>
-                            <Typography variant={"subtitle1"} style={{color: "white", textAlign: "left"}}
-                                        align={"center"}>
-                                Free for 1 month
-                            </Typography>
+                            {/*<Typography variant={"subtitle1"} style={{color: "white", textAlign: "left"}}*/}
+                            {/*            align={"center"}>*/}
+                            {/*    Free for 1 month*/}
+                            {/*</Typography>*/}
                         </Box>
                         <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
                             width: "80px",
@@ -389,7 +389,6 @@ const WelcomePage: React.FC = () => {
                                     price="$3"
                                     billingPeriod="billed per month"
                                     benefits={basicBenefits}
-                                    trialText="1 month free trial"
                                     // Include any special text or offers for the monthly plan here
                                 />
                                 <LoadingButton
@@ -399,7 +398,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "basic"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $3/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -410,7 +409,6 @@ const WelcomePage: React.FC = () => {
                                     price="$8"
                                     billingPeriod="billed per month"
                                     benefits={advancedBenefits}
-                                    trialText="1 month free trial"
                                 />
                                 <LoadingButton
                                     variant="contained"
@@ -419,7 +417,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "advanced"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $8/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -430,7 +428,6 @@ const WelcomePage: React.FC = () => {
                                     price="$15"
                                     billingPeriod="billed per month"
                                     benefits={maxBenefits}
-                                    trialText="1 month free trial"
                                 />
                                 <LoadingButton
                                     variant="contained"
@@ -439,7 +436,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "max"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $15/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
