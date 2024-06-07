@@ -1146,6 +1146,48 @@ function BytePage({params, ...props}: ByteProps) {
         }
     }
 
+    const checkNumberMastered = async (success: boolean) => {
+        if (!success) {
+            return;
+        }
+
+        let params = {
+            byte_id: byteAttemptId,
+            difficulty: determineDifficulty(),
+        }
+
+        // Check if the byte has already been mastered
+        const masteredKey = `mastered_${params.byte_id}_${params.difficulty}`;
+        if (localStorage.getItem(masteredKey)) {
+            console.log("Byte already mastered, skipping API call");
+            return;
+        }
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/checkNumberMastered`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(params),
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["mastered"] === undefined) {
+            return;
+        }
+
+        console.log("Response from mastered: ", res["mastered"]);
+        console.log("Response from number mastered: ", res["numFromTable"]);
+
+        // If the byte was mastered, mark it as such in local storage
+        if (res["mastered"]) {
+            localStorage.setItem(masteredKey, "true");
+        }
+    }
+
 
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
@@ -1768,6 +1810,7 @@ function BytePage({params, ...props}: ByteProps) {
                             setSuggestionPopup(true)
                             markComplete()
                             recordByteAttemptCheck(true)
+                            checkNumberMastered(true)
                         }}
                         onFail={() => {
                             recordByteAttemptCheck(false)

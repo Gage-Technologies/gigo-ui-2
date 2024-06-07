@@ -20,7 +20,8 @@ const config = {
 //     imgCdnProxy: "https://imgproxy.cdn.gigo.dev",
 //     googleClient: "603840351353-8iuvcs9a7cv7eo4nutevcfp3c34pkblr.apps.googleusercontent.com",
 //     coderPath: "https://dev.ws.cdn.gigo.dev",
-//     stripePubKey: "pk_test_51MMbN1KRClXv1ERHUfgxPrT83LS1ufFFAZnKIuDzKdEqtkfawR0AiSM5TlK3X0yEXCrpcCdBvWFx5p4Cpi7iDpNG00tp2HC216"
+//     stripePubKey: "pk_test_51MMbN1KRClXv1ERHUfgxPrT83LS1ufFFAZnKIuDzKdEqtkfawR0AiSM5TlK3X0yEXCrpcCdBvWFx5p4Cpi7iDpNG00tp2HC216",
+//     development: true
 // };
 
 export default config;
