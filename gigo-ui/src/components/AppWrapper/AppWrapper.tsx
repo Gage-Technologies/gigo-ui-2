@@ -2029,7 +2029,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     variant={"body1"}
                                     sx={{ fontSize: "0.8em" }}
                                 >
-                                    Stats
+                                    Streak
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
