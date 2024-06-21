@@ -1189,6 +1189,34 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
 
+    const completionFailureRate = async (success: boolean) => {
+        if (!success) {
+            return;
+        }
+
+
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/completionFailureRate`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: '{}',
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["completion_failure_ratio"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["completion_failure_ratio"]);
+
+    }
+
+
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
         try {
@@ -1811,9 +1839,11 @@ function BytePage({params, ...props}: ByteProps) {
                             markComplete()
                             recordByteAttemptCheck(true)
                             checkNumberMastered(true)
+                            completionFailureRate(true)
                         }}
                         onFail={() => {
                             recordByteAttemptCheck(false)
+                            completionFailureRate(false)
                         }}
                         code={code.map(x => ({
                             code: x.content,
