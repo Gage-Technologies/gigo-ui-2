@@ -525,7 +525,11 @@ function ByteMobile({ params, ...props }: ByteProps) {
             authState.usedFreeTrial = auth["used_free_trial"]
             dispatch(updateAuthState(authState))
 
-            await sleep(1000)
+            await sleep(500)
+
+            if (typeof window !== "undefined") {
+                window.location.reload()
+            }
 
             return true
         }
@@ -1226,14 +1230,14 @@ function ByteMobile({ params, ...props }: ByteProps) {
                 }
             });
         }
-        if (isJourney) {
+        if (isJourney && authState.authenticated) {
             getJourneyUnit(id).then((u: JourneyUnit | null) => {
                 // if (u !== null && !bytesState.handoutClosedByUser) {
                 //     setActiveSidebarTab("journeyHandout")
                 // }
             })
         }
-    }, [id]);
+    }, [id, authState.authenticated]);
 
     useEffect(() => {
         const handleResize = () => {
