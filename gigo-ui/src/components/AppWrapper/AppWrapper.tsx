@@ -33,7 +33,7 @@ import AutoStoriesIcon from '@mui/icons-material/AutoStories';
 import {
     Button,
     Card,
-    CardContent,
+    CardContent, Dialog, DialogContent,
     Link,
     ListItemButton,
     Menu,
@@ -121,6 +121,9 @@ import GoProDisplay from '@/components/GoProDisplay';
 import { clearHeartsState } from '@/reducers/hearts/hearts';
 import CheckIcon from "@mui/icons-material/Check";
 import texasFlag from "@/img/texas-flag.svg"
+import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
+import BytesCard from "@/components/Bytes/BytesCard";
+import {programmingLanguages} from "@/services/vars";
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -234,6 +237,13 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
         },
+        fotBox: {
+            ...themeHelpers.frostedGlass,
+            borderRadius: '15px',
+            padding: theme.spacing(3),
+            margin: theme.spacing(1, 0),
+            textAlign: 'center',
+        }
     };
 
     let holidayStyle: any = styles.regular;
@@ -2519,6 +2529,95 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         )
     }
 
+    // TODO currently has filler data
+    const [fotOpen, setFotOpen] = React.useState(false)
+    const renderFOTPopup = () => {
+        return (
+            <Dialog open={fotOpen} maxWidth="md" fullWidth>
+                <DialogContent
+                    sx={{
+                        backdropFilter: "blur(15px)",
+                        WebkitBackdropFilter: "blur(15px)",
+                        background: "linear-gradient(160deg, rgba(41,193,140,1) 0%, rgba(28,135,98,1) 0%, rgba(50,50,49,1) 73%)",
+                        position: "relative"
+                    }}
+                >
+                    <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
+                        <Typography variant="h3" sx={{ textAlign: 'center' }}>
+                            focus on this
+                        </Typography>
+                        <Typography variant="body2" sx={{ textAlign: 'center' }} gutterBottom>
+                            Code Teacher believes this is what you should improve this week!
+                        </Typography>
+                    </Box>
+
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', textAlign: 'center' }}>
+                        <IconButton
+                            aria-label="close"
+                            sx={{
+                                position: 'absolute',
+                                right: 8,
+                                top: 8,
+                            }}
+                            onClick={() => setFotOpen(false)}
+                        >
+                            <CloseIcon sx={{fontSize: 20}} />
+                        </IconButton>
+                        <Box>
+                            <Typography variant="h6" gutterBottom>
+                                best byte for you
+                            </Typography>
+                            <Box
+                                display={"flex"}
+                                flexDirection={"column"}
+                                alignItems={"center"}
+                                justifyContent={"center"}
+                                sx={{
+                                    width: "16vw",
+                                }}
+                            >
+                                <Suspense fallback={<SheenPlaceholder height={350} width={220} />}>
+                                    <BytesCard
+                                        height={"400px"}
+                                        imageHeight={350}
+                                        width={'100%'}
+                                        imageWidth={225}
+                                        bytesId={"1780323453681795072"}
+                                        bytesTitle={"Classes and Objects"}
+                                        bytesDesc={"Concept Explanation"}
+                                        bytesThumb={config.rootPath + "/static/bytes/t/" + '1780323453681795072'}
+                                        language={programmingLanguages["python"]}
+                                        animate={false}
+                                    />
+                                </Suspense>
+                            </Box>
+                        </Box>
+                        <Box sx={{ flex: '1 1 auto', display: 'flex', flexDirection: 'column', justifyContent: 'center', }}>
+                            <Box sx={styles.fotBox}>
+                                <Typography variant="h6">Your Largest Mistake</Typography>
+                                <Typography variant="h5">Python Classes</Typography>
+                            </Box>
+                            <Box sx={styles.fotBox}>
+                                <Typography variant="h6">Complete this By</Typography>
+                                <Typography variant="h5">June 30, 2024</Typography>
+                            </Box>
+                            <Button variant="contained" sx={{ marginTop: 1, background: "linear-gradient(160deg, rgba(28,135,98,1) 0%, rgba(42,99,172,1) 78%)" }}>
+                                Start Now
+                            </Button>
+                            <Button
+                                variant="text"
+                                sx={{ marginTop: 1, maxWidth: '200px', marginLeft: 'auto', marginRight: 'auto', color: theme.palette.primary.dark }}
+                                href={"/focus"}
+                            >
+                                More Details
+                            </Button>
+                        </Box>
+                    </Box>
+                </DialogContent>
+            </Dialog>
+        )
+    }
+
     return (
         <>
             {!isByteMobilePage ? appBarRenderer() : null}
@@ -2530,6 +2629,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     memoizedChildren : null
             }
             {renderDevelopment && renderDevelopmentMarker()}
+            {renderFOTPopup()}
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );
