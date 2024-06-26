@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton} from '@mui/material';
 import {theme} from "@/theme";
 import LinearProgress from "@mui/material/LinearProgress";
@@ -14,6 +14,10 @@ import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import ComputerIcon from '@mui/icons-material/Computer';
 import TimerIcon from '@mui/icons-material/Timer';
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import call from "@/services/api-call";
+import swal from "sweetalert";
+import {Extension} from "@uiw/react-codemirror";
+import config from "@/config";
 
 export default function StatsPage() {
 
@@ -30,7 +34,148 @@ export default function StatsPage() {
         }
     }
 
+    type ProgrammingStats = {
+        id: number;
+        user_id: number;
+        numbered_mastered_concepts: number;
+        completion_failure_rate: number;
+        focus_on_this: string;
+        fot_detour_unit: number | null;
+        most_struggled_concept: string;
+        number_problems_solved_ct: number;
+        avg_time_complete_byte: string; // Assuming you convert time.Duration to string
+    };
+
+    type FOT = {
+        id: number;
+        owner_id: number;
+        concept: string;
+        mistake_description: string;
+        concept_explanation: string;
+        created_at: Date;
+        valid_until: Date;
+        byte_id: number | null;
+        search_query: string;
+        in_operation: boolean;
+        hash: string | null;
+    }
+
+    const [stats, setStats] = useState<ProgrammingStats | null>(null);
+    const [fot, setFot] = useState<ProgrammingStats | null>(null);
+
+    useEffect(() => {
+
+        const populateCheckNumberMastered = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/checkNumberMastered`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+            } catch (e) {
+                console.log("failed to get number mastered: ", e);
+            }
+        };
+
+        const populateAvgTime = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/avgTimeCompleteByte`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+            } catch (e) {
+                console.log("failed to get avg time: ", e);
+            }
+        };
+
+        const populateCFR = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/completionFailureRate`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+            } catch (e) {
+                console.log("failed to get cfr: ", e);
+            }
+        };
+
+
+        const fetchStats = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/getUserProgrammingStats`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+
+                const data = await response.json();
+                if (data.stats) {
+                    setStats(data.stats);
+                }
+            } catch (e) {
+                console.log("failed to get stats: ", e);
+            }
+        };
+
+        const fetchFOT = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/getFOT`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+
+                const data = await response.json();
+                if (data.fot) {
+                    setFot(data.fot);
+                }
+            } catch (e) {
+                console.log("failed to get stats: ", e);
+            }
+        };
+
+        populateCheckNumberMastered();
+        populateAvgTime();
+        populateCFR();
+        fetchStats();
+        fetchFOT()
+    }, []);
+
     const statBoxes = () => {
+        // @ts-ignore
+
         return (
             <Grid container spacing={4}>
 
@@ -46,7 +191,7 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <SchoolIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">42</Typography>
+                            <Typography variant="h1">{stats?.numbered_mastered_concepts}</Typography>
                             <Typography variant="h6">Mastered Concepts</Typography>
                         </Box>
                     </Box>
@@ -64,7 +209,12 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <TrackChangesIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">1.12</Typography>
+                            <Typography variant="h1">
+                                {
+                                    // @ts-ignore
+                                    parseFloat(stats?.completion_failure_rate)?.toFixed(2)
+                                }
+                            </Typography>
                             <Typography variant="h6">Completion v Failure</Typography>
                         </Box>
                     </Box>
@@ -82,7 +232,7 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <SearchIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">Topic</Typography>
+                            <Typography variant="h1">{stats?.focus_on_this}</Typography>
                             <Typography variant="h6">Focus on This</Typography>
                         </Box>
                     </Box>
@@ -100,7 +250,7 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <WaterDropIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">Topic 2</Typography>
+                            <Typography variant="h1">{stats?.most_struggled_concept}</Typography>
                             <Typography variant="h6">Most Struggled With</Typography>
                         </Box>
                     </Box>
@@ -118,7 +268,7 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <ComputerIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">75</Typography>
+                            <Typography variant="h1">{stats?.number_problems_solved_ct}</Typography>
                             <Typography variant="h6">Problems Solved by Code Teacher</Typography>
                         </Box>
                     </Box>
@@ -136,7 +286,7 @@ export default function StatsPage() {
                             <Box display="flex" justifyContent="center">
                                 <TimerIcon sx={{ fontSize: 60 }} />
                             </Box>
-                            <Typography variant="h1">15m</Typography>
+                            <Typography variant="h1">{stats?.avg_time_complete_byte}</Typography>
                             <Typography variant="h6">Average Byte Completion Time</Typography>
                         </Box>
                     </Box>

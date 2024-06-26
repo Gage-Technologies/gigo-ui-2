@@ -1216,6 +1216,100 @@ function BytePage({params, ...props}: ByteProps) {
 
     }
 
+    const checkTenacious = async (byteID: string) => {
+
+
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/checkTenacious`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ byteAttemptId: byteID }),
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["tenacious_count"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["tenacious_count"]);
+
+    }
+
+    const checkHotStreak = async () => {
+
+
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/checkHotStreak`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: '{}',
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["progress"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["progress"]);
+
+    }
+
+    const checkGodLike = async () => {
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/checkGodLike`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: '{}',
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["progress"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["tenacious_count"]);
+
+    }
+
+    const checkUnitMastery = async (byteID: string) => {
+
+
+
+        let res = await fetch(
+            `${config.rootPath}/api/stats/checkHotStreak`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ byteAttemptId: byteID }),
+                credentials: 'include'
+            }
+        ).then(res => res.json());
+
+        if (res === undefined || res["unit_mastery"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["unit_mastery"]);
+
+    }
+
 
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
@@ -1840,6 +1934,14 @@ function BytePage({params, ...props}: ByteProps) {
                             recordByteAttemptCheck(true)
                             checkNumberMastered(true)
                             completionFailureRate(true)
+                            checkTenacious(id || "")
+                            checkHotStreak()
+                            checkGodLike()
+                            if (isJourney){
+                                checkUnitMastery(id || "")
+                            }
+                            
+
                         }}
                         onFail={() => {
                             recordByteAttemptCheck(false)
