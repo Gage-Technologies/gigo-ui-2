@@ -121,10 +121,14 @@ import GoProDisplay from '@/components/GoProDisplay';
 import { clearHeartsState } from '@/reducers/hearts/hearts';
 import CheckIcon from "@mui/icons-material/Check";
 import texasFlag from "@/img/texas-flag.svg"
+import { isUndefined } from 'util';
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
 const Confetti = React.lazy(() => import('react-confetti'));
+
+// lazy import non-default export Fireworks from @fireworks-js/react
+const Fireworks = React.lazy(() => import('@fireworks-js/react').then(module => ({ default: module.Fireworks })));
 
 
 interface IProps {
@@ -249,7 +253,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 holidayStyle = styles.christmas;
                 break;
             case Holiday.Independence:
-                console.log("Independence Set")
                 holidayStyle = styles.independence;
                 gigoColor = "white"
                 break;
@@ -916,6 +919,18 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 onClick={handleMenu}
                                 variant="text"
                                 ref={userButtonRef}
+                                sx={{
+                                    paddingLeft: "8px",
+                                    paddingRight: "8px",
+                                    paddingTop: 0,
+                                    paddingBottom: 0,
+                                    backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
+                                    backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    "&:hover": {
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    }
+                                }}
                             >
                                 <Typography
                                     sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
@@ -1194,8 +1209,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     variant='outlined'
                                     sx={{
                                         color: theme.palette.primary.contrastText,
-                                        borderColor: theme.palette.primary.contrastText,
+                                        borderColor: holiday === Holiday.Independence ? theme.palette.secondary.dark : theme.palette.primary.contrastText,
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
                                         backdropFilter: "blur(3px)",
+                                        "&:hover": {
+                                            backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        }
                                     }}
                                 >
                                     Signup / Login
@@ -1355,6 +1374,18 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 aria-label="account of current user"
                                 onClick={handleMenu}
                                 variant="text"
+                                sx={{
+                                    paddingLeft: "8px",
+                                    paddingRight: "8px",
+                                    paddingTop: 0,
+                                    paddingBottom: 0,
+                                    backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
+                                    backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    "&:hover": {
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    }
+                                }}
                             >
                                 <Typography
                                     sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
@@ -1521,7 +1552,11 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     }}
                 >
                     <Toolbar
-                        sx={holidayStyle}
+                        sx={{
+                            ...holidayStyle,
+                            // remove center on background image
+                            backgroundPosition: "left center",
+                        }}
                     >
                         <Button href={"/home"} style={{ color: theme.palette.text.primary, zIndex: "600000" }}>
                             <Box>
@@ -2435,7 +2470,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderChristmasSnow = () => {
-        if (pathname.includes("/launchpad")) {
+        if (pathname.includes("/launchpad") || pathname.includes("/byte/")) {
             return null
         }
 
@@ -2450,7 +2485,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderNewYearConfetti = () => {
-        if (pathname.includes("/launchpad")) {
+        if (pathname.includes("/launchpad") || pathname.includes("/byte/")) {
             return null
         }
 
@@ -2463,6 +2498,44 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             )
         }
         return null
+    }
+
+    const renderIndependenceFireworks = () => {
+        if (!pathname.includes("/home")) {
+            return null
+        }
+
+        if (holiday === Holiday.Independence) {
+            return (
+                <Suspense fallback={<div />}>
+                    <Fireworks
+                        // @ts-ignore
+                        options={{ opacity: 0.5 }}
+                        style={{
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            position: 'fixed',
+                            background: 'transparent',
+                            zIndex: 9999, // ensure it's on top of everything
+                            pointerEvents: 'none' // make it non-interactive so clicks pass through
+                        }}
+                    />
+                </Suspense>
+            )
+        }
+        return null
+    }
+
+    const renderHolidayDecoration = () => {
+        return (
+            <>
+                {renderChristmasSnow()}
+                {renderNewYearConfetti()}
+                {renderIndependenceFireworks()}
+            </>
+        )
     }
 
     const renderDevelopmentMarker = () => {
@@ -2530,6 +2603,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     memoizedChildren : null
             }
             {renderDevelopment && renderDevelopmentMarker()}
+            {renderHolidayDecoration()}
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );

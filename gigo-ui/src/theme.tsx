@@ -1,6 +1,7 @@
 'use client'
-import {createTheme, PaletteMode} from "@mui/material";
+import { createTheme, PaletteMode } from "@mui/material";
 import type * as CSS from 'csstype';
+import { useEffect, useState } from 'react';
 
 export enum Holiday {
     Halloween = "Halloween",
@@ -658,16 +659,19 @@ export const getIndependenceTokens = (mode: PaletteMode) => ({
                 :
                 {
                     primary: {
-                        light: '#63a4f8',
-                        main: 'rgb(255,0,0)',
-                        dark: '#f6b8d2',
-                        contrastText: '#1f3867',
+                        // slightly lighter red
+                        light: '#ff0000',
+                        // main red
+                        main: '#d10000',
+                        // darker red
+                        dark: '#a30000',
+                        contrastText: '#ffffff',
                     },
                     secondary: {
-                        light: '#84E8A2',
-                        main: '#29C18C',
-                        dark: '#1c8762',
-                        contrastText: '#225e6e',
+                        light: '#63a4f8',
+                        main: '#1f3867',
+                        dark: '#1b1b41',
+                        contrastText: '#ffffff',
                     },
                     tertiary: {
                         light: '#fffcbb',
@@ -703,44 +707,23 @@ export const getIndependenceTokens = (mode: PaletteMode) => ({
 
 export const isHoliday = (): Holiday | null => {
     const today = new Date();
+    const month = today.getMonth();
+    const date = today.getDate();
 
-    if (today.getMonth() === 9) {
-        // Halloween
-        return Holiday.Halloween
-    }
+    if (month === 9) return Holiday.Halloween;
+    if ((month === 11 && date >= 26) || (month === 0 && date <= 2)) return Holiday.NewYears;
+    if (month === 11) return Holiday.Christmas;
+    if (month === 1 && date < 14) return Holiday.Valentines;
+    if (month === 6 && date >= 1 && date <= 7) return Holiday.Independence;
 
-    if ((today.getMonth() === 11 && today.getDate() >= 26) || (today.getMonth() === 0 && today.getDate() <= 2)) {
-        // New Years
-        return Holiday.NewYears
-    }
+    // note: easter calculation removed for simplicity, add back if needed
 
-    if (today.getMonth() === 11) {
-        // Christmas
-        return Holiday.Christmas
-    }
+    return null;
+};
 
-    if (today.getMonth() === 1 && today.getDate() < 14) {
-        // Valentines
-        return Holiday.Valentines
-    }
-
-    let easterMonth = gaussEaster(today.getFullYear());
-     // Set Easter Range Each Year
-     if (today.getMonth() === easterMonth){
-         // Easter
-         return Holiday.Easter
-     }
-
-    if ((today.getMonth() === 6 && today.getDate() >= 1) && (today.getMonth() === 6 && today.getDate() <= 7)) {
-        // Independence
-        return Holiday.Independence
-    }
-
-    return null
-}
-
-export const getAllTokens = (mode: PaletteMode) => {
-    const holiday = isHoliday()
+// modify the getAllTokens function to accept a holiday parameter
+export const getAllTokens = (mode: PaletteMode, holiday: Holiday | null) => {
+    console.log("Design Tokens Holiday: ", holiday)
 
     if (holiday === Holiday.Halloween) {
         return getHalloweenTokens(mode);
@@ -758,16 +741,22 @@ export const getAllTokens = (mode: PaletteMode) => {
         return getValentinesTokens(mode);
     }
 
-     // if (holiday === Holiday.Easter) {
-     //     return getEasterTokens(mode);
-     // }
-
     if (holiday === Holiday.Independence) {
+        console.log("Independence")
         return getIndependenceTokens(mode)
     }
 
     return getDesignTokens(mode);
 }
+
+// create a new function to get the current theme
+export const getCurrentTheme = (mode: PaletteMode = 'dark') => {
+    const holiday = isHoliday();
+    return createTheme(getAllTokens(mode, holiday));
+};
+
+// export the default theme
+export const theme = getCurrentTheme();
 
 function gaussEaster(Y: any) {
     let A, B, C, P, Q, M, N, D, E;
@@ -837,5 +826,5 @@ export const themeHelpers = {
     },
 }
 
-export const theme = createTheme(getDesignTokens('dark'));
+// export const theme = createTheme(useTheme());
 export const holiday = isHoliday();
