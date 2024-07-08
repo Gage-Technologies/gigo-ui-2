@@ -60,12 +60,13 @@ import {LaunchLspRequest} from "@/models/launch_lsp";
 import {Workspace} from "@/models/workspace";
 import CodeSource from "@/models/codeSource";
 import {
+    CtByteNextOutputRequest, CtByteNextOutputResponse,
     CtGenericErrorPayload,
     CtMessage,
     CtMessageOrigin,
     CtMessageType,
     CtParseFileRequest,
-    CtParseFileResponse,
+    CtParseFileResponse, CtProblemsSolvedRequest,
     CtValidationErrorPayload,
     Node as CtParseNode
 } from "@/models/ct_websocket";
@@ -1838,6 +1839,23 @@ function BytePage({params, ...props}: ByteProps) {
         />
     ), [activePorts])
 
+    const callProblemsSolved = () => {
+        ctWs.sendWebsocketMessage({
+            sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+            type: CtMessageType.WebsocketMessageTypeProblemsSolvedRequest,
+            origin: CtMessageOrigin.WebSocketMessageOriginClient,
+            created_at: Date.now(),
+            payload: {
+                assistant_id: "",
+                byte_id: byteAttemptId,
+                user_id: id,
+            }
+        } satisfies CtMessage<CtProblemsSolvedRequest>, (msg: CtMessage<CtGenericErrorPayload | CtValidationErrorPayload>) => {
+            return true
+        })
+    };
+
+    const [triggered, setTriggered] = useState(false);
 
     const renderEditorSideBar = () => {
         let stateTooltipTitle: string | React.ReactElement = (

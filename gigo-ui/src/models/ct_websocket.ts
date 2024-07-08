@@ -35,6 +35,7 @@ export enum CtMessageType {
     WebSocketMessageTypeDeleteHHChatResponse = 65,
     WebSocketMessageTypeUserHHChatMessage = 66,
     WebSocketMessageTypeAssistantHHChatMessage = 67,
+    WebsocketMessageTypeProblemsSolvedRequest = 68,
 }
 
 export enum CtChatMessageType {
@@ -351,6 +352,12 @@ export interface CtGetHHChatMessagesResponseMessage {
     command: CtExecCommand;
     premium_llm: boolean;
     free_credit_use: boolean;
+}
+
+export interface CtProblemsSolvedRequest {
+    assistant_id: string;
+    byte_id: string;
+    user_id: string;
 }
 
 export interface CtDeleteHHChatRequest {
