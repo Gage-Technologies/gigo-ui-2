@@ -16,7 +16,7 @@ import "prismjs/components/prism-css";
 // import "./resources/prism-vsc-dark.css";
 import {files2strings} from "./resources/files2strings";
 import {createTheme, PaletteMode, useMediaQuery} from "@mui/material";
-import {getAllTokens} from "../../theme";
+import {theme} from "../../theme";
 
 
 interface TextProps {
@@ -78,9 +78,6 @@ function Text({files, selectedFile, handleCloseFile, handleClickFile}: TextProps
         }),
         [],
     );
-
-    // Update the theme only if the mode changes
-        const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     let windows: React.ReactElement[] = []
 

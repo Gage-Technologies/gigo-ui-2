@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { RiArrowDownSLine, RiArrowRightSLine } from 'react-icons/ri';
 import FILE_ICONS from './FileIcons';
 import { Box, Button, ButtonBase, CircularProgress, createTheme, PaletteMode, useMediaQuery } from "@mui/material";
-import { getAllTokens } from "@/theme";
+import { theme } from "@/theme";
 import call from "../../services/api-call";
 import config from "../../config";
 import swal from "sweetalert";
@@ -56,9 +56,6 @@ function File({ name, padding, handleFileSelect, selected, selectedFile }: Name)
         }),
         [],
     );
-
-    // Update the theme only if the mode changes
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     let ext = name.split('.')[1]
 
@@ -148,9 +145,6 @@ function Folder({ children, name, padding, filepath, repoId, handleFileSelect, s
         }),
         [],
     );
-
-    // Update the theme only if the mode changes
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
 
     let nameElement = name
@@ -275,9 +269,6 @@ function Files({ selectedFile, handleFileSelect, projectName, files, repoId }: F
         }),
         [],
     );
-
-    // Update the theme only if the mode changes
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
 
 

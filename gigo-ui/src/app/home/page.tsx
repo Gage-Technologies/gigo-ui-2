@@ -190,8 +190,6 @@ async function Home({
 
     const isMobile = searchParams?.viewport === "mobile";
 
-    // let theme = createTheme(getAllTokens('dark'))
-
     ReactGA.initialize("G-38KBFJZ6M6");
 
     const BytesMobile = () => {

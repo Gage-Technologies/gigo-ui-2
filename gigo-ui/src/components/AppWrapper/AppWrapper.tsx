@@ -234,7 +234,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             zIndex: 999,
             border: "none",
             backgroundImage: `url(/img/us_flag.svg)`,
-            backgroundPosition: "center",
+            backgroundPosition: "left center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
         },
@@ -1552,11 +1552,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     }}
                 >
                     <Toolbar
-                        sx={{
-                            ...holidayStyle,
-                            // remove center on background image
-                            backgroundPosition: "left center",
-                        }}
+                        sx={holidayStyle}
                     >
                         <Button href={"/home"} style={{ color: theme.palette.text.primary, zIndex: "600000" }}>
                             <Box>
