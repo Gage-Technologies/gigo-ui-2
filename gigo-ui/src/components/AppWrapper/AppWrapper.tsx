@@ -122,6 +122,8 @@ import { clearHeartsState } from '@/reducers/hearts/hearts';
 import CheckIcon from "@mui/icons-material/Check";
 import texasFlag from "@/img/texas-flag.svg"
 import { isUndefined } from 'util';
+import { LanguageSwitcher } from '../GTranslate/LanguageSwitcher';
+import { resetTranslation } from '@/reducers/translation/translation';
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -451,6 +453,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         dispatch(clearChatState())
         dispatch(clearBytesState())
         dispatch(clearHeartsState())
+        dispatch(resetTranslation())
     }
 
     const updateToken = async () => {
@@ -904,6 +907,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <Box sx={{ flexGrow: 1 }} />
                     <div style={{ width: "20px" }} />
                     <Box sx={{ width: "50px" }} />
+                    <LanguageSwitcher />
+                    <Box sx={{ width: "10px" }} />
                     {loggedIn && authState.role === 0 && (
                         <HeartTracker
                             openGoProPopup={() => setGoProPopup(true)}
@@ -933,7 +938,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 }}
                             >
                                 <Typography
-                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}
+                                    className='notranslate'
+                                >
                                     {username}
                                 </Typography>
                                 {userIconMemoLarge}
@@ -1388,7 +1395,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 }}
                             >
                                 <Typography
-                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}
+                                    className='notranslate'
+                                >
                                     {username}
                                 </Typography>
                                 {userIconMemoSmall}
@@ -1616,6 +1625,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         await handleLogout()
                                     }}>Logout</MenuItem>
                                     <MenuItem onClick={() => setShowReferPopup(true)}>Refer A Friend</MenuItem>
+                                    <LanguageSwitcher mobile={true} />
                                 </Menu>
                                 <Modal open={showReferPopup} onClose={() => setShowReferPopup(false)}>
                                     <Box

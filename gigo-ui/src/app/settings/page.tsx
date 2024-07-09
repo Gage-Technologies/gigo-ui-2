@@ -58,6 +58,7 @@ import stripeBlack from '@/img/powered-stripe-black.svg'
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import {useRouter} from "next/navigation";
 import Image from "next/image"
+import { resetTranslation } from "@/reducers/translation/translation";
 
 function AccountSettings() {
 
@@ -626,6 +627,7 @@ function AccountSettings() {
         dispatch(clearMessageCache())
         dispatch(clearChatState())
         dispatch(clearBytesState())
+        dispatch(resetTranslation())
     }
 
     const deleteUserAccount = async () => {

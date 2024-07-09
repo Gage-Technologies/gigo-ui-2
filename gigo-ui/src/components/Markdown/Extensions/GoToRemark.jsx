@@ -63,6 +63,7 @@ const createGoToRemark = (instanceId, callback) => {
                         fontFamily: "monospace",
                         p: 0.3,
                     }}
+                    className='notranslate'
                   >
                       {title}<Launch style={{fontSize: "12px", marginLeft: "3px"}}/>
                   </Button>

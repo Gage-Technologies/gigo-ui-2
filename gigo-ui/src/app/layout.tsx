@@ -11,11 +11,11 @@ import { CtWebSocketProvider } from "@/services/ct_websocket";
 import type { Metadata, Viewport } from 'next'
 import React from "react";
 import { CssBaseline } from "@mui/material";
-import { GoogleOAuthProvider } from "@react-oauth/google";
-import config from "@/config";
 import GoogleProvider from "@/app/GoogleProvider";
 import WebTracking from '@/components/WebTracking';
 import { GoogleAnalytics } from '@next/third-parties/google'
+import Script from 'next/script';
+import GoogleTranslateFix from '@/components/GTranslate/DOMMutationCatch'
 
 
 export const metadata: Metadata = {
@@ -50,8 +50,27 @@ export default function Layout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html>
+            <head>
+                <Script
+                    src="/assets/scripts/lang-config.js"
+                    strategy="beforeInteractive"
+                />
+                <Script
+                    src="/assets/scripts/translation.js"
+                    strategy="beforeInteractive"
+                />
+                <Script
+                    src="/assets/scripts/block-gtranslate-bar.js"
+                    strategy="beforeInteractive"
+                />
+                <Script
+                    src="//translate.google.com/translate_a/element.js?cb=TranslateInit"
+                    strategy="afterInteractive"
+                />
+            </head>
             <body>
+                <GoogleTranslateFix />
                 <AppRouterCacheProvider>
                     <StoreProvider>
                         <WebSocketProvider>

@@ -99,6 +99,7 @@
     "mui": "^0.0.1",
     "next": "^14.2.3",
     "next-auth": "^4.24.7",
+    "nookies": "^2.5.2",
     "prismjs": "^1.29.0",
     "prop-types": "^15.8.1",
     "property-information": "^6.2.0",

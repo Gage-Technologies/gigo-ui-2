@@ -12,7 +12,7 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|assets/scripts).*)',
     ],
 }
 
@@ -121,5 +121,5 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
-    return NextResponse.next()
+    const res =  NextResponse.next()
 }
