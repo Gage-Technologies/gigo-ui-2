@@ -68,7 +68,8 @@ import {
     CtParseFileRequest,
     CtParseFileResponse, CtProblemsSolvedRequest,
     CtValidationErrorPayload,
-    Node as CtParseNode
+    Node as CtParseNode,
+    CtProblemsSolved
 } from "@/models/ct_websocket";
 import LinkIcon from '@mui/icons-material/Link';
 import LinkOffIcon from '@mui/icons-material/LinkOff';
@@ -681,6 +682,28 @@ function BytePage({params, ...props}: ByteProps) {
     }, 10000, {
         trailing: true
     }), [ctWs]);
+
+    const problemsSolved = React.useCallback(() => {
+        ctWs.sendWebsocketMessage(
+            {
+                sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
+                type: CtMessageType.WebSocketMessageTypeProblemsSolved,
+                origin: CtMessageOrigin.WebSocketMessageOriginClient,
+                created_at: Date.now(),
+                payload: {
+                    assistant_id: "0",
+                    byte_id: byteAttemptId,
+                }
+            } satisfies CtMessage<CtProblemsSolved>,
+            (msg: CtMessage<CtGenericErrorPayload | CtValidationErrorPayload | boolean>): boolean => {
+                if (typeof msg.payload !== 'boolean') {
+                    console.log("failed to update problems solved: ", msg)
+                    return false
+                }
+                return msg.payload
+            }
+        )
+    }, [ctWs, byteAttemptId]);
 
     const cancelCodeExec = (commandId: string) => {
 
@@ -1958,6 +1981,7 @@ function BytePage({params, ...props}: ByteProps) {
                             if (isJourney){
                                 checkUnitMastery(id || "")
                             }
+                            problemsSolved()
                             
 
                         }}

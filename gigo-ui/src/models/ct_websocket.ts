@@ -35,7 +35,8 @@ export enum CtMessageType {
     WebSocketMessageTypeDeleteHHChatResponse = 65,
     WebSocketMessageTypeUserHHChatMessage = 66,
     WebSocketMessageTypeAssistantHHChatMessage = 67,
-    WebsocketMessageTypeProblemsSolvedRequest = 68,
+    WebSocketMessageTypeProblemsSolved = 68,
+    WebsocketMessageTypeNumberCommentsWritten = 69,
 }
 
 export enum CtChatMessageType {
@@ -366,6 +367,11 @@ export interface CtDeleteHHChatRequest {
 
 export interface CtDeleteHHChatResponse {
     success: boolean;
+}
+
+export interface CtProblemsSolved {
+    assistant_id: string;
+    byte_id: string;
 }
 
 export enum SymbolType {
