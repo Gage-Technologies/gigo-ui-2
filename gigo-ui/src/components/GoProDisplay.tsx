@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import { Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Card, CardContent, CardActions, Button, Grid, SxProps } from '@mui/material';
+import { Typography, IconButton, Dialog, PaletteMode, createTheme, Box, Card, CardContent, CardActions, Button, Grid, SxProps, Tooltip } from '@mui/material';
 import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icons
 import { LoadingButton } from '@mui/lab';
 import premiumGorilla from "../img/pro-pop-up-icon-plain.svg";
@@ -15,6 +15,8 @@ import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
 import Image from "next/image";
 import { useGetProUrls } from '@/hooks/getProUrls';
 import { useGetUserSubData } from '@/hooks/getUserSubData';
+import CheckIcon from '@mui/icons-material/Check';
+import { useSearchParams } from 'next/navigation';
 
 // Define the types for the benefits
 type BenefitType = {
@@ -95,9 +97,28 @@ interface SubscriptionCardProps {
     previewPrice?: string;
     downgradeDate?: string;
     pendingDowngrade?: string;
+    referralLink?: string;
 }
 
-const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ title, benefits, price, loading, href, onClick, active, previewPrice, downgradeDate, pendingDowngrade }) => {
+const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ title, benefits, price, loading, href, onClick, active, previewPrice, downgradeDate, pendingDowngrade, referralLink }) => {
+    const [openTooltip, setOpenTooltip] = useState(false);
+
+    // handle copying referral link to clipboard
+    const handleReferralButtonClick = async () => {
+        if (!referralLink) {
+            return
+        }
+        try {
+            await navigator.clipboard.writeText(referralLink);
+            setOpenTooltip(true);
+            setTimeout(() => {
+                setOpenTooltip(false);
+            }, 2000); // tooltip will hide after 2 seconds
+        } catch (err) {
+            console.error('failed to copy text: ', err);
+        }
+    };
+
     let buttonText = price;
     let buttonTextColor: "primary" | "error" = "primary"
     if (active) {
@@ -168,6 +189,28 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ title, benefits, pr
                             {buttonText}
                         </LoadingButton>
                     )}
+                    {referralLink && (
+                        <Tooltip
+                            open={openTooltip}
+                            disableFocusListener
+                            disableHoverListener
+                            disableTouchListener
+                            title={
+                                <React.Fragment>
+                                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                                        Referral Link Copied
+                                        <CheckIcon sx={{ color: theme.palette.success.main, ml: 1 }} />
+                                    </div>
+                                </React.Fragment>
+                            }
+                            placement="top"
+                            arrow
+                        >
+                            <Button sx={{ mt: 1, fontSize: "0.6em" }} variant="text" color="inherit" onClick={handleReferralButtonClick}>
+                                Get A Free Month For Each Referral
+                            </Button>
+                        </Tooltip>
+                    )}
                 </Box>
             </CardActions>
         </Card>
@@ -183,6 +226,9 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
     const dispatch = useAppDispatch();
     const authState = useAppSelector(selectAuthState);
 
+    const queryParams = useSearchParams();
+    const isMobile = queryParams.get("viewport") === "mobile";
+
     const [previewLoading, setPreviewLoading] = React.useState<string | null>(null)
     const [preview, setPreview] = React.useState<{ status: string, price?: string, downgradeDate?: string } | null>(null)
     const [proUrlsLoading, setProUrlsLoading] = useState(false);
@@ -190,6 +236,21 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
     const [advancedLink, setAdvancedLink] = useState('');
     const [maxLink, setMaxLink] = useState('');
     const [subscription, setSubscription] = useState<Subscription | null>(null);
+    const [openTooltip, setOpenTooltip] = useState(false);
+    const [showReferralPage, setShowReferralPage] = useState(false);
+
+    // handle copying referral link to clipboard
+    const handleReferralButtonClick = async () => {
+        try {
+            await navigator.clipboard.writeText(`https://gigo.dev/referral/${encodeURIComponent(authState.userName)}`);
+            setOpenTooltip(true);
+            setTimeout(() => {
+                setOpenTooltip(false);
+            }, 2000); // tooltip will hide after 2 seconds
+        } catch (err) {
+            console.error('failed to copy text: ', err);
+        }
+    };
 
     const getProUrls = useGetProUrls()
     const getUserSubData = useGetUserSubData()
@@ -342,83 +403,34 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
         setPreviewLoading(null)
     }
 
-    return (
-        <Dialog
-            open={open}
-            onClose={onClose}
-            maxWidth={window.innerWidth <= 1000 ? "xl" : "md"}
-            sx={{
-                width: window.innerWidth <= 1000 ? "100vw" : "auto",
-                maxHeight: "100vh"
-            }}
-            PaperProps={{
-                sx: {
-                    borderRadius: window.innerWidth <= 1000 ? "0px" : "10px",
-                    overflow: "auto",
-                    backgroundColor: "background.default",
-                    margin: window.innerWidth <= 1000 ? "0px" : undefined,
-                    maxHeight: window.innerWidth <= 1000 ? "100vh" : undefined
-                }
-            }}
-        >
-            <Box sx={{
-                position: "relative",
-                boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                backgroundImage: `linear-gradient(to bottom right, ${theme.palette.primary.dark} 0%, ${theme.palette.background.default} 45%, ${theme.palette.background.default} 55%, ${theme.palette.secondary.dark} 100%)`,
-                backgroundSize: "cover",
-                backgroundRepeat: "no-repeat",
-                backgroundPosition: "center center",
-                paddingBottom: "16px",
-            }}>
-                <IconButton
-                    edge="end"
-                    color="inherit"
-                    size="small"
-                    onClick={onClose}
-                    sx={{
-                        position: "absolute",
-                        top: { xs: '3vh', md: '20px' },
-                        right: { xs: '3vw', md: '30px' },
-                        color: "white"
-                    }}
-                >
-                    <Close />
-                </IconButton>
-                <Box
-                    sx={{
-                        mb: { xs: 1, md: 2.5 },
-                        position: "absolute",
-                        top: { xs: '3vh', md: '20px' },
-                        right: { xs: 'calc(3vw + 25px)', md: '60px' },
-                    }}
-                >
-                    <Image
-                        src={premiumGorilla}
-                        width={100}
-                        height={100}
-                        alt=""
-                    />
-                </Box>
-                <Typography variant="h4" sx={{ mb: 1.25, color: "white", marginLeft: 2, marginTop: 2 }}>
-                    GIGO Pro
-                </Typography>
-                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mb: 1, maxWidth: "60%" }}>
-                    Unlimited retries on Journeys & Bytes.
-                </Typography>
-                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%", mb: subscription && !subscription.usedFreeTrial && window.innerWidth > 1000 ? 1 : undefined }}>
-                    Freeze your Streak.
-                </Typography>
-                {subscription && !subscription.usedFreeTrial && window.innerWidth > 1000 && (
+    const renderMainPage = () => {
+        return (
+            <>
+                {subscription && !subscription.usedFreeTrial && !isMobile && (
                     <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%" }}>
                         Claim Your 1 Month Free Trial!
                     </Typography>
                 )}
+                {!isMobile && (
+                    <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2.5 }}>
+                        <Button sx={{ mt: 1, fontSize: "0.8em" }} variant="contained" color="secondary" onClick={() => setShowReferralPage(true)}>
+                            Get A Free Month Of Max
+                        </Button>
+                    </Box>
+                )}
                 <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ p: 2 }}>
-                    {subscription && !subscription.usedFreeTrial && window.innerWidth <= 1000 && (
+                    {subscription && !subscription.usedFreeTrial && isMobile && (
                         <Grid item xs={12}>
                             <Typography variant="body1" sx={{ color: "white", mt: 1, width: "100%", textAlign: "center" }}>
                                 Claim Your 1 Month Free Trial!
                             </Typography>
+                        </Grid>
+                    )}
+                    {isMobile && (
+                        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center" }}>
+                            <Button sx={{ mt: 1, fontSize: "0.8em" }} variant="contained" color="secondary" onClick={() => setShowReferralPage(true)}>
+                                Get A Free Month Of Pro Max
+                            </Button>
                         </Grid>
                     )}
                     <Grid item xs={12} md={4}>
@@ -494,35 +506,207 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                         />
                     </Grid>
                 </Grid>
+            </>
+        )
+    }
+
+    const renderReferralPage = () => {
+        return (
+            <Box sx={{
+                height: "100%",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "space-between",
+                px: { xs: 2, md: 4 },
+                pb: { xs: 4, md: 6 },
+            }}>
                 <Box sx={{
-                    display: 'inline-flex',
-                    width: "100%",
-                    justifyContent: "space-between",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    flexGrow: 1
                 }}>
-                    <Typography
-                        variant="body1"
-                        sx={{ mx: 2, color: "white", cursor: "pointer" }}
-                        align="center"
-                        component="a"
-                        href="/premium"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            window.open("/premium", "_blank");
-                        }}
-                    >
-                        Learn More About Pro
+                    <Typography variant="h4" sx={{
+                        width: "100%",
+                        textAlign: "center",
+                        fontSize: { xs: "1em", md: "1.2em" },
+                        lineHeight: { xs: "1em", md: "1.2em" },
+                        mt: { xs: 4, md: 8 },
+                        mb: { xs: 3, md: 5 }
+                    }}>
+                        Refer A Friend<br />For A Free Month Of Max
                     </Typography>
-                    <Image
-                        height={36}
-                        width={150}
-                        style={{
-                            marginLeft: "auto",
-                            marginRight: "16px"
+                    <Typography variant="body1" sx={{
+                        width: { xs: "100%", md: "60%" },
+                        textAlign: "center",
+                        px: { xs: 1, md: 2 },
+                        mb: { xs: 2, md: 4 }
+                    }}>
+                        You will get a free month of GIGO Pro Max for each friend that signs up with your referral link.<br/>
+                    </Typography>
+                    <Typography variant="body1" sx={{
+                        width: { xs: "100%", md: "60%" },
+                        textAlign: "center",
+                        px: { xs: 1, md: 2 },
+                        mb: { xs: 2, md: 4 }
+                    }}>
+                        No credit card required.
+                    </Typography>
+                </Box>
+                <Box sx={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    flexDirection: "column",
+                    alignItems: "center"
+                }}>
+                    <Tooltip
+                        open={openTooltip}
+                        disableFocusListener
+                        disableHoverListener
+                        disableTouchListener
+                        title={
+                            <React.Fragment>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    Referral Link Copied
+                                    <CheckIcon sx={{ color: theme.palette.success.main, ml: 1 }} />
+                                </div>
+                            </React.Fragment>
+                        }
+                        placement="top"
+                        arrow
+                    >
+                        <Button sx={{
+                            mt: 1,
+                            fontSize: { xs: "0.7em", md: "0.8em" },
+                            width: "fit-content",
+                            px: { xs: 2, md: 3 }
                         }}
-                        src={theme.palette.mode === "light" ? stripeBlack : stripeWhite}
+                            variant="contained"
+                            color="secondary"
+                            onClick={handleReferralButtonClick}>
+                            copy referral link
+                        </Button>
+                    </Tooltip>
+                    <Button sx={{
+                        mt: 1,
+                        fontSize: { xs: "0.7em", md: "0.8em" },
+                        width: "fit-content",
+                        px: { xs: 2, md: 3 }
+                    }}
+                        variant="outlined"
+                        color="secondary"
+                        onClick={() => setShowReferralPage(false)}>
+                        back
+                    </Button>
+                </Box>
+            </Box>
+        )
+    }
+
+    return (
+        <Dialog
+            open={open}
+            onClose={onClose}
+            maxWidth={isMobile ? "xl" : "md"}
+            sx={{
+                width: isMobile ? "100vw" : "auto",
+                minHeight: isMobile ? "100vh" : undefined,
+                maxHeight: "100vh"
+            }}
+            PaperProps={{
+                sx: {
+                    borderRadius: isMobile ? "0px" : "10px",
+                    overflow: "auto",
+                    backgroundColor: "background.default",
+                    margin: isMobile ? "0px" : undefined,
+                    maxHeight: isMobile ? "100vh" : undefined
+                }
+            }}
+        >
+            <Box sx={{
+                position: "relative",
+                boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px  0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
+                backgroundImage: `linear-gradient(to bottom right, ${theme.palette.primary.dark} 0%, ${theme.palette.background.default} 45%, ${theme.palette.background.default} 55%, ${theme.palette.secondary.dark} 100%)`,
+                backgroundSize: "cover",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center center",
+                paddingBottom: "16px",
+                minHeight: isMobile ? "100vh" : undefined,
+            }}>
+                <IconButton
+                    edge="end"
+                    color="inherit"
+                    size="small"
+                    onClick={onClose}
+                    sx={{
+                        position: "absolute",
+                        top: { xs: '3vh', md: '20px' },
+                        right: { xs: '3vw', md: '30px' },
+                        color: "white"
+                    }}
+                >
+                    <Close />
+                </IconButton>
+                <Box
+                    sx={{
+                        mb: { xs: 1, md: 2.5 },
+                        position: "absolute",
+                        top: { xs: '3vh', md: '20px' },
+                        right: { xs: 'calc(3vw + 25px)', md: '60px' },
+                    }}
+                >
+                    <Image
+                        src={premiumGorilla}
+                        width={100}
+                        height={100}
                         alt=""
                     />
                 </Box>
+                <Typography variant="h4" sx={{ mb: 1.25, color: "white", marginLeft: 2, marginTop: 2 }}>
+                    GIGO Pro
+                </Typography>
+                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mb: 1, maxWidth: "60%" }}>
+                    Unlimited retries on Journeys & Bytes.
+                </Typography>
+                <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%", mb: subscription && !subscription.usedFreeTrial && !isMobile ? 1 : undefined }}>
+                    Freeze your Streak.
+                </Typography>
+                {showReferralPage ? renderReferralPage() : renderMainPage()}
+                {!showReferralPage && (
+                    <Box sx={{
+                        display: 'inline-flex',
+                        width: "100%",
+                        justifyContent: "space-between",
+                    }}>
+                        <Typography
+                            variant="body1"
+                            sx={{ mx: 2, color: "white", cursor: "pointer" }}
+                            align="center"
+                            component="a"
+                            href="/premium"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                window.open("/premium", "_blank");
+                            }}
+                        >
+                            Learn More About Pro
+                        </Typography>
+                        <Image
+                            height={36}
+                            width={150}
+                            style={{
+                                marginLeft: "auto",
+                                marginRight: "16px"
+                            }}
+                            src={theme.palette.mode === "light" ? stripeBlack : stripeWhite}
+                            alt=""
+                        />
+                    </Box>
+                )}
             </Box>
         </Dialog>
     );

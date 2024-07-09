@@ -1,20 +1,20 @@
 'use client'
 
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {Box, Button, createTheme, PaletteMode, Typography, Grid, Paper, SxProps} from '@mui/material';
+import { Box, Button, createTheme, PaletteMode, Typography, Grid, Paper, SxProps, Tooltip } from '@mui/material';
 import backgroundImage from '@/img/welcome-background.png';
-import {AwesomeButton} from "react-awesome-button"; // Adjust the import path according to your file structure
-import {getAllTokens} from "@/theme";
-import {LoadingButton} from "@mui/lab";
+import { AwesomeButton } from "react-awesome-button"; // Adjust the import path according to your file structure
+import { getAllTokens } from "@/theme";
+import { LoadingButton } from "@mui/lab";
 import swal from "sweetalert";
 import call from "@/services/api-call";
 import config from "@/config";
-import styled, {css, keyframes} from 'styled-components';
-import {selectAuthState} from "@/reducers/auth/auth";
-import {useAppSelector} from "@/reducers/hooks";
+import styled, { css, keyframes } from 'styled-components';
+import { selectAuthState } from "@/reducers/auth/auth";
+import { useAppSelector } from "@/reducers/hooks";
 import premiumGorilla from "@/img/pro-pop-up-icon-plain.svg";
-import { useSearchParams} from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 
 
@@ -31,6 +31,21 @@ const WelcomeMobilePage: React.FC = () => {
     const [advancedLink, setAdvancedLink] = useState("");
     const [maxLink, setMaxLink] = useState("");
     const [loadingProLinks, setLoadingProLinks] = useState<string | null>(null)
+    const [showReferralPage, setShowReferralPage] = useState(false);
+    const [openTooltip, setOpenTooltip] = useState(false);
+
+    // handle copying referral link to clipboard
+    const handleReferralButtonClick = async () => {
+        try {
+            await navigator.clipboard.writeText(`https://gigo.dev/referral/${encodeURIComponent(authState.userName)}`);
+            setOpenTooltip(true);
+            setTimeout(() => {
+                setOpenTooltip(false);
+            }, 2000); // tooltip will hide after 2 seconds
+        } catch (err) {
+            console.error('failed to copy text: ', err);
+        }
+    };
 
     const retrieveProUrls = async (): Promise<{ basic: string, advanced: string, max: string } | null> => {
         let res = await call(
@@ -102,7 +117,6 @@ const WelcomeMobilePage: React.FC = () => {
         learnMoreLink?: string;
     };
 
-// Define the props for the Plan component
     type PlanProps = {
         title: string;
         price: string;
@@ -112,8 +126,7 @@ const WelcomeMobilePage: React.FC = () => {
         discountText?: string;
     };
 
-// Component to render individual benefits
-    const Benefit: React.FC<{ benefit: BenefitType, sx?: SxProps }> = ({benefit, sx}) => {
+    const Benefit: React.FC<{ benefit: BenefitType, sx?: SxProps }> = ({ benefit, sx }) => {
         return (
             <Box sx={{
                 width: '100%',
@@ -121,15 +134,15 @@ const WelcomeMobilePage: React.FC = () => {
                 borderRadius: '8px',
                 ...sx,  // Spread the sx prop here
             }}>
-                <Typography variant="subtitle2" color={"secondary"} sx={{fontSize: "0.8rem", textAlign: "left"}}>
+                <Typography variant="subtitle2" color={"secondary"} sx={{ fontSize: "0.8rem", textAlign: "left" }}>
                     {benefit.title}
                 </Typography>
-                <Typography variant="body2" sx={{mb: 1}}>
+                <Typography variant="body2" sx={{ mb: 1 }}>
                     {benefit.description}
                 </Typography>
                 {benefit.learnMoreLink && (
                     <Typography variant="body2" component="a" href={benefit.learnMoreLink}
-                                sx={{display: 'block', mt: 1}}>
+                        sx={{ display: 'block', mt: 1 }}>
                         Learn More
                     </Typography>
                 )}
@@ -137,13 +150,11 @@ const WelcomeMobilePage: React.FC = () => {
         );
     };
 
-
-// Component to render the plan card
-    const Plan: React.FC<PlanProps> = ({title, price, billingPeriod, benefits, trialText, discountText}) => {
+    const Plan: React.FC<PlanProps> = ({ title, price, billingPeriod, benefits, trialText, discountText }) => {
         return (
             <Grid container justifyContent="center">
                 <Box>
-                    <Typography variant="h6" sx={{fontWeight: 'bold', mb: 2, textAlign: "center"}}>{title}</Typography>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2, textAlign: "center" }}>{title}</Typography>
                     <Box sx={{
                         width: '100%',
                         mb: 2,
@@ -152,17 +163,17 @@ const WelcomeMobilePage: React.FC = () => {
                         borderRadius: '18px', // Optional: adds rounded corners
                         p: 2, // Adds some padding inside the box
                     }}>
-                        <Typography variant="h4" sx={{fontWeight: 'bold', mb: 2, textAlign: "center", width: "100%"}}>{price}</Typography>
+                        <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 2, textAlign: "center", width: "100%" }}>{price}</Typography>
                     </Box>
-                    <Typography variant="subtitle1" sx={{mb: 2, textAlign: 'left'}}>{billingPeriod}</Typography>
+                    <Typography variant="subtitle1" sx={{ mb: 2, textAlign: 'left' }}>{billingPeriod}</Typography>
                     <Grid item xs={12} sm={12} md={12}>
                         {benefits.map((benefit, index) => (
 
-                            <Benefit key={index} benefit={benefit}/>
+                            <Benefit key={index} benefit={benefit} />
 
                         ))}
                     </Grid>
-                    {trialText && <Typography variant="body2" sx={{mb: 2, textAlign: 'left'}}>{trialText}</Typography>}
+                    {trialText && <Typography variant="body2" sx={{ mb: 2, textAlign: 'left' }}>{trialText}</Typography>}
                     {discountText && <Typography variant="body2" sx={{
                         color: 'secondary.main',
                         mb: 2,
@@ -224,7 +235,7 @@ const WelcomeMobilePage: React.FC = () => {
     `;
 
     const RainbowButton = styled(LoadingButton)`
-        ${({variant}) => variant === 'outlined' && css`
+        ${({ variant }) => variant === 'outlined' && css`
             position: relative;
             overflow: hidden;
             background-size: 200% 200%;
@@ -243,6 +254,127 @@ const WelcomeMobilePage: React.FC = () => {
     `;
 
     if (showSubscription) {
+        if (showReferralPage) {
+            return (
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'space-between', // This will space out the main and bottom sections
+                    alignItems: 'center',
+                    height: 'calc(100% + 64px)',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundAttachment: 'fixed',
+                    textAlign: 'center',
+                    padding: '20px 0', // Add padding to avoid content touching the edges
+                }}>
+                    <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        zIndex: -1, // Make sure the image is behind all other elements
+                        overflow: 'hidden',
+                    }}>
+                        <Image
+                            src={backgroundImage}
+                            alt="backgroundImage"
+                            layout="fill"
+                            objectFit="cover"
+                            objectPosition="center"
+                            quality={100} // Set image quality to high
+                        />
+                    </div>
+                    <Box sx={{ flexGrow: 1, mt: 1, p: 3, maxWidth: '1000px' }}> {/* Adjust background color as needed */}
+                        <Box
+                            display={"inline-flex"}
+                            justifyContent={"space-between"}
+                            sx={{
+                                width: "100%",
+                                marginBottom: "8px"
+                            }}
+                        >
+                            <Box>
+                                <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
+                                    Try GIGO Pro
+                                </Typography>
+                            </Box>
+                            <Image alt={"premiumGorilla"} width={60} height={60} src={premiumGorilla} style={{
+                                width: "80px",
+                                marginBottom: "20px"
+                            }} />
+                        </Box>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexGrow: 1
+                        }}>
+                            <Typography variant="h4" sx={{
+                                width: "100%",
+                                textAlign: "center",
+                                fontSize: { xs: "1em", md: "1.8em" },
+                                lineHeight: { xs: "1em", md: "1.8em" },
+                                mt: { xs: 4, md: 8 },
+                                mb: { xs: 3, md: 5 }
+                            }}>
+                                Refer A Friend For A Free Month Of Max
+                            </Typography>
+                            <Typography variant="body1" sx={{
+                                width: { xs: "100%", md: "60%" },
+                                textAlign: "center",
+                                px: { xs: 1, md: 2 },
+                                mb: { xs: 2, md: 4 }
+                            }}>
+                                You will get a free month of GIGO Pro Max for each friend that signs up with your referral link.<br />
+                            </Typography>
+                            <Typography variant="body1" sx={{
+                                width: { xs: "100%", md: "60%" },
+                                textAlign: "center",
+                                px: { xs: 1, md: 2 },
+                                mb: { xs: 2, md: 4 }
+                            }}>
+                                No credit card required.
+                            </Typography>
+                            <Tooltip
+                                open={openTooltip}
+                                title="Copied!"
+                                placement="top"
+                                arrow
+                            >
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleReferralButtonClick}
+                                    sx={{
+                                        mb: { xs: 2, md: 4 },
+                                        width: { xs: "100%", md: "auto" },
+                                        fontSize: { xs: "0.8em", md: "1em" }
+                                    }}
+                                >
+                                    Copy Referral Link
+                                </Button>
+                            </Tooltip>
+                            <Button
+                                variant="outlined"
+                                color="primary"
+                                onClick={() => setShowReferralPage(false)}
+                                sx={{
+                                    width: { xs: "100%", md: "auto" },
+                                    fontSize: { xs: "0.8em", md: "1em" }
+                                }}
+                            >
+                                Back to Pro Plans
+                            </Button>
+                        </Box>
+                    </Box>
+                </div>
+            );
+        }
+
         return (
             <div style={{
                 display: 'flex',
@@ -276,7 +408,7 @@ const WelcomeMobilePage: React.FC = () => {
                         quality={100} // Set image quality to high
                     />
                 </div>
-                <Box sx={{flexGrow: 1, mt: 1, p: 3, maxWidth: '1000px'}}> {/* Adjust background color as needed */}
+                <Box sx={{ flexGrow: 1, mt: 1, p: 3, maxWidth: '1000px' }}> {/* Adjust background color as needed */}
                     <Box
                         display={"inline-flex"}
                         justifyContent={"space-between"}
@@ -286,15 +418,11 @@ const WelcomeMobilePage: React.FC = () => {
                         }}
                     >
                         <Box>
-                            <Typography variant={"h4"} style={{color: "white"}} align={"center"}>
+                            <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
                                 Try GIGO Pro
                             </Typography>
-                            <Typography variant={"subtitle1"} style={{color: "white", textAlign: "left"}}
-                                        align={"center"}>
-                                Free for 1 month
-                            </Typography>
-                            <Typography variant={"body2"} style={{textAlign: "left", width: "100%"}}>
-                                <a href="#bottom" style={{color: "#ffffff70"}}>
+                            <Typography variant={"body2"} style={{ textAlign: "left", width: "100%" }}>
+                                <a href="#bottom" style={{ color: "#ffffff70" }}>
                                     Skip Offer At Bottom Of Page
                                 </a>
                             </Typography>
@@ -302,107 +430,39 @@ const WelcomeMobilePage: React.FC = () => {
                         <Image alt={"premiumGorilla"} width={60} height={60} src={premiumGorilla} style={{
                             width: "80px",
                             marginBottom: "20px"
-                        }}/>
+                        }} />
                     </Box>
-                    {/*<Box*/}
-                    {/*    display={"inline-flex"}*/}
-                    {/*    justifyContent={"space-between"}*/}
-                    {/*    sx={{ width: "100%", marginBottom: "8px", mt: 2 }}*/}
-                    {/*>*/}
-                    {/*    <Typography variant={"h6"} style={{ color: "white" }} align={"center"}>*/}
-                    {/*        How The Free Trial Works*/}
-                    {/*    </Typography>*/}
-                    {/*</Box>*/}
-                    {/*<Box*/}
-                    {/*    position="relative"*/}
-                    {/*    display="flex"*/}
-                    {/*    justifyContent="space-around"*/}
-                    {/*    alignItems="center"*/}
-                    {/*    sx={{ width: "100%", mb: 4, mt: 2 }}*/}
-                    {/*>*/}
-                    {/*    /!* Dotted Line *!/*/}
-                    {/*    <Box*/}
-                    {/*        position="absolute"*/}
-                    {/*        top="50%"*/}
-                    {/*        left="10%"*/}
-                    {/*        right="10%"*/}
-                    {/*        height="2px"*/}
-                    {/*        bgcolor="white"*/}
-                    {/*        sx={{ zIndex: 99 }}*/}
-                    {/*        style={{*/}
-                    {/*            borderBottom: "2px solid white",*/}
-                    {/*            transform: "translateY(-50%)",*/}
-                    {/*        }}*/}
-                    {/*    />*/}
-
-                    {/*    /!* Stage 1 *!/*/}
-                    {/*    <Paper*/}
-                    {/*        elevation={4}*/}
-                    {/*        sx={{*/}
-                    {/*            padding: 2,*/}
-                    {/*            maxWidth: 200,*/}
-                    {/*            textAlign: "center",*/}
-                    {/*            color: "white",*/}
-                    {/*            zIndex: 100,*/}
-                    {/*        }}*/}
-                    {/*    >*/}
-                    {/*        <Typography variant="h6">Start Trial</Typography>*/}
-                    {/*    </Paper>*/}
-
-                    {/*    /!* Stage 2 *!/*/}
-                    {/*    <Paper*/}
-                    {/*        elevation={4}*/}
-                    {/*        sx={{*/}
-                    {/*            padding: 2,*/}
-                    {/*            maxWidth: 200,*/}
-                    {/*            textAlign: "center",*/}
-                    {/*            color: "white",*/}
-                    {/*            zIndex: 100,*/}
-                    {/*        }}*/}
-                    {/*    >*/}
-                    {/*        <Typography variant="h6">2 Day Reminder</Typography>*/}
-                    {/*        <Typography variant="body2">Email sent 2 days before the trial ends</Typography>*/}
-                    {/*    </Paper>*/}
-
-                    {/*    /!* Stage 3 *!/*/}
-                    {/*    <Paper*/}
-                    {/*        elevation={4}*/}
-                    {/*        sx={{*/}
-                    {/*            padding: 2,*/}
-                    {/*            maxWidth: 200,*/}
-                    {/*            textAlign: "center",*/}
-                    {/*            color: "white",*/}
-                    {/*            zIndex: 100,*/}
-                    {/*        }}*/}
-                    {/*    >*/}
-                    {/*        <Typography variant="h6">Account Charged</Typography>*/}
-                    {/*        <Typography variant="body2">You are charged at the end of the trial</Typography>*/}
-                    {/*    </Paper>*/}
-                    {/*</Box>*/}
                     <Grid container spacing={4} justifyContent="center">
+                        <Grid item xs={12}>
+                            <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2.5 }}>
+                                <Button sx={{ mt: 1, fontSize: "0.8em" }} variant="contained" color="secondary" onClick={() => setShowReferralPage(true)}>
+                                    Get A Free Month Of Pro Max
+                                </Button>
+                            </Box>
+                        </Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                            <Paper elevation={3} sx={{p: 2, display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                                 <Plan
                                     title="Basic"
                                     price="$3"
                                     billingPeriod="billed per month"
                                     benefits={basicBenefits}
                                     trialText="1 month free trial"
-                                    // Include any special text or offers for the monthly plan here
+                                // Include any special text or offers for the monthly plan here
                                 />
                                 <LoadingButton
                                     variant="contained"
-                                    sx={{mt: 'auto'}}
+                                    sx={{ mt: 'auto' }}
                                     onClick={() => handleClaimButtonClick("basic")}
                                     loading={loadingProLinks === "basic"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $3/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                            <Paper elevation={3} sx={{p: 2, display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                                 <Plan
                                     title="Advanced"
                                     price="$8"
@@ -412,17 +472,17 @@ const WelcomeMobilePage: React.FC = () => {
                                 />
                                 <LoadingButton
                                     variant="contained"
-                                    sx={{mt: 'auto'}}
+                                    sx={{ mt: 'auto' }}
                                     onClick={() => handleClaimButtonClick("advanced")}
                                     loading={loadingProLinks === "advanced"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $8/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
                         <Grid item xs={12} sm={6} md={4}>
-                            <Paper elevation={3} sx={{p: 2, display: 'flex', flexDirection: 'column', height: '100%'}}>
+                            <Paper elevation={3} sx={{ p: 2, display: 'flex', flexDirection: 'column', height: '100%' }}>
                                 <Plan
                                     title="Max"
                                     price="$15"
@@ -432,12 +492,12 @@ const WelcomeMobilePage: React.FC = () => {
                                 />
                                 <LoadingButton
                                     variant="contained"
-                                    sx={{mt: 'auto'}}
+                                    sx={{ mt: 'auto' }}
                                     onClick={() => handleClaimButtonClick("max")}
                                     loading={loadingProLinks === "max"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    Claim Free Trial
+                                    $15/month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -462,7 +522,7 @@ const WelcomeMobilePage: React.FC = () => {
                             Skip Offer
                         </AwesomeButton>
                     </Box>
-                    <div id="bottom" style={{textAlign: "center"}}/>
+                    <div id="bottom" style={{ textAlign: "center" }} />
                 </Box>
             </div>
         );
@@ -497,10 +557,10 @@ const WelcomeMobilePage: React.FC = () => {
                     />
                 </div>
                 <Typography variant="h4" align="center" gutterBottom>Welcome to GIGO</Typography>
-                <Typography variant="body1" align="center" sx={{mb: 4}}>
+                <Typography variant="body1" align="center" sx={{ mb: 4 }}>
                     Learn something new today!
                 </Typography>
-                <Button variant="contained" onClick={() => setShowSubscription(true)} sx={{mb: 2}}>
+                <Button variant="contained" onClick={() => setShowSubscription(true)} sx={{ mb: 2 }}>
                     Continue
                 </Button>
             </Box>

@@ -944,7 +944,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     {username}
                                 </Typography>
                                 {userIconMemoLarge}
-                                {inTrial && !hasPaymentInfo && (
+                                {/* {inTrial && !hasPaymentInfo && (
                                     <ErrorIcon
                                         style={{
                                             color: "orange",
@@ -954,7 +954,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             fontSize: '1rem'
                                         }}
                                     />
-                                )}
+                                )} */}
                             </Button>
                             <Menu
                                 id="menu-appbar"
@@ -982,12 +982,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     await handleLogout()
                                 }}>Logout</MenuItem>
                                 <MenuItem onClick={() => setShowReferPopup(true)}>Refer A Friend</MenuItem>
-                                {inTrial && !hasPaymentInfo && (
+                                {/* {inTrial && !hasPaymentInfo && (
                                     <MenuItem onClick={() => setOpenSetup(true)}>
                                         <h4 style={{ color: "red", paddingRight: "5px" }}>Finish Setup</h4>
                                         <ErrorIcon style={{ color: "orange" }} />
                                     </MenuItem>
-                                )}
+                                )} */}
                             </Menu>
                             <Modal open={showReferPopup} onClose={() => setShowReferPopup(false)}>
                                 <Box

@@ -52,7 +52,7 @@ const XpPopup = (props: IProps) => {
     const [showPro, setShowPro] = React.useState(false);
 
     const [steps, setSteps] = React.useState([{
-        content: <h2>Let`&apos;`s begin our journey!</h2>,
+        content: <h2>Let&apos;s begin our journey!</h2>,
         locale: { skip: <strong aria-label="skip">Skip</strong> },
         placement: 'center',
         target: 'body',
