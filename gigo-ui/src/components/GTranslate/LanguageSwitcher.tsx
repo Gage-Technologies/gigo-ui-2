@@ -15,22 +15,35 @@ interface LanguageDescriptor {
   title: string;
 }
 
-declare global {
-  namespace globalThis {
-    var __GOOGLE_TRANSLATION_CONFIG__: {
-      languages: LanguageDescriptor[];
-      defaultLanguage: string;
-    };
-  }
-}
-
 interface LanguageSwitcherProps {
   mobile?: boolean;
 }
 
-const LanguageSwitcher = ({ mobile }: LanguageSwitcherProps) => {
-  const [languageConfig, setLanguageConfig] = useState<any>();
+const LanguageConfig = {
+  languages: [
+      { title: "english", name: "en" },
+      { title: "deutsch", name: "de" },
+      { title: "español", name: "es" },
+      { title: "हिन्दी", name: "hi" },
+      { title: "français", name: "fr" },
+      { title: "italiano", name: "it" },
+      { title: "português", name: "pt" },
+      { title: "română", name: "ro" },
+      { title: "русский", name: "ru" },
+      { title: "türkçe", name: "tr" },
+      { title: "tiếng việt", name: "vi" },
+      { title: "中文 (简体)", name: "zh-CN" },
+      { title: "中文 (繁體)", name: "zh-TW" },
+      { title: "日本語", name: "ja" },
+      { title: "한국어", name: "ko" },
+      { title: "العربية", name: "ar" },
+      { title: "বাংলা", name: "bn" },
+      { title: "українська", name: "uk" },
+  ],
+  defaultLanguage: "en",
+}
 
+const LanguageSwitcher = ({ mobile }: LanguageSwitcherProps) => {
   const dispatch = useDispatch()
   const currentLanguage = useSelector(selectTranslationLanguage)
 
@@ -65,21 +78,17 @@ const LanguageSwitcher = ({ mobile }: LanguageSwitcherProps) => {
       languageValue = existingCookieLanguage
     }
 
-    if (!languageValue && global.__GOOGLE_TRANSLATION_CONFIG__) {
+    if (!languageValue) {
       // only set browser language if no language value is currently set
       const browserLang = navigator.language.split('-')[0];
-      const supportedLangs = global.__GOOGLE_TRANSLATION_CONFIG__.languages.map((l: LanguageDescriptor) => l.name);
+      const supportedLangs = LanguageConfig.languages.map((l: LanguageDescriptor) => l.name);
 
       if (supportedLangs.includes(browserLang)) {
         languageValue = browserLang;
       } else {
         // if not supported, fall back to the default language
-        languageValue = global.__GOOGLE_TRANSLATION_CONFIG__.defaultLanguage;
+        languageValue = LanguageConfig.defaultLanguage;
       }
-    }
-
-    if (global.__GOOGLE_TRANSLATION_CONFIG__) {
-      setLanguageConfig(global.__GOOGLE_TRANSLATION_CONFIG__);
     }
 
     if (languageValue && languageValue !== existingCookieLanguage) {
@@ -103,13 +112,6 @@ const LanguageSwitcher = ({ mobile }: LanguageSwitcherProps) => {
     switchLanguage(lang);
     handleClose();
   };
-
-  if (!currentLanguage || !languageConfig) {
-    return null;
-  }
-
-  // find the current language object
-  const currentLang = languageConfig.languages.find((l: LanguageDescriptor) => l.name === currentLanguage);
 
   const switchLanguage = (lang: string) => {
     dispatch(updateTranslation({ language: lang }));
@@ -155,7 +157,7 @@ const LanguageSwitcher = ({ mobile }: LanguageSwitcherProps) => {
           horizontal: "right",
         }}
       >
-        {languageConfig.languages.map((ld: LanguageDescriptor) => (
+        {LanguageConfig.languages.map((ld: LanguageDescriptor) => (
           <MenuItem
             key={`l_s_${ld.name}`}
             onClick={() => handleLanguageChange(ld.name)}

@@ -151,7 +151,7 @@ const ByteTerminal = (
                     {isRunning ? <StopIcon style={{ color: "red" }} /> : <HighlightOffIcon style={{ color: "red" }}/>}
                 </Button>
             </Tooltip>
-            <div style={{ outline: "none", color: theme.palette.text.primary }}>
+            <div style={{ outline: "none", color: theme.palette.text.primary }} className="notranslate">
                 {terminalContent}
                 {isRunning && lastLineRequiresInput ? inputField : null}
             </div>

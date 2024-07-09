@@ -907,7 +907,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <Box sx={{ flexGrow: 1 }} />
                     <div style={{ width: "20px" }} />
                     <Box sx={{ width: "50px" }} />
-                    <LanguageSwitcher />
+                    <LanguageSwitcher mobile={false} />
                     <Box sx={{ width: "10px" }} />
                     {loggedIn && authState.role === 0 && (
                         <HeartTracker
