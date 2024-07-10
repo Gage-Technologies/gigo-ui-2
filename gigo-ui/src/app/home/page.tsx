@@ -50,7 +50,7 @@ async function Home({
     let detourCount = 0;
     let completedJourneyUnits = 0;
     let startedJourney = false;
-    let activeData: any[] = [];
+    let activeData: any[] | null = null;
     let loggedIn = false;
     if (checkSessionStatus(cookies().get('gigoAuthToken'))) {
         let cookieHeader = getSessionCookies(cookies());
@@ -171,7 +171,9 @@ async function Home({
             try {
                 let data: { projects?: any[], message?: string } = await response.json();
                 if (data.projects !== undefined) {
-                    activeData = data.projects
+                    activeData = data.projects as any[]
+                } else {
+                    activeData = []
                 }
             } catch (e) {
                 console.log("failed to get active data: ", e)
@@ -442,9 +444,10 @@ async function Home({
                         color: 'text.primary',
                     }}
                 >
-                    {(!isMobile && loggedIn) ? (
+                    { // @ts-ignore
+                    (!isMobile && loggedIn && (activeData === null || activeData.length > 0)) ? (
                         <Suspense fallback={<SuspenseFallback/>}>
-                            <ActiveChallenges activeData={activeData}/>
+                            <ActiveChallenges activeData={activeData === null ? [] : activeData}/>
                         </Suspense>
                     ) : null}
                 </Box>

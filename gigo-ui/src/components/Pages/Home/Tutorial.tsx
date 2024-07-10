@@ -120,136 +120,136 @@ export default function Tutorial() {
             title: "Welcome to GIGO!",
             content: "GIGO is a platform to help developers learn to code, practice their skills, and experiment quickly.",
         },
-        {
-            title: (
-                <DialogTitle
-                    sx={{
-                        width: windowWidth > 1000 ? 450 : undefined,
-                        maxWidth: windowWidth > 1000 ? undefined : "90vw",
-                        background: "linear-gradient(90deg, #84E8A2, #63a4f8, #84E8A2)",
-                        backgroundSize: "200% 200%",
-                        animation: `${gradientAnimation} 3s ease infinite`,
-                        fontSize: "1.6em",
-                        textAlign: "center",
-                        paddingTop: "20px",
-                        paddingBottom: "20px",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        MozBackgroundClip: "text",
-                        MozTextFillColor: "transparent",
-                    }}
-                >
-                    GIGO Pro
-                </DialogTitle>
-            ),
-            content: (
-                <>
-                    {/*{authState.role < 1 && (*/}
-                    {/*    <>*/}
-                    {/*        <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>*/}
-                    {/*            You&#39;ve received a free month of GIGO Pro!*/}
-                    {/*        </Typography>*/}
-                    {/*        <Box sx={{*/}
-                    {/*            display: 'flex',*/}
-                    {/*            justifyContent: 'center',*/}
-                    {/*            alignItems: 'center',*/}
-                    {/*            flexDirection: 'column',*/}
-                    {/*            mb: 2*/}
-                    {/*        }}>*/}
-                    {/*            <Button onClick={(event) => {*/}
-                    {/*                setGoProPopup(true)*/}
-                    {/*                console.log("opening box")*/}
-                    {/*            }} variant={"contained"}>*/}
-                    {/*                Claim Free Month*/}
-                    {/*            </Button>*/}
-                    {/*        </Box>*/}
-                    {/*    </>*/}
-                    {/*)}*/}
-                    <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
-                        Give a month, Get a month! For every friend you refer, both of you get a free month of GIGO
-                        Pro!
-                    </Typography>
-                    <Box sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        flexDirection: 'column'
-                    }}>
-                        <Tooltip
-                            open={openTooltip}
-                            disableFocusListener
-                            disableHoverListener
-                            disableTouchListener
-                            title={
-                                <React.Fragment>
-                                    <div style={{display: 'flex', alignItems: 'center'}}>
-                                        Referral Link Copied
-                                        <CheckIcon sx={{color: theme.palette.success.main, ml: 1}}/>
-                                    </div>
-                                </React.Fragment>
-                            }
-                            placement="top"
-                            arrow
-                        >
-                            <Button variant="contained" onClick={handleReferralButtonClick}>
-                                Referral Link
-                            </Button>
-                        </Tooltip>
-                    </Box>
-                    <Box sx={{my: 2}}>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>Smarter Code Teacher</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            Get better help and guidance on your coding journey.
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>Private Projects</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            Learn in stealth mode.
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>More DevSpace Resources</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            8 CPU cores, 8GB RAM, 50GB disk space.
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>Three Concurrent DevSpaces</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            Run multiple projects.
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>Two Streak Freezes a Week</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            Preserve your streak.
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
-                            <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
-                            <span style={{}}>Premium VsCode Theme</span>
-                        </Typography>
-                        <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
-                            Enhance your coding experience.
-                        </Typography>
-                    </Box>
-                </>
-            ),
-        },
+        // {
+        //     title: (
+        //         <DialogTitle
+        //             sx={{
+        //                 width: windowWidth > 1000 ? 450 : undefined,
+        //                 maxWidth: windowWidth > 1000 ? undefined : "90vw",
+        //                 background: "linear-gradient(90deg, #84E8A2, #63a4f8, #84E8A2)",
+        //                 backgroundSize: "200% 200%",
+        //                 animation: `${gradientAnimation} 3s ease infinite`,
+        //                 fontSize: "1.6em",
+        //                 textAlign: "center",
+        //                 paddingTop: "20px",
+        //                 paddingBottom: "20px",
+        //                 WebkitBackgroundClip: "text",
+        //                 WebkitTextFillColor: "transparent",
+        //                 MozBackgroundClip: "text",
+        //                 MozTextFillColor: "transparent",
+        //             }}
+        //         >
+        //             GIGO Pro
+        //         </DialogTitle>
+        //     ),
+        //     content: (
+        //         <>
+        //             {/*{authState.role < 1 && (*/}
+        //             {/*    <>*/}
+        //             {/*        <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>*/}
+        //             {/*            You&#39;ve received a free month of GIGO Pro!*/}
+        //             {/*        </Typography>*/}
+        //             {/*        <Box sx={{*/}
+        //             {/*            display: 'flex',*/}
+        //             {/*            justifyContent: 'center',*/}
+        //             {/*            alignItems: 'center',*/}
+        //             {/*            flexDirection: 'column',*/}
+        //             {/*            mb: 2*/}
+        //             {/*        }}>*/}
+        //             {/*            <Button onClick={(event) => {*/}
+        //             {/*                setGoProPopup(true)*/}
+        //             {/*                console.log("opening box")*/}
+        //             {/*            }} variant={"contained"}>*/}
+        //             {/*                Claim Free Month*/}
+        //             {/*            </Button>*/}
+        //             {/*        </Box>*/}
+        //             {/*    </>*/}
+        //             {/*)}*/}
+        //             <Typography variant="body2" sx={{fontSize: ".8em", mb: 2, textAlign: 'center'}}>
+        //                 Give a month, Get a month! For every friend you refer, both of you get a free month of GIGO
+        //                 Pro!
+        //             </Typography>
+        //             <Box sx={{
+        //                 display: 'flex',
+        //                 justifyContent: 'center',
+        //                 alignItems: 'center',
+        //                 flexDirection: 'column'
+        //             }}>
+        //                 <Tooltip
+        //                     open={openTooltip}
+        //                     disableFocusListener
+        //                     disableHoverListener
+        //                     disableTouchListener
+        //                     title={
+        //                         <React.Fragment>
+        //                             <div style={{display: 'flex', alignItems: 'center'}}>
+        //                                 Referral Link Copied
+        //                                 <CheckIcon sx={{color: theme.palette.success.main, ml: 1}}/>
+        //                             </div>
+        //                         </React.Fragment>
+        //                     }
+        //                     placement="top"
+        //                     arrow
+        //                 >
+        //                     <Button variant="contained" onClick={handleReferralButtonClick}>
+        //                         Referral Link
+        //                     </Button>
+        //                 </Tooltip>
+        //             </Box>
+        //             <Box sx={{my: 2}}>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>Smarter Code Teacher</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     Get better help and guidance on your coding journey.
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>Private Projects</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     Learn in stealth mode.
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>More DevSpace Resources</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     8 CPU cores, 8GB RAM, 50GB disk space.
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>Three Concurrent DevSpaces</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     Run multiple projects.
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>Two Streak Freezes a Week</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     Preserve your streak.
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{display: 'flex', alignItems: 'center'}}>
+        //                     <StarIcon sx={{fontSize: ".8em", mr: 1}}/>
+        //                     <span style={{}}>Premium VsCode Theme</span>
+        //                 </Typography>
+        //                 <Typography variant="body1" component="div" sx={{fontSize: ".7em", ml: 3}}>
+        //                     Enhance your coding experience.
+        //                 </Typography>
+        //             </Box>
+        //         </>
+        //     ),
+        // },
         {
             title: "How to use tutorials",
             content: "Tutorials will start on important app to guide you through the platform. This is the only mandatory tutorial. If you skip a tutorial, you can always restart it using the help button at the bottom of the left-hand sidebar (desktop) or the User icon drop down (mobile).",
         },
         {
             title: "Let's Get Started!",
-            content: "Start coding now, or select either a Byte or a Challenge to initiate your journey!"
+            content: "Click \"Start Your Journey\" to embark on a guided learning path, or choose a Byte or Challenge to start coding immediately."
         }
     ]
 
@@ -271,6 +271,7 @@ export default function Tutorial() {
             PaperProps={{
                 sx: {
                     ...themeHelpers.frostedGlass,
+                    backgroundColor: "rgba(0, 0, 0, 0.6)",
                 }
             }}
             disableEscapeKeyDown={true}
@@ -367,55 +368,14 @@ export default function Tutorial() {
                                     )
                                 }}
                                 variant="contained"
-                                color={"primary"}
+                                color={"secondary"}
                                 sx={{
                                     fontSize: "0.8rem",
                                 }}
                             >
-                                Browse
+                                Finish
                             </Button>
                         )}
-                        <StartCodingButton
-                            loading={startingByte}
-                            onClick={async () => {
-                                setStartingByte(true)
-
-                                let authState = Object.assign({}, initialAuthStateUpdate)
-                                // copy the existing state
-                                let state = Object.assign({}, tutorialState)
-                                // update the state
-                                state.home = true
-                                authState.tutorialState = state
-                                dispatch(updateAuthState(authState))
-
-                                // send api call to backend to mark the challenge tutorial as completed
-                                await fetch(
-                                    `${config.rootPath}/api/user/markTutorial`,
-                                    {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            tutorial_key: "home"
-                                        }),
-                                        credentials: 'include'
-                                    }
-                                )
-
-                                setStartingByte(false)
-                                setRunTutorial(false)
-
-                                router.push("/byte/1750943457427324928")
-                            }}
-                            variant="contained"
-                            color="success"
-                            sx={{
-                                // fontSize: "0.8rem",
-                            }}
-                        >
-                            Start Coding!
-                        </StartCodingButton>
                     </>
                 ) : (
                     <Button

@@ -1017,14 +1017,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     <Typography variant="h4" gutterBottom>
                                         Refer a Friend
                                     </Typography>
-                                    <Typography variant="h5" gutterBottom>
-                                        Give a Month, Get a Month
+                                    <Typography variant="h6" gutterBottom sx={{ textAlign: "center" }}>
+                                        Get A Free Month of GIGO Pro Max<br/>
+                                        For Every Friend You Refer<br/>
+                                        No Credit Card Required!
                                     </Typography>
                                     <Box sx={{
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        flexDirection: 'column'
+                                        flexDirection: 'column',
+                                        mt: 3
                                     }}>
                                         <Tooltip
                                             open={openTooltip}
@@ -1043,7 +1046,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             arrow
                                         >
                                             <Button variant="contained" onClick={handleReferralButtonClick}>
-                                                Referral Link
+                                                Copy Referral Link
                                             </Button>
                                         </Tooltip>
                                     </Box>

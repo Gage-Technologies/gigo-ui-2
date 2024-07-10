@@ -408,7 +408,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
             <>
                 {subscription && !subscription.usedFreeTrial && !isMobile && (
                     <Typography variant="body1" sx={{ mx: 2.5, color: "white", mt: 1, maxWidth: "60%" }}>
-                        Claim Your 1 Month Free Trial!
+                        Claim Your Free Month!
                     </Typography>
                 )}
                 {!isMobile && (
@@ -422,7 +422,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
                     {subscription && !subscription.usedFreeTrial && isMobile && (
                         <Grid item xs={12}>
                             <Typography variant="body1" sx={{ color: "white", mt: 1, width: "100%", textAlign: "center" }}>
-                                Claim Your 1 Month Free Trial!
+                                Claim Your Free Month!
                             </Typography>
                         </Grid>
                     )}
