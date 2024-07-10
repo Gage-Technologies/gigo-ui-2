@@ -322,11 +322,11 @@ const LootPopup = (props: IProps) => {
                             </div>
                         ) : (
                             <div style={{display: "flex", width: "100%", height: "100%", justifyContent: "center", alignItems: "center", flexWrap: "wrap"}}>
-                                <div style={{zIndex: 5, position: "absolute", top: 0, transform: "rotate(180deg)"}}>
+                               {/*  <div style={{zIndex: 5, position: "absolute", top: 0, transform: "rotate(180deg)"}}>
                                     <Lottie options={brightLightOptions} speed={.5} direction={-1} isClickToPauseDisabled={true}
                                             width={window.innerHeight / .5}
                                             height={window.innerHeight / .5}/>
-                                </div>
+                                </div> */}
                                 <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "start"}}>
                                     {RenderFinalPage()}
                                 </div>
@@ -335,11 +335,11 @@ const LootPopup = (props: IProps) => {
                                             width={window.innerHeight / 1.5}
                                             height={window.innerHeight / 1.5}/>
                                 </div>
-                                <div style={{zIndex: 5, position: "absolute", bottom: 0}}>
+                                {/* <div style={{zIndex: 5, position: "absolute", bottom: 0}}>
                                     <Lottie options={brightLightOptions} speed={.5} isClickToPauseDisabled={true} direction={1}
                                             width={window.innerHeight / .5}
                                             height={window.innerHeight / .5}/>
-                                </div>
+                                </div> */}
                             </div>
                         )}
                         <Button

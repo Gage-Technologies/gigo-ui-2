@@ -96,6 +96,7 @@ import GoProDisplay from "@/components/GoProDisplay";
 import OutOfHearts from "@/components/OutOfHearts";
 import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 import ByteMobile from "@/components/Bytes/byteMobile";
+import ProgressionNotification from "@/components/Progressions/ProgressionNotification";
 
 
 interface MergedOutputRow {
@@ -1133,8 +1134,12 @@ function BytePage({params, ...props}: ByteProps) {
         }
 
         if (res["xp"] !== undefined) {
-            setXpData(res["xp"])
-            setXpPopup(true)
+            addNotificationToQueue({
+                progression: '',
+                achievement: '',
+                progress: '',
+                data: res["xp"]
+            });
         }
 
         if (res["nodeBelow"] !== undefined && res["nodeBelow"] !== null) {
@@ -1241,9 +1246,6 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const checkTenacious = async (byteID: string) => {
-
-
-
         let res = await fetch(
             `${config.rootPath}/api/stats/checkTenacious`,
             {
@@ -1251,7 +1253,7 @@ function BytePage({params, ...props}: ByteProps) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ byteAttemptId: byteID }),
+                body: JSON.stringify({ byte_attempt_id: byteID }),
                 credentials: 'include'
             }
         ).then(res => res.json());
@@ -1265,9 +1267,6 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const checkHotStreak = async () => {
-
-
-
         let res = await fetch(
             `${config.rootPath}/api/stats/checkHotStreak`,
             {
@@ -1275,16 +1274,24 @@ function BytePage({params, ...props}: ByteProps) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: '{}',
+                body: JSON.stringify({ byte_attempt_id: byteAttemptId }),
                 credentials: 'include'
             }
         ).then(res => res.json());
 
-        if (res === undefined || res["progress"] === undefined) {
+        if (res === undefined || res["hot_streak"] === undefined) {
             return;
         }
 
-        console.log("Response from CFR: ", res["progress"]);
+        if (res["progress"] !== "0/3") {
+            addNotificationToQueue({
+                progression: 'hot_streak',
+                achievement: res["hot_streak"],
+                progress: res["progress"],
+                data: null
+            });
+        }
+
 
     }
 
@@ -1306,7 +1313,15 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        console.log("Response from CFR: ", res["tenacious_count"]);
+        if (res["progress"] !== "0/5") {
+            addNotificationToQueue({
+                progression: 'god_like',
+                achievement: res["god_like"],
+                progress: res["progress"],
+                data: null
+            });
+        }
+
 
     }
 
@@ -1315,13 +1330,13 @@ function BytePage({params, ...props}: ByteProps) {
 
 
         let res = await fetch(
-            `${config.rootPath}/api/stats/checkHotStreak`,
+            `${config.rootPath}/api/stats/checkUnitMastery`,
             {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ byteAttemptId: byteID }),
+                body: JSON.stringify({ byte_attempt_id: byteID }),
                 credentials: 'include'
             }
         ).then(res => res.json());
@@ -1865,7 +1880,7 @@ function BytePage({params, ...props}: ByteProps) {
     const callProblemsSolved = () => {
         ctWs.sendWebsocketMessage({
             sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
-            type: CtMessageType.WebsocketMessageTypeProblemsSolvedRequest,
+            type: CtMessageType.WebSocketMessageTypeProblemsSolved,
             origin: CtMessageOrigin.WebSocketMessageOriginClient,
             created_at: Date.now(),
             payload: {
@@ -1924,6 +1939,7 @@ function BytePage({params, ...props}: ByteProps) {
             }
         }
 
+
         return (
             <Box
                 id="editor-sidebar"
@@ -1970,20 +1986,20 @@ function BytePage({params, ...props}: ByteProps) {
                         onExpand={() => setActiveSidebarTab("debugOutput")}
                         onHide={() => setActiveSidebarTab(null)}
                         onSuccess={() => {
-                            setSuggestionPopup(true)
-                            markComplete()
-                            recordByteAttemptCheck(true)
-                            checkNumberMastered(true)
-                            completionFailureRate(true)
-                            checkTenacious(id || "")
-                            checkHotStreak()
-                            checkGodLike()
-                            if (isJourney){
-                                checkUnitMastery(id || "")
+                            markComplete();
+                            if (!triggered) {
+                                setTriggered(true);
+                                setSuggestionPopup(true);
+                                recordByteAttemptCheck(true);
+                                checkNumberMastered(true);
+                                completionFailureRate(true);
+                                checkTenacious(byteAttemptId);
+                                checkHotStreak();
+                                checkGodLike();
+                                if (isJourney) {
+                                    checkUnitMastery(byteAttemptId);
+                                }
                             }
-                            problemsSolved()
-                            
-
                         }}
                         onFail={() => {
                             recordByteAttemptCheck(false)
@@ -2553,24 +2569,56 @@ function BytePage({params, ...props}: ByteProps) {
                     </div>
                 </Container>
                 {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
-                {xpPopup ? (<XpPopup oldXP={
-                    //@ts-ignore
-                    (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
-                    //@ts-ignore
-                    xpData["level_up_reward"] !== null} maxXP={100}
-                    //@ts-ignore
-                                     newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
-                    //@ts-ignore
-                                     nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
-                    //@ts-ignore
-                                     gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
-                    //@ts-ignore
-                                     reward={xpData["level_up_reward"]}
-                    //@ts-ignore
-                                     renown={xpData["xp_update"]["current_renown"]} popupClose={null}
-                                     homePage={true}/>) : null}
             </>
         )
+    }
+
+    const testNotificationPopups = () => {
+        // Test Hot Streak notification
+        addNotificationToQueue({
+            progression: 'hot_streak',
+            achievement: false,
+            progress: '4/3',
+            data: null
+        });
+    
+        // Test God-Like notification
+        addNotificationToQueue({
+            progression: 'god_like',
+            achievement: false,
+            progress: '4/5',
+            data: null
+        });
+    
+        // Test XP Popup notification
+        addNotificationToQueue({
+            progression: '',
+            achievement: '',
+            progress: '',
+            data: {
+                xp_update: {
+                    old_xp: 500,
+                    new_xp: 750,
+                    old_renown: null,
+                    new_renown: 100,
+                    current_renown: 100,
+                    old_level: 5,
+                    new_level: 6,
+                    next_level: 7,
+                    max_xp_for_lvl: 1000
+                },
+                level_up_reward: {
+                    reward: {
+                        id: "",
+                        user_id: "",
+                        name: "pulse",
+                        color_palette: "pink",
+                        render_in_front: true
+                    },
+                    reward_type: "avatar_background"
+                }
+            }
+        });
     }
 
     const journeyBytesPage = () => {
@@ -2727,6 +2775,7 @@ function BytePage({params, ...props}: ByteProps) {
                                     <Box
                                         display={"inline-flex"}
                                     >
+                                        <Button onClick={() => {testNotificationPopups()}}> TEST</Button>
                                         {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
                                             <Tooltip title="Run Code">
                                                 <LoadingButton
@@ -2803,22 +2852,6 @@ function BytePage({params, ...props}: ByteProps) {
                     </div>
                 </Container>
                 {parsedSymbols !== null ? codeActionPortals.map(x => x.portal) : null}
-                {xpPopup ? (<XpPopup oldXP={
-                    //@ts-ignore
-                    (xpData["xp_update"]["old_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]} levelUp={
-                    //@ts-ignore
-                    xpData["level_up_reward"] !== null} maxXP={100}
-                    //@ts-ignore
-                                     newXP={(xpData["xp_update"]["new_xp"] * 100) / xpData["xp_update"]["max_xp_for_lvl"]}
-                    //@ts-ignore
-                                     nextLevel={xpData["xp_update"]["old_level"] !== null ? xpData["xp_update"]["new_level"] : xpData["xp_update"]["next_level"]}
-                    //@ts-ignore
-                                     gainedXP={xpData["xp_update"]["new_xp"] - xpData["xp_update"]["old_xp"]}
-                    //@ts-ignore
-                                     reward={xpData["level_up_reward"]}
-                    //@ts-ignore
-                                     renown={xpData["xp_update"]["current_renown"]} popupClose={null}
-                                     homePage={true}/>) : null}
             </>
         )
     }
@@ -3166,6 +3199,33 @@ function BytePage({params, ...props}: ByteProps) {
         )
     }
 
+    const [notificationQueue, setNotificationQueue] = useState<any[]>([]);
+    const [currentNotification, setCurrentNotification] = useState<any | null>(null);
+    const queueRef = useRef(notificationQueue);
+    queueRef.current = notificationQueue;
+
+    useEffect(() => {
+        if (!currentNotification && notificationQueue.length > 0) {
+            setCurrentNotification(notificationQueue[0]);
+            setNotificationQueue(queueRef.current.slice(1));
+        }
+    }, [currentNotification, notificationQueue]);
+
+    const handleNotificationClose = () => {
+        setCurrentNotification(null);
+    };
+
+    const addNotificationToQueue = (notification: any) => {
+        setNotificationQueue((prevQueue) => {
+            if (notification.data) {
+                // If the notification has xpData, add it to the front of the queue
+                return [...prevQueue, { ...notification, id: new Date().getTime() }];
+            } else {
+                // Otherwise, add it to the end of the queue
+                return [{ ...notification, id: new Date().getTime() }, ...prevQueue];
+            }
+        });
+    };
     return (
         <>
             {(isJourney) ? journeyBytesPage() : bytesPage()}
@@ -3174,6 +3234,15 @@ function BytePage({params, ...props}: ByteProps) {
             {renderTutorial()}
             <OutOfHearts open={outOfHearts} onClose={() => navigate.push("/journey")} onGoPro={() => setProPopupOpen(true)}/>
             <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)}/>
+            {currentNotification && (
+                <ProgressionNotification
+                    progression={currentNotification.progression}
+                    achievement={currentNotification.achievement}
+                    progress={currentNotification.progress}
+                    onClose={handleNotificationClose}
+                    xpData={currentNotification.data}
+                />
+            )}
         </>
     );
 }

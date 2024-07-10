@@ -1,5 +1,5 @@
 import { alpha, CircularProgress, createTheme, PaletteMode, styled, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { theme } from "@/theme";
 import { useGlobalCtWebSocket } from "@/services/ct_websocket";
 import {
@@ -188,6 +188,8 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
         </Tooltip>
     ), [])
 
+    const hasCalledOutputMessage = useRef(false);
+
     const getOutputMessage = () => {
         if (executingOutputMessage) {
             return
@@ -223,7 +225,10 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
             setState(State.COMPLETED)
             if (p.success) {
                 setResponse("")
-                props.onSuccess()
+                if (!hasCalledOutputMessage.current) {
+                    hasCalledOutputMessage.current = true;
+                    props.onSuccess()
+                }
             } else {
                 props.onFail()
                 setResponse(p.explanation)
