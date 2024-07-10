@@ -308,7 +308,7 @@ const WelcomePage: React.FC = () => {
                         >
                             <Box>
                                 <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
-                                    Try GIGO Pro
+                                    GIGO Referrals
                                 </Typography>
                             </Box>
                             <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
@@ -394,7 +394,7 @@ const WelcomePage: React.FC = () => {
                                 variant="outlined"
                                 color="secondary"
                                 onClick={() => setShowReferralPage(false)}>
-                                Back To Pro Plans
+                                Back To Free Month
                             </Button>
                         </Box>
                     </Box>
@@ -444,8 +444,9 @@ const WelcomePage: React.FC = () => {
                         }}
                     >
                         <Box>
-                            <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
-                                Try GIGO Pro
+                            <Typography variant={"h4"} style={{ color: "white" }} align={"left"}>
+                                Claim Your Free<br />
+                                Month of GIGO Pro
                             </Typography>
                         </Box>
                         <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
@@ -457,7 +458,7 @@ const WelcomePage: React.FC = () => {
                         <Grid item xs={12}>
                             <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2.5 }}>
                                 <Button sx={{ mt: 1, fontSize: "0.8em" }} variant="contained" color="secondary" onClick={() => setShowReferralPage(true)}>
-                                    Get A Free Month Of Max
+                                    Get Another Free Month Of Max
                                 </Button>
                             </Box>
                         </Grid>
@@ -477,7 +478,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "basic"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $3/month
+                                    Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -496,7 +497,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "advanced"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $8/month
+                                    Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -515,7 +516,7 @@ const WelcomePage: React.FC = () => {
                                     loading={loadingProLinks === "max"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $15/month
+                                    Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -528,14 +529,20 @@ const WelcomePage: React.FC = () => {
                         mt: 4, // Adds margin at the top for spacing from the grid
                     }}>
                         <AwesomeButton href={forwardPath || "/home"} style={{
-                            width: "auto",
-                            height: "30px",
-                            '--button-primary-color': '#29c18c',
-                            '--button-primary-color-dark': '#1c8762',
-                            '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': '#29c18c',
-                            '--button-default-border-radius': "12px",
-                            fontSize: "16px",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            '--button-primary-color': "#29C18C",
+                            '--button-primary-color-dark': "#1c8762",
+                            '--button-primary-color-light': "#1c8762",
+                            '--button-primary-color-active': "#1c8762",
+                            '--button-primary-color-hover': "#29C18C",
+                            '--button-default-font-size': '24px',
+                            '--button-default-border-radius': '10px',
+                            '--button-horizontal-padding': '8px',
+                            '--button-raise-level': '6px',
+                            '--button-hover-pressure': '3',
+                            '--transform-speed': '0.275s',
                         }}>
                             Skip Offer
                         </AwesomeButton>
@@ -603,11 +610,23 @@ const WelcomePage: React.FC = () => {
                         '--button-hover-pressure': '3',
                         '--transform-speed': '0.275s',
                     }} type="primary"
-                        // onClick={() => setShowSubscription(true)}
                         href={forwardPath || "/home"}
                     >
                         Get Started!
                     </AwesomeButton>
+                    {!authState.usedFreeTrial && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setShowSubscription(true)}
+                            sx={{
+                                mt: 3,
+                                fontSize: "12px",
+                            }}
+                        >
+                            Claim Free Month
+                        </Button>
+                    )}
                 </div>
             </div>
         );

@@ -8,7 +8,6 @@ import { AwesomeButton } from "react-awesome-button"; // Adjust the import path 
 import { getAllTokens } from "@/theme";
 import { LoadingButton } from "@mui/lab";
 import swal from "sweetalert";
-import call from "@/services/api-call";
 import config from "@/config";
 import styled, { css, keyframes } from 'styled-components';
 import { selectAuthState } from "@/reducers/auth/auth";
@@ -16,6 +15,9 @@ import { useAppSelector } from "@/reducers/hooks";
 import premiumGorilla from "@/img/pro-pop-up-icon-plain.svg";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
+import CheckIcon from '@mui/icons-material/Check';
+import { theme } from '@/theme';
+import MuiAwesomeButton from '@/components/MuiAwesomeButton';
 
 
 const WelcomeMobilePage: React.FC = () => {
@@ -48,17 +50,17 @@ const WelcomeMobilePage: React.FC = () => {
     };
 
     const retrieveProUrls = async (): Promise<{ basic: string, advanced: string, max: string } | null> => {
-        let res = await call(
-            "/api/stripe/premiumMembershipSession",
-            "post",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            {},
-            null,
-            config.rootPath
-        )
+        let res = await fetch(
+            `${config.rootPath}/api/stripe/premiumMembershipSession`,
+            {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({}),
+                credentials: 'include'
+            }
+        ).then(res => res.json());
 
         if (res !== undefined && res["basic"] !== undefined && res["advanced"] !== undefined && res["max"] !== undefined) {
             setBasicLink(res["basic"])
@@ -297,11 +299,11 @@ const WelcomeMobilePage: React.FC = () => {
                             }}
                         >
                             <Box>
-                                <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
-                                    Try GIGO Pro
+                                <Typography variant={"h4"} style={{ color: "white", fontSize: "1.4em" }} align={"center"}>
+                                    GIGO Referrals
                                 </Typography>
                             </Box>
-                            <Image alt={"premiumGorilla"} width={60} height={60} src={premiumGorilla} style={{
+                            <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
                                 width: "80px",
                                 marginBottom: "20px"
                             }} />
@@ -341,33 +343,42 @@ const WelcomeMobilePage: React.FC = () => {
                             </Typography>
                             <Tooltip
                                 open={openTooltip}
-                                title="Copied!"
+                                disableFocusListener
+                                disableHoverListener
+                                disableTouchListener
+                                title={
+                                    <React.Fragment>
+                                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                                            Referral Link Copied
+                                            <CheckIcon sx={{ color: theme.palette.success.main, ml: 1 }} />
+                                        </div>
+                                    </React.Fragment>
+                                }
                                 placement="top"
                                 arrow
                             >
-                                <Button
+                                <Button sx={{
+                                    mt: 1,
+                                    fontSize: { xs: "0.7em", md: "0.8em" },
+                                    width: "fit-content",
+                                    px: { xs: 2, md: 3 }
+                                }}
                                     variant="contained"
-                                    color="primary"
-                                    onClick={handleReferralButtonClick}
-                                    sx={{
-                                        mb: { xs: 2, md: 4 },
-                                        width: { xs: "100%", md: "auto" },
-                                        fontSize: { xs: "0.8em", md: "1em" }
-                                    }}
-                                >
+                                    color="secondary"
+                                    onClick={handleReferralButtonClick}>
                                     Copy Referral Link
                                 </Button>
                             </Tooltip>
-                            <Button
+                            <Button sx={{
+                                mt: 1,
+                                fontSize: { xs: "0.7em", md: "0.8em" },
+                                width: "fit-content",
+                                px: { xs: 2, md: 3 }
+                            }}
                                 variant="outlined"
-                                color="primary"
-                                onClick={() => setShowReferralPage(false)}
-                                sx={{
-                                    width: { xs: "100%", md: "auto" },
-                                    fontSize: { xs: "0.8em", md: "1em" }
-                                }}
-                            >
-                                Back to Pro Plans
+                                color="secondary"
+                                onClick={() => setShowReferralPage(false)}>
+                                Back To Free Month
                             </Button>
                         </Box>
                     </Box>
@@ -382,7 +393,6 @@ const WelcomeMobilePage: React.FC = () => {
                 justifyContent: 'space-between', // This will space out the main and bottom sections
                 alignItems: 'center',
                 height: 'calc(100% + 64px)',
-                // backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -418,25 +428,21 @@ const WelcomeMobilePage: React.FC = () => {
                         }}
                     >
                         <Box>
-                            <Typography variant={"h4"} style={{ color: "white" }} align={"center"}>
-                                Try GIGO Pro
-                            </Typography>
-                            <Typography variant={"body2"} style={{ textAlign: "left", width: "100%" }}>
-                                <a href="#bottom" style={{ color: "#ffffff70" }}>
-                                    Skip Offer At Bottom Of Page
-                                </a>
+                            <Typography variant={"h4"} style={{ color: "white", fontSize: "1.2em" }} align={"left"}>
+                                Claim Your Free<br />
+                                Month of GIGO Pro
                             </Typography>
                         </Box>
-                        <Image alt={"premiumGorilla"} width={60} height={60} src={premiumGorilla} style={{
+                        <Image src={premiumGorilla} width={100} height={100} alt={"premiumGorilla"} style={{
                             width: "80px",
                             marginBottom: "20px"
                         }} />
                     </Box>
-                    <Grid container spacing={4} justifyContent="center">
+                    <Grid container spacing={4} justifyContent="center" sx={{ mt: 3 }}>
                         <Grid item xs={12}>
                             <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mt: 2.5 }}>
                                 <Button sx={{ mt: 1, fontSize: "0.8em" }} variant="contained" color="secondary" onClick={() => setShowReferralPage(true)}>
-                                    Get A Free Month Of Pro Max
+                                    Get Another Free Month Of Max
                                 </Button>
                             </Box>
                         </Grid>
@@ -457,7 +463,7 @@ const WelcomeMobilePage: React.FC = () => {
                                     loading={loadingProLinks === "basic"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $3/month
+                                    Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -477,7 +483,7 @@ const WelcomeMobilePage: React.FC = () => {
                                     loading={loadingProLinks === "advanced"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $8/month
+                                        Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -497,7 +503,7 @@ const WelcomeMobilePage: React.FC = () => {
                                     loading={loadingProLinks === "max"}
                                     disabled={loadingProLinks !== null}
                                 >
-                                    $15/month
+                                    Claim Free Month
                                 </LoadingButton>
                             </Paper>
                         </Grid>
@@ -510,14 +516,20 @@ const WelcomeMobilePage: React.FC = () => {
                         mt: 4, // Adds margin at the top for spacing from the grid
                     }}>
                         <AwesomeButton href={forwardPath || "/home"} style={{
-                            width: "auto",
-                            height: "30px",
-                            '--button-primary-color': '#29c18c',
-                            '--button-primary-color-dark': '#1c8762',
-                            '--button-primary-color-light': "white",
-                            '--button-primary-color-hover': '#29c18c',
-                            '--button-default-border-radius': "12px",
-                            fontSize: "16px",
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            textAlign: 'center',
+                            '--button-primary-color': "#29C18C",
+                            '--button-primary-color-dark': "#1c8762",
+                            '--button-primary-color-light': "#1c8762",
+                            '--button-primary-color-active': "#1c8762",
+                            '--button-primary-color-hover': "#29C18C",
+                            '--button-default-font-size': '24px',
+                            '--button-default-border-radius': '10px',
+                            '--button-horizontal-padding': '8px',
+                            '--button-raise-level': '6px',
+                            '--button-hover-pressure': '3',
+                            '--transform-speed': '0.275s',
                         }}>
                             Skip Offer
                         </AwesomeButton>
@@ -528,15 +540,16 @@ const WelcomeMobilePage: React.FC = () => {
         );
     } else {
         return (
-            <Box sx={{
+            <div style={{
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 alignItems: 'center',
-                minHeight: '100vh',
-                // backgroundImage: `url(${backgroundImage})`,
+                height: '93vh',
                 backgroundSize: 'cover',
-                p: 2,
+                backgroundPosition: 'center',
+                textAlign: 'center',
+                padding: '20px 0',
             }}>
                 <div style={{
                     position: 'absolute',
@@ -556,33 +569,52 @@ const WelcomeMobilePage: React.FC = () => {
                         quality={100} // Set image quality to high
                     />
                 </div>
-                <Typography variant="h4" align="center" gutterBottom>Welcome to GIGO</Typography>
-                <Typography variant="body1" align="center" sx={{ mb: 4 }}>
-                    Learn something new today!
-                </Typography>
-                <AwesomeButton style={{
-                    alignItems: 'center',
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
                     justifyContent: 'center',
-                    textAlign: 'center',
-                    marginBottom: "16px",
-                    '--button-primary-color': "#29C18C",
-                    '--button-primary-color-dark': "#1c8762",
-                    '--button-primary-color-light': "#1c8762",
-                    '--button-primary-color-active': "#1c8762",
-                    '--button-primary-color-hover': "#29C18C",
-                    '--button-default-font-size': '24px',
-                    '--button-default-border-radius': '10px',
-                    '--button-horizontal-padding': '8px',
-                    '--button-raise-level': '6px',
-                    '--button-hover-pressure': '3',
-                    '--transform-speed': '0.275s',
-                }} type="primary"
-                    // onClick={() => setShowSubscription(true)}
-                    href={forwardPath || "/home"}
-                >
-                    Get Started!
-                </AwesomeButton>
-            </Box>
+                    alignItems: 'center',
+                    height: '100%',
+                }}>
+                    <h1>Welcome to GIGO</h1>
+                    <br />
+                    <p>Learn something new today!</p>
+                    <br />
+                    <AwesomeButton style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        '--button-primary-color': "#29C18C",
+                        '--button-primary-color-dark': "#1c8762",
+                        '--button-primary-color-light': "#1c8762",
+                        '--button-primary-color-active': "#1c8762",
+                        '--button-primary-color-hover': "#29C18C",
+                        '--button-default-font-size': '24px',
+                        '--button-default-border-radius': '10px',
+                        '--button-horizontal-padding': '8px',
+                        '--button-raise-level': '6px',
+                        '--button-hover-pressure': '3',
+                        '--transform-speed': '0.275s',
+                    }} type="primary"
+                        href={forwardPath || "/home"}
+                    >
+                        Get Started!
+                    </AwesomeButton>
+                    {!authState.usedFreeTrial && (
+                        <Button
+                            variant="contained"
+                            color="secondary"
+                            onClick={() => setShowSubscription(true)}
+                            sx={{
+                                mt: 3,
+                                fontSize: "12px",
+                            }}
+                        >
+                            Claim Free Month
+                        </Button>
+                    )}
+                </div>
+            </div>
         );
     }
 
