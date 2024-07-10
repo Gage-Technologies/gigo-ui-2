@@ -213,7 +213,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
             content: (
                 <div>
                     <h2>Workspace Status</h2>
-                    <p>This is the Workspace`&#39;`s status bar. Workspaces start in the provisioning state but will show a progress bar once the workspace begins to start.</p>
+                    <p>This is the Workspace&#39;s status bar. Workspaces start in the provisioning state but will show a progress bar once the workspace begins to start.</p>
                 </div>
             ),
             target: '.bar',
@@ -223,7 +223,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
             content: (
                 <div>
                     <h2>Opening the Workspace</h2>
-                    <p>Once the workspace has finished initializing and is ready to be used, the `&#39;`Open Workspace`&#39;` button will light up. If you click the `&#39;`Open Workspace`&#39;` button the workspace will be opened in a new tab.</p>
+                    <p>Once the workspace has finished initializing and is ready to be used, the &#39;Open Workspace&#39; button will light up. If you click the &#39;Open Workspace&#39; button the workspace will be opened in a new tab.</p>
                 </div>
             ),
             target: '.open_button'
@@ -250,7 +250,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
             content: (
                 <div>
                     <h2>While You Wait</h2>
-                    <p>Some workspaces can take awhile to start. If you`&#39;`re bored or just like a challenge, try your hand at 2048!</p>
+                    <p>Some workspaces can take awhile to start. If you&#39;re bored or just like a challenge, try your hand at 2048!</p>
                 </div>
             ),
             target: '.game'
@@ -259,7 +259,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
             content: (
                 <div>
                     <h2>Firefox Warning</h2>
-                    <p>We noticed that you`&#39;`re using Firefox. Firefox is a great browser and we love it but we`&#39;`ve noticed that there can be some connectivity issues with Firefox when using workspaces. If you notice anything funky you might want to try another browser.</p>
+                    <p>We noticed that you&#39;re using Firefox. Firefox is a great browser and we love it but we&#39;ve noticed that there can be some connectivity issues with Firefox when using workspaces. If you notice anything funky you might want to try another browser.</p>
                 </div>
             ),
             target: 'body',
@@ -2786,7 +2786,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
                         ),
                         moreInfo: (
                             <div>
-                                <p style={styles.tutorialText}>GIGO provides interactive DevSpaces for programmers to design a tutorial for others to learn how to create a specific project. This extension allows the user to have the tutorial on the side and go through step by step alongside their code. You can also create your own tutorial using this extension by clicking the plus sign when you`&#39;`re in the tutorial extension tab.</p>
+                                <p style={styles.tutorialText}>GIGO provides interactive DevSpaces for programmers to design a tutorial for others to learn how to create a specific project. This extension allows the user to have the tutorial on the side and go through step by step alongside their code. You can also create your own tutorial using this extension by clicking the plus sign when you&#39;re in the tutorial extension tab.</p>
                             </div>
                         )
                     },
@@ -2812,7 +2812,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
                         ),
                         moreInfo: (
                             <div>
-                                <p style={styles.tutorialText}>Code Teacher is an advanced AI assistant understands the context of your project to offer real-time guidance. Whether you`&#39;`re stuck on a bug, unsure how to implement a function, or simply want to understand your code better, Code Teacher is there to help. Free users will gain access to 3 questions a day. Pro users, however, get full access to Code Teacher. </p>
+                                <p style={styles.tutorialText}>Code Teacher is an advanced AI assistant understands the context of your project to offer real-time guidance. Whether you&#39;re stuck on a bug, unsure how to implement a function, or simply want to understand your code better, Code Teacher is there to help. Free users will gain access to 3 questions a day. Pro users, however, get full access to Code Teacher. </p>
 
                             </div>
                         )
@@ -2821,7 +2821,7 @@ const WorkspacePage = ({ params }: { params: { id: string } }) => {
                         content: (
                             <div>
                                 <h2 style={styles.tutorialHeader}>Need A Terminal?</h2>
-                                <p style={styles.tutorialText}>Navigate the highlighted menu in the top left of the DevSpace, click `&#39;`Terminal`&#39;`, then `&#39;`New Terminal`&#39;`. Better yet, there is a keyboard shortcut: Ctrl + Shift + `</p>
+                                <p style={styles.tutorialText}>Navigate the highlighted menu in the top left of the DevSpace, click &#39;Terminal&#39;, then &#39;New Terminal&#39;. Better yet, there is a keyboard shortcut: Ctrl + Shift + `</p>
                             </div>
                         ),
                     },

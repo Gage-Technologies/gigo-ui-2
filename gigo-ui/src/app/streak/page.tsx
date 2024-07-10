@@ -150,7 +150,7 @@ function Streak() {
         content: <h2>A streak freeze is automatically consumed when you do not extend your
             streak</h2>, target: '.streak'
     }, {content: <h2>You can earn streak freezes from loop boxes</h2>, target: '.streak'}, {
-        content: <h2>That`&#39;`s the tutorial, thanks for your time and enjoy the
+        content: <h2>That&#39;s the tutorial, thanks for your time and enjoy the
             system.</h2>, target: 'body', placement: 'center'
     }])
 

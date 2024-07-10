@@ -4,6 +4,7 @@ import {
     ButtonBase,
     CircularProgress,
     Grid, Tooltip,
+    Typography,
 } from "@mui/material";
 import Carousel from "@/components/Carousel";
 import DetourCard from "./DetourCard";
@@ -71,7 +72,18 @@ function DetourSelection(props: DetourSelectionProps) {
     return (
         //@ts-ignore
         <Box sx={{position: "relative", width: "80%", borderRadius: '30px'}}>
-            <Tooltip title={"See More"}>
+            <Tooltip 
+                title={
+                    <React.Fragment>
+                        <Typography variant="body2">
+                            Detours are optional learning paths you can add to your Journey.
+                        </Typography>
+                        <Typography variant="body2">
+                            Click here to view all Detours
+                        </Typography>
+                    </React.Fragment>
+                }
+            >
                 <ButtonBase href={"/journey/detour"}>
                     <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", paddingTop: "10px"}}>
                         <DetourSignIcon width={"80%"}/>

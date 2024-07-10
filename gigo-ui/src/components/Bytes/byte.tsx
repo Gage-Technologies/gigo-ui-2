@@ -2760,7 +2760,7 @@ function BytePage({params, ...props}: ByteProps) {
                                         <h2 style={styles.tutorialHeader}>What can I ask Code Teacher</h2>
                                         <p style={styles.tutorialText}>
                                             Code Teacher is your personal tutor. It is here to help you at all times.
-                                            You can ask Code Teacher simple questions like `&quot;`What`&#39;`s a boolean?`&quot;` or
+                                            You can ask Code Teacher simple questions like `&quot;`What&#39;s a boolean?`&quot;` or
                                             more complex questions like `&quot;`What is left to do to complete this Byte?`&quot;`
                                         </p>
                                     </Box>
