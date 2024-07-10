@@ -586,7 +586,13 @@ const WelcomePage: React.FC = () => {
                     <br />
                     <p>Learn something new today!</p>
                     <br />
-                    <Button variant="contained" onClick={() => setShowSubscription(true)}>Continue</Button>
+                    <Button 
+                        variant="contained" 
+                        // onClick={() => setShowSubscription(true)}
+                        href={forwardPath || "/home"}
+                    >
+                        Continue
+                    </Button>
                 </div>
             </div>
         );

@@ -560,7 +560,12 @@ const WelcomeMobilePage: React.FC = () => {
                 <Typography variant="body1" align="center" sx={{ mb: 4 }}>
                     Learn something new today!
                 </Typography>
-                <Button variant="contained" onClick={() => setShowSubscription(true)} sx={{ mb: 2 }}>
+                <Button 
+                    variant="contained" 
+                    // onClick={() => setShowSubscription(true)} 
+                    href={forwardPath || "/home"}
+                    sx={{ mb: 2 }}
+                >
                     Continue
                 </Button>
             </Box>

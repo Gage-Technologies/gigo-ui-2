@@ -110,7 +110,7 @@ export function middleware(request: NextRequest) {
 
     // Handle device redirects
     const { device } = userAgent(request)
-    const viewport = device.type === 'mobile' ? 'mobile' : 'desktop'
+    const viewport = device.type === 'mobile' || device.type === 'tablet' ? 'mobile' : 'desktop'
     if (url.searchParams.get('viewport') !== viewport) {
         url.searchParams.set('viewport', viewport)
         redirect = true
