@@ -513,9 +513,18 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
             authState.phone = auth["phone"]
             authState.userName = auth["user_name"]
             authState.thumbnail = auth["thumbnail"]
+            authState.backgroundColor = auth["color_palette"]
+            authState.backgroundName = auth["name"]
+            authState.backgroundRenderInFront = auth["render_in_front"]
             authState.exclusiveContent = auth["exclusive_account"]
             authState.exclusiveAgreement = auth["exclusive_agreement"]
-            authState.tutorialState = DefaultTutorialState
+            authState.tutorialState = auth["tutorials"] as TutorialState
+            authState.tier = auth["tier"]
+            authState.inTrial = auth["in_trial"]
+            authState.alreadyCancelled = auth["already_cancelled"]
+            authState.hasPaymentInfo = auth["has_payment_info"]
+            authState.hasSubscription = auth["has_subscription"]
+            authState.usedFreeTrial = auth["used_free_trial"]
             dispatch(updateAuthState(authState))
 
             await sleep(1000)

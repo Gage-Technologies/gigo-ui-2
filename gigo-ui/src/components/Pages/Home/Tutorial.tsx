@@ -245,7 +245,7 @@ export default function Tutorial() {
         // },
         {
             title: "How to use tutorials",
-            content: "Tutorials will start on important app to guide you through the platform. This is the only mandatory tutorial. If you skip a tutorial, you can always restart it using the help button at the bottom of the left-hand sidebar (desktop) or the User icon drop down (mobile).",
+            content: "Tutorials will start on important pages to guide you through the platform. This is the only mandatory tutorial. If you skip a tutorial, you can always restart it using the help button at the bottom of the left-hand sidebar (desktop) or the User icon drop down (mobile).",
         },
         {
             title: "Let's Get Started!",
