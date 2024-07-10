@@ -560,14 +560,28 @@ const WelcomeMobilePage: React.FC = () => {
                 <Typography variant="body1" align="center" sx={{ mb: 4 }}>
                     Learn something new today!
                 </Typography>
-                <Button 
-                    variant="contained" 
-                    // onClick={() => setShowSubscription(true)} 
+                <AwesomeButton style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    textAlign: 'center',
+                    marginBottom: "16px",
+                    '--button-primary-color': "#29C18C",
+                    '--button-primary-color-dark': "#1c8762",
+                    '--button-primary-color-light': "#1c8762",
+                    '--button-primary-color-active': "#1c8762",
+                    '--button-primary-color-hover': "#29C18C",
+                    '--button-default-font-size': '24px',
+                    '--button-default-border-radius': '10px',
+                    '--button-horizontal-padding': '8px',
+                    '--button-raise-level': '6px',
+                    '--button-hover-pressure': '3',
+                    '--transform-speed': '0.275s',
+                }} type="primary"
+                    // onClick={() => setShowSubscription(true)}
                     href={forwardPath || "/home"}
-                    sx={{ mb: 2 }}
                 >
-                    Continue
-                </Button>
+                    Get Started!
+                </AwesomeButton>
             </Box>
         );
     }

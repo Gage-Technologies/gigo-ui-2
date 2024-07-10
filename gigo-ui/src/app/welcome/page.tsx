@@ -15,6 +15,7 @@ import Image from "next/image";
 import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 import CheckIcon from '@mui/icons-material/Check';
 import { theme } from '@/theme';
+import MuiAwesomeButton from '@/components/MuiAwesomeButton';
 
 
 const WelcomePage: React.FC = () => {
@@ -586,13 +587,27 @@ const WelcomePage: React.FC = () => {
                     <br />
                     <p>Learn something new today!</p>
                     <br />
-                    <Button 
-                        variant="contained" 
+                    <AwesomeButton style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
+                        '--button-primary-color': "#29C18C",
+                        '--button-primary-color-dark': "#1c8762",
+                        '--button-primary-color-light': "#1c8762",
+                        '--button-primary-color-active': "#1c8762",
+                        '--button-primary-color-hover': "#29C18C",
+                        '--button-default-font-size': '24px',
+                        '--button-default-border-radius': '10px',
+                        '--button-horizontal-padding': '8px',
+                        '--button-raise-level': '6px',
+                        '--button-hover-pressure': '3',
+                        '--transform-speed': '0.275s',
+                    }} type="primary"
                         // onClick={() => setShowSubscription(true)}
                         href={forwardPath || "/home"}
                     >
-                        Continue
-                    </Button>
+                        Get Started!
+                    </AwesomeButton>
                 </div>
             </div>
         );
