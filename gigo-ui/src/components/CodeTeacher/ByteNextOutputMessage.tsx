@@ -44,7 +44,8 @@ export type ByteNextOutputMessageProps = {
     maxWidth: string;
     codeOutput: string;
     nextByte?: any;
-    journey: boolean
+    journey: boolean;
+    current_difficulty: string;
     containerRef: React.MutableRefObject<null>;
     onTryHarderVersionClick?: () => void;
     nodeBelowId: string | null;
@@ -194,6 +195,8 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
         setExecutingOutputMessage(true)
         props.acceptedCallback()
 
+        console.log("running comment detection with difficulty", props.current_difficulty)
+
         ctWs.sendWebsocketMessage({
             sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
             type: CtMessageType.WebSocketMessageTypeByteNextOutputMessageRequest,
@@ -205,7 +208,8 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                 byte_development_steps: props.dev_steps,
                 // @ts-ignore
                 byte_output: props.codeOutput, // changed from codeOutput["stdout"][0] because of an error
-                code: props.code
+                code: props.code,
+                current_difficulty: props.current_difficulty,
             }
         } satisfies CtMessage<CtByteNextOutputRequest>, (msg: CtMessage<CtGenericErrorPayload | CtValidationErrorPayload | CtByteNextOutputResponse>) => {
             if (msg.type !== CtMessageType.WebSocketMessageTypeByteNextOutputMessageResponse) {

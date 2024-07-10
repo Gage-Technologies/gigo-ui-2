@@ -2005,7 +2005,7 @@ function BytePage({params, ...props}: ByteProps) {
                         nextByte={getNextByte()}
                         containerRef={containerRef}
                         journey={isJourney}
-                        currentDifficulty={determineDifficulty()}
+                        current_difficulty={difficultyToString(determineDifficulty())}
                         onTryHarderVersionClick={handleTryHarderVersionClick}
                         nodeBelowId={nodeBelow}
                     />

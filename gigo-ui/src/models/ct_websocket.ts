@@ -104,6 +104,7 @@ export interface CtByteNextOutputRequest {
     byte_development_steps: string;
     code: CtCodeFile[];
     byte_output: string;
+    current_difficulty: string;
 }
 
 export interface CtByteNextOutputResponse {
