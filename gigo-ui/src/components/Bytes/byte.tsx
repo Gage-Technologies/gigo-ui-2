@@ -2760,8 +2760,8 @@ function BytePage({params, ...props}: ByteProps) {
                                         <h2 style={styles.tutorialHeader}>What can I ask Code Teacher</h2>
                                         <p style={styles.tutorialText}>
                                             Code Teacher is your personal tutor. It is here to help you at all times.
-                                            You can ask Code Teacher simple questions like `&quot;`What&#39;s a boolean?`&quot;` or
-                                            more complex questions like `&quot;`What is left to do to complete this Byte?`&quot;`
+                                            You can ask Code Teacher simple questions like &quot;What&#39;s a boolean?&quot; or
+                                            more complex questions like &quot;What is left to do to complete this Byte?&quot;
                                         </p>
                                     </Box>
                                 </Box>
@@ -2784,7 +2784,7 @@ function BytePage({params, ...props}: ByteProps) {
                                     <Box sx={{marginLeft: "20px", width: "400px"}}>
                                         <h2 style={styles.tutorialHeader}>Byte Objective</h2>
                                         <p style={styles.tutorialText}>
-                                            You can find the objective of the Byte in the `&quot;`Byte Objective`&quot;` tab of the
+                                            You can find the objective of the Byte in the &quot;Byte Objective&quot; tab of the
                                             editor sidebar. This is a short description of what the Byte is about and
                                             what you should be doing. You can open and close the tab in the editor
                                             sidebar.
@@ -2812,7 +2812,7 @@ function BytePage({params, ...props}: ByteProps) {
                                         <h2 style={styles.tutorialHeader}>Editor Sidebar</h2>
                                         <p style={styles.tutorialText}>
                                             The right side of the editor is your Editor Sidebar and contains multiple
-                                            tools to help you learn. Click `&quot;`More Info`&quot;` to see a full list of tools.
+                                            tools to help you learn. Click &quot;More Info&quot; to see a full list of tools.
                                         </p>
                                     </Box>
                                 </Box>
@@ -2855,7 +2855,7 @@ function BytePage({params, ...props}: ByteProps) {
                                             </strong>
                                             <br/>
                                             <div style={styles.tutorialText}>
-                                                The Code Cleanup tool is triggered by the `&quot;`Clean Up Code`&quot;` button above
+                                                The Code Cleanup tool is triggered by the &quot;Clean Up Code&quot; button above
                                                 functions in the editor. It uses Code Teacher to clean up your code and
                                                 make it more readable. When you run Code Cleanup, it will show you the
                                                 changes it made to your code and ask you if you want to save them.
