@@ -4,7 +4,7 @@
   "private": true,
   "sideEffects": false,
   "scripts": {
-    "dev": "cd ../gigo-ui-dev-env && docker compose up -d && cd - && HTTPS=true SSL_CRT_FILE=../gigo-ui-dev-env/dev.crt SSL_KEY_FILE=../gigo-ui-dev-env/dev.key HOST=0.0.0.0 PORT=33000 node dev-server.js",
+    "dev": "cd ../gigo-ui-dev-env && docker compose up -d && cd - && HTTPS=true SSL_CRT_FILE=../gigo-ui-dev-env/dev.crt SSL_KEY_FILE=../gigo-ui-dev-env/dev.key HOST=0.0.0.0 PORT=33002 node dev-server.js",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
