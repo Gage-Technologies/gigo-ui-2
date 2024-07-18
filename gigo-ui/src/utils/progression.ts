@@ -3,13 +3,13 @@ export default function DetermineProgressionLevel(progression_type: string, prog
      case "data_hog":
          const data_hog_level = parseFloat(progression_value || '0');
          if (data_hog_level < 10000) {
-             return ["Level 1", "10KB"];
+             return ["Level 1", "10000"];
          } else if (data_hog_level < 50000) {
-             return ["Level 2", "50KB"]; 
+             return ["Level 2", "50000"]; 
          } else if (data_hog_level < 100000) {
-             return ["Level 3", "100KB"];
+             return ["Level 3", "100000"];
          }else{
-             return ["Level 3", "100KB"];
+             return ["Level 3", "100000"];
          }
          
      case "hungry_learner":

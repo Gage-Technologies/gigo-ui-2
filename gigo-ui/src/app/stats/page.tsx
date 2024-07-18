@@ -23,6 +23,7 @@ import BytesCard from '@/components/BytesCard';
 import { programmingLanguages } from '@/services/vars';
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import { string } from 'prop-types';
+import DetermineProgressionLevel from '@/utils/progression';
 
 export default function StatsPage() {
 
@@ -78,6 +79,18 @@ export default function StatsPage() {
        unit_mastery: string;
     }
     const [progression, setProgression] = useState<Progression | null>(null);
+    const [data_hog_level, setDataHogLevel] = useState<string>("Level 1");
+    const [data_hog_level_max, setDataHogLevelMax] = useState<string>("10KB");
+    const [hungry_learner_level, setHungryLearnerLevel] = useState<string>("Level 1");
+    const [hungry_learner_level_max, setHungryLearnerLevelMax] = useState<string>("5");
+    const [man_of_the_inside_level, setManOfTheInsideLevel] = useState<string>("Level 1");
+    const [man_of_the_inside_level_max, setManOfTheInsideLevelMax] = useState<string>("10");
+    const [tenacious_level, setTenaciousLevel] = useState<string>("Level 1");
+    const [tenacious_level_max, setTenaciousLevelMax] = useState<string>("5");
+    const [scribe_level, setScribeLevel] = useState<string>("Level 1");
+    const [scribe_level_max, setScribeLevelMax] = useState<string>("50");
+    const [unit_mastery_level, setUnitMasteryLevel] = useState<string>("Level 1");
+    const [unit_mastery_level_max, setUnitMasteryLevelMax] = useState<string>("1");
 
     const [stats, setStats] = useState<ProgrammingStats | null>(null);
     const [fot, setFot] = useState<FOT | null>(null);
@@ -189,8 +202,52 @@ export default function StatsPage() {
                    
                     console.log("progression: ", data.progression);
                     setProgression(data.progression);
-                    // console.log("progression 2: ", progression)
-                    // console.log("progression data hog: ", Math.min(parseFloat(progression?.data_hog || '0') / (10 * 1024), 1));
+                    // Data Hog
+                    const dataHogResult = DetermineProgressionLevel("data_hog", data.progression?.data_hog ?? '0');
+                    const dataHogLevel = dataHogResult?.[0] ?? '';
+                    const dataHogLevelMax = dataHogResult?.[1] ?? '';
+                    setDataHogLevel(dataHogLevel);
+                    setDataHogLevelMax(dataHogLevelMax);
+
+                    console.log("data hog level: ", dataHogLevel);
+                    console.log("data hog level max: ", dataHogLevelMax);
+
+                    // Hungry Learner
+                    const hungryLearnerResult = DetermineProgressionLevel("hungry_learner", data.progression?.hungry_learner ?? '0');
+                    const hungryLearnerLevel = hungryLearnerResult?.[0] ?? '';
+                    const hungryLearnerLevelMax = hungryLearnerResult?.[1] ?? '';
+                    setHungryLearnerLevel(hungryLearnerLevel);
+                    setHungryLearnerLevelMax(hungryLearnerLevelMax);
+
+                    // Man on the Inside
+                    const manOnTheInsideResult = DetermineProgressionLevel("man_of_the_inside", data.progression?.man_of_the_inside ?? '0');
+                    const manOnTheInsideLevel = manOnTheInsideResult?.[0] ?? '';
+                    const manOnTheInsideLevelMax = manOnTheInsideResult?.[1] ?? '';
+                    setManOfTheInsideLevel(manOnTheInsideLevel);
+                    setManOfTheInsideLevelMax(manOnTheInsideLevelMax);
+
+                    // The Scribe
+                    const scribeResult = DetermineProgressionLevel("scribe", data.progression?.scribe ?? '0');
+                    const scribeLevel = scribeResult?.[0] ?? '';
+                    const scribeLevelMax = scribeResult?.[1] ?? '';
+                    setScribeLevel(scribeLevel);
+                    setScribeLevelMax(scribeLevelMax);
+
+                    // Tenacious
+                    const tenaciousResult = DetermineProgressionLevel("tenacious", data.progression?.tenacious ?? '0');
+                    const tenaciousLevel = tenaciousResult?.[0] ?? '';
+                    const tenaciousLevelMax = tenaciousResult?.[1] ?? '';
+                    setTenaciousLevel(tenaciousLevel);
+                    setTenaciousLevelMax(tenaciousLevelMax);
+
+                    // Unit Mastery
+                    const unitMasteryResult = DetermineProgressionLevel("unit_mastery", data.progression?.unit_mastery ?? '0');
+                    const unitMasteryLevel = unitMasteryResult?.[0] ?? '';
+                    const unitMasteryLevelMax = unitMasteryResult?.[1] ?? '';
+                    setUnitMasteryLevel(unitMasteryLevel);
+                    setUnitMasteryLevelMax(unitMasteryLevelMax);
+                    // console.log("progression 2: ", data.progression)
+                    // console.log("progression data hog: ", Math.min(parseFloat(data.progression?.data_hog ?? '0') / (10 * 1024), 1));
                 }
             } catch (e) {
                 console.log("failed to get progression: ", e);
@@ -476,11 +533,12 @@ export default function StatsPage() {
                         borderRadius: '10px',
                     }}
                     >
+
                         <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Data Hog</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <LinearProgress 
                             variant="determinate" 
-                            value={Math.min(parseFloat(progression?.data_hog || '0') / (10 * 1024) * 100, 100)}
+                            value={Math.min(parseFloat(progression?.data_hog || '0') / parseInt(data_hog_level_max) * 100, 100)}
                             sx={{ 
                                 ...styles.progressBar,
                                 '& .MuiLinearProgress-bar': {
@@ -489,9 +547,9 @@ export default function StatsPage() {
                                 },
                             }}
                         />
-                        <Typography variant="body2">({(parseFloat(progression?.data_hog || '0') / (10 * 1024)).toFixed(2)}B/1KB)</Typography>
+                        <Typography variant="body2">({(parseFloat(progression?.data_hog || '0') / 1000).toFixed(2)}/{parseInt(data_hog_level_max)/1000}KB)</Typography>
                     </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 1</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{data_hog_level}</Typography>
                         <Tooltip title="Amount of executable code written (in GB)" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
@@ -516,7 +574,7 @@ export default function StatsPage() {
                     > 
                         <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Hungry Learner</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.hungry_learner || '0') * 100, 100)}
+                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.hungry_learner || '0')/parseInt(hungry_learner_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
                                                     backgroundColor: theme.palette.secondary.light,
@@ -524,9 +582,9 @@ export default function StatsPage() {
                                                 },
                                             }}
                             />
-                            <Typography variant="body2">({parseFloat(progression?.hungry_learner || '0')}/{10})</Typography>
+                            <Typography variant="body2">({parseFloat(progression?.hungry_learner || '0')}/{parseInt(hungry_learner_level_max)})</Typography>
                         </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 2</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{hungry_learner_level}</Typography>
                         <Tooltip title="Number of concepts learned" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
@@ -586,7 +644,7 @@ export default function StatsPage() {
                     >                        
                     <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Man on the Inside</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.man_of_the_inside || '0')/500 * 100, 100)}
+                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.man_of_the_inside || '0')/parseInt(man_of_the_inside_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
                                                     backgroundColor: theme.palette.secondary.main,
@@ -594,9 +652,9 @@ export default function StatsPage() {
                                                 },
                                             }}
                             />
-                            <Typography variant="body2">({Math.min(parseFloat(progression?.man_of_the_inside || '0'))}/{500})</Typography>
+                            <Typography variant="body2">({Math.min(parseFloat(progression?.man_of_the_inside || '0'))}/{parseInt(man_of_the_inside_level_max)})</Typography>
                         </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 9</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{man_of_the_inside_level}</Typography>
                         <Tooltip title="Number of chats sent to Code Teacher" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
@@ -621,7 +679,7 @@ export default function StatsPage() {
                     >                        
                     <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>The Scribe</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center'}}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.scribe || '0')/50 * 100, 100)}
+                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.scribe || '0')/parseInt(scribe_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
                                                     backgroundColor: theme.palette.primary.dark,
@@ -629,9 +687,9 @@ export default function StatsPage() {
                                                 },
                                             }}
                             />
-                            <Typography variant="body2">({Math.min(parseFloat(progression?.scribe || '0'))}/{50})</Typography>
+                            <Typography variant="body2">({Math.min(parseFloat(progression?.scribe || '0'))}/{parseInt(scribe_level_max)})</Typography>
                         </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 4</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{scribe_level}</Typography>
                         <Tooltip title="Number of comments written" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
@@ -656,7 +714,7 @@ export default function StatsPage() {
                     >                        
                     <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Tenacious</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.tenacious || '0'), 100)}
+                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.tenacious || '0')/parseInt(tenacious_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
                                                     backgroundColor: theme.palette.secondary.dark,
@@ -664,9 +722,9 @@ export default function StatsPage() {
                                                 },
                                             }}
                             />
-                            <Typography variant="body2">({Math.min(parseFloat(progression?.tenacious || '0'))}/{10})</Typography>
+                            <Typography variant="body2">({Math.min(parseFloat(progression?.tenacious || '0'))}/{parseInt(tenacious_level_max)})</Typography>
                         </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 5</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{tenacious_level}</Typography>
                         <Tooltip title="Number of times you failed a byte, but then succeeded. A higher number shows how dedicated and persistent you are" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
@@ -691,7 +749,7 @@ export default function StatsPage() {
                     >                        
                     <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Unit Mastery</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.unit_mastery || '0'), 100)}
+                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.unit_mastery || '0')/parseInt(unit_mastery_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
                                                     // @ts-ignore
@@ -700,9 +758,9 @@ export default function StatsPage() {
                                                 },
                                             }}
                             />
-                            <Typography variant="body2">({Math.min(parseFloat(progression?.unit_mastery || '0'))}/{10})</Typography>
+                            <Typography variant="body2">({Math.min(parseFloat(progression?.unit_mastery || '0'))}/{parseInt(unit_mastery_level_max)})</Typography>
                         </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 8</Typography>
+                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{unit_mastery_level}</Typography>
                         <Tooltip title="The amount of times you have completed an entire unit without failing a byte" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
