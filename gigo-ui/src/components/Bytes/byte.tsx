@@ -1262,6 +1262,15 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
+        /* if (res["tenacious_count"] !== 0) { */
+            addNotificationToQueue({
+                progression: 'tenacious',
+                achievement: res["newHigh"],
+                progress: res["tenacious_count"],
+                data: null
+            });
+        /* } */
+
         console.log("Response from CFR: ", res["tenacious_count"]);
 
     }
@@ -2567,6 +2576,46 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const testNotificationPopups = () => {
+        // Test Data Hog notification
+        addNotificationToQueue({
+            progression: 'data_hog',
+            achievement: false,
+            progress: 500,
+            data: null
+        });
+
+        // Test Hungry Learner notification
+        addNotificationToQueue({
+            progression: 'hungry_learner',
+            achievement: false,
+            progress: 5,
+            data: null
+        });
+
+        // Test Man on the Inside notification
+        addNotificationToQueue({
+            progression: 'man_of_the_inside',
+            achievement: false,
+            progress: 10,
+            data: null
+        });
+
+        // Test The Scribe notification
+        addNotificationToQueue({
+            progression: 'scribe',
+            achievement: false,
+            progress: 20,
+            data: null
+        });
+
+        // Test Tenacious notification
+        addNotificationToQueue({
+            progression: 'tenacious',
+            achievement: false,
+            progress: 3,
+            data: null
+        });
+
         // Test Hot Streak notification
         addNotificationToQueue({
             progression: 'hot_streak',
@@ -2574,8 +2623,15 @@ function BytePage({params, ...props}: ByteProps) {
             progress: 4,
             data: null
         });
-    
-    
+
+        // Test Unit Mastery notification
+        addNotificationToQueue({
+            progression: 'unit_mastery',
+            achievement: false,
+            progress: 1,
+            data: null
+        });
+
         // Test XP Popup notification
         addNotificationToQueue({
             progression: '',

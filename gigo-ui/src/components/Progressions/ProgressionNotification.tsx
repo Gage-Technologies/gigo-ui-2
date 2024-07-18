@@ -347,21 +347,26 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
 
     React.useEffect(() => {
         if (progressionData) {
-            const result = DetermineProgressionLevel(progression, progressionData[progression as keyof Progression] || '0');
+            const currentValue = parseFloat(progressionData[progression as keyof Progression] || '0');
+            const result = DetermineProgressionLevel(progression, currentValue.toString());
             const level = result?.[0] ?? '';
             const maxValue = result?.[1] ?? '';
-            setProgressionLevel(level);
-            setProgressionLevelMax(maxValue);
+            const maxValueNumber = parseInt(maxValue);
 
-            if (["man_of_the_inside", "data_hog", "scribe", "tenacious"].includes(progression)) {
-                const currentValue = parseFloat(progressionData[progression as keyof Progression] || '0');
-                const maxValueNumber = parseInt(maxValue);
+            if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner"].includes(progression)) {
                 setAchieveOpen(currentValue >= maxValueNumber);
                 setAchieveProgOpen(currentValue < maxValueNumber);
+                
+                // Debug logging
+                console.log(`${progression}: currentValue = ${currentValue}, maxValueNumber = ${maxValueNumber}`);
+                console.log(`achieveOpen: ${currentValue >= maxValueNumber}, achieveProgOpen: ${currentValue < maxValueNumber}`);
             } else {
                 setAchieveOpen(achievement);
                 setAchieveProgOpen(!achievement);
             }
+
+            setProgressionLevel(level);
+            setProgressionLevelMax(maxValue);
         }
     }, [progression, progressionData, achievement]);
 
@@ -554,8 +559,13 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
         }
     };
 
-    if (["man_of_the_inside", "data_hog", "scribe", "tenacious"].includes(progression)) {
-        return achieveOpen ? getAchievementNotification(progression) : getProgressNotification(progression);
+    if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner"].includes(progression)) {
+        return (
+            <>
+                {achieveOpen && getAchievementNotification(progression)}
+                {achieveProgOpen && getProgressNotification(progression)}
+            </>
+        );
     } else {
         return achievement ? getAchievementNotification(progression) : getProgressNotification(progression);
     }
