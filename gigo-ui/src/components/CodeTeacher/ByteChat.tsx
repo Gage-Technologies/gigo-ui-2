@@ -48,6 +48,7 @@ import GoProDisplay from "../GoProDisplay";
 import createGoToRemark from "../Markdown/Extensions/GoToRemark";
 import {simpleHash} from "@/services/utils";
 import {useSearchParams} from "next/navigation";
+import ProgressionNotification from "../Progressions/ProgressionNotification";
 
 const InitialSuggestionButton = styled(Button)`
     animation: initSuggestionButtonAuraEffect 2s infinite alternate;
@@ -113,6 +114,8 @@ export default function ByteChat(props: ByteChatProps) {
         LOADING = 'loading',
         COMPLETED = 'completed'
     }
+
+    const [showProgressionNotification, setShowProgressionNotification] = useState(false);
 
     const [disableChat, setDisableChat] = useState(false);
     const [chatId, setChatId] = useState("");
@@ -360,6 +363,7 @@ export default function ByteChat(props: ByteChatProps) {
         setShowButtons(false)
         setDisableChat(true)
         setState(State.LOADING)
+        
         const messageContent = overrideMessage !== undefined ? overrideMessage : userMessage
         let m: CtByteChatMessage[] = JSON.parse(JSON.stringify(messages));
         m.push({
@@ -428,6 +432,9 @@ export default function ByteChat(props: ByteChatProps) {
                     free_credit_use: p.free_credit_use,
                 })
                 setMessages(m)
+
+                // Show the ProgressionNotification
+                setShowProgressionNotification(true);
 
                 return true
             }
@@ -985,6 +992,15 @@ export default function ByteChat(props: ByteChatProps) {
             {renderSuggestions()}
             <GoProDisplay open={goProPopup} onClose={toggleProPopup}/>
             {textInputMemo}
+            {showProgressionNotification && (
+                <ProgressionNotification
+                    progression={"man_of_the_inside"}
+                    achievement={false}
+                    progress={0}
+                    onClose={() => setShowProgressionNotification(false)}
+                    xpData={null}
+                />
+            )}
         </>
     );
 }

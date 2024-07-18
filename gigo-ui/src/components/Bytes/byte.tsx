@@ -1283,51 +1283,18 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        if (res["progress"] !== "0/3") {
+        if (res["streak_"] !== 0) {
             addNotificationToQueue({
                 progression: 'hot_streak',
                 achievement: res["hot_streak"],
-                progress: res["progress"],
+                progress: res["streak_count"],
                 data: null
             });
         }
-
-
     }
 
-    const checkGodLike = async () => {
-
-        let res = await fetch(
-            `${config.rootPath}/api/stats/checkGodLike`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: '{}',
-                credentials: 'include'
-            }
-        ).then(res => res.json());
-
-        if (res === undefined || res["progress"] === undefined) {
-            return;
-        }
-
-        if (res["progress"] !== "0/5") {
-            addNotificationToQueue({
-                progression: 'god_like',
-                achievement: res["god_like"],
-                progress: res["progress"],
-                data: null
-            });
-        }
-
-
-    }
 
     const checkUnitMastery = async (byteID: string) => {
-
-
 
         let res = await fetch(
             `${config.rootPath}/api/stats/checkUnitMastery`,
@@ -1345,10 +1312,34 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        console.log("Response from CFR: ", res["unit_mastery"]);
+
+        if (res["unit_mastery"] === true) {
+            addNotificationToQueue({
+                progression: 'unit_mastery',
+                achievement: res["unit_mastery"],
+                progress: "",
+                data: null
+            });
+        }
 
     }
 
+    const displayCheckedProgressions = async () => {
+        checkHotStreak();
+        checkTenacious(byteAttemptId);
+        if (isJourney) {
+            checkUnitMastery(byteAttemptId);
+        }
+
+        // data hog
+/*         addNotificationToQueue({
+            progression: 'data_hog',
+            achievement: false,
+            progress: "",
+            data: null
+        }) */
+
+    }
 
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
@@ -1993,12 +1984,7 @@ function BytePage({params, ...props}: ByteProps) {
                                 recordByteAttemptCheck(true);
                                 checkNumberMastered(true);
                                 completionFailureRate(true);
-                                checkTenacious(byteAttemptId);
-                                checkHotStreak();
-                                checkGodLike();
-                                if (isJourney) {
-                                    checkUnitMastery(byteAttemptId);
-                                }
+                                displayCheckedProgressions();
                             }
                         }}
                         onFail={() => {
@@ -2510,6 +2496,13 @@ function BytePage({params, ...props}: ByteProps) {
                                                         }
 
                                                         executeCode(); // Indicate button click
+
+                                                        addNotificationToQueue({
+                                                            progression: 'data_hog',
+                                                            achievement: false,
+                                                            progress: "",
+                                                            data: null
+                                                        })
                                                     }}
                                                 >
                                                     Run <PlayArrow fontSize={"small"}/>
@@ -2577,18 +2570,11 @@ function BytePage({params, ...props}: ByteProps) {
         // Test Hot Streak notification
         addNotificationToQueue({
             progression: 'hot_streak',
-            achievement: false,
-            progress: '4/3',
+            achievement: true,
+            progress: 4,
             data: null
         });
     
-        // Test God-Like notification
-        addNotificationToQueue({
-            progression: 'god_like',
-            achievement: false,
-            progress: '4/5',
-            data: null
-        });
     
         // Test XP Popup notification
         addNotificationToQueue({
@@ -2607,16 +2593,7 @@ function BytePage({params, ...props}: ByteProps) {
                     next_level: 7,
                     max_xp_for_lvl: 1000
                 },
-                level_up_reward: {
-                    reward: {
-                        id: "",
-                        user_id: "",
-                        name: "pulse",
-                        color_palette: "pink",
-                        render_in_front: true
-                    },
-                    reward_type: "avatar_background"
-                }
+                level_up_reward: null
             }
         });
     }
@@ -2797,6 +2774,18 @@ function BytePage({params, ...props}: ByteProps) {
                                                         }
 
                                                         executeCode(); // Indicate button click
+                                                        addNotificationToQueue({
+                                                            progression: 'data_hog',
+                                                            achievement: false,
+                                                            progress: "",
+                                                            data: null
+                                                        })
+                                                        addNotificationToQueue({
+                                                            progression: 'scribe',
+                                                            achievement: false,
+                                                            progress: "",
+                                                            data: null
+                                                        })
                                                     }}
                                                 >
                                                     Run <PlayArrow fontSize={"small"}/>
