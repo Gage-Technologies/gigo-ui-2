@@ -1978,12 +1978,12 @@ function BytePage({params, ...props}: ByteProps) {
                         onHide={() => setActiveSidebarTab(null)}
                         onSuccess={() => {
                             markComplete();
+                            setTriggered(true);
+                            setSuggestionPopup(true);
+                            recordByteAttemptCheck(true);
+                            checkNumberMastered(true);
+                            completionFailureRate(true);
                             if (!triggered) {
-                                setTriggered(true);
-                                setSuggestionPopup(true);
-                                recordByteAttemptCheck(true);
-                                checkNumberMastered(true);
-                                completionFailureRate(true);
                                 displayCheckedProgressions();
                             }
                         }}
