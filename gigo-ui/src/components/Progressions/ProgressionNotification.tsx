@@ -31,9 +31,10 @@ interface AchievementProps {
     title: string;
     description: string;
     icon: React.ReactNode;
+    isDataHog?: boolean;
 }
 
-const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose, title, description, progress, progressMax, icon }) => {
+const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose, title, description, progress, progressMax, icon, isDataHog }) => {
     const value = (progress / progressMax) * 100;
     const [progressValue, setProgressValue] = React.useState(0);
 
@@ -82,7 +83,12 @@ const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose
                     </Typography>
                     <Box sx={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}>
                         <LinearProgress variant="determinate" value={progressValue} sx={{ height: '10px', borderRadius: '5px', backgroundColor: '#fff', flexGrow: 1, transition: 'width 1.5s ease-in-out' }} />
-                        <Typography sx={{ marginLeft: '8px', color: '#fff' }}>{`${progress}/${progressMax}`}</Typography>
+                        <Typography sx={{ marginLeft: '8px', color: '#fff' }}>
+                                {isDataHog 
+                                    ? `${progress.toFixed(2)}/${progressMax.toFixed(2)} KB`
+                                    : `${Math.round(progress)}/${Math.round(progressMax)}`
+                                }
+                            </Typography>
                     </Box>
                 </Box>
             </Box>
@@ -98,10 +104,9 @@ interface AchievementProgressRuntimeProps {
     progress: number;
     progressMax: number;
     icon: React.ReactNode;
-    isDataHog?: boolean;
 }
 
-const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({ open, onClose, title, description, progress, progressMax, icon, isDataHog }) => {
+const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({ open, onClose, title, description, progress, progressMax, icon }) => {
     const value = (progress / progressMax) * 100;
     const [progressValue, setProgressValue] = React.useState(0);
 
@@ -171,12 +176,7 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
                                     }
                                 }} 
                             />
-                            <Typography sx={{ marginLeft: '8px', color: '#fff' }}>
-                                {isDataHog 
-                                    ? `${progress.toFixed(2)}/${progressMax.toFixed(2)} KB`
-                                    : `${Math.round(progress)}/${Math.round(progressMax)}`
-                                }
-                            </Typography>
+                            <Typography sx={{ marginLeft: '8px', color: '#fff' }}>{`${progress}/${progressMax}`}</Typography>
                         </Box>
                     </Box>
                 </Box>
@@ -389,7 +389,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
         switch (progression) {
             case "data_hog":
                 return (
-                    <AchievementProgressRuntime
+                    <AchievementProgress
                         open={achieveProgOpen}
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title="Data Hog"
@@ -426,7 +426,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "scribe":
                 return (
-                    <AchievementProgressRuntime
+                    <AchievementProgress
                         open={achieveProgOpen}
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title="The Scribe"
