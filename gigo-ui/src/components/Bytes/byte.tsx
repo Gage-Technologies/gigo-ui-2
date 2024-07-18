@@ -1322,6 +1322,8 @@ function BytePage({params, ...props}: ByteProps) {
         }
 
 
+        console.log("unit_mastery: ", res);
+
         if (res["unit_mastery"] === true) {
             addNotificationToQueue({
                 progression: 'unit_mastery',
@@ -1337,7 +1339,8 @@ function BytePage({params, ...props}: ByteProps) {
         checkHotStreak();
         checkTenacious(byteAttemptId);
         if (isJourney) {
-            checkUnitMastery(byteAttemptId);
+
+            checkUnitMastery(props.byte._id);
         }
 
         // data hog
