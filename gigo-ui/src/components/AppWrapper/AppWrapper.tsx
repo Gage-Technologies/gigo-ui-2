@@ -78,6 +78,7 @@ import {
     HomeOutlined,
     InfoOutlined,
     LocalFireDepartment,
+    Assessment,
     Quiz
 } from "@mui/icons-material";
 import { Icon as IconifyIcon } from "@iconify/react";
@@ -2040,6 +2041,22 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     sx={{ fontSize: "0.8em" }}
                                 >
                                     Streak
+                                </Typography>
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton color={"primary"} sx={{
+                                borderRadius: 2,
+                            }} href={"/stats"}>
+                                <ListItemIcon>
+                                    <Assessment style={{ color: theme.palette.text.primary, }} />
+                                </ListItemIcon>
+                                <Typography
+                                    component={"div"}
+                                    variant={"body1"}
+                                    sx={{ fontSize: "0.8em" }}
+                                >
+                                    Stats
                                 </Typography>
                             </ListItemButton>
                         </ListItem>
