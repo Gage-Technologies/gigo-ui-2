@@ -1,7 +1,7 @@
 'use client'
 
 import React, {Suspense, useEffect, useState} from 'react';
-import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton, Button} from '@mui/material';
+import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton, Button, Dialog, DialogTitle, DialogContent, DialogContentText} from '@mui/material';
 import {theme} from "@/theme";
 import LinearProgress from "@mui/material/LinearProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -25,12 +25,10 @@ import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import { string } from 'prop-types';
 import DetermineProgressionLevel from '@/utils/progression';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { useSearchParams } from 'next/navigation';
-import StatsPageMobile from './statsMobile';
+import CloseIcon from '@mui/icons-material/Close';
 
-export default function StatsPage() {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+export default function StatsPageMobile() {
+
     const styles = {
         progressBar: {
             flexGrow: 1,
@@ -103,6 +101,20 @@ export default function StatsPage() {
     const [highestStreak, setHighestStreak] = useState(0); 
     const [languagesLearned, setLanguagesLearned] = useState(0);
     const [linguistType, setLinguistType] = useState("Novice");
+
+    const [openDialog, setOpenDialog] = useState(false);
+    const [dialogTitle, setDialogTitle] = useState('');
+    const [dialogContent, setDialogContent] = useState('');
+
+    const handleOpenDialog = (title: string, content: string) => {
+        setDialogTitle(title);
+        setDialogContent(content);
+        setOpenDialog(true);
+    };
+
+    const handleCloseDialog = () => {
+        setOpenDialog(false);
+    };
 
     useEffect(() => {
         if (progression) {
@@ -351,148 +363,125 @@ export default function StatsPage() {
     }, []);
 
     const statBoxes = () => {
-        // @ts-ignore
-
         return (
-            <Grid container spacing={4}>
-
-                <Grid item xs={8}>
-                    <Grid container spacing={4}>
-                        {/* Mastered Concepts */}
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    padding: 2,
-                                    textAlign: 'center',
-                                    height: '38vh',
-                                    overflow: 'hidden',
-                                    border: '1px solid',
-                                    borderColor: theme.palette.primary.light,
-                                    backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                <Tooltip title="This is the number of unique units you have finished in journeys. Each completion of a unit counts towards a mastered concept">
-                                    <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                                        <HelpOutlineIcon sx={{ fontSize: 15 }}/>
-                                    </Box>
-                                </Tooltip>
-                                <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
-                                    <Box display="flex" justifyContent="center">
-                                        <SchoolIcon sx={{ fontSize: 60 }} />
-                                    </Box>
-                                    <Typography variant="h1">{stats?.numbered_mastered_concepts}</Typography>
-                                    <Typography variant="h6">Mastered Concepts</Typography>
-                                </Box>
+            <Grid container spacing={2}>
+                {/* Mastered Concepts */}
+                <Grid item xs={6}>
+                    <Box
+                        onClick={() => handleOpenDialog('Mastered Concepts', 'This is the number of unique units you have finished in journeys. Each completion of a unit counts towards a mastered concept')}
+                        sx={{
+                            position: 'relative',
+                            padding: 2,
+                            textAlign: 'center',
+                            height: '15vh',
+                            overflow: 'hidden',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
+                            borderRadius: '20px'
+                        }}
+                    >
+                        <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                            <Box display="flex" justifyContent="center">
+                                <SchoolIcon sx={{ fontSize: 40 }} />
                             </Box>
-                        </Grid>
+                            <Typography variant="h3">{stats?.numbered_mastered_concepts}</Typography>
+                            <Typography variant="subtitle1">Mastered Concepts</Typography>
+                        </Box>
+                    </Box>
+                </Grid>
 
-                        {/* Completion v Failure */}
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    padding: 2,
-                                    textAlign: 'center',
-                                    height: '38vh',
-                                    overflow: 'hidden',
-                                    border: '1px solid',
-                                    borderColor: theme.palette.primary.light,
-                                    backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                <Tooltip title="Ratio of completions to failures.">
-                                    <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                                        <HelpOutlineIcon sx={{ fontSize: 15 }}/>
-                                    </Box>
-                                </Tooltip>
-                                <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
-                                    <Box display="flex" justifyContent="center">
-                                        <TrackChangesIcon sx={{ fontSize: 60 }} />
-                                    </Box>
-                                    <Typography variant="h1">
-                                        {
-                                            // @ts-ignore
-                                            parseFloat(stats?.completion_failure_rate)?.toFixed(2)
-                                        }
-                                    </Typography>
-                                    <Typography variant="h6">Completion v Failure</Typography>
-                                </Box>
+                {/* Completion v Failure */}
+                <Grid item xs={6}>
+                    <Box
+                        onClick={() => handleOpenDialog('Completion v Failure', 'Ratio of completions to failures.')}
+                        sx={{
+                            position: 'relative',
+                            padding: 2,
+                            textAlign: 'center',
+                            height: '15vh',
+                            overflow: 'hidden',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
+                            borderRadius: '20px'
+                        }}
+                    >
+                        <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                            <Box display="flex" justifyContent="center">
+                                <TrackChangesIcon sx={{ fontSize: 40 }} />
                             </Box>
-                        </Grid>
+                            <Typography variant="h3">
+                                {
+                                    // @ts-ignore
+                                    parseFloat(stats?.completion_failure_rate)?.toFixed(2)
+                                }
+                            </Typography>
+                            <Typography variant="subtitle1">Completion v Failure</Typography>
+                        </Box>
+                    </Box>
+                </Grid>
 
-                        {/* Problems by Code Teacher */}
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    padding: 2,
-                                    textAlign: 'center',
-                                    height: '38vh',
-                                    overflow: 'hidden',
-                                    border: '1px solid',
-                                    borderColor: theme.palette.primary.light,
-                                    backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                <Tooltip title="Number of problems solved by the code teacher.">
-                                    <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                                        <HelpOutlineIcon sx={{ fontSize: 15 }}/>
-                                    </Box>
-                                </Tooltip>
-                                <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
-                                    <Box display="flex" justifyContent="center">
-                                        <ComputerIcon sx={{ fontSize: 60 }} />
-                                    </Box>
-                                    <Typography variant="h1">{stats?.number_problems_solved_ct}</Typography>
-                                    <Typography variant="h6">Problems Solved by Code Teacher</Typography>
-                                </Box>
+                {/* Problems by Code Teacher */}
+                <Grid item xs={6}>
+                    <Box
+                        onClick={() => handleOpenDialog('Problems Solved by Code Teacher', 'Number of problems solved by the code teacher.')}
+                        sx={{
+                            position: 'relative',
+                            padding: 2,
+                            textAlign: 'center',
+                            height: '15vh',
+                            overflow: 'hidden',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
+                            borderRadius: '20px'
+                        }}
+                    >
+                        <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                            <Box display="flex" justifyContent="center">
+                                <ComputerIcon sx={{ fontSize: 40 }} />
                             </Box>
-                        </Grid>
+                            <Typography variant="h3">{stats?.number_problems_solved_ct}</Typography>
+                            <Typography variant="subtitle1">Problems Solved by Code Teacher</Typography>
+                        </Box>
+                    </Box>
+                </Grid>
 
-                        {/* Avg Byte Completion Time */}
-                        <Grid item xs={6}>
-                            <Box
-                                sx={{
-                                    position: 'relative',
-                                    padding: 2,
-                                    textAlign: 'center',
-                                    height: '38vh',
-                                    overflow: 'hidden',
-                                    border: '1px solid',
-                                    borderColor: theme.palette.primary.light,
-                                    backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
-                                    borderRadius: '20px'
-                                }}
-                            >
-                                <Tooltip title="Average time to complete a byte.">
-                                    <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
-                                        <HelpOutlineIcon sx={{ fontSize: 15 }}/>
-                                    </Box>
-                                </Tooltip>
-                                <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
-                                    <Box display="flex" justifyContent="center">
-                                        <TimerIcon sx={{ fontSize: 60 }} />
-                                    </Box>
-                                    <Typography variant="h1">{stats?.avg_time_complete_byte}</Typography>
-                                    <Typography variant="h6">Average Byte Completion Time</Typography>
-                                </Box>
+                {/* Avg Byte Completion Time */}
+                <Grid item xs={6}>
+                    <Box
+                        onClick={() => handleOpenDialog('Average Byte Completion Time', 'Average time to complete a byte.')}
+                        sx={{
+                            position: 'relative',
+                            padding: 2,
+                            textAlign: 'center',
+                            height: '15vh',
+                            overflow: 'hidden',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 20%)',
+                            borderRadius: '20px'
+                        }}
+                    >
+                        <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
+                            <Box display="flex" justifyContent="center">
+                                <TimerIcon sx={{ fontSize: 40 }} />
                             </Box>
-                        </Grid>
-                    </Grid>
+                            <Typography variant="h3">{stats?.avg_time_complete_byte}</Typography>
+                            <Typography variant="subtitle1">Average Byte Completion Time</Typography>
+                        </Box>
+                    </Box>
                 </Grid>
 
                 {/* Focus on This */}
-                <Grid item xs={4}>
+                <Grid item xs={12}>
                     <Box
                         sx={{
                             position: 'relative',
                             padding: 2,
                             textAlign: 'center',
-                            height: '80vh', // Double the height to cover two rows
+                            height: '45vh', // Reduced height
                             overflow: 'hidden',
                             border: '1px solid',
                             borderColor: theme.palette.primary.light,
@@ -507,21 +496,20 @@ export default function StatsPage() {
                         </Tooltip>
                         <Box display="flex" flexDirection="column" justifyContent="space-between" height="100%">
                             <Box display="flex" flexDirection="column" alignItems="center">
-                                <SearchIcon sx={{ fontSize: 60 }} />
-                                
+                                <SearchIcon sx={{ fontSize: 40 }} />
+                                <Typography variant="subtitle1">{String(fot?.concept)}</Typography>
                             </Box>
-                            <Typography variant="h6">{String(fot?.concept)}</Typography>
                             {fot?.byte_id && (
-                                <Suspense fallback={<SheenPlaceholder height={105} width={250} />}>
+                                <Suspense fallback={<SheenPlaceholder height={80} width={200} />}>
                                     <BytesCard
-                                        height={"355px"}
-                                        imageHeight={355}
-                                        width={'100%'}
-                                        imageWidth={'90%'}
+                                        height={"150px"} // Reduced height
+                                        imageHeight={150} // Reduced image height
+                                        width={'70%'} // Reduced width
+                                        imageWidth={'70%'} // Reduced image width
                                         bytesId={fot?.byte_id}
                                         bytesDesc={"Concept Explanation"}
                                         bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
-                                        language={programmingLanguages["python"]}
+                                        language={programmingLanguages[0]}
                                         animate={false} onClick={function (): void {
                                             throw new Error('Function not implemented.');
                                         }} 
@@ -537,129 +525,109 @@ export default function StatsPage() {
                                     More Details
                                 </Button>
                             </Box>
-                            <Typography variant="h6">Focus on This</Typography>
+                            <Typography variant="subtitle1">Focus on This</Typography>
                         </Box>
                     </Box>
                 </Grid>
 
+                {/* User streak */}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Hot Streak', 'Keep track of your hot streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. See how far you can get!')}
+                        sx={{ 
+                            padding: 2, 
+                            display: 'flex', 
+                            flexDirection: 'column',
+                            justifyContent: 'space-between', 
+                            alignItems: 'center', 
+                            height: '20vh', 
+                            position: 'relative', 
+                            border: '1px solid', 
+                            borderRadius: "10px",  
+                            borderColor: isHotStreak ? '#EFE3AD' : theme.palette.primary.light, 
+                            backgroundImage: isHotStreak ? 'linear-gradient(180deg, rgba(240,134,41,0.7) 0%, rgba(28,28,26,0.7) 40%, rgba(28,28,26,0.7) 88%, rgba(28,28,26,0.7) 98%)' : 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                        }}>
+                        {isHotStreak ? (
+                            <>
+                                <Typography variant="h5" color="#EFE3AD">Hot Streak!</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <LocalFireDepartmentIcon sx={{ fontSize: 50, color: '#EFE3AD', marginRight: 1 }} />
+                                    <Typography variant="h3" color="#EFE3AD">{currentStreak}</Typography>
+                                </Box>
+                                <Typography variant="subtitle2" color="#EFE3AD">Highest: {highestStreak}</Typography>
+                            </>
+                        ) : (
+                            <>
+                                <Typography variant="h5">Hot Streak Progress</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Typography variant="h3">{currentStreak}</Typography>
+                                    <Typography variant="h5" sx={{ marginLeft: 1, marginRight: 1 }}>/</Typography>
+                                    <Typography variant="h3">3</Typography>
+                                </Box>
+                                <Typography variant="subtitle2">Highest: {highestStreak}</Typography>
+                            </>
+                        )}
+                    </Box>
+                </Grid>
             </Grid>
-
         )
     }
 
     const progressionBoxes = () => {
         return (
-            <Grid container spacing={2} sx={{ height: 'calc(100% - 48px)' }}>
-
-                {/* User streak */}
-                <Grid item xs={12} sx={{ height: '20%' }}>
-                    <Box sx={{ 
-                        padding: 2, 
-                        display: 'flex', 
-                        justifyContent: 'space-between', 
-                        alignItems: 'center', 
-                        height: '100%', 
-                        position: 'relative', 
-                        border: '1px solid', 
-                        borderRadius: "10px",  
-                        borderColor: isHotStreak ? '#EFE3AD' : theme.palette.primary.light, 
-                        backgroundImage: isHotStreak ? 'linear-gradient(180deg, rgba(240,134,41,0.7) 0%, rgba(28,28,26,0.7) 40%, rgba(28,28,26,0.7) 88%, rgba(28,28,26,0.7) 98%)' : 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                    }}>
-                        {isHotStreak ? (
-                            <>
-                                <Grid container direction="column" sx={{ alignItems: 'flex-start' }}>
-                                    <Grid item>
-                                        <Typography variant="h5" color="#EFE3AD">Hot Streak!</Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography variant="subtitle2">Highest Hot Streak: {highestStreak}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid container sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <LocalFireDepartmentIcon sx={{ fontSize: 70, color: '#EFE3AD' }} />
-                                        <Typography variant="h4" color="#EFE3AD">{currentStreak}</Typography>
-                                    </Grid>
-                                </Grid>
-                            </>
-                        ) : (
-                            <>
-                                <Grid container direction="column" sx={{ alignItems: 'flex-start' }}>
-                                    <Grid item>
-                                        <Typography variant="h5">Highest Hot Streak</Typography>
-                                    </Grid>
-                                    <Grid item>
-                                        <Typography variant="h4">{highestStreak}</Typography>
-                                    </Grid>
-                                </Grid>
-                                <Grid container sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                                    <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                        <Typography variant="subtitle2">Current Progress</Typography>
-                                        <Typography variant="h5">{currentStreak}/3</Typography>
-                                    </Grid>
-                                </Grid>
-                            </>
-                        )}
-                        <Tooltip title="Keep track of your hot streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. See how far you can get!" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
-                    </Box>
-                </Grid>
-
+            <Grid container spacing={2}>
                 {/* Data Hog */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Data Hog', 'Amount of executable code written (in GB)')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     >
-
                         <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Data Hog</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <LinearProgress 
-                            variant="determinate" 
-                            value={Math.min(parseFloat(progression?.data_hog || '0') / parseInt(data_hog_level_max) * 100, 100)}
-                            sx={{ 
-                                ...styles.progressBar,
-                                '& .MuiLinearProgress-bar': {
-                                    backgroundColor: theme.palette.primary.light,
-                                    borderRadius: 8,
-                                },
-                            }}
-                        />
-                        <Typography variant="body2">({(parseFloat(progression?.data_hog || '0') / 1000).toFixed(2)}/{parseInt(data_hog_level_max)/1000}KB)</Typography>
-                    </Box>
+                            <LinearProgress 
+                                variant="determinate" 
+                                value={Math.min(parseFloat(progression?.data_hog || '0') / parseInt(data_hog_level_max) * 100, 100)}
+                                sx={{ 
+                                    ...styles.progressBar,
+                                    '& .MuiLinearProgress-bar': {
+                                        backgroundColor: theme.palette.primary.light,
+                                        borderRadius: 8,
+                                    },
+                                }}
+                            />
+                            <Typography variant="body2">({(parseFloat(progression?.data_hog || '0') / 1000).toFixed(2)}/{parseInt(data_hog_level_max)/1000}KB)</Typography>
+                        </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{data_hog_level}</Typography>
-                        <Tooltip title="Amount of executable code written (in GB)" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* Hungry Learner */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Hungry Learner', 'Number of concepts learned')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     > 
                         <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Hungry Learner</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
@@ -674,29 +642,27 @@ export default function StatsPage() {
                             <Typography variant="body2">({parseFloat(progression?.hungry_learner || '0')}/{parseInt(hungry_learner_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{hungry_learner_level}</Typography>
-                        <Tooltip title="Number of concepts learned" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* Man on the Inside */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Man on the Inside', 'Number of chats sent to Code Teacher')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     >                        
-                    <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Man on the Inside</Typography>
+                        <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Man on the Inside</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                             <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.man_of_the_inside || '0')/parseInt(man_of_the_inside_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
@@ -709,29 +675,27 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.man_of_the_inside || '0'))}/{parseInt(man_of_the_inside_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{man_of_the_inside_level}</Typography>
-                        <Tooltip title="Number of chats sent to Code Teacher" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* The Scribe */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('The Scribe', 'Number of comments written')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     >                        
-                    <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>The Scribe</Typography>
+                        <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>The Scribe</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                             <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.scribe || '0')/parseInt(scribe_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
@@ -744,29 +708,27 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.scribe || '0'))}/{parseInt(scribe_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{scribe_level}</Typography>
-                        <Tooltip title="Number of comments written" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* Tenacious */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Tenacious', 'Number of times you failed a byte, but then succeeded. A higher number shows how dedicated and persistent you are')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     >                        
-                    <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Tenacious</Typography>
+                        <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Tenacious</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                             <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.tenacious || '0')/parseInt(tenacious_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
@@ -779,29 +741,27 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.tenacious || '0'))}/{parseInt(tenacious_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{tenacious_level}</Typography>
-                        <Tooltip title="Number of times you failed a byte, but then succeeded. A higher number shows how dedicated and persistent you are" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* Unit Mastery */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Unit Mastery', 'The amount of times you have completed an entire unit without failing a byte')}
+                        sx={{
+                            padding: 2,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            height: '12vh',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                            borderRadius: '10px',
+                        }}
                     >                        
-                    <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Unit Mastery</Typography>
+                        <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Unit Mastery</Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center', }}>
                             <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.unit_mastery || '0')/parseInt(unit_mastery_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
@@ -815,26 +775,26 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.unit_mastery || '0'))}/{parseInt(unit_mastery_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{unit_mastery_level}</Typography>
-                        <Tooltip title="The amount of times you have completed an entire unit without failing a byte" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
                     </Box>
                 </Grid>
 
                 {/* Languages */}
-                <Grid item xs={12} sx={{ height: '20%' }}>
-                    <Box sx={{
-                        padding: 2,
-                        height: '100%',
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.main,
-                        borderRadius: "10px",
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)'
-                    }}>
+                <Grid item xs={12}>
+                    <Box
+                        onClick={() => handleOpenDialog('Languages', 'Languages learned: Python, JavaScript, TypeScript, Java')}
+                        sx={{
+                            padding: 2,
+                            height: '12vh',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.main,
+                            borderRadius: "10px",
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)'
+                        }}
+                    >
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                             <MenuBookIcon sx={{ fontSize: 40, marginRight: 2 }} />
                             <Box>
@@ -842,39 +802,50 @@ export default function StatsPage() {
                                 <Typography variant="body2">Learning {languagesLearned} Languages</Typography>
                             </Box>
                         </Box>
-                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Tooltip title="Languages learned: Python, JavaScript, TypeScript, Java" placement="top">
-                                <HelpOutlineIcon sx={{ fontSize: 15, marginRight: 1 }} />
-                            </Tooltip>
-                        </Box>
                     </Box>
                 </Grid>
             </Grid>
         )
     }
 
-        if (isMobile) {
-            return <StatsPageMobile />
-        } else {
-            return (
-                <Box sx={{ padding: 3 }}>
-            <Grid container spacing={2}>
-                <Grid item xs={7}>
-                    <Typography variant="h4" gutterBottom>
-                        Stats
-                    </Typography>
-                    {statBoxes()}
-                </Grid>
-                <Grid item xs={5}>
-                    <Typography variant="h4" gutterBottom>
-                        Progressions
-                    </Typography>
-                    {progressionBoxes()}
-                </Grid>
-            </Grid>
+    return (
+        <Box sx={{ padding: 2 }}>
+            <Typography variant="h5" gutterBottom>
+                Stats
+            </Typography>
+            {statBoxes()}
+            <Typography variant="h5" gutterBottom sx={{ mt: 3 }}>
+                Progressions
+            </Typography>
+            {progressionBoxes()}
+            <Dialog
+                open={openDialog}
+                onClose={handleCloseDialog}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {dialogTitle}
+                    <IconButton
+                        aria-label="close"
+                        onClick={handleCloseDialog}
+                        sx={{
+                            position: 'absolute',
+                            right: 8,
+                            top: 8,
+                            color: (theme) => theme.palette.grey[500],
+                        }}
+                    >
+                        <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        {dialogContent}
+                    </DialogContentText>
+                </DialogContent>
+            </Dialog>
         </Box>
-            )
-        }
-
+    );
 }
 
