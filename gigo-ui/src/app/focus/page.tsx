@@ -8,11 +8,59 @@ import config from "@/config";
 import {programmingLanguages} from "@/services/vars";
 import BytesCard from "@/components/Bytes/BytesCard";
 import * as React from "react";
-import {Suspense} from "react";
+import {Suspense, useEffect} from "react";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+
 
 // TODO currently has filler data
 const FocusPage: React.FC = () => {
+
+    type FOT = {
+        id: string;
+        owner_id: string;
+        concept: string;
+        mistake_description: string;
+        concept_explanation: string;
+        created_at: Date;
+        valid_until: Date;
+        byte_id: string | null;
+        search_query: string;
+        in_operation: boolean;
+        hash: string | null;
+    };
+
+
+    const [fot, setFot] = React.useState<FOT>(null);
+
+    useEffect(() => {
+        const fetchFOT = async () => {
+            try {
+                const response = await fetch(
+                    `${config.rootPath}/api/stats/getFOT`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: '{}',
+                        credentials: 'include'
+                    }
+                );
+
+                const data = await response.json();
+                if (data.fot) {
+                    setFot(data.fot);
+                    console.log("fot: ", data.fot);
+                }
+                console.log("fot data: ", data);
+            } catch (e) {
+                console.log("failed to get fot: ", e);
+            }
+        };
+        fetchFOT();
+    }, []);
+
     return (
         <Box
             sx={{
@@ -42,25 +90,26 @@ const FocusPage: React.FC = () => {
                         width: "16vw",
                         marginRight: 4,
                         marginBottom: 6,
-
                     }}
                 >
-                    <Typography variant="h5" component="h2" gutterBottom>
+                    <Typography variant="h5" component="h2" gutterBottom sx={{fontSize: '1.5rem'}}>
                         Lesson To Learn with
                     </Typography>
                     <Suspense fallback={<SheenPlaceholder height={400} width={225}/>}>
+                        {fot && (
                         <BytesCard
                             height={"475px"}
                             imageHeight={475}
                             width={'100%'}
                             imageWidth={300}
-                            bytesId={"1780323453681795072"}
+                            bytesId={fot?.byte_id}
                             bytesTitle={"Classes and Objects"}
                             bytesDesc={"Concept Explanation"}
-                            bytesThumb={config.rootPath + "/static/bytes/t/" + '1780323453681795072'}
+                            bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
                             language={programmingLanguages["python"]}
                             animate={false}
-                        />
+                            />
+                        )}
                     </Suspense>
                 </Box>
 
@@ -79,24 +128,37 @@ const FocusPage: React.FC = () => {
                             backgroundColor: theme.palette.background.card,
                             height: '30vh',
                             marginBottom: 6,
-                            borderRadius: "20px",
+                            borderRadius: "8px",
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'start',
                             flexDirection: 'column',
                             pr: 4,
                             pl: 4,
-                            pt: 2
+                            pt: 2,
+                            overflow: 'auto',
+                            '&::-webkit-scrollbar': {
+                                width: '6px',
+                            },
+                            '&::-webkit-scrollbar-thumb': {
+                                backgroundColor: hexToRGBA(theme.palette.text.primary, 0.2),
+                                borderRadius: '4px',
+                            },
+                            '&::-webkit-scrollbar-track': {
+                                backgroundColor: hexToRGBA(theme.palette.background.default, 0.2),
+                                borderRadius: '4px',
+                            },
+                            backgroundImage: 'linear-gradient(to bottom, #208562 -15%, transparent 25%)',
                         }}
                     >
                         <Typography variant="h5" component="h2" sx={{ textAlign: 'left' }}>
                             Your Largest Mistake
                         </Typography>
                         <Typography variant="h4" component="h2" sx={{ textAlign: 'left', marginBottom: 1}}>
-                            Python Classes
+                            {fot?.concept}
                         </Typography>
-                        <Typography variant="body1" component="p" sx={{ textAlign: 'left' }}>
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                        <Typography variant="body1" component="p" sx={{ textAlign: 'left', fontSize: '.9rem'}}>
+                            {fot?.concept_explanation}
                         </Typography>
                     </Box>
                     <Box
@@ -111,56 +173,133 @@ const FocusPage: React.FC = () => {
                                 border: `2px solid ${theme.palette.primary.main}`,
                                 backgroundColor: theme.palette.background.card,
                                 height: '30vh',
-                                width: '48%',
-                                borderRadius: "20px",
+                                width: '95%',
+                                borderRadius: "8px",
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'start',
                                 flexDirection: 'column',
-                                pr: 4,
-                                pl: 4,
-                                pt: 2,
-                                mr: 3
+                                paddingRight: theme.spacing(4),
+                                paddingLeft: theme.spacing(4),
+                                paddingTop: theme.spacing(2),
+                                marginRight: theme.spacing(3),
+                                overflow: 'auto',
+                                '&::-webkit-scrollbar': {
+                                    width: '6px',
+                                },
+                                '&::-webkit-scrollbar-thumb': {
+                                    backgroundColor: hexToRGBA(theme.palette.text.primary, 0.2),
+                                    borderRadius: '4px',
+                                },
+                                '&::-webkit-scrollbar-track': {
+                                    backgroundColor: hexToRGBA(theme.palette.background.default, 0.2),
+                                    borderRadius: '4px',
+                                },
+                                backgroundImage: 'linear-gradient(to bottom, #208562 -15%, transparent 25%)',
                             }}
                         >
                             <Typography variant="h5" component="h2" sx={{ textAlign: 'left', marginBottom: 2 }}>
                                 Mistake Description
                             </Typography>
-                            <Typography variant="body1" component="p" sx={{ textAlign: 'left' }}>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                            <Typography variant="body1" component="p" sx={{ textAlign: 'left', fontSize: '.9rem' }}>
+                                {fot?.mistake_description}
                             </Typography>
                         </Box>
-                        <Box
-                            sx={{
-                                border: `2px solid ${theme.palette.primary.main}`,
-                                backgroundColor: theme.palette.background.card,
-                                height: '30vh',
-                                width: '48%',
-                                borderRadius: "20px",
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                flexDirection: 'column',
-                                p: 4,
-                            }}
-                        >
-                            <Typography variant="h5" component="h2" sx={{ textAlign: 'left'}}>
-                                Finish Challenge By
+                            <Box
+                sx={{
+                    border: `2px solid ${theme.palette.primary.main}`,
+                    backgroundColor: theme.palette.background.card,
+                    height: '30vh',
+                    width: '48%',
+                    borderRadius: "8px",
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                    position: 'relative',
+                    p: 4,
+                    overflow: 'auto',
+                    backgroundImage: 'linear-gradient(to bottom, #208562 -15%, transparent 25%)',
+                }}
+            >
+                <Typography 
+                                    variant="h6" 
+                                    component="h2" 
+                                    sx={{ 
+                                        textAlign: 'center', 
+                        position: 'absolute', 
+                        top: 16, // Adjust the value as needed
+                        left: '50%',
+                        marginBottom: "8rem",
+                        transform: 'translateX(-50%)',
+                    }}
+                >
+                    Finish Challenge By
+                </Typography>
+                <Typography 
+                    variant="h5" 
+                    component="p" 
+                    sx={{ textAlign: 'center' }}
+                >
+                    <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '2.5rem' }}>
+                        <CalendarTodayIcon sx={{ fontSize: '11rem', color: 'white' }} />
+                        <Box sx={{ 
+                            position: 'absolute', 
+                            top: '50%', 
+                            left: '50%', 
+                            transform: 'translate(-50%, -50%)',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}>
+                            <Typography 
+                                variant="subtitle1" 
+                                component="span" 
+                                sx={{ 
+                                    fontWeight: 'bold',
+                                    marginBottom: '.5rem',  // Increased from '0.5rem' to '1rem' to move it down further
+                                    marginTop: '2rem',  // Added marginTop to push the text down\
+                                    fontSize: '1rem'
+                                }}
+                            >
+                                {formatDate(fot?.valid_until)?.split(' ')[0]}
                             </Typography>
-                            <Typography variant="h4" component="p" sx={{ textAlign: 'left' }}>
-                                June 30, 2024
+                            <Typography 
+                                variant="h4" 
+                                component="span" 
+                                sx={{ 
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                {formatDate(fot?.valid_until)?.split(' ')[1].replace(',', '')}
                             </Typography>
                         </Box>
+                    </Box>
+                </Typography>
+            </Box>
                     </Box>
                 </Box>
             </Box>
         </Box>
-
-
     );
 };
 
 export default FocusPage;
+
+const formatDate = (dateString: string | null | undefined): string => {
+    if (!dateString) {
+        return 'Date not available';
+    }
+    
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+        return 'Invalid date';
+    }
+    
+    const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+};
 
 function hexToRGBA(hex: any, alpha = 1) {
     let r = parseInt(hex.slice(1, 3), 16),

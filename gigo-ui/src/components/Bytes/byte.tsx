@@ -1317,6 +1317,10 @@ function BytePage({params, ...props}: ByteProps) {
             }
         ).then(res => res.json());
 
+        if (res == undefined){
+            return;
+        }
+
         if (res === undefined || res["unit_mastery"] === undefined) {
             return;
         }
