@@ -1,17 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Snackbar, Box, Typography, LinearProgress, Slide } from '@mui/material';
-import QuestionAnswerIcon from '@mui/icons-material/QuestionAnswer';
-import CodeIcon from '@mui/icons-material/Code';
-import SchoolIcon from '@mui/icons-material/School';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import ChatIcon from '@mui/icons-material/Chat';
-import CommentIcon from '@mui/icons-material/Comment';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import StarIcon from '@mui/icons-material/Star';
-import WhatshotIcon from '@mui/icons-material/Whatshot';
-import LanguageIcon from '@mui/icons-material/Language';
+import { Code, School, Chat, Comment, FitnessCenter, Whatshot } from '@mui/icons-material';
 import XpPopup from '../XpPopup';
-import { RiTwitchLine } from 'react-icons/ri';
 import DetermineProgressionLevel from '@/utils/progression';
 import config from "@/config";
 
@@ -23,6 +13,7 @@ interface AchievementProgressProps {
     progress: number;
     progressMax: number;
     icon: React.ReactNode;
+    isDataHog?: boolean;
 }
 
 interface AchievementProps {
@@ -31,19 +22,16 @@ interface AchievementProps {
     title: string;
     description: string;
     icon: React.ReactNode;
-    isDataHog?: boolean;
 }
 
 const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose, title, description, progress, progressMax, icon, isDataHog }) => {
+    const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
-    const [progressValue, setProgressValue] = React.useState(0);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (open) {
             setProgressValue(0);
-            const timer = setTimeout(() => {
-                setProgressValue(value);
-            }, 100); // Delay to ensure the animation starts
+            const timer = setTimeout(() => setProgressValue(value), 100);
             return () => clearTimeout(timer);
         }
     }, [open, value]);
@@ -107,15 +95,13 @@ interface AchievementProgressRuntimeProps {
 }
 
 const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({ open, onClose, title, description, progress, progressMax, icon }) => {
+    const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
-    const [progressValue, setProgressValue] = React.useState(0);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (open) {
             setProgressValue(0);
-            const timer = setTimeout(() => {
-                setProgressValue(value);
-            }, 100);
+            const timer = setTimeout(() => setProgressValue(value), 100);
             return () => clearTimeout(timer);
         }
     }, [open, value]);
@@ -297,8 +283,8 @@ interface ProgressionNotificationProps {
 }
 
 const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progression, achievement, progress, onClose, xpData }) => {
-    const [achieveOpen, setAchieveOpen] = React.useState(false);
-    const [achieveProgOpen, setAchieveProgOpen] = React.useState(false);
+    const [achieveOpen, setAchieveOpen] = useState(false);
+    const [achieveProgOpen, setAchieveProgOpen] = useState(false);
     type Progression = {
         id: string;
         user_id: string;
@@ -311,9 +297,9 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
         hot_streak: string;
         unit_mastery: string;
      }
-    const [progressionData, setProgressionData] = React.useState<Progression | null>(null);
-    const [progressionLevel, setProgressionLevel] = React.useState('');
-    const [progressionLevelMax, setProgressionLevelMax] = React.useState('');
+    const [progressionData, setProgressionData] = useState<Progression | null>(null);
+    const [progressionLevel, setProgressionLevel] = useState('');
+    const [progressionLevelMax, setProgressionLevelMax] = useState('');
 
     const getProgressions = async () => {
         try {
@@ -341,32 +327,27 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
         }
     };
 
-    React.useEffect(() => {
+    useEffect(() => {
         getProgressions();
     }, [progression]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (progressionData) {
             const currentValue = parseFloat(progressionData[progression as keyof Progression] || '0');
             const result = DetermineProgressionLevel(progression, currentValue.toString());
-            const level = result?.[0] ?? '';
-            const maxValue = result?.[1] ?? '';
-            const maxValueNumber = parseInt(maxValue);
+            const maxValue = parseInt(result?.[1] ?? '');
+            const thresholdValue = parseInt(result?.[2] ?? '0');
 
-            if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner"].includes(progression)) {
-                setAchieveOpen(currentValue >= maxValueNumber);
-                setAchieveProgOpen(currentValue < maxValueNumber);
-                
-                // Debug logging
-                console.log(`${progression}: currentValue = ${currentValue}, maxValueNumber = ${maxValueNumber}`);
-                console.log(`achieveOpen: ${currentValue >= maxValueNumber}, achieveProgOpen: ${currentValue < maxValueNumber}`);
+            if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner", "unit_mastery"].includes(progression)) {
+                setAchieveOpen(currentValue >= maxValue || currentValue === thresholdValue);
+                setAchieveProgOpen(currentValue < maxValue && currentValue !== thresholdValue);
             } else {
                 setAchieveOpen(achievement);
                 setAchieveProgOpen(!achievement);
             }
 
-            setProgressionLevel(level);
-            setProgressionLevelMax(maxValue);
+            setProgressionLevel(result?.[0] ?? '');
+            setProgressionLevelMax(result?.[1] ?? '');
         }
     }, [progression, progressionData, achievement]);
 
@@ -401,7 +382,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Amount of executable code written"
                         progress={parseFloat(progressionData?.data_hog || '0') / 1000}
                         progressMax={parseInt(progressionLevelMax) / 1000}
-                        icon={<CodeIcon fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
+                        icon={<Code fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                         isDataHog={true}
                     />
                 );
@@ -414,7 +395,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Number of concepts learned"
                         progress={parseFloat(progressionData?.hungry_learner || '0')}
                         progressMax={parseInt(progressionLevelMax)}
-                        icon={<SchoolIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "man_of_the_inside":
@@ -426,7 +407,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Number of chats sent to Code Teacher"
                         progress={parseFloat(progressionData?.man_of_the_inside ?? '0')}
                         progressMax={parseInt(progressionLevelMax)}
-                        icon={<ChatIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<Chat fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "scribe":
@@ -438,7 +419,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Number of comments written"
                         progress={parseFloat(progressionData?.scribe || '0')}
                         progressMax={parseInt(progressionLevelMax)}
-                        icon={<CommentIcon fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
+                        icon={<Comment fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                     />
                 );
             case "tenacious":
@@ -450,7 +431,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Number of Times Failed a byte then succeeded"
                         progress={parseFloat(progressionData?.tenacious || '0')}
                         progressMax={parseInt(progressionLevelMax)}
-                        icon={<FitnessCenterIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<FitnessCenter fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "hot_streak":
@@ -462,7 +443,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Bytes completed without failing"
                         progress={progress ?? 0}
                         progressMax={3}
-                        icon={<WhatshotIcon fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
+                        icon={<Whatshot fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                     />
                 );
             case "unit_mastery":
@@ -474,7 +455,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         description="Complete full unit without failing a byte"
                         progress={parseFloat(progressionData?.unit_mastery || '0')}
                         progressMax={parseInt(progressionLevelMax)}
-                        icon={<SchoolIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             default:
@@ -490,8 +471,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Data Hog"
-                        description={`${parseInt(progressionLevelMax) / 1000} KB of executable code written`}
-                        icon={<CodeIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        description={`${parseFloat(progressionData?.data_hog ?? '0') / 1000} KB of executable code written`}
+                        icon={<Code fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "hungry_learner":
@@ -500,8 +481,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Hungry Learner"
-                        description={`${progressionLevelMax} concepts learned`}
-                        icon={<SchoolIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        description={`${parseFloat(progressionData?.hungry_learner ?? '0')} concepts learned`}
+                        icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "man_of_the_inside":
@@ -511,7 +492,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Man on the Inside"
                         description={`${parseFloat(progressionData?.man_of_the_inside ?? '0')} chats sent to Code Teacher`}
-                        icon={<ChatIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<Chat fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "scribe":
@@ -520,8 +501,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="The Scribe"
-                        description={`${progressionLevelMax} comments written`}
-                        icon={<CommentIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        description={`${parseFloat(progressionData?.scribe ?? '0')} comments written`}
+                        icon={<Comment fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "tenacious":
@@ -530,8 +511,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Tenacious"
-                        description={`Times Failed a byte then succeeded (${progressionLevelMax})`}
-                        icon={<FitnessCenterIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        description={`Times Failed a byte then succeeded (${parseFloat(progressionData?.tenacious ?? '0')})`}
+                        icon={<FitnessCenter fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "hot_streak":
@@ -541,7 +522,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Hot Streak"
                         description={`${progress} Bytes completed without failing`}
-                        icon={<WhatshotIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        icon={<Whatshot fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             case "unit_mastery":
@@ -550,8 +531,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Unit Mastery"
-                        description={`${progressionLevelMax} units completed without failing a byte`}
-                        icon={<SchoolIcon fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
+                        description={`${parseFloat(progressionData?.unit_mastery ?? '0')} units completed without failing a byte`}
+                        icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
             default:
@@ -559,7 +540,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
         }
     };
 
-    if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner"].includes(progression)) {
+    if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner", "unit_mastery"].includes(progression)) {
         return (
             <>
                 {achieveOpen && getAchievementNotification(progression)}
@@ -574,13 +555,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
 export default ProgressionNotification;
 
 function hexToRGBA(hex: string, alpha: string | number) {
-    let r = parseInt(hex.slice(1, 3), 16),
-        g = parseInt(hex.slice(3, 5), 16),
-        b = parseInt(hex.slice(5, 7), 16);
-
-    if (alpha) {
-        return "rgba(" + r + ", " + g + ", " + b + ", " + alpha + ")";
-    } else {
-        return "rgb(" + r + ", " + g + ", " + b + ")";
-    }
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return alpha ? `rgba(${r}, ${g}, ${b}, ${alpha})` : `rgb(${r}, ${g}, ${b})`;
 }
