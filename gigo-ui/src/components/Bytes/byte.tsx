@@ -1283,7 +1283,7 @@ function BytePage({params, ...props}: ByteProps) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ byte_attempt_id: byteAttemptId }),
+                body: '{}',
                 credentials: 'include'
             }
         ).then(res => res.json());

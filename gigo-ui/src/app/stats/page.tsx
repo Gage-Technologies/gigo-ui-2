@@ -1,7 +1,7 @@
 'use client'
 
 import React, {Suspense, useEffect, useState} from 'react';
-import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton} from '@mui/material';
+import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton, Button} from '@mui/material';
 import {theme} from "@/theme";
 import LinearProgress from "@mui/material/LinearProgress";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
@@ -24,6 +24,7 @@ import { programmingLanguages } from '@/services/vars';
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import { string } from 'prop-types';
 import DetermineProgressionLevel from '@/utils/progression';
+import MenuBookIcon from '@mui/icons-material/MenuBook';
 
 export default function StatsPage() {
 
@@ -94,6 +95,11 @@ export default function StatsPage() {
 
     const [stats, setStats] = useState<ProgrammingStats | null>(null);
     const [fot, setFot] = useState<FOT | null>(null);
+    const [isHotStreak, setIsHotStreak] = useState(false);
+    const [currentStreak, setCurrentStreak] = useState(0);
+    const [highestStreak, setHighestStreak] = useState(0); 
+    const [languagesLearned, setLanguagesLearned] = useState(0);
+    const [linguistType, setLinguistType] = useState("Novice");
 
     useEffect(() => {
         if (progression) {
@@ -182,6 +188,57 @@ export default function StatsPage() {
                 console.log("failed to get stats: ", e);
             }
         };
+
+        const checkHotStreak = async () => {
+            let res = await fetch(
+                `${config.rootPath}/api/stats/checkHotStreak`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: '{}',
+                    credentials: 'include'
+                }
+            ).then(res => res.json());
+    
+            if (res === undefined || res["hot_streak"] === undefined) {
+                return;
+            }
+    
+            setIsHotStreak(res["hot_streak"]);
+            setCurrentStreak(res["streak_count"]);
+            setHighestStreak(res["highest_streak"]);
+        }
+
+        const checkLinguist = async () => {
+            let res = await fetch(
+                `${config.rootPath}/api/stats/checkLinguist`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: '{}',
+                    credentials: 'include'
+                }
+            ).then(res => res.json());
+    
+            if (res === undefined || res["language_count"] === undefined) {
+                return;
+            }
+    
+            const languagesLearned = res["language_count"];
+            let linguistType = "Novice";
+            if (res["bilingual"] && !res["linguist"]) {
+                linguistType = "Bilingual";
+            } else if (res["linguist"]) {
+                linguistType = "Linguist";
+            }
+
+            setLanguagesLearned(languagesLearned);
+            setLinguistType(linguistType);
+        }
 
         const fetchProgression = async () => {
             try {
@@ -284,8 +341,10 @@ export default function StatsPage() {
         populateAvgTime();
         populateCFR();
         fetchStats();
-        fetchFOT()
-        fetchProgression()
+        fetchFOT();
+        fetchProgression();
+        checkHotStreak();
+        checkLinguist();
     }, []);
 
     const statBoxes = () => {
@@ -452,7 +511,7 @@ export default function StatsPage() {
                             {fot?.byte_id && (
                                 <Suspense fallback={<SheenPlaceholder height={105} width={250} />}>
                                     <BytesCard
-                                        height={"550px"}
+                                        height={"355px"}
                                         imageHeight={355}
                                         width={'100%'}
                                         imageWidth={'90%'}
@@ -466,16 +525,15 @@ export default function StatsPage() {
                                     />
                                 </Suspense>
                             )}
-                            {/* <Box sx={{ borderRadius: "10px", backgroundColor: theme.palette.background.paper}}>
-                                <MarkdownRenderer
-                                    markdown={fot?.mistake_description || ''}
-                                        style={{
-                                            fontSize: "0.7rem",
-                                            width: "auto",
-                                            textAlign: "left"
-                                    }}
-                                    />
-                            </Box> */}
+                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+                                <Button
+                                    variant="outlined"
+                                    href="/focus"
+                                    sx={{ width: 'fit-content' }}
+                                >
+                                    More Details
+                                </Button>
+                            </Box>
                             <Typography variant="h6">Focus on This</Typography>
                         </Box>
                     </Box>
@@ -492,26 +550,54 @@ export default function StatsPage() {
 
                 {/* User streak */}
                 <Grid item xs={12} sx={{ height: '20%' }}>
-                    <Box sx={{ padding: 2, display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%', position: 'relative', border: '1px solid', borderRadius: "10px",  borderColor: theme.palette.primary.light, backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',}}>
-                        <Grid container direction="column" sx={{ alignItems: 'flex-start' }}>
-                            <Grid item>
-                                <Typography variant="h5">God Like</Typography>
-                            </Grid>
-                            <Grid item>
-                                <Typography variant="subtitle2">Current Streak: 6</Typography>
-                            </Grid>
-                        </Grid>
-                        <Grid container sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginRight: 2 }}>
-                                <LocalFireDepartmentIcon sx={{ fontSize: 70 }} />
-                                <Typography variant="body2">12</Typography>
-                            </Grid>
-                            <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <PsychologyIcon sx={{ fontSize: 70 }} />
-                                <Typography variant="body2">4</Typography>
-                            </Grid>
-                        </Grid>
-                        <Tooltip title="Keep track of your streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. More than 5 puts you on a god-like streak. See how far you can get!" placement="top">
+                    <Box sx={{ 
+                        padding: 2, 
+                        display: 'flex', 
+                        justifyContent: 'space-between', 
+                        alignItems: 'center', 
+                        height: '100%', 
+                        position: 'relative', 
+                        border: '1px solid', 
+                        borderRadius: "10px",  
+                        borderColor: isHotStreak ? '#EFE3AD' : theme.palette.primary.light, 
+                        backgroundImage: isHotStreak ? 'linear-gradient(180deg, rgba(240,134,41,0.7) 0%, rgba(28,28,26,0.7) 40%, rgba(28,28,26,0.7) 88%, rgba(28,28,26,0.7) 98%)' : 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
+                    }}>
+                        {isHotStreak ? (
+                            <>
+                                <Grid container direction="column" sx={{ alignItems: 'flex-start' }}>
+                                    <Grid item>
+                                        <Typography variant="h5" color="#EFE3AD">Hot Streak!</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="subtitle2">Highest Hot Streak: {highestStreak}</Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid container sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <LocalFireDepartmentIcon sx={{ fontSize: 70, color: '#EFE3AD' }} />
+                                        <Typography variant="h4" color="#EFE3AD">{currentStreak}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </>
+                        ) : (
+                            <>
+                                <Grid container direction="column" sx={{ alignItems: 'flex-start' }}>
+                                    <Grid item>
+                                        <Typography variant="h5">Highest Hot Streak</Typography>
+                                    </Grid>
+                                    <Grid item>
+                                        <Typography variant="h4">{highestStreak}</Typography>
+                                    </Grid>
+                                </Grid>
+                                <Grid container sx={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                                    <Grid item sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                        <Typography variant="subtitle2">Current Progress</Typography>
+                                        <Typography variant="h5">{currentStreak}/3</Typography>
+                                    </Grid>
+                                </Grid>
+                            </>
+                        )}
+                        <Tooltip title="Keep track of your hot streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. See how far you can get!" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -591,41 +677,6 @@ export default function StatsPage() {
                     </Box>
                 </Grid>
 
-                {/* Measure Once, Cut Twice */}
-                {/* <Grid item xs={6} sx={{ height: '20%' }}>
-                <Box
-                    sx={{
-                        padding: 2,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        height: '100%',
-                        position: 'relative',
-                        border: '1px solid',
-                        borderColor: theme.palette.primary.light,
-                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)',
-                        borderRadius: '10px',
-                    }}
-                    >                        
-                    <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>Measure Once, Cut Twice</Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
-                            <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.measure_once || '0') * 100, 100)}
-                                            sx={{ ...styles.progressBar,
-                                                '& .MuiLinearProgress-bar': {
-                                                    backgroundColor: theme.palette.primary.main,
-                                                    borderRadius: 8,
-                                                },
-                                            }}
-                            />
-                            <Typography variant="body2">{Math.min(parseFloat(progression?.measure_once || '0'))}/{10}</Typography>
-                        </Box>
-                        <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>Level 3</Typography>
-                        <Tooltip title="Number of syntax errors you have written" placement="top">
-                            <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
-                        </Tooltip>
-                    </Box>
-                </Grid> */}
-
                 {/* Man on the Inside */}
                 <Grid item xs={6} sx={{ height: '20%' }}>
                 <Box
@@ -678,7 +729,7 @@ export default function StatsPage() {
                     }}
                     >                        
                     <Typography variant="subtitle2" sx={{ position: 'absolute', top: 8, left: 8 }}>The Scribe</Typography>
-                        <Box sx={{ display: 'flex', alignItems: 'center'}}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', }}>
                             <LinearProgress variant="determinate" value={Math.min(parseFloat(progression?.scribe || '0')/parseInt(scribe_level_max) * 100, 100)}
                                             sx={{ ...styles.progressBar,
                                                 '& .MuiLinearProgress-bar': {
@@ -768,11 +819,31 @@ export default function StatsPage() {
                 </Grid>
 
                 {/* Languages */}
-                <Grid item xs={6} sx={{ height: '20%' }}>
-                    <Box sx={{ padding: 2, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', position: 'relative', border: '1px solid', borderColor: theme.palette.primary.main, borderRadius: "10px",  backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)'}}>
-                        <Typography variant="h5">Linguist</Typography>
-                        <Typography variant="body2">Learning 4 Languages</Typography>
-                        <CheckCircleIcon sx={{ color: 'white', position: 'absolute', top: 8, right: 8 }} />
+                <Grid item xs={12} sx={{ height: '20%' }}>
+                    <Box sx={{
+                        padding: 2,
+                        height: '100%',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        position: 'relative',
+                        border: '1px solid',
+                        borderColor: theme.palette.primary.main,
+                        borderRadius: "10px",
+                        backgroundImage: 'linear-gradient(to bottom, #208562 -65%, transparent 40%)'
+                    }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <MenuBookIcon sx={{ fontSize: 40, marginRight: 2 }} />
+                            <Box>
+                                <Typography variant="h5">{linguistType}</Typography>
+                                <Typography variant="body2">Learning {languagesLearned} Languages</Typography>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Tooltip title="Languages learned: Python, JavaScript, TypeScript, Java" placement="top">
+                                <HelpOutlineIcon sx={{ fontSize: 15, marginRight: 1 }} />
+                            </Tooltip>
+                        </Box>
                     </Box>
                 </Grid>
             </Grid>
