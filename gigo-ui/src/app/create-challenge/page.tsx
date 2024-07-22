@@ -3431,7 +3431,7 @@ function CreateProject() {
                             moreInfo: (
                                 <div>
                                     <p style={styles.tutorialText}>We use Magic to generate images from a prompt. It
-                                        takes a little while but most times it`&#39;`s easier than fishing through your files
+                                        takes a little while but most times it&#39;s easier than fishing through your files
                                         for a good picture.</p>
                                 </div>
                             )

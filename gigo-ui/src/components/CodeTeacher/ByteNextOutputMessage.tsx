@@ -27,7 +27,7 @@ import GoProDisplay from "../GoProDisplay";
 import { AwesomeButton } from "react-awesome-button";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import HeartDisabledIcon from "@/icons/HeartDisabledIcon";
-import {useRouter} from "next/navigation";
+import {useRouter, useSearchParams} from "next/navigation";
 
 export type ByteNextOutputMessageProps = {
     open: boolean;
@@ -64,6 +64,8 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
     const [state, setState] = useState<State>(State.LOADING);
     const [executingOutputMessage, setExecutingOutputMessage] = useState<boolean>(false)
     const [goProPopup, setGoProPopup] = useState(false)
+
+    let query = useSearchParams();
 
 
     const ctWs = useGlobalCtWebSocket();
@@ -405,7 +407,9 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             bytesId={props.nextByte._id}
                             bytesTitle={props.nextByte.name}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + props.nextByte._id}
-                            onClick={() => navigate.push(`/byte/${props.nextByte._id}`)}
+                            onClick={() => {
+                                navigate.push(`/byte/${props.nextByte._id}?${query.toString()}`)
+                            }}
                             style={{ cursor: 'pointer', transition: 'transform 0.3s ease' }}
                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
@@ -456,7 +460,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             setResponse("")
                             setState(State.LOADING)
                             hide()
-                            navigate.push(`/byte/${props.nextByte._id}`)
+                            navigate.push(`/byte/${props.nextByte._id}?${query.toString()}`)
                         }}
                     >
                         Continue
@@ -567,7 +571,7 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                             </Button>
                             <Button
                                 variant="contained"
-                                href={`/byte/${props.nodeBelowId}?journey`}
+                                href={`/byte/${props.nodeBelowId}?${query.toString()}`}
                                 sx={{
                                     mt: 1,
                                     fontSize: '0.8rem',

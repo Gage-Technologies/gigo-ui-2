@@ -2,7 +2,7 @@ import React from 'react';
 import {IoMdClose} from 'react-icons/io'
 import FILE_ICONS from './FileIcons';
 import {createTheme, PaletteMode, useMediaQuery} from "@mui/material";
-import {getAllTokens} from "../../theme";
+import {theme} from "../../theme";
 
 
 interface FileTabProps {
@@ -27,9 +27,6 @@ function FileTab({file, selected, handleCloseFile, handleClickFile}: FileTabProp
         }),
         [],
     );
-
-    // Update the theme only if the mode changes
-        const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
 
     let ext = file.split('.')[1]
 

@@ -45,7 +45,7 @@ import chroma from 'chroma-js';
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import { sleep } from "@/services/utils";
 import { Extension, ReactCodeMirrorRef } from "@uiw/react-codemirror";
-import { selectAuthState } from "@/reducers/auth/auth";
+import { TutorialState, initialAuthStateUpdate, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
 import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "@/reducers/bytes/bytes";
 import ByteTerminal from "@/components/Terminal";
 import './byteMobile.css';
@@ -96,6 +96,7 @@ import { decrementHeartsState, selectOutOfHearts } from "@/reducers/hearts/heart
 import HeartTracker from "@/components/HeartTracker";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProgressionNotification from "../Progressions/ProgressionNotification";
+import { decodeToken } from "react-jwt";
 
 
 interface MergedOutputRow {
@@ -264,6 +265,8 @@ function ByteMobile({ params, ...props }: ByteProps) {
 
     let id = params.id;
     const isJourney = query.has('journey')
+    const embedded = query.get('embed') === 'true'
+    const appToken = query.get('appToken')
 
     const navigate = useRouter();
 
@@ -476,6 +479,72 @@ function ByteMobile({ params, ...props }: ByteProps) {
     let ctWs = useGlobalCtWebSocket();
 
     let globalWs = useGlobalWebSocket();
+
+    const updateToken = async (appToken: string): Promise<boolean> => {
+        let res = await fetch(
+            `${config.rootPath}/api/auth/updateToken`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Gigo-Auth-Token": appToken
+                },
+                body: '{}',
+                credentials: 'include'
+            }
+        ).then(async (res) => await res.json())
+
+        if (res && res["token"]) {
+            let auth: {
+                [key: string]: any
+            } | null = decodeToken(res["token"]);
+            if (!auth) {
+                return false;
+            }
+
+            let authState = Object.assign({}, initialAuthStateUpdate)
+            authState.authenticated = true
+            authState.expiration = auth["exp"]
+            authState.id = auth["user"]
+            authState.role = auth["user_status"]
+            authState.email = auth["email"]
+            authState.phone = auth["phone"]
+            authState.userName = auth["user_name"]
+            authState.thumbnail = auth["thumbnail"]
+            authState.backgroundColor = auth["color_palette"]
+            authState.backgroundName = auth["name"]
+            authState.backgroundRenderInFront = auth["render_in_front"]
+            authState.exclusiveContent = auth["exclusive_account"]
+            authState.exclusiveAgreement = auth["exclusive_agreement"]
+            authState.tutorialState = auth["tutorials"] as TutorialState
+            authState.tier = auth["tier"]
+            authState.inTrial = auth["in_trial"]
+            authState.alreadyCancelled = auth["already_cancelled"]
+            authState.hasPaymentInfo = auth["has_payment_info"]
+            authState.hasSubscription = auth["has_subscription"]
+            authState.lastRefresh = Date.now()
+            authState.usedFreeTrial = auth["used_free_trial"]
+            dispatch(updateAuthState(authState))
+
+            await sleep(500)
+
+            if (typeof window !== "undefined") {
+                window.location.reload()
+            }
+
+            return true
+        }
+
+        return false
+    }
+
+    useEffect(() => {
+        if (!embedded || appToken === null || appToken === "" || (authState.authenticated && authState.expiration > Date.now() / 1000)) {
+            return
+        }
+
+        updateToken(appToken)
+    }, [embedded, appToken])
 
     const syncFs = React.useCallback(async (codeOverride?: CodeFile[], deleteFiles?: string[]) => {
         if (id === undefined || id === null || !byteData || !authState.authenticated) {
@@ -1348,14 +1417,14 @@ function ByteMobile({ params, ...props }: ByteProps) {
                 }
             });
         }
-        if (isJourney) {
+        if (isJourney && authState.authenticated) {
             getJourneyUnit(id).then((u: JourneyUnit | null) => {
                 // if (u !== null && !bytesState.handoutClosedByUser) {
                 //     setActiveSidebarTab("journeyHandout")
                 // }
             })
         }
-    }, [id]);
+    }, [id, authState.authenticated]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -1746,7 +1815,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
     const handleNextByte = () => {
         const nextByte = getNextByte();
         if (nextByte) {
-            navigate.push(`/byte/${nextByte._id}`);
+            navigate.push(`/byte/${nextByte._id}?${query.toString()}`);
             setNextByteDrawerOpen(false);
         }
     };
@@ -2619,7 +2688,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
                             <KeyboardArrowUp />
                         </Box>
                     )}
-                    {isSpeedDialVisible && (
+                    {isSpeedDialVisible && !embedded && (
                         <SpeedDial
                             ariaLabel="SpeedDial"
                             sx={{ position: 'fixed', bottom: 24, right: 16 }}

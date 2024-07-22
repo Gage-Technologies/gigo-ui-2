@@ -61,6 +61,12 @@ const XpPopup = (props: IProps) => {
 
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
+    const [steps, setSteps] = React.useState([{
+        content: <h2>Let&apos;s begin our journey!</h2>,
+        locale: { skip: <strong aria-label="skip">Skip</strong> },
+        placement: 'center',
+        target: 'body',
+    },{content: <h2>You earn XP by doing activities on the platform.</h2>, target: '.button', placement: 'bottom'}]);
 
 
     useEffect(() => {

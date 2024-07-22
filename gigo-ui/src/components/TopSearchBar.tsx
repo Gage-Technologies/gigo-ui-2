@@ -58,7 +58,7 @@ import swal from "sweetalert";
 import User from "../models/user";
 import { selectAuthState } from "@/reducers/auth/auth";
 import config from "../config";
-import { theme } from "@/theme";
+import { Holiday, holiday, theme } from "@/theme";
 import renown1 from "../img/renown/renown1.svg"
 import renown2 from "../img/renown/renown2.svg"
 import renown3 from "../img/renown/renown3.svg"
@@ -87,9 +87,9 @@ interface SearchOption {
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: alpha(theme.palette.primary.contrastText, 0.15),
+    backgroundColor: holiday === Holiday.Independence ? alpha(theme.palette.secondary.main, 0.80) : alpha(theme.palette.primary.contrastText, 0.15),
     '&:hover': {
-        backgroundColor: alpha(theme.palette.primary.contrastText, 0.25),
+        backgroundColor: holiday === Holiday.Independence ? alpha(theme.palette.secondary.main, 0.95) : alpha(theme.palette.primary.contrastText, 0.25),
     },
     marginRight: theme.spacing(2),
     // marginTop: 10,

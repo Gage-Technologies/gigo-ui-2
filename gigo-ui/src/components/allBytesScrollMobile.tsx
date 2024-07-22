@@ -1,7 +1,7 @@
 'use client';
 import * as React from "react";
 import {Button, Card, createTheme, CssBaseline, PaletteMode, Tab, Tabs, ThemeProvider, Tooltip, Typography} from "@mui/material";
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import {useEffect, useReducer} from "react";
 import swal from "sweetalert";
 import config from "../config";
@@ -15,10 +15,6 @@ import {useRouter} from "next/navigation";
 
 
 function AllBytesScrollMobile() {
-    let userPref = localStorage.getItem('theme')
-    const [mode, _] = React.useState<PaletteMode>(userPref === 'light' ? 'light' : 'dark');
-    const theme = React.useMemo(() => createTheme(getAllTokens(mode)), [mode]);
-
     let navigate = useRouter();
 
     const [bytes, setBytes] = React.useState([]);

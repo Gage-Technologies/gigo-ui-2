@@ -16,6 +16,7 @@ import journeyCreateUnitReducer from '../reducers/journeyCreate/journeyCreateUni
 import journeyCreateProjectReducer from '../reducers/journeyCreate/journeyCreateProject'
 import journeyDetourReducer from "../reducers/journeyDetour/journeyDetour"
 import heartsReducer from "../reducers/hearts/hearts"
+import translationReducer from './translation/translation';
 
 const persistConfig = {
     key: 'root',
@@ -43,7 +44,8 @@ const reducers = combineReducers({
     journeyCreateUnit: journeyCreateUnitReducer,
     journeyCreateProject: journeyCreateProjectReducer,
     journeyDetour: journeyDetourReducer,
-    hearts: heartsReducer
+    hearts: heartsReducer,
+    translation: translationReducer
 });
 
 // @ts-ignore

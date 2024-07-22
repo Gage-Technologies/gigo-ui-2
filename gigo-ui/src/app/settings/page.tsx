@@ -58,6 +58,7 @@ import stripeBlack from '@/img/powered-stripe-black.svg'
 import {clearBytesState} from "@/reducers/bytes/bytes";
 import {useRouter} from "next/navigation";
 import Image from "next/image"
+import { resetTranslation } from "@/reducers/translation/translation";
 
 function AccountSettings() {
 
@@ -626,6 +627,7 @@ function AccountSettings() {
         dispatch(clearMessageCache())
         dispatch(clearChatState())
         dispatch(clearBytesState())
+        dispatch(resetTranslation())
     }
 
     const deleteUserAccount = async () => {
@@ -972,7 +974,7 @@ function AccountSettings() {
                             Exclusive content creators sell their challenges on GIGO for fixed prices. This helps GIGO provide more detailed and diverse content and rewards content creators for their work.
                         </Typography>
                         <Typography variant="body1" align="left" paragraph>
-                            GIGO uses Stripe Connected Accounts to compensate creators when user`&#39;`s purchase exclusive content. In order for you to begin creating exclusive content you must first setup your Stripe Connected Account.
+                            GIGO uses Stripe Connected Accounts to compensate creators when user&#39;s purchase exclusive content. In order for you to begin creating exclusive content you must first setup your Stripe Connected Account.
                         </Typography>
                     </Box>
                     <Box my={4} />
@@ -987,7 +989,7 @@ function AccountSettings() {
                             These exclusive coding projects often come with detailed instructions, sample code, and test cases to help users understand the problem and validate their solutions. They may also include expert guidance, mentorship, or a more detailed tutorial.
                         </Typography>
                         <Typography variant="body1" align="left" paragraph>
-                            By attempting these exclusive coding projects, users can improve their programming abilities, expand their knowledge in specific domains, and showcase their skills to potential employers or clients. The projects can also serve as an excellent addition to a user`&#39;`s portfolio, demonstrating their expertise and commitment to continuous learning.
+                            By attempting these exclusive coding projects, users can improve their programming abilities, expand their knowledge in specific domains, and showcase their skills to potential employers or clients. The projects can also serve as an excellent addition to a user&#39;s portfolio, demonstrating their expertise and commitment to continuous learning.
                         </Typography>
                     </Box>
                     <Box my={4} />
@@ -1000,19 +1002,19 @@ function AccountSettings() {
                         </Typography>
                         <Box component="ul" sx={{ m: '0 auto', lineHeight: '2em' }}>
                             <Typography component="li">
-                                Create a connected account by either going to account settings or clicking the `&#39;`Setup Exclusive Content Account`&#39;` button below.
+                                Create a connected account by either going to account settings or clicking the &#39;Setup Exclusive Content Account&#39; button below.
                             </Typography>
                             <Typography component="li">
-                                Once you have created a connected account, can get started by clicking the `&#39;`Create Exclusive Content`&#39;` button below.
+                                Once you have created a connected account, can get started by clicking the &#39;Create Exclusive Content&#39; button below.
                             </Typography>
                             <Typography component="li">
-                                When you get serious about creating exclusive content, click the `&#39;`Don`&#39;`t Show Me This Page Again`&#39;` button below and submit it.
+                                When you get serious about creating exclusive content, click the &#39;Don&#39;t Show Me This Page Again&#39; button below and submit it.
                             </Typography>
                             <Typography component="li">
                                 Just know, once you hit that button you will only be able to get to this page through the About page.
                             </Typography>
                             <Typography component="li">
-                                After you have confirmed to have read this page, clicking the `&#39;`Exclusive Content`&#39;` button in the top menu will take you straight to creating exclusive content.
+                                After you have confirmed to have read this page, clicking the &#39;Exclusive Content&#39; button in the top menu will take you straight to creating exclusive content.
                             </Typography>
                         </Box>
                     </Box>
@@ -1336,7 +1338,7 @@ function AccountSettings() {
                                                         />
                                                         <CardContent>
                                                             <Typography variant="body2">
-                                                                Get 2 streak freezes a week to maintain your learning streak on days you don`&#39;`t log on.
+                                                                Get 2 streak freezes a week to maintain your learning streak on days you don&#39;t log on.
                                                             </Typography>
                                                         </CardContent>
                                                     </Card>
@@ -1528,7 +1530,7 @@ function AccountSettings() {
                                 >
                                 </TextField>
                                 <Typography variant="caption" display="block" gutterBottom>
-                                    Timezone used for Auto Git`&#39;`s log file
+                                    Timezone used for Auto Git&#39;s log file
                                 </Typography>
                             </Grid>
                         </Grid>

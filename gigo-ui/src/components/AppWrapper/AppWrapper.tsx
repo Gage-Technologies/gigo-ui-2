@@ -122,6 +122,9 @@ import GoProDisplay from '@/components/GoProDisplay';
 import { clearHeartsState } from '@/reducers/hearts/hearts';
 import CheckIcon from "@mui/icons-material/Check";
 import texasFlag from "@/img/texas-flag.svg"
+import { isUndefined } from 'util';
+import { LanguageSwitcher } from '../GTranslate/LanguageSwitcher';
+import { resetTranslation } from '@/reducers/translation/translation';
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
@@ -131,6 +134,9 @@ import { isAfter, addWeeks, parseISO, addMinutes } from 'date-fns';
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
 const Confetti = React.lazy(() => import('react-confetti'));
+
+// lazy import non-default export Fireworks from @fireworks-js/react
+const Fireworks = React.lazy(() => import('@fireworks-js/react').then(module => ({ default: module.Fireworks })));
 
 
 interface IProps {
@@ -193,7 +199,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     const hasSubscription = useAppSelector(selectAuthStateHasSubscription)
     const alreadyCancelled = useAppSelector(selectAuthStateAlreadyCancelled)
 
-    const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true");
+    const [leftOpen, setLeftOpen] = React.useState(query.get("menu") === "true" && !isMobile);
     const [rightOpen, setRightOpen] = React.useState(query.get("chat") === "true" && authState.authenticated);
     const [speedDialOpen, setSpeedDialOpen] = React.useState(false);
     const [reportPopup, setReportPopup] = React.useState(false)
@@ -236,7 +242,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             zIndex: 999,
             border: "none",
             backgroundImage: `url(/img/us_flag.svg)`,
-            backgroundPosition: "center",
+            backgroundPosition: "left center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
         },
@@ -262,7 +268,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 holidayStyle = styles.christmas;
                 break;
             case Holiday.Independence:
-                console.log("Independence Set")
                 holidayStyle = styles.independence;
                 gigoColor = "white"
                 break;
@@ -437,17 +442,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     };
 
     const handleCreateAccount = () => {
-        router.push("/signup?forward=" + encodeURIComponent(pathname))
+        router.push(`/signup?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
     }
 
     const handleLogin = () => {
-        router.push("/login?forward=" + encodeURIComponent(pathname))
+        router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
     }
 
 
     const handleProfile = () => {
         setAnchorEl(null);
-        router.push("/profile")
+        router.push(`/profile?viewport=${isMobile ? "mobile" : "desktop"}`)
     };
 
     const clearReducers = () => {
@@ -461,6 +466,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         dispatch(clearChatState())
         dispatch(clearBytesState())
         dispatch(clearHeartsState())
+        dispatch(resetTranslation())
     }
 
     const updateToken = async () => {
@@ -625,7 +631,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 clearReducers()
             }
             if (data["message"] !== undefined && data["message"] === "success") {
-                router.push("/login?forward=" + forwardPath)
+                router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${forwardPath}`)
             }
             const persistOptions = {};
             // persistStore(store, persistOptions).purge()
@@ -664,7 +670,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const handleSettings = () => {
         setAnchorEl(null);
-        router.push("/settings")
+        router.push(`/settings?viewport=${isMobile ? "mobile" : "desktop"}`)
     };
 
     React.useEffect(() => {
@@ -687,9 +693,9 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setAnchorEl(null);
         if (exclusiveAgreement || window.sessionStorage.getItem('exclusiveAgreement') === "true") {
             window.sessionStorage.setItem("exclusiveProject", "true")
-            router.push("/create-challenge")
+            router.push(`/create-challenge?viewport=${isMobile ? "mobile" : "desktop"}`)
         } else {
-            router.push("/aboutExclusive")
+            router.push(`/aboutExclusive?viewport=${isMobile ? "mobile" : "desktop"}`)
         }
     }, [isClient])
 
@@ -697,7 +703,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         setAnchorEl(null);
 
         if (username === "gigo") {
-            router.push("/curateAdmin")
+            router.push(`/curateAdmin?viewport=${isMobile ? "mobile" : "desktop"}`)
         }
     };
 
@@ -914,6 +920,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     <Box sx={{ flexGrow: 1 }} />
                     <div style={{ width: "20px" }} />
                     <Box sx={{ width: "50px" }} />
+                    <LanguageSwitcher mobile={false} />
+                    <Box sx={{ width: "10px" }} />
                     {loggedIn && authState.role === 0 && (
                         <HeartTracker
                             openGoProPopup={() => setGoProPopup(true)}
@@ -929,13 +937,27 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 onClick={handleMenu}
                                 variant="text"
                                 ref={userButtonRef}
+                                sx={{
+                                    paddingLeft: "8px",
+                                    paddingRight: "8px",
+                                    paddingTop: 0,
+                                    paddingBottom: 0,
+                                    backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
+                                    backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    "&:hover": {
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    }
+                                }}
                             >
                                 <Typography
-                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}
+                                    className='notranslate'
+                                >
                                     {username}
                                 </Typography>
                                 {userIconMemoLarge}
-                                {inTrial && !hasPaymentInfo && (
+                                {/* {inTrial && !hasPaymentInfo && (
                                     <ErrorIcon
                                         style={{
                                             color: "orange",
@@ -945,7 +967,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             fontSize: '1rem'
                                         }}
                                     />
-                                )}
+                                )} */}
                             </Button>
                             <Menu
                                 id="menu-appbar"
@@ -973,12 +995,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     await handleLogout()
                                 }}>Logout</MenuItem>
                                 <MenuItem onClick={() => setShowReferPopup(true)}>Refer A Friend</MenuItem>
-                                {inTrial && !hasPaymentInfo && (
+                                {/* {inTrial && !hasPaymentInfo && (
                                     <MenuItem onClick={() => setOpenSetup(true)}>
                                         <h4 style={{ color: "red", paddingRight: "5px" }}>Finish Setup</h4>
                                         <ErrorIcon style={{ color: "orange" }} />
                                     </MenuItem>
-                                )}
+                                )} */}
                             </Menu>
                             <Modal open={showReferPopup} onClose={() => setShowReferPopup(false)}>
                                 <Box
@@ -1008,14 +1030,17 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     <Typography variant="h4" gutterBottom>
                                         Refer a Friend
                                     </Typography>
-                                    <Typography variant="h5" gutterBottom>
-                                        Give a Month, Get a Month
+                                    <Typography variant="h6" gutterBottom sx={{ textAlign: "center" }}>
+                                        Get A Free Month of GIGO Pro Max<br/>
+                                        For Every Friend You Refer<br/>
+                                        No Credit Card Required!
                                     </Typography>
                                     <Box sx={{
                                         display: 'flex',
                                         justifyContent: 'center',
                                         alignItems: 'center',
-                                        flexDirection: 'column'
+                                        flexDirection: 'column',
+                                        mt: 3
                                     }}>
                                         <Tooltip
                                             open={openTooltip}
@@ -1034,7 +1059,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                             arrow
                                         >
                                             <Button variant="contained" onClick={handleReferralButtonClick}>
-                                                Referral Link
+                                                Copy Referral Link
                                             </Button>
                                         </Tooltip>
                                     </Box>
@@ -1207,8 +1232,12 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                     variant='outlined'
                                     sx={{
                                         color: theme.palette.primary.contrastText,
-                                        borderColor: theme.palette.primary.contrastText,
+                                        borderColor: holiday === Holiday.Independence ? theme.palette.secondary.dark : theme.palette.primary.contrastText,
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
                                         backdropFilter: "blur(3px)",
+                                        "&:hover": {
+                                            backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        }
                                     }}
                                 >
                                     Signup / Login
@@ -1258,7 +1287,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 let authState = Object.assign({}, initialAuthStateUpdate)
                 // @ts-ignore
                 dispatch(updateAuthState(authState))
-                router.push("/login?forward=" + encodeURIComponent(pathname))
+                router.push(`/login?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
             }
 
             if (data["return url"] !== undefined) {
@@ -1342,7 +1371,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     </Button>
                     {loggedIn ? renderDevSpaceControls() : (
                         <Button onClick={async () => {
-                            router.push("/signup?forward=" + encodeURIComponent(pathname))
+                            router.push(`/signup?viewport=${isMobile ? "mobile" : "desktop"}&forward=${encodeURIComponent(pathname)}`)
                         }} sx={{
                             display: 'flex',
                             justifyContent: 'center',
@@ -1368,9 +1397,23 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                 aria-label="account of current user"
                                 onClick={handleMenu}
                                 variant="text"
+                                sx={{
+                                    paddingLeft: "8px",
+                                    paddingRight: "8px",
+                                    paddingTop: 0,
+                                    paddingBottom: 0,
+                                    backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main : undefined,
+                                    backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    "&:hover": {
+                                        backgroundColor: holiday === Holiday.Independence ? theme.palette.secondary.main + "80" : undefined,
+                                        backdropFilter: holiday === Holiday.Independence ? "blur(10px)" : undefined,
+                                    }
+                                }}
                             >
                                 <Typography
-                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}>
+                                    sx={{ color: theme.palette.primary.contrastText, mr: 2, textTransform: "none" }}
+                                    className='notranslate'
+                                >
                                     {username}
                                 </Typography>
                                 {userIconMemoSmall}
@@ -1444,31 +1487,31 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
-                router.push('/about')
+                router.push(`/about?viewport=mobile`)
             }
         },
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytes')
+                router.push(`/bytes?viewport=mobile`)
             }
         },
         {
             icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
-                router.push('/home')
+                router.push(`/home?viewport=mobile`)
             }
         },
         {
             icon: <FolderOutlined />, name: 'Active', action: () => {
                 closeChat();
-                router.push('/active')
+                router.push(`/active?viewport=mobile`)
             }
         },
         {
             icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
-                router.push('/articles')
+                router.push(`/articles?viewport=mobile`)
             }
         },
     ];
@@ -1477,25 +1520,25 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
         {
             icon: <InfoOutlined />, name: 'About', action: () => {
                 closeChat();
-                router.push('/about')
+                router.push(`/about?viewport=mobile`)
             }
         },
         {
             icon: <span role="img" aria-label="banana">🍌</span>, name: 'Bytes', action: () => {
                 closeChat();
-                router.push('/bytes')
+                router.push(`/bytes?viewport=mobile`)
             }
         },
         {
             icon: <HomeOutlined />, name: 'Home', action: () => {
                 closeChat();
-                router.push('/home')
+                router.push(`/home?viewport=mobile`)
             }
         },
         {
             icon: <AutoStoriesIcon />, name: 'Articles', action: () => {
                 closeChat();
-                router.push('/articles')
+                router.push(`/articles?viewport=mobile`)
             }
         },
     ];
@@ -1598,6 +1641,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                                         await handleLogout()
                                     }}>Logout</MenuItem>
                                     <MenuItem onClick={() => setShowReferPopup(true)}>Refer A Friend</MenuItem>
+                                    <LanguageSwitcher mobile={true} />
                                 </Menu>
                                 <Modal open={showReferPopup} onClose={() => setShowReferPopup(false)}>
                                     <Box
@@ -2464,7 +2508,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderChristmasSnow = () => {
-        if (pathname.includes("/launchpad")) {
+        if (pathname.includes("/launchpad") || pathname.includes("/byte/")) {
             return null
         }
 
@@ -2479,7 +2523,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     }
 
     const renderNewYearConfetti = () => {
-        if (pathname.includes("/launchpad")) {
+        if (pathname.includes("/launchpad") || pathname.includes("/byte/")) {
             return null
         }
 
@@ -2492,6 +2536,44 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
             )
         }
         return null
+    }
+
+    const renderIndependenceFireworks = () => {
+        if (!pathname.includes("/home")) {
+            return null
+        }
+
+        if (holiday === Holiday.Independence) {
+            return (
+                <Suspense fallback={<div />}>
+                    <Fireworks
+                        // @ts-ignore
+                        options={{ opacity: 0.5 }}
+                        style={{
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            position: 'fixed',
+                            background: 'transparent',
+                            zIndex: 9999, // ensure it's on top of everything
+                            pointerEvents: 'none' // make it non-interactive so clicks pass through
+                        }}
+                    />
+                </Suspense>
+            )
+        }
+        return null
+    }
+
+    const renderHolidayDecoration = () => {
+        return (
+            <>
+                {renderChristmasSnow()}
+                {renderNewYearConfetti()}
+                {renderIndependenceFireworks()}
+            </>
+        )
     }
 
     const renderDevelopmentMarker = () => {
@@ -2573,6 +2655,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                     memoizedChildren : null
             }
             {renderDevelopment && renderDevelopmentMarker()}
+            {renderHolidayDecoration()}
             
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
             {fotOpen && <FocusOnThis open={fotOpen} />}

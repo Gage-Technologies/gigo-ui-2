@@ -66,6 +66,7 @@ function JourneyMain() {
     const unitRefs = useRef<React.RefObject<HTMLDivElement>[]>([]);
     const [currentUnit, setCurrentUnit] = useState<string | null>(null);
     const [proPopupOpen, setProPopupOpen] = useState(false)
+    const initCallMade = useRef(false)
 
 
     function extractIdFromUrl(urlString: string): string | null {
@@ -262,7 +263,10 @@ function JourneyMain() {
     }
 
     useEffect(() => {
-        getTasks()
+        if (!initCallMade.current) {
+            initCallMade.current = true
+            getTasks()
+        }
     }, []);
 
     const handleAddUnitToMap = async () => {
@@ -925,7 +929,7 @@ function JourneyMain() {
                                 mt: 3
                             }}
                         >
-                            Journey`&#39;`s are a structured way to learn programming. Select the starting path you would like to take in your Journey. You can always take a detour at any time to switch it up.
+                            Journey&#39;s are a structured way to learn programming. Select the starting path you would like to take in your Journey. You can always take a detour at any time to switch it up.
                         </Typography>
                     </Box>
                     <Grid container spacing={2} sx={{ height: '60vh' }}>

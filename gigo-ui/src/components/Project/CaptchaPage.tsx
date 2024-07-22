@@ -8,7 +8,7 @@ import {
 
 import {GoogleReCaptcha, GoogleReCaptchaProvider} from 'react-google-recaptcha-v3';
 
-import {getAllTokens} from "@/theme";
+import {theme} from "@/theme";
 import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
@@ -50,7 +50,6 @@ interface CaptchaProps {
 
 const CaptchaPage: React.FC<CaptchaProps> = ({setIsCaptchaVerified, redirectOnFailure}) => {
     let navigate = useNavigate();
-    const theme = React.useMemo(() => createTheme(getAllTokens("dark")), ["dark"]);
     const [refreshReCaptcha, setRefreshReCaptcha] = React.useState(false);
 
     const doSomething = () => {
