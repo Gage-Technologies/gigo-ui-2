@@ -11,11 +11,48 @@ import * as React from "react";
 import {Suspense, useEffect} from "react";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import FocusPageMobile from './focusMobile';
+import { useSearchParams } from 'next/navigation';
 
 
-// TODO currently has filler data
+interface LanguageOption {
+    name: string;
+    extensions: string[];
+    languageId: number;
+    execSupported: boolean;
+    lspSupport: boolean;
+}
+
+const languages: LanguageOption[] = [
+    {name: 'Go', extensions: ['go'], languageId: 6, execSupported: true, lspSupport: true},
+    {name: 'Python', extensions: ['py', 'pytho', 'pyt'], languageId: 5, execSupported: true, lspSupport: true},
+    {
+        name: 'C++',
+        extensions: ['cpp', 'cc', 'cxx', 'hpp', 'c++', 'h'],
+        languageId: 8,
+        execSupported: true,
+        lspSupport: true
+    },
+    {name: 'HTML', extensions: ['html', 'htm'], languageId: 27, execSupported: false, lspSupport: false},
+    {name: 'Java', extensions: ['java'], languageId: 2, execSupported: false, lspSupport: false},
+    {name: 'JavaScript', extensions: ['js'], languageId: 3, execSupported: true, lspSupport: true},
+    {name: 'JSON', extensions: ['json'], languageId: 1, execSupported: false, lspSupport: false},
+    {name: 'Markdown', extensions: ['md'], languageId: 1, execSupported: false, lspSupport: false},
+    {name: 'PHP', extensions: ['php'], languageId: 13, execSupported: false, lspSupport: false},
+    {name: 'Rust', extensions: ['rs'], languageId: 14, execSupported: true, lspSupport: true},
+    {name: 'SQL', extensions: ['sql'], languageId: 34, execSupported: false, lspSupport: false},
+    {name: 'XML', extensions: ['xml'], languageId: 1, execSupported: false, lspSupport: false},
+    {name: 'LESS', extensions: ['less'], languageId: 1, execSupported: false, lspSupport: false},
+    {name: 'SASS', extensions: ['sass', 'scss'], languageId: 1, execSupported: false, lspSupport: false},
+    {name: 'Clojure', extensions: ['clj'], languageId: 21, execSupported: false, lspSupport: false},
+    {name: 'C#', extensions: ['cs'], languageId: 10, execSupported: true, lspSupport: false},
+    {name: 'Shell', extensions: ['bash', 'sh'], languageId: 38, execSupported: true, lspSupport: false},
+    {name: 'Toml', extensions: ['toml'], languageId: 14, execSupported: false, lspSupport: false}
+];
+
 const FocusPage: React.FC = () => {
-
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
     type FOT = {
         id: string;
         owner_id: string;
@@ -30,8 +67,9 @@ const FocusPage: React.FC = () => {
         hash: string | null;
     };
 
-
-    const [fot, setFot] = React.useState<FOT>(null);
+    const [fot, setFot] = React.useState<FOT | null>(null);
+    const [language, setLanguage] = React.useState<string | null>(null);
+    const [languageId, setLanguageId] = React.useState<number>(0);
 
     useEffect(() => {
         const fetchFOT = async () => {
@@ -52,6 +90,14 @@ const FocusPage: React.FC = () => {
                 if (data.fot) {
                     setFot(data.fot);
                     console.log("fot: ", data.fot);
+
+                    // Parse the search_query and extract the language
+                    try {
+                        const searchQuery = JSON.parse(data.fot.search_query);
+                        setLanguage(searchQuery.language);
+                    } catch (error) {
+                        console.error("Error parsing search_query:", error);
+                    }
                 }
                 console.log("fot data: ", data);
             } catch (e) {
@@ -61,8 +107,18 @@ const FocusPage: React.FC = () => {
         fetchFOT();
     }, []);
 
-    return (
-        <Box
+    useEffect(() => {
+        if (language) {
+            const languageOption = languages.find((lang: { name: string }) => lang.name.toLowerCase() === language.toLowerCase());
+            if (languageOption) {
+                setLanguageId(languageOption.languageId);
+            }
+        }
+    }, [language]);
+
+    const fotDesktop = () => {
+        return (
+            <Box
             sx={{
                 display: 'flex',
                 flexDirection: "column"
@@ -103,10 +159,9 @@ const FocusPage: React.FC = () => {
                             width={'100%'}
                             imageWidth={300}
                             bytesId={fot?.byte_id}
-                            bytesTitle={"Classes and Objects"}
-                            bytesDesc={"Concept Explanation"}
+                            bytesTitle={fot?.concept}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
-                            language={programmingLanguages["python"]}
+                            language={programmingLanguages[languageId]}
                             animate={false}
                             />
                         )}
@@ -281,6 +336,11 @@ const FocusPage: React.FC = () => {
                 </Box>
             </Box>
         </Box>
+        )
+    }
+
+    return (
+        isMobile ? <FocusPageMobile language={languageId} /> : fotDesktop()
     );
 };
 

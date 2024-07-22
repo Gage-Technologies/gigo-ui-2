@@ -95,6 +95,7 @@ import GoProDisplay from "@/components/GoProDisplay";
 import { decrementHeartsState, selectOutOfHearts } from "@/reducers/hearts/hearts";
 import HeartTracker from "@/components/HeartTracker";
 import { useRouter, useSearchParams } from "next/navigation";
+import ProgressionNotification from "../Progressions/ProgressionNotification";
 
 
 interface MergedOutputRow {
@@ -663,6 +664,188 @@ function ByteMobile({ params, ...props }: ByteProps) {
         setTerminalVisible(false);
     }, [bytesState?.byteDifficulty]);
 
+    const [notificationQueue, setNotificationQueue] = useState<any[]>([]);
+    const [currentNotification, setCurrentNotification] = useState<any | null>(null);
+    const queueRef = useRef(notificationQueue);
+    queueRef.current = notificationQueue;
+
+    useEffect(() => {
+        if (!currentNotification && notificationQueue.length > 0) {
+            setCurrentNotification(notificationQueue[0]);
+            setNotificationQueue(queueRef.current.slice(1));
+        }
+    }, [currentNotification, notificationQueue]);
+
+    const handleNotificationClose = () => {
+        setCurrentNotification(null);
+    };
+
+    const addNotificationToQueue = (notification: any) => {
+        setNotificationQueue((prevQueue) => {
+            if (notification.data) {
+                return [...prevQueue, { ...notification, id: new Date().getTime() }];
+            } else {
+                return [{ ...notification, id: new Date().getTime() }, ...prevQueue];
+            }
+        });
+    };
+
+
+    const checkNumberMastered = async (success: boolean) => {
+        if (!success) {
+            return;
+        }
+
+        let params = {
+            byte_id: byteAttemptId,
+            difficulty: determineDifficulty(),
+        }
+
+        const masteredKey = `mastered_${params.byte_id}_${params.difficulty}`;
+        if (localStorage.getItem(masteredKey)) {
+            console.log("Byte already mastered, skipping API call");
+            return;
+        }
+
+        let res = await call(
+            "/api/stats/checkNumberMastered",
+            "POST",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            params,
+            null,
+            config.rootPath
+        );
+
+        if (res === undefined || res["mastered"] === undefined) {
+            return;
+        }
+
+        console.log("Response from mastered: ", res["mastered"]);
+        console.log("Response from number mastered: ", res["numFromTable"]);
+
+        if (res["mastered"]) {
+            localStorage.setItem(masteredKey, "true");
+        }
+    }
+
+    const completionFailureRate = async (success: boolean) => {
+        if (!success) {
+            return;
+        }
+
+        let res = await call(
+            "/api/stats/completionFailureRate",
+            "POST",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            {},
+            null,
+            config.rootPath
+        );
+
+        if (res === undefined || res["completion_failure_ratio"] === undefined) {
+            return;
+        }
+
+        console.log("Response from CFR: ", res["completion_failure_ratio"]);
+    }
+
+    const checkTenacious = async (byteID: string) => {
+        let res = await call(
+            "/api/stats/checkTenacious",
+            "POST",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            { byte_attempt_id: byteID },
+            null,
+            config.rootPath
+        );
+
+        if (res === undefined || res["tenacious_count"] === undefined) {
+            return;
+        }
+
+        addNotificationToQueue({
+            progression: 'tenacious',
+            achievement: res["newHigh"],
+            progress: res["tenacious_count"],
+            data: null
+        });
+
+        console.log("Response from CFR: ", res["tenacious_count"]);
+    }
+
+    const checkHotStreak = async () => {
+        let res = await call(
+            "/api/stats/checkHotStreak",
+            "POST",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            {},
+            null,
+            config.rootPath
+        );
+
+        if (res === undefined || res["hot_streak"] === undefined) {
+            return;
+        }
+
+        if (res["streak_"] !== 0) {
+            addNotificationToQueue({
+                progression: 'hot_streak',
+                achievement: res["hot_streak"],
+                progress: res["streak_count"],
+                data: null
+            });
+        }
+    }
+
+    const checkUnitMastery = async (byteID: string) => {
+        let res = await call(
+            "/api/stats/checkUnitMastery",
+            "POST",
+            null,
+            null,
+            null,
+            // @ts-ignore
+            { byte_attempt_id: byteID },
+            null,
+            config.rootPath
+        );
+
+        if (res === undefined || res["unit_mastery"] === undefined) {
+            return;
+        }
+
+        console.log("unit_mastery: ", res);
+
+        if (res["unit_mastery"] === true) {
+            addNotificationToQueue({
+                progression: 'unit_mastery',
+                achievement: res["unit_mastery"],
+                progress: "",
+                data: null
+            });
+        }
+    }
+
+    const displayCheckedProgressions = async () => {
+        checkHotStreak();
+        checkTenacious(byteAttemptId);
+        if (isJourney) {
+            checkUnitMastery(props.byte._id);
+        }
+    }
+
     const sendExecRequest = async (retryCount: number = 0) => {
         const message = {
             sequence_id: Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15),
@@ -990,8 +1173,12 @@ function ByteMobile({ params, ...props }: ByteProps) {
         }
 
         if (res["xp"] !== undefined) {
-            setXpData(res["xp"])
-            setXpPopup(true)
+            addNotificationToQueue({
+                progression: '',
+                achievement: '',
+                progress: '',
+                data: res["xp"]
+            });
         }
 
         if (res["nodeBelow"] !== undefined && res["nodeBelow"] !== null) {
@@ -2048,6 +2235,8 @@ function ByteMobile({ params, ...props }: ByteProps) {
         />
     ), [activePorts])
 
+    const [triggered, setTriggered] = useState(false);
+
     const renderSidebar = () => {
         let stateTooltipTitle: string | React.ReactElement = (
             <Box>
@@ -2142,9 +2331,16 @@ function ByteMobile({ params, ...props }: ByteProps) {
                             setSuggestionPopup(true)
                             markComplete()
                             recordByteAttemptCheck(true)
+                            checkNumberMastered(true);
+                            completionFailureRate(true);
+                            if (!triggered) {
+                                setTriggered(true);
+                                displayCheckedProgressions();
+                            }
                         }}
                         onFail={() => {
                             recordByteAttemptCheck(false)
+                            completionFailureRate(false)
                         }}
                         code={code.map(x => ({
                             code: x.content,
@@ -2235,6 +2431,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
             </Box>
         )
     }
+
 
     let lang = mapFilePathToLangOption(activeFile)
 
@@ -2342,6 +2539,21 @@ function ByteMobile({ params, ...props }: ByteProps) {
                                                 }
 
                                                 executeCode(); // Indicate button click
+
+                                                addNotificationToQueue({
+                                                    progression: 'data_hog',
+                                                    achievement: false,
+                                                    progress: "",
+                                                    data: null
+                                                })
+
+                                                addNotificationToQueue({
+                                                    progression: 'scribe',
+                                                    achievement: false,
+                                                    progress: "",
+                                                    data: null
+                                                })
+
                                             }}
                                         >
                                             Run <PlayArrow style={{ fontSize: "14px" }} />
@@ -2438,6 +2650,15 @@ function ByteMobile({ params, ...props }: ByteProps) {
                 />
                 {renderNewFilePopup()}
                 {renderDeleteFilePopup()}
+                {currentNotification && (
+                    <ProgressionNotification
+                        progression={currentNotification.progression}
+                        achievement={currentNotification.achievement}
+                        progress={currentNotification.progress}
+                        onClose={handleNotificationClose}
+                        xpData={currentNotification.data}
+                    />
+                )}
                 {isDifficultyPopupOpen && (
                     <Dialog
                         open={isDifficultyPopupOpen}

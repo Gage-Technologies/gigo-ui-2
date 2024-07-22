@@ -4,6 +4,7 @@ import { Code, School, Chat, Comment, FitnessCenter, Whatshot } from '@mui/icons
 import XpPopup from '../XpPopup';
 import DetermineProgressionLevel from '@/utils/progression';
 import config from "@/config";
+import { useSearchParams } from 'next/navigation';
 
 interface AchievementProgressProps {
     open: boolean;
@@ -27,6 +28,8 @@ interface AchievementProps {
 const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose, title, description, progress, progressMax, icon, isDataHog }) => {
     const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
+    let query = useSearchParams();
+let isMobile = query.get("viewport") === "mobile";
 
     useEffect(() => {
         if (open) {
@@ -43,14 +46,15 @@ const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose
             TransitionComponent={Slide}
             key={"slide"}
             autoHideDuration={3000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: isMobile ? "center" : "right" }}
         >
             <Box
                 sx={{
-                    width: "350px",
-                    height: "175px",
+                    width: isMobile ? "90vw" : "350px",
+                    height: isMobile ? "auto" : "175px",
                     borderRadius: "8px",
                     display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     padding: '16px',
@@ -62,16 +66,16 @@ const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose
                 }}
             >
                 {icon}
-                <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                    <Typography sx={{ color: '#fff' }}>
+                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", marginTop: isMobile ? '16px' : '0' }}>
+                    <Typography sx={{ color: '#fff', fontSize: isMobile ? '1.2rem' : '1rem' }}>
                         {title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#fff' }}>
+                    <Typography variant="body2" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '0.875rem' }}>
                         {description}
                     </Typography>
                     <Box sx={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}>
                         <LinearProgress variant="determinate" value={progressValue} sx={{ height: '10px', borderRadius: '5px', backgroundColor: '#fff', flexGrow: 1, transition: 'width 1.5s ease-in-out' }} />
-                        <Typography sx={{ marginLeft: '8px', color: '#fff' }}>
+                        <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.9rem' : '0.875rem' }}>
                                 {isDataHog 
                                     ? `${progress.toFixed(2)}/${progressMax.toFixed(2)} KB`
                                     : `${Math.round(progress)}/${Math.round(progressMax)}`
@@ -97,6 +101,8 @@ interface AchievementProgressRuntimeProps {
 const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({ open, onClose, title, description, progress, progressMax, icon }) => {
     const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
 
     useEffect(() => {
         if (open) {
@@ -114,13 +120,14 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
             key={"slide"}
             autoHideDuration={3000}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            sx={{ marginBottom: "-25px" }}
+            sx={{ marginBottom: isMobile ? "0" : "-25px" }}
         >
             <Box
                 sx={{
                     width: "100vw",
-                    height: "175px",
+                    height: isMobile ? "auto" : "175px",
                     display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '16px',
@@ -134,17 +141,18 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
                 <Box
                     sx={{
                         display: "flex",
+                        flexDirection: isMobile ? 'column' : 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
                     }}
                 >
-                    <Typography variant="h4" sx={{ color: '#fff', marginRight: '16px' }}>
+                    <Typography variant="h4" sx={{ color: '#fff', marginRight: isMobile ? '0' : '16px', marginBottom: isMobile ? '16px' : '0', fontSize: isMobile ? '1.5rem' : '2.125rem' }}>
                         {title}
                     </Typography>
                     {icon}
-                    <Box sx={{ display: "flex", flexDirection: "column", width: "40%" }}>
-                        <Typography variant="body1" sx={{ color: '#fff', marginBottom: '8px' }}>
+                    <Box sx={{ display: "flex", flexDirection: "column", width: isMobile ? "100%" : "40%", marginTop: isMobile ? '16px' : '0' }}>
+                        <Typography variant="body1" sx={{ color: '#fff', marginBottom: '8px', fontSize: isMobile ? '1rem' : '1rem' }}>
                             {description}
                         </Typography>
                         <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
@@ -162,23 +170,23 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
                                     }
                                 }} 
                             />
-                            <Typography sx={{ marginLeft: '8px', color: '#fff' }}>{`${progress}/${progressMax}`}</Typography>
+                            <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.9rem' : '1rem' }}>{`${progress}/${progressMax}`}</Typography>
                         </Box>
                     </Box>
                 </Box>
                 <Box
                     sx={{
-                        position: 'absolute',
-                        top: '0%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
+                        position: isMobile ? 'relative' : 'absolute',
+                        top: isMobile ? '0' : '0%',
+                        left: isMobile ? '0' : '50%',
+                        transform: isMobile ? 'none' : 'translate(-50%, -50%)',
                         backgroundColor: 'rgba(0, 0, 0, 0.7)',
                         borderRadius: '2px',
                         padding: '8px 16px',
                         zIndex: 1,
                     }}
                 >
-                    <Typography variant="h6" sx={{ color: '#fff' }}>
+                    <Typography variant="h6" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '1.25rem', textAlign: isMobile ? 'center' : 'left' }}>
                         Progression Update
                     </Typography>
                 </Box>
@@ -188,6 +196,9 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
 };
 
 const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, description, icon }) => {
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+    
     return (
         <Snackbar
             open={open}
@@ -197,14 +208,15 @@ const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, descrip
             autoHideDuration={3000}
             anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
             sx={{
-                marginBottom: "-25px"
+                marginBottom: isMobile ? "0" : "-25px"
             }}
         >
             <Box
                 sx={{
                     width: "100vw",
-                    height: "175px",
+                    height: isMobile ? "auto" : "175px",
                     display: 'flex',
+                    flexDirection: isMobile ? 'column' : 'row',
                     alignItems: 'center',
                     justifyContent: 'center',
                     padding: '16px',
@@ -218,16 +230,17 @@ const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, descrip
                 <Box
                     sx={{
                         display: "flex",
+                        flexDirection: isMobile ? 'column' : 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
                         width: '100%',
                     }}
                 >
-                    <Typography variant="h4" sx={{ color: '#fff' }}>
+                    <Typography variant="h4" sx={{ color: '#fff', marginBottom: isMobile ? '16px' : '0', fontSize: isMobile ? '1.5rem' : '2.125rem' }}>
                         {title}
                     </Typography>
                     {icon}
-                    <Typography variant="body1" sx={{ color: '#fff' }}>
+                    <Typography variant="body1" sx={{ color: '#fff', marginTop: isMobile ? '16px' : '0', fontSize: isMobile ? '1rem' : '1rem', textAlign: isMobile ? 'center' : 'left' }}>
                         {description}
                     </Typography>
                 </Box>
@@ -243,7 +256,7 @@ const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, descrip
                         zIndex: 1,
                     }}
                 >
-                    <Typography variant="h6" sx={{ color: '#fff' }}>
+                    <Typography variant="h6" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '1.25rem', textAlign: isMobile ? 'center' : 'left' }}>
                         Progression Tier Reached
                     </Typography>
                 </Box>

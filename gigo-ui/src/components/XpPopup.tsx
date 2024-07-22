@@ -26,6 +26,7 @@ import GoProDisplay from "./GoProDisplay";
 import GigoCircleIcon from "@/icons/GIGO/GigoCircleLogo";
 import Close from "@mui/icons-material/Close";
 import premiumGorilla from "@/img/pro/pro-pop-up-icon-plain.svg"
+import { useSearchParams } from "next/navigation";
 
 interface IProps {
     oldXP: number;
@@ -57,6 +58,10 @@ const XpPopup = (props: IProps) => {
     const [progressValue, setProgressValue] = useState(0);
 
     const authState = useAppSelector(selectAuthState);
+
+    let query = useSearchParams();
+    let isMobile = query.get("viewport") === "mobile";
+
 
     useEffect(() => {
         if (props.levelUp) {
@@ -182,7 +187,7 @@ const XpPopup = (props: IProps) => {
                 </Box>
                 <Box
                     sx={{
-                        width: '40%',
+                        width: isMobile ? '95%' : '40%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
@@ -193,7 +198,7 @@ const XpPopup = (props: IProps) => {
                     }}
                 >
                     <Typography variant="h6" sx={{ color: '#fff' }}>
-                        Level {currentLevel}
+                        Lvl {currentLevel}
                     </Typography>
                     <LinearProgress
                         variant="determinate"
@@ -211,7 +216,7 @@ const XpPopup = (props: IProps) => {
                         }}
                     />
                     <Typography variant="h6" sx={{ color: '#fff' }}>
-                        Level {nextLevel}
+                        Lvl {nextLevel}
                     </Typography>
                 </Box>
             </Box>

@@ -47,6 +47,7 @@ import GoProDisplay from "../GoProDisplay";
 import {Close, Description} from "@mui/icons-material";
 import CTIcon from '../../img/codeTeacher/CT-icon-simple.svg';
 import Image from "next/image"
+import ProgressionNotification from "../Progressions/ProgressionNotification";
 
 const InitialSuggestionButton = styled(Button)`
     animation: initSuggestionButtonAuraEffect 2s infinite alternate;
@@ -274,6 +275,7 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
     };
 
     const [currentThreadCount, setCurrentThreadCount] = useState(0)
+    const [showProgressionNotification, setShowProgressionNotification] = useState(false);
 
     const launchCTChat = () => {
         ctWs.sendWebsocketMessage({
@@ -433,6 +435,9 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
                     free_credit_use: p.free_credit_use,
                 })
                 setMessages(m)
+
+                // Show the ProgressionNotification
+                setShowProgressionNotification(true);
 
                 return true
             }
@@ -1053,6 +1058,15 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
                 {messagesMemo}
                 {state === State.LOADING && renderBotMessage(response, true, "", false, false, "")}
                 <div ref={messagesEndRef}/>
+                {showProgressionNotification && (
+                <ProgressionNotification
+                    progression={"man_of_the_inside"}
+                    achievement={false}
+                    progress={0}
+                    onClose={() => setShowProgressionNotification(false)}
+                    xpData={null}
+                />
+            )}
                 {!isAtBottom && (
                     <Tooltip title={"Scroll To Bottom"}>
                         <IconButton

@@ -521,7 +521,7 @@ export default function StatsPage() {
                                         bytesId={fot?.byte_id}
                                         bytesDesc={"Concept Explanation"}
                                         bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
-                                        language={programmingLanguages["python"]}
+                                        language={programmingLanguages[0]}
                                         animate={false} onClick={function (): void {
                                             throw new Error('Function not implemented.');
                                         }} 
