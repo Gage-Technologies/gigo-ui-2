@@ -18,7 +18,6 @@ import call from "@/services/api-call";
 import swal from "sweetalert";
 import {Extension} from "@uiw/react-codemirror";
 import config from "@/config";
-import SheenPlaceholder from '@/components/Loading/SheenPlaceholder';
 import BytesCard from '@/components/BytesCard';
 import { programmingLanguages } from '@/services/vars';
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
@@ -28,6 +27,7 @@ import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useSearchParams } from 'next/navigation';
 import StatsPageMobile from './statsMobile';
 import Image from 'next/image';
+import SheenPlaceholder from '@/components/Loading/SheenPlaceholder';
 
 export default function StatsPage() {
     let query = useSearchParams();
@@ -570,30 +570,23 @@ export default function StatsPage() {
                             sx={{
                                 width: '90%',
                                 height: '355px',
-                                borderRadius: '10px',
-                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'center',
-                                alignItems: 'center',
-                                mb: 2
+                                alignItems: 'center'
                             }}
                         >
-                            <Image
-                                src="/placeholder-image.jpg"
-                                alt=""
-                                width={400}
-                                height={355}
-                                style={{
-                                    objectFit: 'cover',
+                            <SheenPlaceholder
+                                sx={{
                                     borderRadius: '10px',
-                                    opacity: 0.5
+                                    height: '340px',
+                                    width: '100%'
                                 }}
                             />
                         </Box>
                         
                         {/* placeholder for 'more details' button */}
-                        <Box sx={{ height: '48px', mb: 2 }} /> 
+                        <Box sx={{ height: '48px' }} /> 
                     </Box>
                 </Grid>
                 )}
