@@ -150,7 +150,7 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <Box sx={styles.mobileBox}>
                             <Typography variant="h6">Complete this By</Typography>
-                            <Typography variant="h5">{formatDate(fot?.valid_until)}</Typography>
+                            <Typography variant="h5">{formatDate(fot?.valid_until ? new Date(fot.valid_until).toISOString() : undefined)}</Typography>
                     </Box>
                     <Box sx={{ width: '100%', maxWidth: '300px', margin: '16px 0', display: 'flex', justifyContent: 'center' }}>
                     <IconButton
@@ -173,8 +173,8 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
                                 imageHeight={200}
                                 width={'100%'}
                                 imageWidth={150}
-                                bytesId={fot?.byte_id}
-                                bytesTitle={fot?.concept}
+                                bytesId={fot?.byte_id ?? ''}
+                                bytesTitle={fot?.concept ?? ''}
                                 bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
                                 language={programmingLanguages[languageId]}
                                 animate={false}
@@ -249,11 +249,13 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
                                 imageHeight={350}
                                 width={'100%'}
                                 imageWidth={225}
-                                bytesId={fot?.byte_id}
-                                bytesTitle={fot?.concept}
+                                bytesDesc={fot?.concept_explanation ?? ''}
+                                bytesId={fot?.byte_id ?? ''}
+                                bytesTitle={fot?.concept ?? ''}
                                 bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
                                 language={programmingLanguages[languageId]}
                                 animate={false}
+                                onClick={() => {}}
                             />
                             </Suspense>
                         </Box>
@@ -265,7 +267,7 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
                         </Box>
                         <Box sx={styles.fotBox}>
                             <Typography variant="h6">Complete this By</Typography>
-                            <Typography variant="h5">{formatDate(fot?.valid_until)}</Typography>
+                            <Typography variant="h5">{formatDate(fot?.valid_until ? new Date(fot.valid_until).toISOString() : undefined)}</Typography>
                         </Box>
                         <Button variant="contained" href={`/byte/${fot?.byte_id}`}
                         sx={{ 

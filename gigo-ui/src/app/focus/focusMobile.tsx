@@ -87,8 +87,9 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                             imageHeight={300}
                             width={'100%'}
                             imageWidth={200}
-                            bytesId={fot?.byte_id}
-                            bytesTitle={fot?.concept}
+                            bytesDesc={fot?.concept_explanation ?? ''}
+                            bytesId={fot?.byte_id ?? ''}
+                            bytesTitle={fot?.concept ?? ''}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
                             language={programmingLanguages[language]}
                             animate={false}
@@ -100,6 +101,7 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                     <Box
                         sx={{
                             border: `2px solid ${theme.palette.primary.main}`,
+                            // @ts-ignore
                             backgroundColor: theme.palette.background.card,
                             borderRadius: "8px",
                             p: 2,
@@ -115,7 +117,7 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                         </Typography>
                         <CalendarTodayIcon sx={{ fontSize: '4rem', color: 'white', mb: 1 }} />
                         <Typography variant="h6">
-                            {formatDate(fot?.valid_until)}
+                            {formatDate(fot?.valid_until ? new Date(fot.valid_until).toISOString() : undefined)}
                         </Typography>
                     </Box>
                 </Grid>
@@ -123,6 +125,7 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                     <Box
                         sx={{
                             border: `2px solid ${theme.palette.primary.main}`,
+                            // @ts-ignore
                             backgroundColor: theme.palette.background.card,
                             borderRadius: "8px",
                             p: 2,
@@ -146,6 +149,7 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                     <Box
                         sx={{
                             border: `2px solid ${theme.palette.primary.main}`,
+                            // @ts-ignore
                             backgroundColor: theme.palette.background.card,
                             borderRadius: "8px",
                             p: 2,

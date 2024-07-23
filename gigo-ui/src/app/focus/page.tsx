@@ -158,8 +158,9 @@ const FocusPage: React.FC = () => {
                             imageHeight={475}
                             width={'100%'}
                             imageWidth={300}
-                            bytesId={fot?.byte_id}
-                            bytesTitle={fot?.concept}
+                            bytesDesc={fot?.concept_explanation ?? ''}
+                            bytesId={fot?.byte_id ?? ''}
+                            bytesTitle={fot?.concept ?? ''}
                             bytesThumb={config.rootPath + "/static/bytes/t/" + fot?.byte_id}
                             language={programmingLanguages[languageId]}
                             animate={false}
@@ -180,6 +181,7 @@ const FocusPage: React.FC = () => {
                     <Box
                         sx={{
                             border: `2px solid ${theme.palette.primary.main}`,
+                            // @ts-ignore
                             backgroundColor: theme.palette.background.card,
                             height: '30vh',
                             marginBottom: 6,
@@ -226,6 +228,7 @@ const FocusPage: React.FC = () => {
                         <Box
                             sx={{
                                 border: `2px solid ${theme.palette.primary.main}`,
+                                // @ts-ignore
                                 backgroundColor: theme.palette.background.card,
                                 height: '30vh',
                                 width: '95%',
@@ -263,6 +266,7 @@ const FocusPage: React.FC = () => {
                             <Box
                 sx={{
                     border: `2px solid ${theme.palette.primary.main}`,
+                    // @ts-ignore
                     backgroundColor: theme.palette.background.card,
                     height: '30vh',
                     width: '48%',
@@ -317,7 +321,7 @@ const FocusPage: React.FC = () => {
                                     fontSize: '1rem'
                                 }}
                             >
-                                {formatDate(fot?.valid_until)?.split(' ')[0]}
+                                {formatDate(fot?.valid_until ? new Date(fot.valid_until).toISOString() : undefined)?.split(' ')[0]}
                             </Typography>
                             <Typography 
                                 variant="h4" 
@@ -326,7 +330,7 @@ const FocusPage: React.FC = () => {
                                     fontWeight: 'bold'
                                 }}
                             >
-                                {formatDate(fot?.valid_until)?.split(' ')[1].replace(',', '')}
+                                {formatDate(fot?.valid_until ? new Date(fot.valid_until).toISOString() : undefined)?.split(' ')[1].replace(',', '')}
                             </Typography>
                         </Box>
                     </Box>

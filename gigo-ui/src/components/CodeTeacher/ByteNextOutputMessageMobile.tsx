@@ -46,6 +46,7 @@ export type ByteNextOutputMessageMobileProps = {
     maxWidth: string;
     codeOutput: string;
     nextByte?: any;
+    current_difficulty: string;
 };
 
 enum State {
@@ -192,7 +193,8 @@ export default function ByteNextOutputMessageMobile(props: ByteNextOutputMessage
                 byte_development_steps: props.dev_steps,
                 // @ts-ignore
                 byte_output: props.codeOutput, // changed from codeOutput["stdout"][0] because of an error
-                code: props.code
+                code: props.code,
+                current_difficulty: props.current_difficulty,
             }
         } satisfies CtMessage<CtByteNextOutputRequest>, (msg: CtMessage<CtGenericErrorPayload | CtValidationErrorPayload | CtByteNextOutputResponse>) => {
             if (msg.type !== CtMessageType.WebSocketMessageTypeByteNextOutputMessageResponse) {
