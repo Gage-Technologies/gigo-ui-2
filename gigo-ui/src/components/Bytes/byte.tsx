@@ -1142,6 +1142,15 @@ function BytePage({params, ...props}: ByteProps) {
             });
         }
 
+        if (res["hungry_learner"] !== undefined) {
+            addNotificationToQueue({
+                progression: 'hungry_learner',
+                achievement: false,
+                progress: res["hungry_learner"],
+                data: null
+            });
+        }
+
         if (res["nodeBelow"] !== undefined && res["nodeBelow"] !== null) {
             setNodeBelow(res["nodeBelow"])
         }
@@ -1269,10 +1278,10 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        if (res["newHigh"]) {
+        if (res["new_high"]) {
             addNotificationToQueue({
                 progression: 'tenacious',
-                achievement: res["newHigh"],
+                achievement: res["new_tier"],
                 progress: res["tenacious_count"],
                 data: null
             });
@@ -2825,7 +2834,7 @@ function BytePage({params, ...props}: ByteProps) {
                                     <Box
                                         display={"inline-flex"}
                                     >
-                                         {/*<Button onClick={() => {testNotificationPopups()}}> TEST</Button>*/}
+                                         {/* <Button onClick={() => {testNotificationPopups()}}> TEST</Button> */}
                                         {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
                                             <Tooltip title="Run Code">
                                                 <LoadingButton

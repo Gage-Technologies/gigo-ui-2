@@ -45,7 +45,7 @@ let isMobile = query.get("viewport") === "mobile";
             onClose={onClose}
             TransitionComponent={Slide}
             key={"slide"}
-            autoHideDuration={3000}
+            autoHideDuration={4000}
             anchorOrigin={{ vertical: 'bottom', horizontal: isMobile ? "center" : "right" }}
         >
             <Box
@@ -351,7 +351,11 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
             const maxValue = parseInt(result?.[1] ?? '');
             const thresholdValue = parseInt(result?.[2] ?? '0');
 
-            if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner", "unit_mastery"].includes(progression)) {
+            if (progression === "hungry_learner") {
+                const hungerProgress = progress ?? 0;
+                setAchieveOpen(hungerProgress > 0 && (hungerProgress >= maxValue || hungerProgress === thresholdValue));
+                setAchieveProgOpen(hungerProgress > 0 && hungerProgress < maxValue && hungerProgress !== thresholdValue);
+            } else if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "unit_mastery"].includes(progression)) {
                 setAchieveOpen(currentValue > 0 && (currentValue >= maxValue || currentValue === thresholdValue));
                 setAchieveProgOpen(currentValue > 0 && currentValue < maxValue && currentValue !== thresholdValue);
             } else {
@@ -362,7 +366,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
             setProgressionLevel(result?.[0] ?? '');
             setProgressionLevelMax(result?.[1] ?? '');
         }
-    }, [progression, progressionData, achievement]);
+    }, [progression, progressionData, achievement, progress]);
 
     if (xpData) {
         const { xp_update, level_up_reward } = xpData;
@@ -406,7 +410,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title="Hungry Learner"
                         description="Number of concepts learned"
-                        progress={parseFloat(progressionData?.hungry_learner || '0')}
+                        progress={progress ?? 0}
                         progressMax={parseInt(progressionLevelMax)}
                         icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
@@ -494,7 +498,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Hungry Learner"
-                        description={`${parseFloat(progressionData?.hungry_learner ?? '0')} concepts learned`}
+                        description={`${progress ?? 0} concepts learned`}
                         icon={<School fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
