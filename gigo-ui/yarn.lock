@@ -2109,12 +2109,12 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
-"@fireworks-js/react@^2.10.7":
-  version "2.10.7"
-  resolved "https://registry.yarnpkg.com/@fireworks-js/react/-/react-2.10.7.tgz#8e06a3121f8a4717e7836de95cb0c5045129a281"
-  integrity sha512-hxfEB0vRUX7nNznhc5SEw0W8jamgF32oUiMvd5c8dOAFZgkidF8qylRw/V1Xp6In1QsjUQXnv/gvOKCe2o8JOg==
+"@fireworks-js/react@^2.10.8":
+  version "2.10.8"
+  resolved "https://registry.yarnpkg.com/@fireworks-js/react/-/react-2.10.8.tgz#3667d6715a1fd8c30bf526b0f42ed0d3f9006e68"
+  integrity sha512-Qy/HSiTnph2IT2LHVzo9Ov+zifGQboTICjVLyrp/sWMHZoaodZiW0xrFxN1RfYI3R7j5bNZmf6S9EzqOWPfFWA==
   dependencies:
-    fireworks-js "2.10.7"
+    fireworks-js "2.10.8"
 
 "@floating-ui/core@^1.0.0":
   version "1.6.1"
@@ -7846,10 +7846,10 @@ find-up@^5.0.0:
     locate-path "^6.0.0"
     path-exists "^4.0.0"
 
-fireworks-js@2.10.7:
-  version "2.10.7"
-  resolved "https://registry.yarnpkg.com/fireworks-js/-/fireworks-js-2.10.7.tgz#eb099652304356aef160ec00869fc60f00c6277a"
-  integrity sha512-FyRNiqlgu9ZeFCjfN0UiGUlj5dUWNYLyFaWN/Q8sOMf0E+KGA4dMROaBZpCtym85fChgCspoa3jHoLTRZiy74A==
+fireworks-js@2.10.8:
+  version "2.10.8"
+  resolved "https://registry.yarnpkg.com/fireworks-js/-/fireworks-js-2.10.8.tgz#b161c9f905ac96f9cbb1635603eda9dbe1d99d22"
+  integrity sha512-UZNxeJvRmQzLisN4iriWXqKojG9TDJqc0dPmkUw0/+AEQQ3w8z1Jx2YdFSiBGSVb/u4dPTQXU109GMVblzhfpg==
 
 flat-cache@^3.0.4:
   version "3.2.0"
