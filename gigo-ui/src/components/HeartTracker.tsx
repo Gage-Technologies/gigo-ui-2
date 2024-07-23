@@ -40,6 +40,7 @@ const HeartTracker: React.FC<HeartTrackerProps> = ({ openGoProPopup, small }) =>
         if (res["remaining_hearts"] !== activeHearts) {
             const newState = Object.assign({}, initialHeartsStateUpdate)
             newState.remainingHearts = res["remaining_hearts"]
+            console.log("newState: ", newState)
             dispatch(updateHeartsState(newState))
         }
     }

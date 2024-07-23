@@ -6,10 +6,12 @@ const withBundleAnalyzer = bundleAnalyzer({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = withBundleAnalyzer({
+  reactStrictMode: false, // disable react strict mode
   images: {
     domains: ['api.cdn.gigo.dev', 'user-images.githubusercontent.com', 'githubusercontent.com', 'raw.githubusercontent.com', 'cdn-images-1.medium.com'],
   },
   output: "standalone",
+  
   experimental: {
     optimizePackageImports: [
       'date-fns',
@@ -22,6 +24,7 @@ const nextConfig = withBundleAnalyzer({
     } : {
       allowedOrigins: ["dev.gigo.dev", "gigo.dev", "www.gigo.dev"]
     }
+    
   },
 });
 

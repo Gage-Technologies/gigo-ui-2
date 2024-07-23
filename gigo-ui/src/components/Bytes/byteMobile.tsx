@@ -1255,33 +1255,36 @@ function ByteMobile({ params, ...props }: ByteProps) {
         }
     }
 
-    const recordByteAttemptCheck = async (success: boolean) => {
-        let params = {
-            byte_id: byteAttemptId,
-            difficulty: determineDifficulty(),
-            successful: success
-        }
+    const recordByteAttemptCheck = React.useCallback(
+        debounce(async (success: boolean) => {
+            let params = {
+                byte_id: byteAttemptId,
+                difficulty: determineDifficulty(),
+                successful: success
+            }
 
-        let res = await call(
-            "/api/bytes/addFailedByteAttemptCheck",
-            "POST",
-            null,
-            null,
-            null,
-            // @ts-ignore
-            params,
-            null,
-            config.rootPath
-        );
+            let res = await fetch(
+                `${config.rootPath}/api/bytes/addFailedByteAttemptCheck`,
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(params),
+                    credentials: 'include'
+                }
+            ).then(res => res.json());
 
-        if (res === undefined || res["decrement"] === undefined) {
-            return;
-        }
+            if (res === undefined || res["decrement"] === undefined) {
+                return;
+            }
 
-        if (authState.role === 0 && res["decrement"]) {
-            dispatch(decrementHeartsState())
-        }
-    }
+            if (authState.role === 0 && res["decrement"]) {
+                dispatch(decrementHeartsState())
+            }
+        }, 300),
+        [byteAttemptId, determineDifficulty, authState.role, dispatch]
+    );
 
     // Function to fetch the journey unit metadata
     const getJourneyUnit = async (byteId: string): Promise<any | null> => {
