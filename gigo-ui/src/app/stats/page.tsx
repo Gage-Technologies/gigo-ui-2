@@ -27,6 +27,7 @@ import DetermineProgressionLevel from '@/utils/progression';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import { useSearchParams } from 'next/navigation';
 import StatsPageMobile from './statsMobile';
+import Image from 'next/image';
 
 export default function StatsPage() {
     let query = useSearchParams();
@@ -486,13 +487,14 @@ export default function StatsPage() {
                 </Grid>
 
                 {/* Focus on This */}
+                {fot ? (
                 <Grid item xs={4}>
                     <Box
                         sx={{
                             position: 'relative',
                             padding: 2,
                             textAlign: 'center',
-                            height: '80vh', // Double the height to cover two rows
+                            height: '80vh', // double the height to cover two rows
                             overflow: 'hidden',
                             border: '1px solid',
                             borderColor: theme.palette.primary.light,
@@ -541,6 +543,60 @@ export default function StatsPage() {
                         </Box>
                     </Box>
                 </Grid>
+                ) : (
+                <Grid item xs={4}>
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            padding: 2,
+                            textAlign: 'center',
+                            height: '80vh', // double the height to cover two rows
+                            overflow: 'hidden',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            backgroundImage: 'linear-gradient(to top, #208562 -5%, transparent 10%)',
+                            borderRadius: '20px',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Keep improving!</Typography>
+                        <Typography variant="body1">We are optimizing a recommended focus for you next week!</Typography>
+                        
+                        {/* empty bytescard-like component */}
+                        <Box
+                            sx={{
+                                width: '90%',
+                                height: '355px',
+                                borderRadius: '10px',
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                mb: 2
+                            }}
+                        >
+                            <Image
+                                src="/placeholder-image.jpg"
+                                alt=""
+                                width={400}
+                                height={355}
+                                style={{
+                                    objectFit: 'cover',
+                                    borderRadius: '10px',
+                                    opacity: 0.5
+                                }}
+                            />
+                        </Box>
+                        
+                        {/* placeholder for 'more details' button */}
+                        <Box sx={{ height: '48px', mb: 2 }} /> 
+                    </Box>
+                </Grid>
+                )}
 
             </Grid>
 
