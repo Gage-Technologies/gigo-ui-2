@@ -1269,17 +1269,14 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        /* if (res["tenacious_count"] !== 0) { */
+        if (res["newHigh"]) {
             addNotificationToQueue({
                 progression: 'tenacious',
                 achievement: res["newHigh"],
                 progress: res["tenacious_count"],
                 data: null
             });
-        /* } */
-
-        console.log("Response from CFR: ", res["tenacious_count"]);
-
+        }
     }
 
     const checkHotStreak = async () => {
