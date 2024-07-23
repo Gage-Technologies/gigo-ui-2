@@ -352,11 +352,11 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
             const thresholdValue = parseInt(result?.[2] ?? '0');
 
             if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "hungry_learner", "unit_mastery"].includes(progression)) {
-                setAchieveOpen(currentValue >= maxValue || currentValue === thresholdValue);
-                setAchieveProgOpen(currentValue < maxValue && currentValue !== thresholdValue);
+                setAchieveOpen(currentValue > 0 && (currentValue >= maxValue || currentValue === thresholdValue));
+                setAchieveProgOpen(currentValue > 0 && currentValue < maxValue && currentValue !== thresholdValue);
             } else {
-                setAchieveOpen(achievement);
-                setAchieveProgOpen(!achievement);
+                setAchieveOpen(achievement && currentValue > 0);
+                setAchieveProgOpen(!achievement && currentValue > 0);
             }
 
             setProgressionLevel(result?.[0] ?? '');
@@ -561,7 +561,10 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
             </>
         );
     } else {
-        return achievement ? getAchievementNotification(progression) : getProgressNotification(progression);
+        const currentValue = parseFloat(progressionData?.[progression as keyof Progression] || '0');
+        return currentValue > 0 ? (
+            achievement ? getAchievementNotification(progression) : getProgressNotification(progression)
+        ) : null;
     }
 };
 
