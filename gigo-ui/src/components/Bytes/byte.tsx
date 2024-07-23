@@ -2592,7 +2592,7 @@ function BytePage({params, ...props}: ByteProps) {
         )
     }
 
-    /* const testNotificationPopups = () => {
+    const testNotificationPopups = () => {
         // Test Data Hog notification
         addNotificationToQueue({
             progression: 'data_hog',
@@ -2637,7 +2637,7 @@ function BytePage({params, ...props}: ByteProps) {
         addNotificationToQueue({
             progression: 'hot_streak',
             achievement: true,
-            progress: 4,
+            progress: 3,
             data: null
         });
 
@@ -2669,7 +2669,7 @@ function BytePage({params, ...props}: ByteProps) {
                 level_up_reward: null
             }
         });
-    } */
+    }
 
     const journeyBytesPage = () => {
         let lang = mapFilePathToLangOption(activeFile)
@@ -2825,7 +2825,7 @@ function BytePage({params, ...props}: ByteProps) {
                                     <Box
                                         display={"inline-flex"}
                                     >
-                                        {/* <Button onClick={() => {testNotificationPopups()}}> TEST</Button> */}
+                                         {/*<Button onClick={() => {testNotificationPopups()}}> TEST</Button>*/}
                                         {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
                                             <Tooltip title="Run Code">
                                                 <LoadingButton

@@ -147,18 +147,6 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
 
     const [fotOpen, setFotOpen] = React.useState(false);
 
-    React.useEffect(() => {
-        const lastShownDate = localStorage.getItem('fotLastShownDate');
-        if (lastShownDate) {
-            const fiveMinutesAfterLastShown = addWeeks(parseISO(lastShownDate), 1);
-            if (isAfter(new Date(), fiveMinutesAfterLastShown)) {
-                setFotOpen(true);
-            }
-        } else {
-            setFotOpen(true);
-        }
-    }, []);
-    
     const drawerWidth = 200;
     let router = useRouter();
     let query = useSearchParams();
@@ -194,6 +182,20 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     if (authState.authenticated) {
         loggedIn = true
     }
+
+    React.useEffect(() => {
+        if (loggedIn === true) {
+            const lastShownDate = localStorage.getItem('fotLastShownDate');
+            if (lastShownDate) {
+                const oneWeekAfterLastShown = addWeeks(parseISO(lastShownDate), 1);
+                if (isAfter(new Date(), oneWeekAfterLastShown)) {
+                    setFotOpen(true);
+                }
+            } else {
+                setFotOpen(true);
+            }
+        }
+    }, []);
 
     let onHomePage = (
         (pathname === '/home' || pathname === '/home/' ||

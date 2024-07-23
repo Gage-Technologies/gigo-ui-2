@@ -452,7 +452,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                     <AchievementProgressRuntime
                         open={achieveProgOpen}
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
-                        title="Hot Streak"
+                        title={(progress == 1) ? "Getting Started" : (progress == 2) ? "Warming Up" : "Hot Streak"}
                         description="Bytes completed without failing"
                         progress={progress ?? 0}
                         progressMax={3}
