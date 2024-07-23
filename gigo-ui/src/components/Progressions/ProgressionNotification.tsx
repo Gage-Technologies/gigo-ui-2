@@ -60,7 +60,7 @@ let isMobile = query.get("viewport") === "mobile";
                     padding: '16px',
                     position: 'relative',
                     backdropFilter: "blur(15px)",
-                    WebkitBackdropFilter: "blur(15px)",
+                    "WebkitBackdropFilter": "blur(15px)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     backgroundColor: hexToRGBA("#0090f2", 0.31),
                 }}
@@ -133,7 +133,7 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
                     padding: '16px',
                     position: 'relative',
                     backdropFilter: "blur(15px)",
-                    WebkitBackdropFilter: "blur(15px)",
+                    "WebkitBackdropFilter": "blur(15px)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     backgroundColor: hexToRGBA("#0090f2", 0.31),
                 }}
@@ -222,7 +222,7 @@ const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, descrip
                     padding: '16px',
                     position: 'relative',
                     backdropFilter: "blur(15px)",
-                    WebkitBackdropFilter: "blur(15px)",
+                    "WebkitBackdropFilter": "blur(15px)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     backgroundColor: hexToRGBA("#0090f2", 0.31),
                 }}
