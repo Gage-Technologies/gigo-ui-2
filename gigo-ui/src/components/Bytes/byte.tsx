@@ -513,11 +513,19 @@ function BytePage({params, ...props}: ByteProps) {
 
             const data = await response.json();
             if (data.progression) {
-                console.log("progression: ", data.progression);
+        
                 // data hog progression
+                // parse the data_hog value from the api response, defaulting to 0 if undefined
                 const dataHogValue = parseFloat(data.progression?.data_hog ?? '0');
+                
+                
+                // parse the current data_hog value from the redux state, defaulting to 0 if undefined
+                const dataHogFloatState = parseFloat(dataHogState?.value?.toString() ?? '0');
                
-                if (dataHogState && dataHogValue !== dataHogState.value) {
+               
+                // check if the state exists and if the new value is different from the current state
+                if (dataHogState && dataHogValue !== dataHogFloatState) {
+                    // update the redux state with the new value
                     dispatch(updateDataHogValue(dataHogValue));
                     // determine progression level for data_hog
                     const [dataHogLevel, dataHogLevelMax] = DetermineProgressionLevel("data_hog", dataHogValue.toString()) ?? ['', ''];
@@ -539,9 +547,10 @@ function BytePage({params, ...props}: ByteProps) {
                     });
                 }
 
+                const scribeFloatState = parseFloat(scribeState?.value?.toString() ?? '0');
                 // scribe progression
                 const scribeValue = parseFloat(data.progression?.scribe ?? '0');
-                if (scribeState && scribeValue !== scribeState.value) {
+                if (scribeState && scribeValue !== scribeFloatState) {
                     dispatch(updateScribeValue(scribeValue));
                     // determine progression level for scribe
                     const [scribeLevel, scribeLevelMax] = DetermineProgressionLevel("scribe", scribeValue.toString()) ?? ['', ''];
