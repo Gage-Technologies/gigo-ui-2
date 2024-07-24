@@ -97,6 +97,9 @@ import OutOfHearts from "@/components/OutOfHearts";
 import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 import ByteMobile from "@/components/Bytes/byteMobile";
 import ProgressionNotification from "@/components/Progressions/ProgressionNotification";
+import { updateDataHogLevel, updateDataHogLevelMax, updateDataHogValue } from "@/reducers/progression/dataHog";
+import DetermineProgressionLevel from "@/utils/progression";
+import { updateScribeLevel, updateScribeLevelMax, updateScribeValue } from "@/reducers/progression/scribe";
 
 
 interface MergedOutputRow {
@@ -490,6 +493,85 @@ function BytePage({params, ...props}: ByteProps) {
     let ctWs = useGlobalCtWebSocket();
 
     let globalWs = useGlobalWebSocket();
+    const dataHogState = useAppSelector(state => state.dataHog);
+    const scribeState = useAppSelector(state => state.scribe);
+
+
+    const fetchProgression = async () => {
+        try {
+            const response = await fetch(
+                `${config.rootPath}/api/stats/getProgression`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: '{}',
+                    credentials: 'include'
+                }
+            );
+
+            const data = await response.json();
+            if (data.progression) {
+                console.log("progression: ", data.progression);
+                // data hog progression
+                const dataHogValue = parseFloat(data.progression?.data_hog ?? '0');
+               
+                if (dataHogState && dataHogValue !== dataHogState.value) {
+                    dispatch(updateDataHogValue(dataHogValue));
+                    // determine progression level for data_hog
+                    const [dataHogLevel, dataHogLevelMax] = DetermineProgressionLevel("data_hog", dataHogValue.toString()) ?? ['', ''];
+
+                    let achievement = false;
+                    if (dataHogState.level !== dataHogLevel || dataHogState.levelMax !== dataHogLevelMax) {
+                        // update data hog level in state
+                        dispatch(updateDataHogLevel(dataHogLevel));
+                        // update data hog max level in state
+                        dispatch(updateDataHogLevelMax(dataHogLevelMax));
+                        achievement = true;
+                    }
+                    // add notification to queue for data hog progression
+                    addNotificationToQueue({
+                        progression: 'data_hog',
+                        achievement: achievement,
+                        progress: dataHogValue,
+                        data: null
+                    });
+                }
+
+                // scribe progression
+                const scribeValue = parseFloat(data.progression?.scribe ?? '0');
+                if (scribeState && scribeValue !== scribeState.value) {
+                    dispatch(updateScribeValue(scribeValue));
+                    // determine progression level for scribe
+                    const [scribeLevel, scribeLevelMax] = DetermineProgressionLevel("scribe", scribeValue.toString()) ?? ['', ''];
+
+                    let achievement = false;
+                    if (scribeState.level !== scribeLevel || scribeState.levelMax !== scribeLevelMax) {
+                        // update scribe level in state
+                        dispatch(updateScribeLevel(scribeLevel));
+                        // update scribe max level in state
+                        dispatch(updateScribeLevelMax(scribeLevelMax));
+                        achievement = true;
+                    }
+                    // add notification to queue for scribe progression
+                    addNotificationToQueue({
+                        progression: 'scribe',
+                        achievement: achievement,
+                        progress: scribeValue,
+                        data: null
+                    });
+                }
+
+                // console.log("data hog level: ", dataHogState.level);
+                // console.log("data hog level max: ", dataHogState.levelMax);
+                // console.log("scribe level: ", scribeState.level);
+                // console.log("scribe level max: ", scribeState.levelMax);
+            }
+        } catch (e) {
+            console.log("failed to get progression: ", e);
+        }
+    };
 
     const syncFs = React.useCallback(async (codeOverride?: CodeFile[], deleteFiles?: string[]) => {
         if (id === undefined || id === null || !byteData || !authState.authenticated) {
@@ -1141,6 +1223,8 @@ function BytePage({params, ...props}: ByteProps) {
                 data: res["xp"]
             });
         }
+
+        console.log("res here: ", res)
 
         if (res["hungry_learner"] !== undefined) {
             addNotificationToQueue({
@@ -2525,19 +2609,19 @@ function BytePage({params, ...props}: ByteProps) {
 
                                                         executeCode(); // Indicate button click
 
-                                                        addNotificationToQueue({
-                                                            progression: 'data_hog',
-                                                            achievement: false,
-                                                            progress: "",
-                                                            data: null
-                                                        })
+                                                        // addNotificationToQueue({
+                                                        //     progression: 'data_hog',
+                                                        //     achievement: false,
+                                                        //     progress: "",
+                                                        //     data: null
+                                                        // })
 
-                                                        addNotificationToQueue({
-                                                            progression: 'scribe',
-                                                            achievement: false,
-                                                            progress: "",
-                                                            data: null
-                                                        })
+                                                        // addNotificationToQueue({
+                                                        //     progression: 'scribe',
+                                                        //     achievement: false,
+                                                        //     progress: "",
+                                                        //     data: null
+                                                        // })
                                                     }}
                                                 >
                                                     Run <PlayArrow fontSize={"small"}/>

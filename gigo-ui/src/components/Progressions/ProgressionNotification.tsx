@@ -314,6 +314,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
     const [progressionLevel, setProgressionLevel] = useState('');
     const [progressionLevelMax, setProgressionLevelMax] = useState('');
 
+    
+
     const getProgressions = async () => {
         try {
             const response = await fetch(

@@ -502,12 +502,14 @@ export default function ByteNextOutputMessage(props: ByteNextOutputMessageProps)
                 flexDirection={"column"}
                 sx={{
                     alignItems: 'center',
+                    justifyContent: 'center', // center vertically
                     maxWidth: props.maxWidth,
                     height: "100%",
-                    width: "100%"
+                    width: "100%",
+                    textAlign: 'center', // center text horizontally
                 }}
             >
-                <Typography component={Box} variant="h5">
+                <Typography component={Box} variant="h5" sx={{ textAlign: 'center' }}>
                     Journey Task Completed!
                 </Typography>
                 <Player
