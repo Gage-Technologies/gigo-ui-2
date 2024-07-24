@@ -374,7 +374,7 @@ export default function StatsPage() {
                                     borderRadius: '20px'
                                 }}
                             >
-                                <Tooltip title="This is the number of unique units you have finished in journeys. Each completion of a unit counts towards a mastered concept">
+                                <Tooltip title="This is the number of unique units you have finished in Journeys. Each completion of a unit counts towards a mastered concept.">
                                     <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
                                         <HelpOutlineIcon sx={{ fontSize: 15 }}/>
                                     </Box>
@@ -439,7 +439,7 @@ export default function StatsPage() {
                                     borderRadius: '20px'
                                 }}
                             >
-                                <Tooltip title="Number of problems solved by the code teacher.">
+                                <Tooltip title="Number of bytes solved by code teacher.">
                                     <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
                                         <HelpOutlineIcon sx={{ fontSize: 15 }}/>
                                     </Box>
@@ -688,7 +688,7 @@ export default function StatsPage() {
                         <Typography variant="body2">({(parseFloat(progression?.data_hog || '0') / 1000).toFixed(2)}/{parseInt(data_hog_level_max)/1000}KB)</Typography>
                     </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{data_hog_level}</Typography>
-                        <Tooltip title="Amount of executable code written (in GB)" placement="top">
+                        <Tooltip title="Amount of executable code written (in KB)" placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -723,7 +723,7 @@ export default function StatsPage() {
                             <Typography variant="body2">({parseFloat(progression?.hungry_learner || '0')}/{parseInt(hungry_learner_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{hungry_learner_level}</Typography>
-                        <Tooltip title="Number of concepts learned" placement="top">
+                        <Tooltip title="Number of concepts learned - earned by completing a Journey Unit, regardless of failed attempts." placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -758,7 +758,7 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.man_of_the_inside || '0'))}/{parseInt(man_of_the_inside_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{man_of_the_inside_level}</Typography>
-                        <Tooltip title="Number of chats sent to Code Teacher" placement="top">
+                        <Tooltip title="Number of chats sent to Code Teacher." placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -793,7 +793,7 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.scribe || '0'))}/{parseInt(scribe_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{scribe_level}</Typography>
-                        <Tooltip title="Number of comments written" placement="top">
+                        <Tooltip title="Number of comments written." placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -828,7 +828,7 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.tenacious || '0'))}/{parseInt(tenacious_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{tenacious_level}</Typography>
-                        <Tooltip title="Number of times you failed a byte, but then succeeded. A higher number shows how dedicated and persistent you are" placement="top">
+                        <Tooltip title="Number of times you failed a byte, but then succeeded. A higher number shows how dedicated and persistent you are." placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -864,7 +864,7 @@ export default function StatsPage() {
                             <Typography variant="body2">({Math.min(parseFloat(progression?.unit_mastery || '0'))}/{parseInt(unit_mastery_level_max)})</Typography>
                         </Box>
                         <Typography variant="body2" sx={{ position: 'absolute', top: 8, right: 8 }}>{unit_mastery_level}</Typography>
-                        <Tooltip title="The amount of times you have completed an entire unit without failing a byte" placement="top">
+                        <Tooltip title="The amount of times you have completed an entire unit without failing a byte attempt." placement="top">
                             <HelpOutlineIcon sx={{ position: 'absolute', bottom: 8, right: 8, fontSize: 15 }} />
                         </Tooltip>
                     </Box>
@@ -892,7 +892,7 @@ export default function StatsPage() {
                             </Box>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Tooltip title="Languages learned: Python, JavaScript, TypeScript, Java" placement="top">
+                            <Tooltip title="Keep track of the amount of languages you are learning!" placement="top">
                                 <HelpOutlineIcon sx={{ fontSize: 15, marginRight: 1 }} />
                             </Tooltip>
                         </Box>

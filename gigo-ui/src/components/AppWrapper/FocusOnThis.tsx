@@ -88,6 +88,8 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
     const [language, setLanguage] = React.useState<string | null>(null);
     const [languageId, setLanguageId] = React.useState<number>(0);
 
+    const [noFot, setNoFot] = React.useState(false);
+
     useEffect(() => {
         const fetchFOT = async () => {
             try {
@@ -293,7 +295,8 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
     };
 
     return (
-        <Dialog open={fotOpen} maxWidth="md" fullWidth>
+        fot && 
+            <Dialog open={fotOpen} maxWidth="md" fullWidth>
             <DialogContent
                 sx={{
                     backdropFilter: "blur(15px)",
@@ -305,6 +308,7 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
                 {renderContent()}
             </DialogContent>
         </Dialog>
+        
     );
 };
 
