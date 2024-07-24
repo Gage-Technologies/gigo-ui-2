@@ -497,7 +497,7 @@ function BytePage({params, ...props}: ByteProps) {
     const scribeState = useAppSelector(state => state.scribe);
 
 
-    const fetchProgression = async () => {
+    const handleScribeDataHog = async () => {
         try {
             const response = await fetch(
                 `${config.rootPath}/api/stats/getProgression`,
@@ -2089,6 +2089,7 @@ function BytePage({params, ...props}: ByteProps) {
                         onExpand={() => setActiveSidebarTab("debugOutput")}
                         onHide={() => setActiveSidebarTab(null)}
                         onSuccess={() => {
+                            handleScribeDataHog();
                             markComplete();
                             setSuggestionPopup(true);
                             recordByteAttemptCheck(true);
@@ -2100,6 +2101,7 @@ function BytePage({params, ...props}: ByteProps) {
                             }
                         }}
                         onFail={() => {
+                            handleScribeDataHog();
                             recordByteAttemptCheck(false)
                             completionFailureRate(false)
                         }}
