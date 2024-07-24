@@ -1446,21 +1446,12 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const displayCheckedProgressions = async () => {
+        checkHotStreak();
         checkTenacious(byteAttemptId);
         if (isJourney) {
 
             checkUnitMastery(props.byte._id);
-        }
-
-        addNotificationToQueue({
-            progression: 'hungry_learner',
-            achievement: false,
-            progress: "",
-            data: null
-        })
-
-        checkHotStreak();
-
+        }   
     }
 
     // Function to fetch the journey unit metadata
@@ -2620,20 +2611,6 @@ function BytePage({params, ...props}: ByteProps) {
                                                         }
 
                                                         executeCode(); // Indicate button click
-
-                                                        // addNotificationToQueue({
-                                                        //     progression: 'data_hog',
-                                                        //     achievement: false,
-                                                        //     progress: "",
-                                                        //     data: null
-                                                        // })
-
-                                                        // addNotificationToQueue({
-                                                        //     progression: 'scribe',
-                                                        //     achievement: false,
-                                                        //     progress: "",
-                                                        //     data: null
-                                                        // })
                                                     }}
                                                 >
                                                     Run <PlayArrow fontSize={"small"}/>
@@ -2697,84 +2674,6 @@ function BytePage({params, ...props}: ByteProps) {
         )
     }
 
-    const testNotificationPopups = () => {
-        // Test Data Hog notification
-        addNotificationToQueue({
-            progression: 'data_hog',
-            achievement: false,
-            progress: 500,
-            data: null
-        });
-
-        // Test Hungry Learner notification
-        addNotificationToQueue({
-            progression: 'hungry_learner',
-            achievement: false,
-            progress: 5,
-            data: null
-        });
-
-        // Test Man on the Inside notification
-        addNotificationToQueue({
-            progression: 'man_of_the_inside',
-            achievement: false,
-            progress: 10,
-            data: null
-        });
-
-        // Test The Scribe notification
-        addNotificationToQueue({
-            progression: 'scribe',
-            achievement: false,
-            progress: 20,
-            data: null
-        });
-
-        // Test Tenacious notification
-        addNotificationToQueue({
-            progression: 'tenacious',
-            achievement: false,
-            progress: 3,
-            data: null
-        });
-
-        // Test Hot Streak notification
-        addNotificationToQueue({
-            progression: 'hot_streak',
-            achievement: true,
-            progress: 3,
-            data: null
-        });
-
-        // Test Unit Mastery notification
-        addNotificationToQueue({
-            progression: 'unit_mastery',
-            achievement: false,
-            progress: 1,
-            data: null
-        });
-
-        // Test XP Popup notification
-        addNotificationToQueue({
-            progression: '',
-            achievement: '',
-            progress: '',
-            data: {
-                xp_update: {
-                    old_xp: 500,
-                    new_xp: 750,
-                    old_renown: null,
-                    new_renown: 100,
-                    current_renown: 100,
-                    old_level: 5,
-                    new_level: 6,
-                    next_level: 7,
-                    max_xp_for_lvl: 1000
-                },
-                level_up_reward: null
-            }
-        });
-    }
 
     const journeyBytesPage = () => {
         let lang = mapFilePathToLangOption(activeFile)
@@ -2930,7 +2829,6 @@ function BytePage({params, ...props}: ByteProps) {
                                     <Box
                                         display={"inline-flex"}
                                     >
-                                         {/* <Button onClick={() => {testNotificationPopups()}}> TEST</Button> */}
                                         {activeFileIdx >= 0 && code[activeFileIdx] && code[activeFileIdx].content.length > 0 && lang?.execSupported && (
                                             <Tooltip title="Run Code">
                                                 <LoadingButton
