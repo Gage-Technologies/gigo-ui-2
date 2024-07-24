@@ -161,6 +161,7 @@ export default function ByteNextStep(props: ByteNextStepProps) {
     const hide = () => {
         setHidden(true)
         props.onHide()
+        setResponse("")
     }
 
     const expand = () => {
