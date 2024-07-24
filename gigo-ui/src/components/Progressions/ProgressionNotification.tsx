@@ -490,7 +490,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Data Hog"
-                        description={`${parseFloat(progressionData?.data_hog ?? '0') / 1000} KB of executable code written`}
+                        description={`${(progress ?? 0) / 1000} KB of executable code written`}
                         icon={<Code fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );
@@ -520,7 +520,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="The Scribe"
-                        description={`${parseFloat(progressionData?.scribe ?? '0')} comments written`}
+                        description={`${(progress ?? 0)} comments written`}
                         icon={<Comment fontSize="small" style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }} />}
                     />
                 );

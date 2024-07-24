@@ -2943,18 +2943,6 @@ function BytePage({params, ...props}: ByteProps) {
                                                         }
 
                                                         executeCode(); // Indicate button click
-                                                        addNotificationToQueue({
-                                                            progression: 'data_hog',
-                                                            achievement: false,
-                                                            progress: "",
-                                                            data: null
-                                                        })
-                                                        addNotificationToQueue({
-                                                            progression: 'scribe',
-                                                            achievement: false,
-                                                            progress: "",
-                                                            data: null
-                                                        })
                                                     }}
                                                 >
                                                     Run <PlayArrow fontSize={"small"}/>
