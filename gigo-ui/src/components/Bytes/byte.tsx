@@ -1437,7 +1437,6 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const displayCheckedProgressions = async () => {
-        checkHotStreak();
         checkTenacious(byteAttemptId);
         if (isJourney) {
 
@@ -1450,6 +1449,8 @@ function BytePage({params, ...props}: ByteProps) {
             progress: "",
             data: null
         })
+
+        checkHotStreak();
 
     }
 

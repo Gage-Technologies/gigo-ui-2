@@ -357,7 +357,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 const hungerProgress = progress ?? 0;
                 setAchieveOpen(hungerProgress > 0 && (hungerProgress >= maxValue || hungerProgress === thresholdValue));
                 setAchieveProgOpen(hungerProgress > 0 && hungerProgress < maxValue && hungerProgress !== thresholdValue);
-            } else if (["man_of_the_inside", "data_hog", "scribe", "tenacious", "unit_mastery"].includes(progression)) {
+            } else if (["man_of_the_inside", "tenacious", "unit_mastery"].includes(progression)) {
                 setAchieveOpen(currentValue > 0 && (currentValue >= maxValue || currentValue === thresholdValue));
                 setAchieveProgOpen(currentValue > 0 && currentValue < maxValue && currentValue !== thresholdValue);
             } else {
@@ -399,8 +399,8 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title="Data Hog"
                         description="Amount of executable code written"
-                        progress={parseFloat(progressionData?.data_hog || '0') / 1000}
-                        progressMax={parseInt(progressionLevelMax) / 1000}
+                        progress={(progress ?? 0) / 1000}
+                        progressMax={(parseInt(progressionLevelMax) ?? 0) / 1000}
                         icon={<Code fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                         isDataHog={true}
                     />
@@ -436,7 +436,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title="The Scribe"
                         description="Number of comments written"
-                        progress={parseFloat(progressionData?.scribe || '0')}
+                        progress={progress ?? 0}
                         progressMax={parseInt(progressionLevelMax)}
                         icon={<Comment fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                     />
