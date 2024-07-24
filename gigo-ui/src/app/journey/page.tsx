@@ -1013,7 +1013,7 @@ function JourneyMain() {
                                     loading={loadingMapData}
                                     onClick={handleStartJourney}
                                 >
-                                    <h1 style={{ fontSize: '2vw', paddingRight: '1vw', paddingLeft: '1vw' }}>
+                                    <h1 style={{ fontSize: '1vw', paddingRight: '1vw', paddingLeft: '1vw' }}>
                                         Start Journey
                                     </h1>
                                 </MuiAwesomeButton>
