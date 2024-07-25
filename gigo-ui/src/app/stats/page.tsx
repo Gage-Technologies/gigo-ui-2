@@ -503,7 +503,13 @@ export default function StatsPage() {
                                     <Box display="flex" justifyContent="center">
                                         <TimerIcon sx={{ fontSize: 60 }} />
                                     </Box>
-                                    <Typography variant="h1">{stats?.avg_time_complete_byte}</Typography>
+                                    <Typography variant="h2">
+                                        {stats?.avg_time_complete_byte ? (
+                                            parseFloat(stats.avg_time_complete_byte) > 60 ? 
+                                                `${Math.floor(parseFloat(stats.avg_time_complete_byte) / 60)}m${Math.round(parseFloat(stats.avg_time_complete_byte) % 60)}s`
+                                            : `${Math.round(parseFloat(stats.avg_time_complete_byte))}s`
+                                        ) : '0s'}
+                                    </Typography>
                                     <Typography variant="h6">Average Byte Completion Time</Typography>
                                 </Box>
                             </Box>
