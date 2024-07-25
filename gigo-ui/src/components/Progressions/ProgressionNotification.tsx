@@ -460,7 +460,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                         onClose={() => { setAchieveProgOpen(false); onClose(); }}
                         title={(progress == 1) ? "Getting Started" : (progress == 2) ? "Warming Up" : "Hot Streak"}
                         description="Bytes completed without failing"
-                        progress={progress ?? 0}
+                        progress={progress ?? 99}
                         progressMax={3}
                         icon={<Whatshot fontSize="small" style={{ width: '80px', height: '80px', objectFit: 'cover', borderRadius: '8px', margin: '0 16px' }} />}
                     />
