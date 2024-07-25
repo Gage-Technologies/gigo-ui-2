@@ -1398,7 +1398,7 @@ function BytePage({params, ...props}: ByteProps) {
             return;
         }
 
-        if (res["streak_"] !== 0) {
+        if (res["streak_count"] !== 0) {
             addNotificationToQueue({
                 progression: 'hot_streak',
                 achievement: res["hot_streak"],
