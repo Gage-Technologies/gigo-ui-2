@@ -28,6 +28,7 @@ import { useSearchParams } from 'next/navigation';
 import StatsPageMobile from './statsMobile';
 import Image from 'next/image';
 import SheenPlaceholder from '@/components/Loading/SheenPlaceholder';
+import Lottie from 'react-lottie';
 
 export default function StatsPage() {
     let query = useSearchParams();
@@ -111,6 +112,29 @@ export default function StatsPage() {
             console.log("progression moti: ", Math.min(parseFloat(progression?.man_of_the_inside || '0')/500, 1));
         }
     }, [progression]);
+
+    const [gearBox, setGearBox] = React.useState(null);
+    
+    
+
+    useEffect(() => {
+        fetch(`${config.rootPath}/static/ui/lottie/general/fot-loading.json`, {credentials: 'include'})
+            .then(data => {
+                data.json().then(json => {
+                    setGearBox(json)
+                })
+            })
+            .catch(error => console.error(error));
+    }, [])
+
+    const gearBoxOptions = {
+        loop: true,
+        autoplay: true,
+        animationData: gearBox,
+        rendererSettings: {
+            preserveAspectRatio: 'xMidYMid slice'
+        },
+    };
     
 
     useEffect(() => {
@@ -128,6 +152,7 @@ export default function StatsPage() {
                         credentials: 'include'
                     }
                 );
+
             } catch (e) {
                 console.log("failed to get number mastered: ", e);
             }
@@ -563,29 +588,17 @@ export default function StatsPage() {
                         }}
                     >
                         <Typography variant="h5" sx={{ mt: 4, mb: 2 }}>Keep improving!</Typography>
-                        <Typography variant="body1">We are optimizing a recommended focus for you next week!</Typography>
+                        <Typography variant="body1">We are optimizing a recommended focus for you. Check back here for it next week!</Typography>
                         
-                        {/* empty bytescard-like component */}
-                        <Box
-                            sx={{
-                                width: '90%',
-                                height: '355px',
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}
-                        >
-                            <SheenPlaceholder
-                                sx={{
-                                    borderRadius: '10px',
-                                    height: '340px',
-                                    width: '100%'
+                        <Lottie options={gearBoxOptions} isClickToPauseDisabled={true}
+                                width={250}
+                                height={250} isPaused={false}
+                                style={{
+                                    filter: `drop-shadow(0 0 10px ${theme.palette.primary.dark})`,
                                 }}
-                            />
-                        </Box>
+                        />
+
                         
-                        {/* placeholder for 'more details' button */}
                         <Box sx={{ height: '48px' }} /> 
                     </Box>
                 </Grid>
