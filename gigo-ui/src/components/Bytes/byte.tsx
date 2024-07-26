@@ -1418,7 +1418,7 @@ function BytePage({params, ...props}: ByteProps) {
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ byte_attempt_id: byteID }),
+                body: JSON.stringify({ byte_attempt_id: byteID, unit_id: journeyUnitData?._id }),
                 credentials: 'include'
             }
         ).then(res => res.json());
