@@ -1446,12 +1446,14 @@ function BytePage({params, ...props}: ByteProps) {
     }
 
     const displayCheckedProgressions = async () => {
-        checkHotStreak();
         checkTenacious(byteAttemptId);
         if (isJourney) {
 
             checkUnitMastery(props.byte._id);
-        }   
+        }  
+        setTimeout(() => {
+            checkHotStreak();
+        }, 1000);
     }
 
     // Function to fetch the journey unit metadata
@@ -2090,8 +2092,8 @@ function BytePage({params, ...props}: ByteProps) {
                         onExpand={() => setActiveSidebarTab("debugOutput")}
                         onHide={() => setActiveSidebarTab(null)}
                         onSuccess={() => {
-                            handleScribeDataHog();
                             markComplete();
+                            handleScribeDataHog();
                             setSuggestionPopup(true);
                             recordByteAttemptCheck(true);
                             checkNumberMastered(true);
