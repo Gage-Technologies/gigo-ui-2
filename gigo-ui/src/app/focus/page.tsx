@@ -13,7 +13,7 @@ import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import FocusPageMobile from './focusMobile';
 import { useSearchParams } from 'next/navigation';
-
+import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 
 interface LanguageOption {
     name: string;
@@ -214,8 +214,17 @@ const FocusPage: React.FC = () => {
                         <Typography variant="h4" component="h2" sx={{ textAlign: 'left', marginBottom: 1}}>
                             {fot?.concept}
                         </Typography>
+                        <MarkdownRenderer
+                            markdown={fot?.concept_explanation || ''}
+                            style={{
+                                margin: "10px",
+                                fontSize: "1rem",
+                                width: "fit-content",
+                            
+                            }}
+                        />
                         <Typography variant="body1" component="p" sx={{ textAlign: 'left', fontSize: '.9rem'}}>
-                            {fot?.concept_explanation}
+                            
                         </Typography>
                     </Box>
                     <Box
@@ -259,9 +268,15 @@ const FocusPage: React.FC = () => {
                             <Typography variant="h5" component="h2" sx={{ textAlign: 'left', marginBottom: 2 }}>
                                 Mistake Description
                             </Typography>
-                            <Typography variant="body1" component="p" sx={{ textAlign: 'left', fontSize: '.9rem' }}>
-                                {fot?.mistake_description}
-                            </Typography>
+                            <MarkdownRenderer
+                                markdown={fot?.mistake_description || ''}
+                                style={{
+                                    margin: "10px",
+                                    fontSize: "1rem",
+                                    width: "fit-content",
+                                
+                                }}
+                            />
                         </Box>
                             <Box
                 sx={{

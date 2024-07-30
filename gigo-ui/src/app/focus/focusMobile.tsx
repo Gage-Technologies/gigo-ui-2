@@ -12,6 +12,7 @@ import { programmingLanguages } from "@/services/vars";
 import BytesCard from "@/components/Bytes/BytesCard";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import MarkdownRenderer from '@/components/Markdown/MarkdownRenderer';
 
 type FOT = {
     id: string;
@@ -139,9 +140,15 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                         <Typography variant="h6" gutterBottom>
                             {fot?.concept}
                         </Typography>
-                        <Typography variant="body1">
-                            {fot?.concept_explanation}
-                        </Typography>
+                        <MarkdownRenderer
+                            markdown={fot?.concept_explanation || ''}
+                            style={{
+                                margin: "10px",
+                                fontSize: "1rem",
+                                width: "fit-content",
+                            
+                            }}
+                        />
                     </Box>
                 </Grid>
 
@@ -160,9 +167,15 @@ const FocusPageMobile: React.FC<{ language: number}> = ({ language }) => {
                         <Typography variant="h5" gutterBottom>
                             Mistake Description
                         </Typography>
-                        <Typography variant="body1">
-                            {fot?.mistake_description}
-                        </Typography>
+                        <MarkdownRenderer
+                            markdown={fot?.mistake_description || ''}
+                            style={{
+                                margin: "10px",
+                                fontSize: "1rem",
+                                width: "fit-content",
+                            
+                            }}
+                        />
                     </Box>
                 </Grid>
 

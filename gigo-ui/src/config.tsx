@@ -1,6 +1,6 @@
 // prod
 const config = {
-    development: true,
+    development: false,
     appDomain: "gigo.dev",
     rootPath: "https://api.cdn.gigo.dev",
     ctPath: "https://ct.cdn.gigo.dev",
