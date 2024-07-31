@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Box, Button, Container, Typography } from '@mui/material';
 import Editor from '../IDE/Editor';
 import MarkdownRenderer from '../Markdown/MarkdownRenderer';
+import config from '@/config';
 
 interface Question {
   correct_index: number;
@@ -58,9 +59,31 @@ function RenderQuizPage({ data }: QuizPageProps) {
     setIsWrongAnswer(false);
   };
 
+  const setQuizComplete = async (quizId: string) => {
+    try {
+      const response = await fetch(`${config.rootPath}/api/quiz/setAttemptComplete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+            quiz_id: quizId,
+            // quiz_answers: []
+        }),
+        credentials: 'include'
+      });
+
+      const data = await response.json();
+      
+      if (data.message === 'quiz attempt marked as complete') {
+        window.location.href = `/journey`;
+      }
+    } catch (error) {
+      console.error("Error: An error occurred while marking quiz complete", error);
+    }
+  };
+
   const handleSubmit = () => {
     if (selectedAnswers[currentQuestionIndex] === currentQuestion.correct_index) {
-      console.log('Quiz submitted');
+        setQuizComplete(data._id);
     } else {
       setIsWrongAnswer(true);
     }
@@ -172,19 +195,23 @@ function RenderQuizPage({ data }: QuizPageProps) {
         sx={{
           backgroundImage: `linear-gradient(to bottom, ${data.color} -30%, transparent 20%)`,
           padding: 3,
+          minHeight: '90vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
-        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, width: '100%' }}>
           <Typography variant="h4" component="h1" sx={{ mt: 3 }}>
             {data.name}
           </Typography>
 
           {/* Progress bar and question count */}
-          <Box sx={{ width: '75%', display: 'flex', alignItems: 'center', gap: 2 }}>
+          <Box sx={{ width: '50%', display: 'flex', alignItems: 'center', gap: 2 }}>
             <Box sx={{ flexGrow: 1, bgcolor: 'grey.300', height: 10, borderRadius: 5 }}>
               <Box
                 sx={{
-                  width: `${((currentQuestionIndex + 1) / data.questions.length) * 100}%`,
+                  width: `${((currentQuestionIndex) / data.questions.length) * 100}%`,
                   bgcolor: 'primary.main',
                   height: 10,
                   borderRadius: 5,
@@ -193,25 +220,29 @@ function RenderQuizPage({ data }: QuizPageProps) {
               />
             </Box>
             <Typography variant="body2">
-              {currentQuestionIndex + 1} / {data.questions.length}
+              {currentQuestionIndex} / {data.questions.length}
             </Typography>
           </Box>
 
           {/* Code Type Question */}
-          {currentQuestion.type === 2 && (
-            <Box sx={{ width: '75%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <Box sx={{ height: '100%', border: '1px solid #ccc' }}>
-                <MarkdownRenderer
-                    markdown={currentQuestion.question}
-                    style={{
-                        margin: "10px",
-                        fontSize: "1rem",
-                        width: "fit-content",
-                    
+          {currentQuestion.type === 0 && (
+            <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+              <Box sx={{ width: '100%', height: '200px', border: '1px solid #ccc' }}>
+                <Box sx={{ height: '250px', border: '1px solid #ccc' }}>
+                  <Editor
+                    language="python"
+                    code={currentQuestion.question}
+                    readonly={true}
+                    theme="dark"
+                    wrapperStyles={{
+                      width: '100%',
+                      height: '245px',
+                      borderRadius: "10px",
                     }}
-                />
+                  />
+                </Box>
               </Box>
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%' }}>
                 {currentQuestion.options.map((answer, index) => (
                   <Box
                     key={index}
@@ -222,13 +253,10 @@ function RenderQuizPage({ data }: QuizPageProps) {
                       justifyContent: 'center',
                       alignItems: 'center',
                       cursor: 'pointer',
-                      backgroundColor: 
+                      backgroundColor:
                         selectedAnswers[currentQuestionIndex] === index
-                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : 
-                             (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 
-                             '#2b2b29')
-                          : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 
-                            'transparent',
+                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
+                          : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 'transparent',
                     }}
                     onClick={() => handleAnswerClick(index)}
                   >
@@ -241,35 +269,39 @@ function RenderQuizPage({ data }: QuizPageProps) {
 
           {/* Matching Type Question */}
           {currentQuestion.type === 1 && (
-            <Typography>Matching question implementation</Typography>
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+              <Typography>Matching question implementation</Typography>
+            </Box>
           )}
 
           {/* Text Type Question */}
-          {currentQuestion.type === 3 && (
-            <>
-              <Typography variant="h6" component="h2" sx={{ mt: 2 }}>
-                {currentQuestion.question}
-              </Typography>
-
-              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2 }}>
+          {currentQuestion.type === 2 && (
+            <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
+              <Box sx={{ width: '100%', height: '200px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <MarkdownRenderer
+                  markdown={currentQuestion.question}
+                  style={{
+                    margin: "10px",
+                    fontSize: "1rem",
+                    width: "fit-content",
+                  }}
+                />
+              </Box>
+              <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%' }}>
                 {currentQuestion.options.map((answer, index) => (
                   <Box
                     key={index}
                     sx={{
-                      width: '500px',
                       height: '80px',
                       border: '1px solid #ccc',
                       display: 'flex',
                       justifyContent: 'center',
                       alignItems: 'center',
                       cursor: 'pointer',
-                      backgroundColor: 
+                      backgroundColor:
                         selectedAnswers[currentQuestionIndex] === index
-                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : 
-                             (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 
-                             '#2b2b29')
-                          : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 
-                            'transparent',
+                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
+                          : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 'transparent',
                     }}
                     onClick={() => handleAnswerClick(index)}
                   >
@@ -277,8 +309,9 @@ function RenderQuizPage({ data }: QuizPageProps) {
                   </Box>
                 ))}
               </Box>
-            </>
+            </Box>
           )}
+
           <Box sx={{ display: 'flex', gap: 2 }}>
             {currentQuestionIndex > 0 && (
               <Button variant="contained" color="secondary" onClick={handlePreviousQuestion}>
