@@ -247,7 +247,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                   <Box
                     key={index}
                     sx={{
-                      height: '80px',
+                      height: '90px',
                       border: '1px solid #ccc',
                       display: 'flex',
                       justifyContent: 'center',
@@ -281,9 +281,10 @@ function RenderQuizPage({ data }: QuizPageProps) {
                 <MarkdownRenderer
                   markdown={currentQuestion.question}
                   style={{
-                    margin: "10px",
-                    fontSize: "1rem",
+                    margin: "20px",
+                    fontSize: "1.2rem",
                     width: "fit-content",
+                    lineHeight: "1.8", 
                   }}
                 />
               </Box>
@@ -292,7 +293,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                   <Box
                     key={index}
                     sx={{
-                      height: '80px',
+                      height: '100px',
                       border: '1px solid #ccc',
                       display: 'flex',
                       justifyContent: 'center',
@@ -305,7 +306,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                     }}
                     onClick={() => handleAnswerClick(index)}
                   >
-                    <Typography>{answer}</Typography>
+                    <Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center' }}>{answer}</Typography>
                   </Box>
                 ))}
               </Box>

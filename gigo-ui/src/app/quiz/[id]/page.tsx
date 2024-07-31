@@ -18,7 +18,6 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       });
 
       const data = await response.json();
-      console.log("Response:", data);
       
     } catch (error) {
       console.error("Error: An error occurred while starting the byte attempt.", error);
@@ -42,7 +41,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   };
 
     useEffect(() => {
-        startQuizAttempt(quizId)
+        //startQuizAttempt(quizId)
         getQuiz(quizId)
     }, [])
 
