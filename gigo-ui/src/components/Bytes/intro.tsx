@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react';
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Card, CardContent, Container, Typography } from '@mui/material';
 import Editor from '../IDE/Editor';
 import MarkdownRenderer from '../Markdown/MarkdownRenderer';
 import config from '@/config';
@@ -149,17 +149,19 @@ function RenderQuizPage({ data }: QuizPageProps) {
     return (
       <>
         {/* Explanation Text */}
-        <Box sx={{ width: '50%', height: '250px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
-          <MarkdownRenderer
-            markdown={currentQuestion.question}
-            style={{
-              margin: "20px",
-              fontSize: "1.2rem",
-              width: "100%",
-              lineHeight: "1.8",
-            }}
-          />
-        </Box>
+        <Card sx={{ width: '50%', height: '250px', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+          <CardContent>
+            <MarkdownRenderer
+              markdown={currentQuestion.question}
+              style={{
+                margin: "20px",
+                fontSize: "1.2rem",
+                width: "100%",
+                lineHeight: "1.8",
+              }}
+            />
+          </CardContent>
+        </Card>
 
         {/* Matching Game */}
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '75%', gap: 2 }}>
@@ -269,7 +271,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Code Type Question */}
           {currentQuestion.type === 0 && (
             <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              <Box sx={{ width: '100%', height: '250px', border: '1px solid #ccc' }}>
+              <Box sx={{ width: '100%', height: '250px' }}>
                   <Editor
                     language="python"
                     code={currentQuestion.question}
@@ -284,7 +286,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
               </Box>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%' }}>
                 {currentQuestion.options.map((answer, index) => (
-                  <Box
+                  <Card
                     key={index}
                     sx={{
                       height: '90px',
@@ -300,8 +302,10 @@ function RenderQuizPage({ data }: QuizPageProps) {
                     }}
                     onClick={() => handleAnswerClick(index)}
                   >
-                    <Typography>{answer}</Typography>
-                  </Box>
+                    <CardContent>
+                      <Typography>{answer}</Typography>
+                    </CardContent>
+                  </Card>
                 ))}
               </Box>
             </Box>
@@ -317,20 +321,22 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Text Type Question */}
           {currentQuestion.type === 2 && (
             <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              <Box sx={{ width: '100%', height: '250px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <MarkdownRenderer
-                  markdown={currentQuestion.question}
-                  style={{
-                    margin: "20px",
-                    fontSize: "1.2rem",
-                    width: "fit-content",
-                    lineHeight: "1.8", 
-                  }}
-                />
-              </Box>
+              <Card sx={{ width: '100%', height: '250px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <CardContent>
+                  <MarkdownRenderer
+                    markdown={currentQuestion.question}
+                    style={{
+                      margin: "20px",
+                      fontSize: "1.2rem",
+                      width: "fit-content",
+                      lineHeight: "1.8", 
+                    }}
+                  />
+                </CardContent>
+              </Card>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%' }}>
                 {currentQuestion.options.map((answer, index) => (
-                  <Box
+                  <Card
                     key={index}
                     sx={{
                       height: '100px',
@@ -347,7 +353,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                     onClick={() => handleAnswerClick(index)}
                   >
                     <Typography variant="body2" sx={{ fontSize: '1rem', textAlign: 'center' }}>{answer}</Typography>
-                  </Box>
+                  </Card>
                 ))}
               </Box>
             </Box>
