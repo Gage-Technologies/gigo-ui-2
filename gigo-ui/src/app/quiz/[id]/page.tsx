@@ -41,7 +41,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   };
 
     useEffect(() => {
-        //startQuizAttempt(quizId)
+        startQuizAttempt(quizId)
         getQuiz(quizId)
     }, [])
 
