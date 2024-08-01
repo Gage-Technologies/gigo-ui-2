@@ -149,7 +149,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
     return (
       <>
         {/* Explanation Text */}
-        <Box sx={{ width: '50%', height: '200px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+        <Box sx={{ width: '50%', height: '250px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
           <MarkdownRenderer
             markdown={currentQuestion.question}
             style={{
@@ -317,7 +317,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Text Type Question */}
           {currentQuestion.type === 2 && (
             <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              <Box sx={{ width: '100%', height: '200px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Box sx={{ width: '100%', height: '250px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <MarkdownRenderer
                   markdown={currentQuestion.question}
                   style={{
