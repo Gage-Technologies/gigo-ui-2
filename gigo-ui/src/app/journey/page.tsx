@@ -797,11 +797,14 @@ function JourneyMain() {
     const GetStarted = () => {
         const [selectedJourney, setSelectedJourney] = useState('');
         const [firstProject, setFirstProject] = useState('');
+        const [firstQuiz, setFirstQuiz] = useState('');
+        const [loadingMapData, setLoadingMapData] = useState(false);
 
         const handleStartJourney = async () => {
-            setLoadingMapData(true)
+            setLoadingMapData(true);
 
-            let res = await fetch(
+            // First API call for quiz_id
+            let quizRes = await fetch(
                 `${config.rootPath}/api/journey/addUnitToMap`,
                 {
                     method: 'POST',
@@ -809,21 +812,44 @@ function JourneyMain() {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        unit_id: firstProject
+                        unit_id: firstQuiz
                     }),
                     credentials: 'include'
                 }
-            ).then(async (response) => response.json())
+            ).then(async (response) => response.json());
 
-            if (res && res.success) {
-                console.log("Unit added successfully!");
-                getTasks().then(() => {
-                    setLoadingMapData(false)
-                });
+            if (quizRes && quizRes.success) {
+                await new Promise(resolve => setTimeout(resolve, 2000)); // 2 second delay
+
+                let res = await fetch(
+                    `${config.rootPath}/api/journey/addUnitToMap`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            unit_id: firstProject
+                        }),
+                        credentials: 'include'
+                    }
+                ).then(response => response.json());
+
+                if (res && res.success) {
+                    console.log("Unit added successfully!");
+                    await getTasks();
+                    setLoadingMapData(false);
+                } else {
+                    console.error("Failed to add unit to map");
+                    setLoadingMapData(false);
+                    return;
+                }
             } else {
-                console.error("Failed to add unit to map");
-                return
+                console.error("Failed to add quiz unit to map");
+                setLoadingMapData(false);
+                return;
             }
+        
         };
 
         // TODO choose the ID's for the starting units
@@ -833,6 +859,7 @@ function JourneyMain() {
                 description: 'Python is versatile and easy to learn, making it great for beginners and useful in areas like web development, data analysis, and automation.',
                 img: <PythonOriginal size={"100px"}/>,
                 id: "1769720326918242304",
+                quiz_id: "1818388243520329031",
                 favorite: true
             },
             golang: {
@@ -840,6 +867,7 @@ function JourneyMain() {
                 description: 'Designed by Google, Go is fast and efficient, perfect for building reliable and scalable software systems like servers and databases.',
                 img: <GoOriginal size={"100px"}/>,
                 id: "1767257082752401408",
+                quiz_id: "1819092690877709252",
                 favorite: false
             },
             js: {
@@ -847,6 +875,7 @@ function JourneyMain() {
                 description: 'JavaScript is essential for creating interactive websites and is widely used because it runs in any web browser, making it indispensable for web development.',
                 img: <JavascriptOriginal size={"100px"}/>,
                 id: "1775630331836104704",
+                quiz_id: "1819102091235629934",
                 favorite: false
             },
             rust: {
@@ -854,6 +883,7 @@ function JourneyMain() {
                 description: 'Rust is known for its safety and speed, ideal for programming where performance and reliability are critical, such as in operating systems and game engines.',
                 img: <RustOriginal size={"100px"}/>,
                 id: "1775923721366667264",
+                quiz_id: "1819104425575040765",
                 favorite: false
             },
             csharp: {
@@ -861,6 +891,7 @@ function JourneyMain() {
                 description: 'C# is powerful for building a variety of applications, especially for Windows platforms, making it a go-to for desktop software, games, and mobile apps.',
                 img: <CsharpOriginal size={"100px"}/>,
                 id: "",
+                quiz_id: "",
                 favorite: false
             },
             cpp: {
@@ -868,13 +899,15 @@ function JourneyMain() {
                 description: 'C++ is highly efficient and versatile, favored for applications where speed and resource control are critical, such as video games or real-time systems.',
                 img: <CplusplusOriginal size={"100px"}/>,
                 id: "",
+                quiz_id: "1819094891119596519",
                 favorite: false
             }
         };
 
-        const selectJourney = (journey: React.SetStateAction<string>, id: string) => {
+        const selectJourney = (journey: React.SetStateAction<string>, id: string, quizId: string) => {
             setSelectedJourney(journey);
-            setFirstProject(id)
+            setFirstProject(id);
+            setFirstQuiz(quizId);
         };
 
         return (
@@ -956,7 +989,7 @@ function JourneyMain() {
                                         </Typography>
                                         <Button
                                             variant={'outlined'}
-                                            onClick={() => selectJourney(key, value.id)}
+                                            onClick={() => selectJourney(key, value.id, value.quiz_id)}
                                             sx={{
                                                 borderRadius: '20px',
                                                 width: '100%',
