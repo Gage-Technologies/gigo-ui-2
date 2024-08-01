@@ -4,12 +4,14 @@ import { Box, Button, Container, Typography } from '@mui/material';
 import Editor from '../IDE/Editor';
 import MarkdownRenderer from '../Markdown/MarkdownRenderer';
 import config from '@/config';
+import { shuffle } from 'lodash';
 
 interface Question {
   correct_index: number;
   options: string[];
   question: string;
   type: number;
+  matching_pairs?: { left: string, right: string }[];
 }
 
 interface QuizPageProps {
@@ -28,6 +30,10 @@ function RenderQuizPage({ data }: QuizPageProps) {
   const [answeredQuestions, setAnsweredQuestions] = useState<boolean[]>(new Array(data.questions.length).fill(false));
   const [isWrongAnswer, setIsWrongAnswer] = useState(false);
   const [wrongAnswerIndex, setWrongAnswerIndex] = useState<number | null>(null);
+  const [leftItems, setLeftItems] = useState<string[]>([]);
+  const [rightItems, setRightItems] = useState<string[]>([]);
+  const [matchedPairs, setMatchedPairs] = useState<{[key: number]: {[key: string]: string}}>({});
+  const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
 
   const currentQuestion = data.questions[currentQuestionIndex];
   const isLastQuestion = currentQuestionIndex === data.questions.length - 1;
@@ -41,7 +47,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
 
   const handleNextQuestion = () => {
     const currentAnswer = selectedAnswers[currentQuestionIndex];
-    if (currentAnswer === currentQuestion.correct_index) {
+    if (currentAnswer === currentQuestion.correct_index || currentQuestion.type === 1) {
       const newAnsweredQuestions = [...answeredQuestions];
       newAnsweredQuestions[currentQuestionIndex] = true;
       setAnsweredQuestions(newAnsweredQuestions);
@@ -82,112 +88,140 @@ function RenderQuizPage({ data }: QuizPageProps) {
   };
 
   const handleSubmit = () => {
-    if (selectedAnswers[currentQuestionIndex] === currentQuestion.correct_index) {
-        setQuizComplete(data._id);
+    if (
+      (currentQuestion.type !== 1 && selectedAnswers[currentQuestionIndex] === currentQuestion.correct_index) ||
+      (currentQuestion.type === 1 && Object.keys(matchedPairs[currentQuestionIndex] || {}).length === currentQuestion.matching_pairs?.length)
+    ) {
+      setQuizComplete(data._id);
     } else {
       setIsWrongAnswer(true);
     }
   };
 
   const matchingQuestion = () => {
-    const [matches, setMatches] = useState<{ [key: string]: string | null }>({});
-    const [incorrect, setIncorrect] = useState<{ left: string | null, right: string | null }>({ left: null, right: null });
-    const [selectedLeft, setSelectedLeft] = useState<string | null>(null);
+    const currentPairs = currentQuestion.matching_pairs || [];
+    const [wrongPair, setWrongPair] = useState<[string, string] | null>(null);
+    const [pairColors, setPairColors] = useState<{[key: string]: string}>({});
 
-    const leftItems = ['Variable', 'List', 'Dictionary'];
-    const rightItems = ['Ordered, mutable collection', 'Key-value pairs', 'Named container for data'];
+    const colors = ['#3498db', '#2ecc71', '#f1c40f', '#fff']; // blue, green, yellow, white
 
-    const correctMatches: { [key: string]: string } = {
-        'Variable': 'Named container for data',
-        'List': 'Ordered, mutable collection',
-        'Dictionary': 'Key-value pairs'
+    console.log("matched:", matchedPairs);
+    React.useEffect(() => {
+      setLeftItems(shuffle(currentPairs.map(pair => pair.left)));
+      setRightItems(shuffle(currentPairs.map(pair => pair.right)));
+      setSelectedLeft(null);
+      setWrongPair(null);
+
+      // Assign colors to pairs
+      const newPairColors: {[key: string]: string} = {};
+      currentPairs.forEach((pair, index) => {
+        const color = colors[index % colors.length];
+        newPairColors[pair.left] = color;
+        newPairColors[pair.right] = color;
+      });
+      setPairColors(newPairColors);
+    }, [currentQuestionIndex]);
+
+    const handleLeftClick = (item: string) => {
+      setSelectedLeft(item);
     };
 
-    const handleMatch = (left: string, right: string) => {
-        if (correctMatches[left] === right) {
-            setMatches({ ...matches, [left]: right });
-            setSelectedLeft(null);
+    const handleRightClick = (item: string) => {
+      if (selectedLeft) {
+        const correctPair = currentPairs.find(pair => pair.left === selectedLeft && pair.right === item);
+        if (correctPair) {
+          setMatchedPairs(prev => ({
+            ...prev,
+            [currentQuestionIndex]: { ...prev[currentQuestionIndex], [selectedLeft]: item }
+          }));
         } else {
-            setIncorrect({ left, right });
-            setTimeout(() => setIncorrect({ left: null, right: null }), 8000);
+          setWrongPair([selectedLeft, item]);
+          setTimeout(() => setWrongPair(null), 500);
         }
+        setSelectedLeft(null);
+      }
     };
 
-    const handleReset = () => {
-        setMatches({});
-        setIncorrect({ left: null, right: null });
-        setSelectedLeft(null);
+    const getItemColor = (item: string): string => {
+      return pairColors[item] || '#ffffff'; // default to white if no color assigned
     };
 
     return (
-        <>
-            {/* Explanation Text */}
-            <Box sx={{ width: '75%', padding: 3, border: '1px solid #ccc', borderRadius: '10px' }}>
-                <Typography variant="body1" paragraph>
-                    In Python, a variable is a named container for data, a list is an ordered, mutable collection, and a dictionary stores key-value pairs.
-                </Typography>
-                <Typography variant="body1">
-                    Match each Python concept on the left with its correct description on the right.
-                </Typography>
-            </Box>
+      <>
+        {/* Explanation Text */}
+        <Box sx={{ width: '50%', height: '200px', border: '1px solid #ccc', display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 3 }}>
+          <MarkdownRenderer
+            markdown={currentQuestion.question}
+            style={{
+              margin: "20px",
+              fontSize: "1.2rem",
+              width: "100%",
+              lineHeight: "1.8",
+            }}
+          />
+        </Box>
 
-            {/* Matching Game */}
-            <Box sx={{ display: 'flex', justifyContent: 'center', width: '75%', gap: 2 }}>
-                {/* Left Column */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {leftItems.map((item) => (
-                        <Box
-                            key={item}
-                            sx={{
-                                width: '200px',
-                                height: '50px',
-                                border: '1px solid #ccc',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                backgroundColor: incorrect.left === item ? 'red' : (matches[item] ? 'green' : (selectedLeft === item ? '#2b2b29' : 'transparent')),
-                                opacity: matches[item] ? 0 : 1,
-                                transition: 'all 0.3s ease',
-                            }}
-                            onClick={() => setSelectedLeft(item)}
-                        >
-                            <Typography>{item}</Typography>
-                        </Box>
-                    ))}
-                </Box>
+        {/* Matching Game */}
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '75%', gap: 2 }}>
+          {/* Left Column */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {leftItems.map((item, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                onClick={() => handleLeftClick(item)}
+                disabled={item in (matchedPairs[currentQuestionIndex] || {})}
+                sx={{
+                  backgroundColor: selectedLeft === item ? 'primary.dark' : 'primary.main',
+                  '&:disabled': { 
+                    backgroundColor: `${getItemColor(item)}22`, // 22 is for 13% opacity
+                    color: getItemColor(item),
+                    border: `2px solid ${getItemColor(item)}`,
+                  },
+                  ...(wrongPair && wrongPair[0] === item ? { 
+                    backgroundColor: 'red !important',
+                    '&:hover': {
+                      backgroundColor: 'red !important',
+                    }
+                  } : {}),
+                }}
+              >
+                {item}
+              </Button>
+            ))}
+          </Box>
 
-                {/* Right Column */}
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                    {rightItems.map((item) => (
-                        <Box
-                            key={item}
-                            sx={{
-                                width: '300px',
-                                height: '50px',
-                                border: '1px solid #ccc',
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                cursor: 'pointer',
-                                backgroundColor: incorrect.right === item ? 'red' : (Object.values(matches).includes(item) ? 'green' : 'transparent'),
-                                opacity: Object.values(matches).includes(item) ? 0 : 1,
-                                transition: 'all 0.3s ease',
-                            }}
-                            onClick={() => {
-                                if (selectedLeft) {
-                                    handleMatch(selectedLeft, item);
-                                }
-                            }}
-                        >
-                            <Typography>{item}</Typography>
-                        </Box>
-                    ))}
-                </Box>
-            </Box>
-        </>
+          {/* Right Column */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {rightItems.map((item, index) => (
+              <Button
+                key={index}
+                variant="contained"
+                onClick={() => handleRightClick(item)}
+                disabled={Object.values(matchedPairs[currentQuestionIndex] || {}).includes(item)}
+                sx={{
+                  backgroundColor: 'primary.main',
+                  '&:disabled': { 
+                    backgroundColor: `${getItemColor(item)}22`, // 22 is for 13% opacity
+                    color: getItemColor(item),
+                    border: `2px solid ${getItemColor(item)}`,
+                  },
+                  ...(wrongPair && wrongPair[1] === item ? { 
+                    backgroundColor: 'red !important',
+                    '&:hover': {
+                      backgroundColor: 'red !important',
+                    }
+                  } : {}),
+                }}
+              >
+                {item}
+              </Button>
+            ))}
+          </Box>
+        </Box>
+      </>
     );
-};
+  };
 
   const renderQuestion = () => {
     return (
@@ -270,7 +304,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Matching Type Question */}
           {currentQuestion.type === 1 && (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-              <Typography>Matching question implementation</Typography>
+              {matchingQuestion()}
             </Box>
           )}
 
@@ -320,7 +354,12 @@ function RenderQuizPage({ data }: QuizPageProps) {
               </Button>
             )}
             {!isLastQuestion ? (
-              <Button variant="contained" color="primary" onClick={handleNextQuestion}>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleNextQuestion}
+                disabled={currentQuestion.type === 1 && Object.keys(matchedPairs[currentQuestionIndex] || {}).length !== currentQuestion.matching_pairs?.length}
+              >
                 Next
               </Button>
             ) : (
