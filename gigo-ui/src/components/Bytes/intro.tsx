@@ -164,7 +164,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
         {/* Matching Game */}
         <Box sx={{ display: 'flex', justifyContent: 'center', width: '75%', gap: 2 }}>
           {/* Left Column */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '200px', maxWidth: '400px' }}>
             {leftItems.map((item, index) => (
               <Button
                 key={index}
@@ -172,11 +172,15 @@ function RenderQuizPage({ data }: QuizPageProps) {
                 onClick={() => handleLeftClick(item)}
                 disabled={item in (matchedPairs[currentQuestionIndex] || {})}
                 sx={{
+                  width: '100%',
+                  height: '70px',
+                  fontSize: '0.9rem',
                   backgroundColor: selectedLeft === item ? 'primary.dark' : 'primary.main',
                   '&:disabled': { 
-                    backgroundColor: `${getItemColor(item)}22`, // 22 is for 13% opacity
+                    backgroundColor: `${getItemColor(item)}22`,
                     color: getItemColor(item),
                     border: `2px solid ${getItemColor(item)}`,
+                    opacity: 0.3
                   },
                   ...(wrongPair && wrongPair[0] === item ? { 
                     backgroundColor: 'red !important',
@@ -192,7 +196,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           </Box>
 
           {/* Right Column */}
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '200px', maxWidth: '400px' }}>
             {rightItems.map((item, index) => (
               <Button
                 key={index}
@@ -200,11 +204,15 @@ function RenderQuizPage({ data }: QuizPageProps) {
                 onClick={() => handleRightClick(item)}
                 disabled={Object.values(matchedPairs[currentQuestionIndex] || {}).includes(item)}
                 sx={{
+                  width: '100%',
+                  height: '70px',
+                  fontSize: '0.9rem',
                   backgroundColor: 'primary.main',
                   '&:disabled': { 
-                    backgroundColor: `${getItemColor(item)}22`, // 22 is for 13% opacity
+                    backgroundColor: `${getItemColor(item)}22`, 
                     color: getItemColor(item),
                     border: `2px solid ${getItemColor(item)}`,
+                    opacity: 0.3
                   },
                   ...(wrongPair && wrongPair[1] === item ? { 
                     backgroundColor: 'red !important',
@@ -261,8 +269,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Code Type Question */}
           {currentQuestion.type === 0 && (
             <Box sx={{ width: '50%', display: 'flex', flexDirection: 'column', gap: 2, alignItems: 'center' }}>
-              <Box sx={{ width: '100%', height: '200px', border: '1px solid #ccc' }}>
-                <Box sx={{ height: '250px', border: '1px solid #ccc' }}>
+              <Box sx={{ width: '100%', height: '250px', border: '1px solid #ccc' }}>
                   <Editor
                     language="python"
                     code={currentQuestion.question}
@@ -274,7 +281,6 @@ function RenderQuizPage({ data }: QuizPageProps) {
                       borderRadius: "10px",
                     }}
                   />
-                </Box>
               </Box>
               <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 2, width: '100%' }}>
                 {currentQuestion.options.map((answer, index) => (
@@ -347,23 +353,34 @@ function RenderQuizPage({ data }: QuizPageProps) {
             </Box>
           )}
 
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            {currentQuestionIndex > 0 && (
-              <Button variant="contained" color="secondary" onClick={handlePreviousQuestion}>
-                Previous
-              </Button>
-            )}
-            {!isLastQuestion ? (
+          <Box sx={{ display: 'flex', gap: 2, width: '100%', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handlePreviousQuestion}
+              disabled={currentQuestionIndex === 0}
+              sx={{ width: '150px' }}
+            >
+              Previous
+            </Button>
+            {!isLastQuestion && (
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleNextQuestion}
                 disabled={currentQuestion.type === 1 && Object.keys(matchedPairs[currentQuestionIndex] || {}).length !== currentQuestion.matching_pairs?.length}
+                sx={{ width: '150px' }}
               >
                 Next
               </Button>
-            ) : (
-              <Button variant="contained" color="primary" onClick={handleSubmit}>
+            )}
+            {isLastQuestion && (
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleSubmit}
+                sx={{ width: '150px' }}
+              >
                 Submit
               </Button>
             )}
