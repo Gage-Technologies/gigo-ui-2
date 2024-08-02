@@ -185,9 +185,9 @@ function RenderQuizPage({ data }: QuizPageProps) {
                     opacity: 0.3
                   },
                   ...(wrongPair && wrongPair[0] === item ? { 
-                    backgroundColor: 'red !important',
+                    backgroundColor: '#c30010 !important',
                     '&:hover': {
-                      backgroundColor: 'red !important',
+                      backgroundColor: '#c30010 !important',
                     }
                   } : {}),
                 }}
@@ -217,9 +217,9 @@ function RenderQuizPage({ data }: QuizPageProps) {
                     opacity: 0.3
                   },
                   ...(wrongPair && wrongPair[1] === item ? { 
-                    backgroundColor: 'red !important',
+                    backgroundColor: '#c30010 !important',
                     '&:hover': {
-                      backgroundColor: 'red !important',
+                      backgroundColor: '#c30010 !important',
                     }
                   } : {}),
                 }}
@@ -297,7 +297,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                       cursor: 'pointer',
                       backgroundColor:
                         selectedAnswers[currentQuestionIndex] === index
-                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
+                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? '#c30010' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
                           : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 'transparent',
                     }}
                     onClick={() => handleAnswerClick(index)}
@@ -347,7 +347,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
                       cursor: 'pointer',
                       backgroundColor:
                         selectedAnswers[currentQuestionIndex] === index
-                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? 'red' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
+                          ? (isWrongAnswer && (isLastQuestion || index === wrongAnswerIndex) ? '#c30010' : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : '#2b2b29')
                           : (answeredQuestions[currentQuestionIndex] && index === currentQuestion.correct_index) ? 'green' : 'transparent',
                     }}
                     onClick={() => handleAnswerClick(index)}
