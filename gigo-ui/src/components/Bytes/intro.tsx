@@ -98,10 +98,10 @@ function RenderQuizPage({ data }: QuizPageProps) {
     }
   };
 
-  const matchingQuestion = () => {
+  const MatchingQuestion = () => {
     const currentPairs = currentQuestion.matching_pairs || [];
-    const [wrongPair, setWrongPair] = useState<[string, string] | null>(null);
-    const [pairColors, setPairColors] = useState<{[key: string]: string}>({});
+    const [wrongPair, setWrongPair] = React.useState<[string, string] | null>(null);
+    const [pairColors, setPairColors] = React.useState<{[key: string]: string}>({});
 
     const colors = ['#3498db', '#2ecc71', '#f1c40f', '#fff']; // blue, green, yellow, white
 
@@ -314,7 +314,7 @@ function RenderQuizPage({ data }: QuizPageProps) {
           {/* Matching Type Question */}
           {currentQuestion.type === 1 && (
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-              {matchingQuestion()}
+              {MatchingQuestion()}
             </Box>
           )}
 
