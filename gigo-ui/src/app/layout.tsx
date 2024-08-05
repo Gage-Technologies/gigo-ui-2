@@ -19,6 +19,7 @@ import GoogleTranslateFix from '@/components/GTranslate/DOMMutationCatch'
 
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://www.gigo.dev'),
     applicationName: 'GIGO Dev',
     title: 'GIGO Dev - Learn to Code with Interactive Challenges',
     description: 'GIGO is a fully integrated learn-to-code platform. Gigo provides cloud development environments, interactive coding challenges, and access to a global community of developers. Join now and start coding!',
