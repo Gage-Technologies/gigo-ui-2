@@ -56,6 +56,7 @@
     "@readme/variable": "^15.1.2",
     "@reduxjs/toolkit": "^2",
     "@replit/codemirror-lang-csharp": "^6.2.0",
+    "@sentry/nextjs": "^8",
     "@stripe/react-stripe-js": "^1.13.0",
     "@stripe/stripe-js": "^1.42.0",
     "@sweetalert/with-react": "^0.1.1",
