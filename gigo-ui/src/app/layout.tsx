@@ -37,6 +37,9 @@ export const metadata: Metadata = {
             },
         ],
         siteName: 'GIGO Dev',
+    },
+    alternates: {
+        canonical: './',
     }
 }
 
