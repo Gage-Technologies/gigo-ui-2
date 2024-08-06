@@ -2,6 +2,7 @@ import ByteViewportRouter from "@/components/Pages/Byte/ByteViewportRouter";
 import config from "@/config";
 import { Byte } from "@/models/bytes";
 import type { Metadata, ResolvingMetadata } from 'next'
+import JsonLd from '@/components/JsonLD';
 
 export async function generateMetadata(
     { params }: { params: { id: string } },
@@ -58,25 +59,45 @@ export async function generateMetadata(
     }
 }
 
-async function HandleByte({ params }: { params: { id: string } }) {
-    const byte = await fetch(
-        `${config.rootPath}/api/bytes/getByte`,
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({byte_id: params.id}),
-            next: {revalidate: 86400}
-        }).then(async res => {
-            if (!res.ok) {
-                return {} as Byte
-            }
-            const data = await res.json()
-            return data["rec_bytes"] as Byte
-        })
+export default async function BytePage({ params }: { params: { id: string } }) {
+  const byte = await fetch(
+    `${config.rootPath}/api/bytes/getByte`,
+    {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({byte_id: params.id}),
+        next: {revalidate: 86400}
+    }).then(async res => {
+        if (!res.ok) {
+            return {} as Byte
+        }
+        const data = await res.json()
+        return data["rec_bytes"] as Byte
+    })
 
-    return <ByteViewportRouter byte={byte} params={params} />;
+  if (byte === null) {
+    return <div>Byte not found</div>;
+  }
+
+  const jsonLdData = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    "name": byte.name,
+    "description": byte.description_medium,
+    "provider": {
+      "@type": "Organization",
+      "name": "GIGO Dev",
+      "sameAs": "https://gigo.dev"
+    },
+    "url": `https://gigo.dev/byte/${params.id}`
+  };
+
+  return (
+    <>
+      <JsonLd data={jsonLdData} />
+      <ByteViewportRouter byte={byte} params={params} />
+    </>
+  );
 }
-
-export default HandleByte;
