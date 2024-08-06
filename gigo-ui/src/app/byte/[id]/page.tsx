@@ -59,7 +59,7 @@ export async function generateMetadata(
     }
 }
 
-export default async function BytePage({ params }: { params: { id: string } }) {
+export default async function HandleByte({ params }: { params: { id: string } }) {
   const byte = await fetch(
     `${config.rootPath}/api/bytes/getByte`,
     {
@@ -76,10 +76,6 @@ export default async function BytePage({ params }: { params: { id: string } }) {
         const data = await res.json()
         return data["rec_bytes"] as Byte
     })
-
-  if (byte === null) {
-    return <div>Byte not found</div>;
-  }
 
   const jsonLdData = {
     "@context": "https://schema.org",
