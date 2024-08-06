@@ -6,6 +6,7 @@ import Post from "@/models/post";
 import { checkSessionStatus, getSessionCookies } from "@/services/utils";
 import {cookies} from "next/headers";
 import type { Metadata, ResolvingMetadata } from 'next'
+import JsonLd from "@/components/JsonLD";
 
 export async function generateMetadata(
     { params }: { params: { id: string } },
@@ -162,13 +163,36 @@ async function ChallengePage({ params }: { params: { id: string } }) {
         }
     })
     
-    return <Challenge 
-        params={params} 
-        project={projectPromise.post} 
-        userAttempt={projectPromise.attempt}
-        projectDesc={projectPromise.description}
-        projectEval={projectPromise.evaluation}
-    />
+    // Create JSON-LD data
+    const jsonLdData = {
+        "@context": "https://schema.org",
+        "@type": "LearningResource",
+        "name": projectPromise.post.title,
+        "description": projectPromise.post.description,
+        "url": `https://gigo.dev/challenge/${params.id}`,
+        "provider": {
+            "@type": "Organization",
+            "name": "GIGO Dev",
+            "url": "https://gigo.dev"
+        },
+        "dateCreated": projectPromise.post.created_at,
+        "dateModified": projectPromise.post.updated_at,
+        "image": config.rootPath + projectPromise.post.thumbnail,
+        "learningResourceType": "Coding Challenge",
+    };
+
+    return (
+        <>
+            <JsonLd data={jsonLdData} />
+            <Challenge 
+                params={params} 
+                project={projectPromise.post} 
+                userAttempt={projectPromise.attempt}
+                projectDesc={projectPromise.description}
+                projectEval={projectPromise.evaluation}
+            />
+        </>
+    )
 }
 
 export default ChallengePage

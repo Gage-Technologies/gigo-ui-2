@@ -1,5 +1,3 @@
-
-
 import * as React from "react";
 import {
     Box,
@@ -18,6 +16,7 @@ import AboutPageWorldIcon from "@/icons/aboutPage/AboutPageWorld";
 import type { Metadata, ResolvingMetadata } from 'next'
 import GigoCircleIcon from "@/icons/GigoCircleLogo";
 import MainRender from "@/components/Pages/Referral/MainRender";
+import JsonLd from '@/components/JsonLD';
 
 type Props = {
     params: { name: string }
@@ -118,7 +117,25 @@ async function ReferralWelcome({ params, searchParams }: Props) {
 
     // transferring data from google logi
 
-    return (<MainRender referralUser={referralUser} isMobile={isMobile}/>)
+
+    const jsonLdData = {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": referralUser.user_name,
+        "url": `https://gigo.dev/referral/${params.name}`,
+        "memberOf": {
+            "@type": "Organization",
+            "name": "GIGO Dev",
+            "url": "https://gigo.dev"
+        }
+    };
+
+    return (
+        <>
+            <JsonLd data={jsonLdData} />
+            <MainRender referralUser={referralUser} isMobile={isMobile}/>
+        </>
+    )
 }
 
 

@@ -6,6 +6,7 @@ import Post from "@/models/post";
 import { checkSessionStatus, getSessionCookies } from "@/services/utils";
 import {cookies} from "next/headers";
 import type { Metadata, ResolvingMetadata } from 'next'
+import JsonLd from "@/components/JsonLD";
 
 export async function generateMetadata(
     { params }: { params: { id: string } },
@@ -103,12 +104,35 @@ async function AttemptPage({ params }: { params: { id: string } }) {
         }
     })
     
-    return <AttemptPageClient 
-        params={params}
-        attempt={attemptPromise.post}
-        description={attemptPromise.description}
-        evaluation={attemptPromise.evaluation || ""}
-    />
+    // Create JSON-LD data
+    const jsonLdData = {
+        "@context": "https://schema.org",
+        "@type": "LearningResource",
+        "name": attemptPromise.post.title || attemptPromise.post.post_title,
+        "description": attemptPromise.description,
+        "url": `https://gigo.dev/attempt/${params.id}`,
+        "provider": {
+            "@type": "Organization",
+            "name": "GIGO Dev",
+            "url": "https://gigo.dev"
+        },
+        "dateCreated": attemptPromise.post.created_at,
+        "image": config.rootPath + attemptPromise.post.thumbnail,
+        "educationalLevel": "Beginner to Advanced",
+        "learningResourceType": "Coding Challenge Attempt"
+    };
+
+    return (
+        <>
+            <JsonLd data={jsonLdData} />
+            <AttemptPageClient 
+                params={params}
+                attempt={attemptPromise.post}
+                description={attemptPromise.description}
+                evaluation={attemptPromise.evaluation || ""}
+            />
+        </>
+    )
 }
 
 export default AttemptPage
