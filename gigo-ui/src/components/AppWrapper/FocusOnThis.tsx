@@ -136,9 +136,18 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
     }, [language]);
 
     const [fotOpen, setFotOpen] = React.useState(open)
+    const [noFotYet, setNoFotYet] = React.useState(false);
 
     const renderContent = () => {
+        // check if fot exists and if its valid_until date is before the current date
+        if (!fot || (fot.valid_until && new Date(fot.valid_until) < new Date())) {
+            // setFotOpen(false);
+            setNoFotYet(true);
+            return <></>; // return nothing if fot is null or the valid_until date has passed
+        }
+
         if (isMobile) {
+            
             return (
                 <>
                 <Box sx={{ textAlign: 'center', marginBottom: 2 }}>
@@ -295,7 +304,7 @@ const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
     };
 
     return (
-        fot && 
+        fot && !noFotYet && 
             <Dialog open={fotOpen} maxWidth="md" fullWidth>
             <DialogContent
                 sx={{
