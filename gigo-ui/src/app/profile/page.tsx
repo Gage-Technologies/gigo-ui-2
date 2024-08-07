@@ -1465,7 +1465,7 @@ function Profile() {
                                     setFriendsList(prevList => [...prevList]);
                                 });
                             }}
-                            variant="contained"
+                            variant="outlined"
                             sx={{
                                 color: theme.palette.text.primary,
                                 borderRadius: 1,
@@ -1485,7 +1485,7 @@ function Profile() {
                                     setInventory(prevInventory => [...prevInventory]);
                                 });
                             }}
-                            variant={"contained"}
+                            variant={"outlined"}
                             sx={{
                                 color: theme.palette.text.primary,
                                 borderRadius: 1,
@@ -1518,7 +1518,7 @@ function Profile() {
         useEffect(() => {
             const fetchStats = async () => {
                 try {
-                    const [statsResponse, streakResponse] = await Promise.all([
+                    const [statsResponse, streakResponse, activityResponse] = await Promise.all([
                         fetch(`${config.rootPath}/api/stats/getUserProgrammingStats`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1530,11 +1530,20 @@ function Profile() {
                             headers: { "Content-Type": "application/json" },
                             body: '{}',
                             credentials: 'include'
+                        }),
+                        fetch(`${config.rootPath}/api/profile/getUserRecentActivity`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: '{}',
+                            credentials: 'include'
                         })
                     ]);
 
                     const statsData = await statsResponse.json();
                     const streakData = await streakResponse.json();
+                    const activityData = await activityResponse.json();
+
+                    console.log("activityData", activityData)
 
                     // Fake activity data
                     const fakeActivityData = [
@@ -1550,7 +1559,8 @@ function Profile() {
                     setStats({
                         masteredConcepts: statsData.stats?.numbered_mastered_concepts || 0,
                         highestStreak: streakData.highest_streak || 0,
-                        activityData: fakeActivityData
+                        activityData: activityData.activity || []
+                        //activityData: fakeActivityData
                     });
                     setIsStatsLoading(false);
                 } catch (e) {
@@ -1564,13 +1574,24 @@ function Profile() {
 
         const formatChartData = (data: any[]) => {
             const chartData = [["Date", "Events"]];
-            data.forEach(item => {
+            
+            // Sort the data array by date in ascending order
+            const sortedData = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            
+            sortedData.forEach(item => {
                 chartData.push([format(new Date(item.date), 'MMM d'), item.events]);
             });
+            
             return chartData;
         };
 
         const chartData = formatChartData(stats.activityData);
+
+        // Calculate dynamic vAxis options
+        const maxEvents = Math.max(...stats.activityData.map(item => item.events));
+        const vAxisMax = Math.ceil(maxEvents * 1.1); // Add 10% padding
+        const vAxisTicks = 5; // Number of ticks to display
+        const vAxisInterval = Math.ceil(vAxisMax / vAxisTicks);
 
         const chartOptions = {
             title: "Activity",
@@ -1582,8 +1603,9 @@ function Profile() {
                 titleTextStyle: { color: '#FFF' }
             },
             vAxis: { 
-                title: "Items Completed", 
-                viewWindow: { max: 30 },
+                title: "Completed Lessons", 
+                viewWindow: { min: 0, max: vAxisMax },
+                ticks: Array.from({length: vAxisTicks + 1}, (_, i) => i * vAxisInterval),
                 textStyle: { color: '#FFF' },
                 titleTextStyle: { color: '#FFF' }
             },
@@ -1660,7 +1682,7 @@ function Profile() {
                             <Box
                                 sx={{
                                     position: 'relative',
-                                    padding: 1,
+                                    padding: 3,
                                     height: '9vh',
                                     overflow: 'hidden',
                                     border: '1px solid',
@@ -1695,7 +1717,7 @@ function Profile() {
                             <Box
                                 sx={{
                                     position: 'relative',
-                                    padding: 1,
+                                    padding: 3,
                                     height: '9vh',
                                     overflow: 'hidden',
                                     border: '1px solid',
@@ -1739,7 +1761,7 @@ function Profile() {
                     left: 0,
                     right: 0,
                     bottom: 0,
-                    backgroundColor: 'rgba(128, 128, 128, 0.7)',
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -1751,7 +1773,7 @@ function Profile() {
                         left: '-100%',
                         width: '100%',
                         height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
                         animation: 'sheen 1.5s infinite',
                     },
                     '@keyframes sheen': {
@@ -1759,91 +1781,127 @@ function Profile() {
                         '100%': { left: '100%' }
                     },
                 }}
-            />
+            >
+                <CircularProgress color="secondary" />
+            </Box>
         );
 
         return (
             <Grid item>
                 <Box sx={{ 
                     position: 'relative',
-                    border: '1px solid',
-                    borderColor: theme.palette.primary.light,
-                    borderRadius: '20px',
+                    borderRadius: '30px',
                     height: '400px',
                     width: '100%',
                     display: 'flex',
                     flexDirection: 'column',
                     padding: '20px',
+                    background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.background.paper})`,
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
+                    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        zIndex: -1,
+                        margin: '-2px',
+                        borderRadius: 'inherit',
+                        background: barColor,
+                    },
                 }}>
                     {isXpLoading && <LoadingBox />}
                     <Grid container spacing={2} sx={{ height: '100%' }}>
-                        <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Grid item xs>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start', alignItems: 'flex-start', paddingLeft: '30px' }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <Typography variant="h1" sx={{
+                                    fontWeight: 'bold',
+                                    background: barColor,
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                }}>
+                                    {`Renown ${userData === null ? 'N/A' : userData['tier'] + 1}`}
+                                </Typography>
+                                <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
+                                    <Typography variant="h2" sx={{ marginRight: '10px', color: theme.palette.text.secondary }}>
+                                        Level
+                                    </Typography>
+                                    <Box sx={{ position: 'relative', width: 'fit-content' }}>
+                                        <Image
+                                            alt="level"
+                                            width={80}
+                                            height={80}
+                                            src={levelImg}
+                                        />
+                                        <Typography 
+                                            variant="h5"
+                                            sx={{ 
+                                                position: 'absolute', 
+                                                top: '50%', 
+                                                left: '50%', 
+                                                transform: 'translate(-50%, -50%)',
+                                                color: 'white',
+                                                textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
+                                                fontWeight: 'bold',
+                                            }}
+                                        >
+                                            {userData === null ? 'N/A' : userData['level'] + 1}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        <Grid item sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '40px' }}>
                             <Image
                                 alt="renown"
                                 style={{
-                                    height: '26vh',
+                                    height: '30vh',
                                     width: 'auto',
                                     overflow: 'hidden',
                                 }}
                                 src={renownImg}
                             />
                         </Grid>
-                        <Grid item xs>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
-                                <Typography variant="h1" align="center">
-                                    {`Renown ${userData === null ? 'N/A' : userData['tier'] + 1}`}
-                                </Typography>
-                                <Box sx={{ textAlign: 'center' }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                        <Typography variant="h2" sx={{ marginRight: '10px' }}>
-                                            Level
-                                        </Typography>
-                                        <Box sx={{ position: 'relative', width: 'fit-content', margin: 'auto' }}>
-                                            <Image
-                                                alt="level"
-                                                style={{
-                                                    height: '7vh',
-                                                    width: 'auto',
-                                                }}
-                                                src={levelImg}
-                                            />
-                                            <Typography 
-                                                variant="h5"
-                                                sx={{ 
-                                                    position: 'absolute', 
-                                                    top: '57.5%', 
-                                                    left: '50%', 
-                                                    transform: 'translate(-50%, -75%)',
-                                                    color: 'white',
-                                                    textShadow: '1px 1px 2px black',
-                                                    fontSize: '1.1em',
-                                                }}
-                                            >
-                                                {userData === null ? 'N/A' : userData['level'] + 1}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Box>
-                            </Box>
-                        </Grid>
                     </Grid>
                     <Box sx={{ alignItems: 'center', mt: 2 }}>
-                        <Typography variant="h6" align="center" sx={{ mb: 1 }}>
+                        <Typography variant="h6" align="center" sx={{ mb: 1, color: theme.palette.text.secondary }}>
                             {`${currentXp} / ${maxXp} XP`}
                         </Typography>
-                        <LinearProgress
-                            variant="determinate"
-                            value={(currentXp / maxXp) * 100}
-                            sx={{
-                                height: '1.2vw',
-                                borderRadius: '30px',
-                                '& .MuiLinearProgress-bar': {
-                                    background: barColor,
-                                },
-                                backgroundColor: '#535353',
-                                margin: '10px 0',
-                            }}
-                        />
+                        <Box sx={{ position: 'relative', width: '100%', height: '1.8vw' }}>
+                            <LinearProgress
+                                variant="determinate"
+                                value={Math.min(100, (currentXp / maxXp) * 100)}
+                                sx={{
+                                    height: '100%',
+                                    borderRadius: '30px',
+                                    '& .MuiLinearProgress-bar': {
+                                        background: barColor,
+                                        transition: 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)',
+                                    },
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                }}
+                            />
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold', textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
+                                    {`${Math.round((currentXp / maxXp) * 100)}%`}
+                                </Typography>
+                            </Box>
+                        </Box>
                     </Box>
                 </Box>
             </Grid>
