@@ -5,11 +5,14 @@ import {
     Autocomplete,
     Avatar,
     Box, Button,
+    CircularProgress,
+    Container,
     CssBaseline, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Grid, MenuItem,
     Select,
     TextField,
     ThemeProvider,
+    Tooltip,
     Typography
 } from "@mui/material";
 import Image from "next/image";
@@ -55,6 +58,13 @@ import renown10 from "@/img/renown/renown10.svg"
 import UserIcon from "@/icons/User/UserIcon";
 import {Helmet, HelmetProvider} from "react-helmet-async";
 import {useRouter, useSearchParams} from "next/navigation";
+import Chart from "react-google-charts";
+import BytesCard from "@/components/BytesCard";
+import DetourCard from "@/components/Journey/DetourCard";
+import SchoolIcon from '@mui/icons-material/School';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { format } from "date-fns";
 
 function UserPage({params}: { params: {id: string}}) {
     let queryParams = useSearchParams();
@@ -71,8 +81,6 @@ function UserPage({params}: { params: {id: string}}) {
     const [loading, setLoading] = React.useState(true)
 
     const [searchOptions, setSearchOptions] = React.useState<Post[]>([])
-
-    const [searchActive, setSearchActive] = React.useState(false)
 
     const [query, setQuery] = React.useState("")
     const debounceQuery = useDebounce(query, 500);
@@ -399,7 +407,6 @@ function UserPage({params}: { params: {id: string}}) {
         setSkip(skip + 32)
     }
 
-    const [isFetching, setIsFetching] = useInfiniteScroll(scrollSearch, true, 1440, stopScroll)
 
     useEffect(() => {
         if (id === "") {
@@ -418,157 +425,6 @@ function UserPage({params}: { params: {id: string}}) {
         freshSearch()
     }, [id]);
 
-    const SearchBox = () => {
-        if (searchOptions.length === 0 ) {
-            return (
-                <div>
-                    No Projects!
-                </div>
-            )
-        } else {
-            return (
-                <Grid container spacing={3} justifyContent={"space-between"} alignContent={"center"}>
-                    {
-                        searchOptions.map((projects) => {
-                            return (
-                                <Grid item key={projects["_id"]}>
-                                    <ProjectCard
-                                        width={window.innerWidth < 1000 ? 'fit-content' : "20vw"}
-                                        height={"23vh"}
-                                        projectId={projects["_id"]}
-                                        projectTitle={projects["title"]}
-                                        projectDesc={projects["description"]}
-                                        projectThumb={config.rootPath + projects["thumbnail"]}
-                                        //@ts-ignore
-                                        projectDate={projects["updated_at"]}
-                                        projectType={projects["post_type_string"]}
-                                        renown={projects["tier"]}
-                                        onClick={async () => {
-                                            router.push("/challenge/" + projects["_id"])
-                                        }}
-                                        //@ts-ignore
-                                        userTier={projects["user_tier"]}
-                                        userThumb={config.rootPath + "/static/user/pfp/" + projects["author_id"]}
-                                        userId={projects["author_id"]}
-                                        username={projects["author"]}
-                                        //@ts-ignore
-                                        backgroundName={projects["background_name"]}
-                                        //@ts-ignore
-                                        backgroundPalette={projects["background_palette"]}
-                                        //@ts-ignore
-                                        backgroundRender={projects["background_render"]}
-                                        exclusive={projects["challenge_cost"] !== null}
-                                        hover={false}
-                                    />
-                                </Grid>
-                            )
-                        })
-                    }
-                    {
-                        isFetching ? (
-                            <Grid container spacing={2} justifyContent="center" alignItems="center"
-                                  style={{marginTop: "10px"}}
-                            >
-                                <Grid item xs={12}>
-                                    <div
-                                        style={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            width: "100%"
-                                        }}
-                                    >
-                                        <MoonLoader color={theme.palette.primary.main} loading={true} size={35}/>
-                                    </div>
-                                </Grid>
-                            </Grid>
-                        ) : (<></>)
-                    }
-                </Grid>
-            )
-        }
-    }
-
-    const follow = async () => {
-        if (id === "") {
-            return;
-        }
-
-        let res = await fetch(
-            `${config.rootPath}/api/user/follow`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: id
-                }),
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        if (res !== undefined && res["message"] !== undefined){
-            if (res["message"] === "You must be logged in to access the GIGO system."){
-                let authState = Object.assign({}, initialAuthStateUpdate)
-                // @ts-ignore
-                dispatch(updateAuthState(authState))
-                router.push("/login?forward="+encodeURIComponent(window.location.pathname))
-            }
-            if (res["message"] === "successful"){
-                setFollowing(true)
-                setUserData((prevData: { follower_count: number; }) => ({
-                    ...prevData,
-                    follower_count: prevData.follower_count + 1,
-                }));
-            } else {
-                swal("There was an issue following the user. Please try again later")
-            }
-        } else {
-            swal("There was an issue following the user. Please try again later")
-        }
-    }
-
-    const unFollow = async () => {
-        if (id === "") {
-            return;
-        }
-
-        let res = await fetch(
-            `${config.rootPath}/api/user/unfollow`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    id: id
-                }),
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        if (res !== undefined && res["message"] !== undefined){
-            if (res["message"] === "You must be logged in to access the GIGO system."){
-                let authState = Object.assign({}, initialAuthStateUpdate)
-                // @ts-ignore
-                dispatch(updateAuthState(authState))
-                router.push("/login?forward="+encodeURIComponent(window.location.pathname))
-            }
-
-            if (res["message"] === "successful"){
-                setFollowing(false)
-                setUserData((prevData: { follower_count: number; }) => ({
-                    ...prevData,
-                    follower_count: prevData.follower_count - 1,
-                }));
-            } else {
-                swal("There was an issue following the user. Please try again later")
-            }
-        } else {
-            swal("There was an issue following the user. Please try again later")
-        }
-    }
 
     let renownImg;
     let levelImg;
@@ -639,6 +495,653 @@ function UserPage({params}: { params: {id: string}}) {
 
     }
 
+    const RecentActivity = () => {
+        const [loading, setLoading] = React.useState(true)
+        const [bytesData, setBytesData] = React.useState([])
+        const [journeysData, setJourneysData] = React.useState([])
+        const [projectsData, setProjectsData] = React.useState([])
+      
+        React.useEffect(() => {
+          const fetchData = async () => {
+            try {
+              const [bytesResponse, journeysResponse, projectsResponse] = await Promise.all([
+                  fetch(`${config.rootPath}/api/profile/getAttemptedBytes`,
+                  {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Cookie': ''
+                      },
+                      body: JSON.stringify({ user_id: userData["_id"] }),
+                      credentials: 'include'
+                  }),
+                  fetch(`${config.rootPath}/api/profile/getAttemptedJourneys`,
+                      {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Cookie': ''
+                          },
+                          body: JSON.stringify({ user_id: userData["_id"] }),
+                          credentials: 'include'
+                      }),
+                  fetch(`${config.rootPath}/api/profile/getAttemptedProjects`,
+                      {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Cookie': ''
+                          },
+                          body: JSON.stringify({ user_id: userData["_id"] }),
+                          credentials: 'include'
+                      }),
+              ])
+      
+              const bytes = await bytesResponse.json()
+              const journeys = await journeysResponse.json()
+              const projects = await projectsResponse.json()
+      
+              setBytesData(bytes.bytes)
+              setJourneysData(journeys.units)
+              setProjectsData(projects.projects)
+              setLoading(false)
+            } catch (error) {
+              console.error('error fetching data:', error)
+              setLoading(false)
+            }
+          }
+      
+          fetchData()
+        }, [])
+      
+        if (loading) {
+          return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+              <CircularProgress />
+            </Box>
+          )
+        }
+      
+        return (
+          <Container maxWidth="lg">
+            {(journeysData?.length > 0 || bytesData?.length > 0 || projectsData?.length > 0) && (
+              <Box sx={{ mt: 4, mb: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                  recent activity
+                </Typography>
+                
+                {/* journeys row */}
+                {journeysData?.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      journeys
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {journeysData.slice(0, 3).map((journey: any) => (
+                        <Grid item xs={12} sm={6} md={4} key={journey._id}>
+                          <DetourCard data={journey} width={"100%"} />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                )}
+        
+                {/* bytes row */}
+                {bytesData?.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      bytes
+                    </Typography>
+                    <Grid container spacing={4}>
+                      {bytesData.slice(0, 5).map((byte: any) => (
+                        <Grid item xs={12} sm={6} md={2.4} key={byte._id}>
+                         <BytesCard
+                              height={"355px"}
+                              imageHeight={355}
+                              width={'100%'}
+                              imageWidth={'100%'}
+                              bytesId={byte._id}
+                              bytesDesc={byte.description}
+                              bytesTitle={byte.name}
+                              bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
+                              language={byte.langauge}
+                              animate={false} 
+                              onClick={() => router.push("/byte/" + byte._id)}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                )}
+        
+                {/* projects row */}
+                {projectsData?.length > 0 && (
+                  <Box sx={{ mt: 8 }}> {/* increased top margin for larger gap */}
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      projects
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {projectsData.slice(0, 3).map((project: any) => (
+                        <Grid item xs={12} sm={6} md={4} key={project._id}>
+                           <ProjectCard
+                              width={"100%"}
+                              imageWidth={"100%"}
+                              projectId={project._id}
+                              projectTitle={project.title}
+                              projectDesc={project.description}
+                              projectThumb={config.rootPath + project.thumbnail}
+                              projectDate={project.updated_at}
+                              projectType={project.post_type_string}
+                              renown={project.tier}
+                              onClick={() => router.push("/challenge/" + project._id)}
+                              userThumb={config.rootPath + "/static/user/pfp/" + project.author_id}
+                              userId={project.author_id}
+                              username={project.author}
+                              backgroundName={project.background_name}
+                              backgroundPalette={project.background_color}
+                              exclusive={project["challenge_cost"] !== null}
+                              hover={false}
+        
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </Container>
+        )
+      }
+
+    const userProfileIcon = () => {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start',
+                    paddingTop: '1%',
+                    paddingLeft: '25px',
+                    height: '400px'
+                }}
+            >
+                <UserIcon
+                    userId={userData["_id"]}
+                    userTier={userData["tier"]}
+                    userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
+                    size={300}
+                    backgroundName={userData["name"]}
+                    backgroundPalette={userData["color_palette"]}
+                    backgroundRender={userData["render_in_front"]}
+                    profileButton={false}
+                    pro={userData["user_status"] > 0}
+                    mouseMove={false}
+                />
+            </Box>
+        )
+    }
+
+    const userInfoDisplay = () => {
+        return (
+            <Box sx={{
+                padding: '16px',
+                marginBottom: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: "100%",
+                maxWidth: { xs: "100%", sm: "600px" } // Responsive max-width
+            }}>
+                {userProfileIcon()}
+                <div style={{height: "40px"}}/>
+                <Box
+                    sx={{
+                        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+                        color: 'text.primary',
+                        borderRadius: 2,
+                        p: 4,
+                        width: "100%",
+                        background: userData["user_status"] > 0 
+                            ? `linear-gradient(135deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 100%)`
+                            : '#282826',
+                        position: 'relative',
+                        overflow: 'hidden'
+                    }}
+                >
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        position: 'relative',
+                        zIndex: 2
+                    }}>
+                        <Typography sx={{
+                            width: "100%",
+                            textAlign: 'center',
+                            fontSize: "2.5rem",
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                        }}>
+                            {userData !== null ?  userData["user_name"].charAt(0).toUpperCase() + userData["user_name"].slice(1).toLowerCase() : "N/A"}
+                        </Typography>
+                    </div>
+                    {userData["user_status"] > 0  && (
+                        <div style={{
+                            position: 'absolute',
+                            top: '-50%',
+                            left: '-50%',
+                            right: '-50%',
+                            bottom: '-50%',
+                            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+                            transform: 'rotate(30deg)',
+                            zIndex: 1
+                        }}></div>
+                    )}
+                </Box>
+                {/* Friend Request Button */}
+                {userId !== id && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={sendFriendRequest}
+                        disabled={friendBool || requestBool}
+                        sx={{ 
+                            mt: 2, 
+                            width: "100%", 
+                            maxWidth: { xs: "100%", sm: "600px" }, // Responsive max-width
+                            height: "50px",
+                            fontSize: { xs: "1rem", sm: "1.2rem" }, // Responsive font size
+                            fontWeight: "bold"
+                        }}
+                    >
+                        {friendBool ? 'Friends' : requestBool ? 'Request Sent' : 'Add Friend'}
+                    </Button>
+                )}
+            </Box>
+        )
+    }
+
+    const TopStatsBoxes = () => {
+        const [isStatsLoading, setIsStatsLoading] = React.useState(true);
+        const [stats, setStats] = React.useState<{
+            masteredConcepts: number;
+            highestStreak: number;
+            activityData: { date: string; events: number }[];
+        }>({
+            masteredConcepts: 0,
+            highestStreak: 0,
+            activityData: []
+        });
+
+        useEffect(() => {
+            const fetchStats = async () => {
+                try {
+                    const [statsResponse, streakResponse, activityResponse] = await Promise.all([
+                        fetch(`${config.rootPath}/api/stats/getUserProgrammingStats`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}',
+                            credentials: 'include'
+                        }),
+                        fetch(`${config.rootPath}/api/stats/checkHotStreak`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: '{}',
+                            credentials: 'include'
+                        }),
+                        fetch(`${config.rootPath}/api/profile/getUserRecentActivity`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ user_id: params.id }),
+                            credentials: 'include'
+                        })
+                    ]);
+
+                    const statsData = await statsResponse.json();
+                    const streakData = await streakResponse.json();
+                    const activityData = await activityResponse.json();
+
+                    console.log("activityData", activityData)
+
+                    // Fake activity data
+                    const fakeActivityData = [
+                        { date: '2023-06-01', events: 5 },
+                        { date: '2023-06-02', events: 8 },
+                        { date: '2023-06-03', events: 3 },
+                        { date: '2023-06-04', events: 10 },
+                        { date: '2023-06-05', events: 7 },
+                        { date: '2023-06-06', events: 22 },
+                        { date: '2023-06-07', events: 6 }
+                    ];
+
+                    setStats({
+                        masteredConcepts: statsData.stats?.numbered_mastered_concepts || 0,
+                        highestStreak: streakData.highest_streak || 0,
+                        activityData: activityData.activity || []
+                        //activityData: fakeActivityData
+                    });
+                    setIsStatsLoading(false);
+                } catch (e) {
+                    console.log("Failed to get stats: ", e);
+                    setIsStatsLoading(false);
+                }
+            };
+
+            fetchStats();
+        }, []);
+
+        const formatChartData = (data: any[]) => {
+            const chartData = [["Date", "Events"]];
+            
+            // Sort the data array by date in ascending order
+            const sortedData = data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+            
+            sortedData.forEach(item => {
+                chartData.push([format(new Date(item.date), 'MMM d'), item.events]);
+            });
+            
+            return chartData;
+        };
+
+        const chartData = formatChartData(stats.activityData);
+
+        // Calculate dynamic vAxis options
+        const maxEvents = Math.max(...stats.activityData.map((item: { events: any; }) => item.events));
+        const vAxisMax = Math.ceil(maxEvents * 1.1); // Add 10% padding
+        const vAxisTicks = 5; // Number of ticks to display
+        const vAxisInterval = Math.ceil(vAxisMax / vAxisTicks);
+
+        const chartOptions = {
+            title: "Activity",
+            curveType: "none",
+            legend: { position: "none" },
+            hAxis: { 
+                title: "Date",
+                textStyle: { color: '#FFF' },
+                titleTextStyle: { color: '#FFF' }
+            },
+            vAxis: { 
+                title: "Completed Lessons", 
+                viewWindow: { min: 0, max: vAxisMax },
+                ticks: Array.from({length: vAxisTicks + 1}, (_, i) => i * vAxisInterval),
+                textStyle: { color: '#FFF' },
+                titleTextStyle: { color: '#FFF' }
+            },
+            colors: [theme.palette.primary.main],
+            backgroundColor: 'transparent',
+            chartArea: { backgroundColor: 'transparent' },
+            titleTextStyle: { color: '#FFF' },
+            pointSize: 5,
+            lineWidth: 2,
+        };
+
+        const LoadingBox = () => (
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(128, 128, 128, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2,
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        animation: 'sheen 1.5s infinite',
+                    },
+                    '@keyframes sheen': {
+                        '0%': { left: '-100%' },
+                        '100%': { left: '100%' }
+                    },
+                }}
+            />
+        );
+
+        return (
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={8}>
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            borderRadius: '10px',
+                            padding: 2,
+                            height: { xs: '300px', md: '100%' }, // Responsive height
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        {isStatsLoading && <LoadingBox />}
+                        {!isStatsLoading && (
+                            <Chart
+                                chartType="LineChart"
+                                width="100%"
+                                height="100%"
+                                data={chartData}
+                                options={chartOptions}
+                            />
+                        )}
+                    </Box>
+                </Grid>
+                <Grid item xs={12} md={4}>
+                    <Grid container direction="column" spacing={2}>
+                        {/* Mastered Concepts */}
+                        <Grid item xs={12}>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    padding: 3,
+                                    height: { xs: 'auto', md: '9vh' }, // Responsive height
+                                    minHeight: '100px', // Minimum height for smaller screens
+                                    overflow: 'hidden',
+                                    border: '1px solid',
+                                    borderColor: theme.palette.primary.light,
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                {isStatsLoading && <LoadingBox />}
+                                {!isStatsLoading && (
+                                    <>
+                                        <Tooltip title="This is the number of unique units you have finished in Journeys. Each completion of a unit counts towards a mastered concept.">
+                                            <Box sx={{ position: 'absolute', top: 2, right: 2 }}>
+                                                <HelpOutlineIcon sx={{ fontSize: 10 }}/>
+                                            </Box>
+                                        </Tooltip>
+                                        <Box display="flex" flexDirection="row" alignItems="center">
+                                            <SchoolIcon sx={{ fontSize: 30, marginRight: 1 }} />
+                                            <Typography variant="body2">Mastered Concepts</Typography>
+                                        </Box>
+                                        <Typography variant="h5">{stats.masteredConcepts}</Typography>
+                                    </>
+                                )}
+                            </Box>
+                        </Grid>
+
+                        {/* Highest Hot Streak */}
+                        <Grid item xs={12}>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    padding: 3,
+                                    height: { xs: 'auto', md: '9vh' }, // Responsive height
+                                    minHeight: '100px', // Minimum height for smaller screens
+                                    overflow: 'hidden',
+                                    border: '1px solid',
+                                    borderColor: theme.palette.primary.light,
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                {isStatsLoading && <LoadingBox />}
+                                {!isStatsLoading && (
+                                    <>
+                                        <Tooltip title="Keep track of your hot streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. See how far you can get!">
+                                            <Box sx={{ position: 'absolute', top: 2, right: 2 }}>
+                                                <HelpOutlineIcon sx={{ fontSize: 10 }}/>
+                                            </Box>
+                                        </Tooltip>
+                                        <Box display="flex" flexDirection="row" alignItems="center">
+                                            <LocalFireDepartmentIcon sx={{ fontSize: 30, marginRight: 1 }} />
+                                            <Typography variant="body2">Highest Hot Streak</Typography>
+                                        </Box>
+                                        <Typography variant="h5">{stats.highestStreak}</Typography>
+                                    </>
+                                )}
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        );
+    };
+
+    const userXpDisplay = () => {
+        const LoadingBox = () => (
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2,
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                        animation: 'sheen 1.5s infinite',
+                    },
+                    '@keyframes sheen': {
+                        '0%': { left: '-100%' },
+                        '100%': { left: '100%' }
+                    },
+                }}
+            >
+                <CircularProgress color="secondary" />
+            </Box>
+        );
+
+        return (
+            <Grid item xs={12}>
+                <Box sx={{ 
+                    position: 'relative',
+                    borderRadius: '30px',
+                    height: { xs: 'auto', md: '400px' }, // Responsive height
+                    minHeight: '300px', // Minimum height for smaller screens
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '20px',
+                    background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.background.paper})`,
+                    boxShadow: '0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)',
+                    transition: 'all 0.3s cubic-bezier(.25,.8,.25,1)',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bottom: 0,
+                        left: 0,
+                        zIndex: -1,
+                        margin: '-2px',
+                        borderRadius: 'inherit',
+                        background: barColor,
+                    },
+                }}>
+                    
+                    <Grid container spacing={2} sx={{ height: '100%' }}>
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start', alignItems: { xs: 'center', md: 'flex-start' }, paddingLeft: { xs: '0', md: '30px' } }}>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <Typography variant="h2" sx={{
+                                    fontWeight: 'bold',
+                                    background: barColor,
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    fontSize: { xs: '2rem', sm: '3rem', md: '4rem' } // Responsive font size
+                                }}>
+                                    {`Renown ${userData === null ? 'N/A' : userData['tier'] + 1}`}
+                                </Typography>
+                                <Box sx={{ mt: 2, display: 'flex', alignItems: 'center' }}>
+                                    <Typography variant="h4" sx={{ marginRight: '10px', color: theme.palette.text.secondary, fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' } }}>
+                                        Level
+                                    </Typography>
+                                    <Box sx={{ position: 'relative', width: 'fit-content' }}>
+                                        <Image
+                                            alt="level"
+                                            width={80}
+                                            height={80}
+                                            src={levelImg}
+                                        />
+                                        <Typography 
+                                            variant="h5"
+                                            sx={{ 
+                                                position: 'absolute', 
+                                                top: '50%', 
+                                                left: '50%', 
+                                                transform: 'translate(-50%, -50%)',
+                                                color: 'white',
+                                                textShadow: '2px 2px 4px rgba(0,0,0,0.6)',
+                                                fontWeight: 'bold',
+                                                fontSize: { xs: '1rem', sm: '1.25rem', md: '1.5rem' } // Responsive font size
+                                            }}
+                                        >
+                                            {userData === null ? 'N/A' : userData['level'] + 1}
+                                        </Typography>
+                                    </Box>
+                                </Box>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-end' }, paddingRight: { xs: '0', md: '40px' } }}>
+                            <Image
+                                alt="renown"
+                                style={{
+                                    height: 'auto',
+                                    maxHeight: '30vh',
+                                    width: 'auto',
+                                    maxWidth: '100%',
+                                    overflow: 'hidden',
+                                }}
+                                src={renownImg}
+                            />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Grid>
+        );
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
@@ -654,598 +1157,37 @@ function UserPage({params}: { params: {id: string}}) {
                     <HelmetProvider>
                         <Helmet>
                             <title>User</title>
-                            <meta property="og:image" content={"username"} data-rh="true"/>
+                            <meta property="og:image" content={"image not found"} data-rh="true"/>
                         </Helmet>
                     </HelmetProvider>
                 )}
-                {/*<AppWrapper/>*/}
-                {loading || userData === null ? (
-                    <div>
-                        <ThreeDots/>
-                    </div>
+                {loading ? (
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh', // full viewport height
+                        width: '100vw' // full viewport width
+                    }}>
+                        <CircularProgress size={60} />
+                    </Box>
                 ) : (
-                    <div style={!isMobile ? {} : {marginBottom: "100px"}}>
-                        <Typography sx={!isMobile ? {display: "flex", flexDirection: "row"} : {display: "flex", flexDirection: "column"}}>
-                            <Typography sx={!isMobile ? {display: "flex", flexDirection: "column", width: "20vw"} : {display: "flex", flexDirection: "column", width: "20vw"}}>
-                                {!isMobile ? (
-                                    <Box style={{                                        display: 'flex',
-                                        alignItems: 'left',
-                                        justifyContent: 'left',
-                                        paddingTop: `1%`,
-                                        paddingLeft: `25px`,
-                                        height: "400px"}}>
-                                        <UserIcon
-                                            userId={userData["_id"]}
-                                            userTier={userData["tier"]}
-                                            userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                            size={300}
-                                            backgroundName={userData["name"]}
-                                            backgroundPalette={userData["color_palette"]}
-                                            backgroundRender={userData["render_in_front"]}
-                                            profileButton={false}
-                                            pro={userData["user_status"] === 1}
-                                            mouseMove={false}
-                                        />
-                                    </Box>
-                                ) : (
-                                    <Box style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        paddingTop: `10%`,
-                                        height: "auto",
-                                        width: "100vw",
-                                        flexDirection: "column",
-                                        marginBottom: "12.5%"
-                                    }}>
-                                        <UserIcon
-                                            userId={userData["_id"]}
-                                            userTier={userData["tier"]}
-                                            userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                            size={200}
-                                            backgroundName={userData["name"]}
-                                            backgroundPalette={userData["color_palette"]}
-                                            backgroundRender={userData["render_in_front"]}
-                                            profileButton={false}
-                                            pro={userData["user_status"] === 1}
-                                            mouseMove={false}
-                                        />
-                                        <Typography variant={"h3"}>
-                                            {userData !== null ?  userData["user_name"].charAt(0).toUpperCase() + userData["user_name"].slice(1).toLowerCase() : "N/A"}
-                                        </Typography>
-                                    </Box>
-                                )}
-                                {window.innerWidth <= 1000 ? (
-                                    <div style={{
-                                        width: "100vw",
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        justifyContent: "space-evenly",
-                                        paddingTop: "5%",
-                                        paddingBottom: "25%"
-                                    }}>
-                                        <Button
-                                            variant="contained"
-                                            disabled={friendBool || requestBool}
-                                            onClick={() => sendFriendRequest()}
-                                            sx={{
-                                                color: 'text.primary',
-                                                borderRadius: 1,
-                                                p: 1,
-                                                backgroundColor: "secondary",
-                                                width: "auto",
-                                                paddingTop: "10px",
-                                            }}>
-                                            {friendBool ? "Already Your Friend!" : requestBool ? "Request Pending" : "Send Friend Request"}
-                                        </Button>
-                                        <div style={{display: "flex", justifyContent: "right"}}>
-                                            {userId === id ? (
-                                                <div></div>
-                                            ) : (
-                                                <div style={{display: "flex", justifyContent: "right", alignItems: "bottom"}}>
-                                                    {following ? (
-                                                        <Button onClick={() => unFollow()} sx={{color: 'text.primary',
-                                                            borderRadius: 1,
-                                                            p: 1,
-                                                            backgroundColor: "secondary",
-                                                            width: "auto",
-                                                            paddingTop: "10px",}}                                             variant="contained">
-                                                            Unsubscribe
-                                                        </Button>
-                                                    ) : (
-                                                        <Button onClick={() => follow()} sx={{color: 'text.primary',
-                                                            borderRadius: 1,
-                                                            p: 1,
-                                                            backgroundColor: "secondary",
-                                                            width: "auto",
-                                                            paddingTop: "10px",}}                                             variant="contained">
-                                                            Subscribe
-                                                        </Button>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                ) : null}
-                                {window.innerWidth <= 1000 ? (
-                                    <div style={{marginBottom: "20px", marginTop: "10%"}}>
-                                        <Grid item style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            paddingLeft: "110%",
-                                            width: "100vw"
-                                        }}>
-                                            <Image
-                                                alt="renown"
-                                                style={!isMobile ? {
-                                                    height: "20vh",
-                                                    width: "auto",
-                                                    overflow: "hidden",
-                                                } : {
-                                                    height: "60px",
-                                                    overflow: "hidden",
-                                                }}
-                                                src={renownImg}
-                                            />
-                                            <Box display="flex" flexDirection="column" alignItems="left" marginLeft={"25px"}>
-                                                <Typography variant="h4" sx={{transform: "translate(-1.5vw, 0)", fontSize: "24px"}}>
-                                                    {`Renown ${userData === null ? "N/A" : userData["tier"] + 1}`}
-                                                </Typography>
-                                            </Box>
-                                        </Grid>
-                                    </div>
-                                ) : null}
-                                {!isMobile ? (
-                                    <Box
-                                        sx={!isMobile ? {
-                                            boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
-                                            color: 'text.primary',
-                                            borderRadius: 1,
-                                            p: 3,
-                                            marginLeft: "120px"
-                                        } : {
-                                            boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
-                                            color: 'text.primary',
-                                            borderRadius: 1,
-                                            p: 3,
-                                            width: "fit-content",
-                                            marginLeft: "20px"
-                                        }}
-                                    >
-                                        <div style={{display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center"}}>
-                                            <Typography sx={{
-                                                display: 'flex',
-                                                width: "100%",
-                                                justifyContent: 'left',
-                                                textSizeAdjust: "150%"
-                                            }}>
-                                                {userData !== null ?  userData["user_name"].charAt(0).toUpperCase() + userData["user_name"].slice(1).toLowerCase() : "N/A"}
-                                            </Typography>
-                                            <Typography sx={!isMobile ? {
-                                                display: 'flex',
-                                                width: "100%", justifyContent: "left"} : {display: 'flex',
-                                                width: "130px", justifyContent: "left"}}>
-                                                {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
-                                            </Typography>
-                                        </div>
-                                        {!isMobile ? (<hr style={{color: "white"}}/>) : null}
-                                        {userData !== null ?  userData["bio"] : "N/A"}
-                                        {userId === id || window.innerWidth <= 1000 ? (
-                                            <div></div>
-                                        ) : (
-                                            <div style={{display: "flex", justifyContent: "right", alignItems: "bottom"}}>
-                                                {following ? (
-                                                    <Button onClick={() => unFollow()}>
-                                                        Unsubscribe
-                                                    </Button>
-                                                ) : (
-                                                    <Button onClick={() => follow()}>
-                                                        Subscribe
-                                                    </Button>
-                                                )}
-                                            </div>
-                                        )}
-                                    </Box>
-                                ) : (
-                                    <div style={{display: "flex", flexDirection: "row", width: "100vw"}}>
-                                        <div
-                                            style={{
-                                                color: 'text.primary',
-                                                borderRadius: 1,
-                                                padding: 3,
-                                                width: "fit-content", justifyContent: "left"}}
-                                        >
-                                            <Typography sx={window.innerWidth <= 1000 && window.innerWidth > 300 ? {
-                                                display: 'flex',
-                                                width: "130px", justifyContent: "left", fontSize: "16px", marginLeft: "10px", marginTop: "5%"} : {display: 'flex',
-                                                width: "130px", justifyContent: "left", fontSize: "12px"}}>
-                                                {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
-                                            </Typography>
-                                        </div>
-                                        <div style={{display: "flex", flexDirection: "row", justifyContent: "right", width: "100%", marginRight: "5px"}}>
-                                            <div style={{ position: 'relative' }}>
-                                                <Image
-                                                    alt="coffee-pot"
-                                                    style={!isMobile ? {
-                                                        height: "15vh",
-                                                        width: "auto",
-                                                        overflow: "hidden",
-                                                        zIndex: 2
-                                                    } : {
-                                                        height: "50px",
-                                                        width: "auto",
-                                                        overflow: "hidden",
-                                                        zIndex: 2,
-                                                        transform: "translate(0, -30%)",
-                                                        marginRight: "5px"
-                                                    }}
-                                                    src={coffeePot}
-                                                />
-                                                <div
-                                                    style={{
-                                                        color: "white",
-                                                        position: "absolute",
-                                                        top: "50%",
-                                                        left: "50%",
-                                                        transform: "translate(-35%, -90%)",
-                                                        zIndex: 2,
-                                                    }}
-                                                >
-                                                    {userData === null ? "N/A" : userData["coffee"]}
-                                                </div>
-                                            </div>
-                                            <div
-                                                style={window.innerWidth <= 1000 && window.innerWidth > 300 ? {
-                                                    color: "white",
-                                                    fontSize: "16px", marginRight: "10px"
-                                                } : {
-                                                    color: "white",
-                                                    fontSize: "12px"
-                                                }}
-                                            >
-                                                Coffee
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                <div style={{overflow: "auto", alignItems: "center", display: "flex", flexDirection: "row", paddingTop: "10px"}}>
-                                    {!isMobile ? (
-                                        <Button
-                                            variant="contained"
-                                            disabled={friendBool || requestBool}
-                                            onClick={() => sendFriendRequest()}
-                                            sx={{
-                                                color: 'text.primary',
-                                                borderRadius: 1,
-                                                p: 1,
-                                                backgroundColor: "secondary",
-                                                width: "92%",
-                                                paddingTop: "10px",
-                                                marginLeft: "120px"
-                                            }}>
-                                            {friendBool ? "Already Your Friend!" : requestBool ? "Request Pending" : "Send Friend Request"}
-                                        </Button>
-                                    ) : null}
-                                </div>
-                            </Typography>
-                            <Box
-                                sx={!isMobile ? {
-                                    display: `flex`,
-                                    alignItems: `center`,
-                                    justifyContent: "right",
-                                    width: "70vw",
-                                    flexDirection: "column",
-                                    float: "right",
-                                    marginLeft: "120px",
-                                } : {
-                                    display: `flex`,
-                                    alignItems: `center`,
-                                    justifyContent: "right",
-                                    width: "70vw",
-                                    flexDirection: "column",
-                                    float: "right",
-                                }}>
-                                <Grid container spacing={2} width={"88%"} sx={!isMobile ? {paddingTop: "8%", transform: `scale(1.1)`} : {paddingTop: "2%", transform: `scale(1.1)`}}>
-                                    {window.innerWidth <= 1000 ? null : (
-                                        <Grid item>
-                                            <Image
-                                                alt="renown"
-                                                style={!isMobile ? {
-                                                    height: "20vh",
-                                                    width: "auto",
-                                                    overflow: "hidden",
-                                                } : {
-                                                    height: "60px",
-                                                    overflow: "hidden",
-                                                }}
-                                                src={renownImg}
-                                            />
-                                        </Grid>
-                                    )}
-                                    <Grid item xs={12} md={4}>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%'}}>
-                                            {!isMobile ? (
-                                                <Box display="flex" flexDirection="column" alignItems="left">
-                                                    <Typography variant="h4" sx={{transform: "translate(-1.5vw, 0)"}}>
-                                                        {`Renown ${userData === null ? "N/A" : userData["tier"] + 1}`}
-                                                    </Typography>
-                                                    <div style={{ display: 'flex', alignItems: 'left' }}>
-                                                        <Typography sx={{paddingRight: "10px"}} variant="h5">Level</Typography>
-                                                        <Grid item sx={{zIndex: 1}}>
-                                                            <Box position="relative" sx={{transform: "translate(0px, -0.8vh)"}}>
-                                                                <Image
-                                                                    alt="level"
-                                                                    style={{
-                                                                        height: "6vh",
-                                                                        width: "auto",
-                                                                        overflow: "hidden",
-                                                                    }}
-                                                                    src={levelImg}
-                                                                />
-                                                                <Typography
-                                                                    variant="h6"
-                                                                    component="span"
-                                                                    style={{
-                                                                        color: "white",
-                                                                        position: "absolute",
-                                                                        top: "45%",
-                                                                        left: "50%",
-                                                                        transform: "translate(-50%, -50%)",
-                                                                    }}
-                                                                >
-                                                                    {userData === null ? "N/A" : userData["level"] + 1}
-                                                                </Typography>
-                                                            </Box>
-                                                        </Grid>
-                                                    </div>
-                                                </Box>
-                                            ) : null}
-                                            {window.innerWidth  > 1000 ? (
-                                                <Box sx={{ flexGrow: 1, alignItems: 'flex-end', display: 'flex', zIndex: 2, justifyContent: "right", width: "250%"}} alignItems="right">
-                                                    <Grid item sx={{transform: "translate(-13vw, -21vh)", zIndex: 1}}>
-
-                                                        <Box position="absolute">
-                                                            <Image
-                                                                alt="coffee-pot"
-                                                                style={{
-                                                                    height: "15vh",
-                                                                    width: "auto",
-                                                                    overflow: "hidden",
-                                                                    zIndex: 2
-                                                                }}
-                                                                src={coffeePot}
-                                                            />
-                                                            <Typography
-                                                                variant="h5"
-                                                                component="span"
-                                                                style={{
-                                                                    color: "white",
-                                                                    position: "absolute",
-                                                                    top: "85%",
-                                                                    left: "-50%",
-                                                                    transform: "translate(-50%, -50%)",
-                                                                    zIndex: 2,
-                                                                    width: "200%"
-                                                                }}
-                                                            >
-                                                                Coffee Collected
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="h5"
-                                                                component="span"
-                                                                style={{
-                                                                    color: "white",
-                                                                    position: "absolute",
-                                                                    top: "55%",
-                                                                    left: "53%",
-                                                                    transform: "translate(-50%, -50%)",
-                                                                    zIndex: 2,
-                                                                }}
-                                                            >
-                                                                {userData === null ? "N/A" : userData["coffee"]}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Grid>
-                                                </Box>
-                                            ) : null}
-                                        </Box>
+                    <Box sx={{ padding: { xs: 2, sm: 4 } }}> {/* Responsive padding */}
+                        <Grid container spacing={{ xs: 2, sm: 4 }}> {/* Responsive spacing */}
+                            <Grid item xs={12} md={4}>
+                                {userInfoDisplay()}
+                            </Grid>
+                            <Grid item xs={12} md={8}>
+                                <Grid container direction="column" spacing={{ xs: 2, sm: 4 }}> {/* Responsive spacing */}
+                                    <Grid item>
+                                        <TopStatsBoxes />
                                     </Grid>
+                                    {userXpDisplay()}
                                 </Grid>
-                            </Box>
-                        </Typography>
-                        <Typography component={"div"}
-                                    sx={{display: "flex",
-                                        justifyContent: "center",
-                                        paddingTop: "2%",
-                                        paddingBottom: "2%",
-                                        flexDirection: "row"
-                                    }}>
-                            <Box
-                                sx={{
-                                    boxShadow: "0px 12px 6px -6px rgba(0,0,0,0.6),0px 6px 6px 0px rgba(0,0,0,0.6),0px 6px 18px 0px rgba(0,0,0,0.6)",
-                                    color: 'text.primary',
-                                    borderRadius: 1,
-                                    p: 3,
-                                    marginLeft: "30px",
-                                    marginRight: "30px",
-                                    minWidth: "97%",
-                                }}
-                            >
-                                {!isMobile ? (
-                                    <Grid container sx={{
-                                        justifyContent: "left",
-                                        width: "100%",
-                                    }} direction="row"   alignItems="center">
-                                        <TextField
-                                            label={userData !== null ? `Search @${userData['user_name']} Projects` : "Search Projects"}
-                                            variant={`outlined`}
-                                            size={`small`}
-                                            type={`username`}
-                                            color={`primary`}
-                                            helperText={" "}
-                                            onKeyDown={
-                                                e => {
-                                                    if (e.key === "Enter") {
-                                                        freshSearch()
-                                                    }
-                                                }}
-                                            onChange={e => {
-                                                if (typeof e.target.value !== "string") {
-                                                    setQuery("")
-                                                    return
-                                                }
-                                                setQuery(e.target.value)
-                                            }}
-                                            sx={{
-                                                width: "350px",
-                                            }}
-                                            InputProps={{
-                                                endAdornment: <ShowButton/>
-                                            }}
-                                        >
-                                        </TextField>
-
-                                        <Autocomplete
-                                            multiple
-                                            id="languagesInputSelect"
-                                            size={"small"}
-                                            options={programmingLanguages.map((_, i) => {
-                                                return i
-                                            })}
-                                            getOptionLabel={(option) => programmingLanguages[option]}
-                                            // @ts-ignore
-                                            onChange={(e: SyntheticEvent, value: number[]) => {
-                                                setLanguages(value)
-                                                freshSearch({languages: value.length > 0 ? value : undefined})
-                                            }}
-                                            value={languages === null ? [] : languages}
-                                            renderInput={(params) => (
-                                                <TextField {...params} placeholder="Language" />
-                                            )}
-                                            sx={{
-                                                width: "10vw",
-                                                paddingLeft:"5px",
-                                                paddingBottom: "22px"
-                                            }}
-                                        />
-                                        <Grid item xs={"auto"}>
-                                            <Grid container sx={{
-                                                justifyContent: "center",
-                                                width: "155px",
-                                                paddingLeft:"5px",
-                                                paddingBottom: "22px",
-                                            }} direction="column"   alignItems="center">
-                                                <Select
-                                                    labelId={"challengeType"}
-                                                    id={"challengeTypeInput"}
-                                                    required={true}
-                                                    value={challengeType >= -1 ? challengeType : -1}
-                                                    size={"small"}
-                                                    sx={{
-                                                        width: "200px",
-                                                        //paddingLeft:"5px",
-                                                    }}
-                                                    onChange={(e) => {
-                                                        // ensure type is number
-                                                        if (typeof e.target.value === "string") {
-                                                            return
-                                                        }
-                                                        setChallengeType(e.target.value);
-                                                        freshSearch({
-                                                            challenge_type: e.target.value !== -1 && typeof e.target.value === "number" ? e.target.value : undefined
-                                                        })
-                                                    }}
-                                                >
-                                                    <MenuItem value={-1}>
-                                                        <em>Challenge Type</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={0}>
-                                                        <em>Interactive</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={1}>
-                                                        <em>Playground</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={2}>
-                                                        <em>Casual</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={3}>
-                                                        <em>Competitive</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={4}>
-                                                        <em>Debug</em>
-                                                    </MenuItem>
-                                                </Select>
-                                            </Grid>
-                                        </Grid>
-                                        <Grid item xs={"auto"}>
-                                            <Grid container sx={{
-                                                justifyContent: "center",
-                                                width: "10vw",
-                                                paddingLeft:"54px",
-                                                paddingBottom: "22px",
-                                            }} direction="column" alignItems="center">
-                                                <Select
-                                                    labelId={"tierInputLabel"}
-                                                    id={"challengeTierInput"}
-                                                    required={true}
-                                                    value={tierFilter >= -1 ? tierFilter : -1}
-                                                    label={"Challenge Renown"}
-                                                    size={"small"}
-                                                    sx={{
-                                                        width: "12vw",
-                                                    }}
-                                                    onChange={(e) => {
-                                                        // ensure type is number
-                                                        if (typeof e.target.value === "string") {
-                                                            return
-                                                        }
-                                                        setTierFilter(e.target.value);
-                                                        freshSearch({
-                                                            tier: e.target.value !== -1 && typeof e.target.value === "number" ? e.target.value : undefined
-                                                        })
-                                                    }}
-                                                >
-                                                    <MenuItem value={-1}>
-                                                        <em>Renown</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={0}>
-                                                        <em>Renown 1</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={1}>
-                                                        <em>Renown 2</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={2}>
-                                                        <em>Renown 3</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={3}>
-                                                        <em>Renown 4</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={4}>
-                                                        <em>Renown 5</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={5}>
-                                                        <em>Renown 6</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={6}>
-                                                        <em>Renown 7</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={7}>
-                                                        <em>Renown 8</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={8}>
-                                                        <em>Renown 9</em>
-                                                    </MenuItem>
-                                                    <MenuItem value={9}>
-                                                        <em>Renown 10</em>
-                                                    </MenuItem>
-                                                </Select>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                ) : null}
-                                {SearchBox()}
-                            </Box>
-                        </Typography>
-                    </div>
+                            </Grid>
+                        </Grid>
+                        <RecentActivity/>
+                    </Box>
                 )}
                 <Dialog
                     open={mutual}
