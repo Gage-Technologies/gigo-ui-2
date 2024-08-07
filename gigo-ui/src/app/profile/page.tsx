@@ -1,6 +1,6 @@
 'use client'
 import * as React from "react";
-import {SyntheticEvent, useEffect, useState} from "react";
+import {SyntheticEvent, useEffect, useMemo, useState} from "react";
 import {
     Autocomplete,
     Box,
@@ -24,7 +24,10 @@ import {
     List,
     ListItem,
     ListItemAvatar,
-    ListItemText, DialogActions, IconButton
+    ListItemText, DialogActions, IconButton,
+    LinearProgress,
+    CircularProgress,
+    Container
 } from "@mui/material";
 import Image from "next/image";
 import {theme} from "@/theme";
@@ -90,6 +93,13 @@ import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
 import {Helmet, HelmetProvider} from "react-helmet-async";
 import {useRouter, useSearchParams} from "next/navigation";
+import SchoolIcon from '@mui/icons-material/School';
+import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { format, subDays } from 'date-fns';
+import DetourCard from "@/components/Journey/DetourCard";
+import BytesCard from "@/components/BytesCard";
+
 
 type BackgroundArray = {
     modules: string;
@@ -141,7 +151,7 @@ function Profile() {
     const [backgroundTab, setBackgroundTab] = React.useState(0);
     const [backgroundArray, setBackgroundArray] = useState<BackgroundArray[]>([]);
     const [profileBackgroundArray, setProfileBackgroundArray] = React.useState<BackgroundArray[]>([]);
-    const [popupOpen, setPopupOpen] = React.useState(false);
+    const [friendsPopupOpen, setFriendsPopupOpen] = React.useState(false);
     const [requestPopupOpen, setRequestPopupOpen] = React.useState(false);
     const [addFriendsPopupOpen, setAddFriendsPopupOpen] = React.useState(false);
     const [mutual, setMutual] = React.useState(false)
@@ -151,7 +161,7 @@ function Profile() {
     const authState = useAppSelector(selectAuthState);
 
 
-    const [userActivity, setUserActivity] = React.useState([])
+    const [userActivity, setUserActivity] = React.useState<Array<{ date: string; events: number }>>([]);
 
     const [userData, setUserData] = React.useState(null)
 
@@ -227,25 +237,33 @@ function Profile() {
     const [currentXp, setCurrentXp] = React.useState(0)
     const [maxXp, setMaxXp] = React.useState(0)
     const [minXp, setMinXp] = React.useState(0)
+    const [isXpLoading, setIsXpLoading] = useState(true);
 
     const getXP = async () => {
-        let xp = await fetch(
-            `${config.rootPath}/api/xp/getXP`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: '{}',
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
+        setIsXpLoading(true);
+        try {
+            let xp = await fetch(
+                `${config.rootPath}/api/xp/getXP`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: '{}',
+                    credentials: 'include'
+                }
+            ).then(async (response) => response.json())
 
-        const [res] = await Promise.all([xp])
-        if (res !== undefined){
-            setCurrentXp(res["current_xp"])
-            setMaxXp(res["max_xp"])
-            setMinXp(res["min_xp"])
+            const [res] = await Promise.all([xp])
+            if (res !== undefined){
+                setCurrentXp(res["current_xp"])
+                setMaxXp(res["max_xp"])
+                setMinXp(res["min_xp"])
+            }
+        } catch (error) {
+            console.error("Failed to fetch XP data:", error);
+        } finally {
+            setIsXpLoading(false);
         }
     }
 
@@ -386,27 +404,26 @@ function Profile() {
         setBackgroundArray(profileBackgroundArray.slice(0,3))
     }
 
+    const [dataLoaded, setDataLoaded] = useState(false);
+
     useEffect(() => {
-        setLoading(true)
-        getXP()
-        getUserProjects().then()
-        // infiniteScrollHandler().then()
-        getFriendsList().then()
-        getRequestList().then()
-        fetchBackgroundData()
-        setLoading(false)
-    }, [])
+        if (!dataLoaded) {
+            const fetchData = async () => {
+                setLoading(true);
+                await Promise.all([
+                    getXP(),
+                    getUserProjects(),
+                    getFriendsList(),
+                    getRequestList(),
+                    fetchBackgroundData()
+                ]);
+                setDataLoaded(true);
+                setLoading(false);
+            };
 
-    const [typeTab, setTypeTab] = React.useState("Published")
-
-    const handleChange = async(event: React.SyntheticEvent, newValue: string) => {
-        setTypeTab(newValue);
-        newValue === "Published" ? setPublishedBool(true) : setPublishedBool(false)
-        // setSearchOptions([])
-        freshSearch({published: newValue === "Published"})
-    };
-
-    // let {id} = useParams();
+            fetchData();
+        }
+    }, [dataLoaded]);
 
     const getQueryProjects = async (fresh: boolean = false, paramOverrides: Object = {}) => {
         let params = {
@@ -472,89 +489,6 @@ function Profile() {
             freshSearch()
         }
     }, [debounceQuery]);
-
-
-    const SearchBox = () => {
-        let elements = searchOptions.sort((a: Post, b: Post) => {
-            const dateA: Date = new Date(a["updated_at"]);
-            const dateB: Date = new Date(b["updated_at"]);
-            // @ts-ignore
-            return dateB - dateA;
-        }).map((project) => {
-            return (
-                <Grid item key={project._id}>
-                    <div style={!isMobile ? {
-                        display: "flex",
-                        transform: `scale(${scaleFactor})`,
-                        marginLeft: sidebarOpen ? "-19%" : 0,
-                        marginRight: chatOpened ? "0%" : 0,
-                        padding: (sidebarOpen || chatOpened) ? '0px' : '20px',
-                    } : {
-                        display: "flex",
-                        transform: `scale(${scaleFactor})`,
-                        marginLeft: sidebarOpen ? "-19%" : 0,
-                        marginRight: chatOpened ? "0%" : 0,
-                        padding: (sidebarOpen || chatOpened) ? '0px' : '20px',
-                        width: "90vw"
-                    }}>
-                        <ProjectCard
-                            projectId={project["_id"]}
-                            width={window.innerWidth < 1000 ? 'fit-content' : "20vw"}
-                            projectTitle={project["title"]}
-                            projectDesc={project["description"]}
-                            projectThumb={config.rootPath + project["thumbnail"]}
-                            projectDate={project["updated_at"]}
-                            projectType={project["post_type_string"]}
-                            renown={project["tier"]}
-                            onClick={() => router.push("/challenge/" + project["_id"])}
-                            userTier={authState.tier}
-                            userThumb={config.rootPath + "/static/user/pfp/" + authState.id}
-                            userId={authState.id}
-                            username={authState.userName}
-                            backgroundName={authState.backgroundName}
-                            backgroundPalette={authState.backgroundColor}
-                            backgroundRender={authState.backgroundRenderInFront}
-                            exclusive={project["challenge_cost"] !== null}
-                            hover={false}
-                            role={authState.role}
-                        />
-                    </div>
-                </Grid>
-            )
-        })
-
-        if (isFetching) {
-            elements.push((
-                <Grid item xs={12}>
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            width: "100%"
-                        }}
-                    >
-                        <MoonLoader color={theme.palette.primary.main} loading={true} size={35}/>
-                    </div>
-                </Grid>
-            ))
-        }
-
-        return (
-            <>
-                {elements.map((element, index) => (
-                    <React.Fragment key={element.props.projectId}>
-                        {element}
-                    </React.Fragment>
-                ))}
-            </>
-        )
-    }
-
-
-
-    let minorValues = ["Published", "Unpublished"]
-
 
     const handleChanges = (event: React.SyntheticEvent, newValue: number) => {
         switch(newValue){
@@ -719,8 +653,6 @@ function Profile() {
         }
     }
 
-
-
     const handleAddFriends = () => {
         setAddFriendsPopupOpen(true);
     }
@@ -732,7 +664,7 @@ function Profile() {
                     <Tooltip title="Go Back" placement="top">
                         <Button
                             onClick={() => {
-                                setPopupOpen(false);
+                                setFriendsPopupOpen(false);
                             }}
                             sx={!isMobile ?{
                                 marginRight: "16px",
@@ -798,7 +730,7 @@ function Profile() {
                 <DialogActions style={{ justifyContent: 'center' }}>
                     <Button onClick={() => {
                         setRequestPopupOpen(true);
-                        setPopupOpen(false);
+                        setFriendsPopupOpen(false);
                     }} color="primary">
                         Friend Requests
                     </Button>
@@ -1264,6 +1196,654 @@ function Profile() {
         )
     }
 
+    const RecentActivity = () => {
+        const [loading, setLoading] = useState(true)
+        const [bytesData, setBytesData] = useState([])
+        const [journeysData, setJourneysData] = useState([])
+        const [projectsData, setProjectsData] = useState([])
+      
+        useEffect(() => {
+          const fetchData = async () => {
+            try {
+              const [bytesResponse, journeysResponse, projectsResponse] = await Promise.all([
+                  fetch(`${config.rootPath}/api/profile/getAttemptedBytes`,
+                  {
+                      method: 'POST',
+                      headers: {
+                          'Content-Type': 'application/json',
+                          'Cookie': ''
+                      },
+                      body: '{}',
+                      credentials: 'include'
+                  }),
+                  fetch(`${config.rootPath}/api/profile/getAttemptedJourneys`,
+                      {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Cookie': ''
+                          },
+                          body: '{}',
+                          credentials: 'include'
+                      }),
+                  fetch(`${config.rootPath}/api/profile/getAttemptedProjects`,
+                      {
+                          method: 'POST',
+                          headers: {
+                              'Content-Type': 'application/json',
+                              'Cookie': ''
+                          },
+                          body: '{}',
+                          credentials: 'include'
+                      }),
+              ])
+      
+              const bytes = await bytesResponse.json()
+              const journeys = await journeysResponse.json()
+              const projects = await projectsResponse.json()
+      
+              setBytesData(bytes.bytes)
+              setJourneysData(journeys.units)
+              setProjectsData(projects.projects)
+              setLoading(false)
+            } catch (error) {
+              console.error('error fetching data:', error)
+              setLoading(false)
+            }
+          }
+      
+          fetchData()
+        }, [])
+      
+        if (loading) {
+          return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+              <CircularProgress />
+            </Box>
+          )
+        }
+      
+        return (
+          <Container maxWidth="lg">
+            <Box sx={{ mt: 4, mb: 4 }}>
+              <Typography variant="h4" component="h1" gutterBottom>
+                recent activity
+              </Typography>
+              
+              {/* journeys row */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  journeys
+                </Typography>
+                <Grid container spacing={2}>
+                  {Array.isArray(journeysData) ? (
+                    journeysData.slice(0, 3).map((journey: any) => (
+                      <Grid item xs={12} sm={6} md={4} key={journey._id}>
+                        <DetourCard data={journey} width={"100%"} />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12}>
+                      <Typography variant="body1">no journey data available</Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
+      
+              {/* bytes row */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  bytes
+                </Typography>
+                <Grid container spacing={4}>
+                  {Array.isArray(bytesData) ? (
+                    bytesData.slice(0, 5).map((byte: any) => (
+                      <Grid item xs={12} sm={6} md={2.4} key={byte._id}>
+                       <BytesCard
+                            height={"355px"}
+                            imageHeight={355}
+                            width={'100%'}
+                            imageWidth={'100%'}
+                            bytesId={byte._id}
+                            bytesDesc={"Concept Explanation"}
+                            bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
+                            language={byte.langauge}
+                            animate={false} 
+                            onClick={() => router.push("/byte/" + byte._id)}
+                        />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12}>
+                      <Typography variant="body1">no byte data available</Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
+      
+              {/* projects row */}
+              <Box>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  projects
+                </Typography>
+                <Grid container spacing={2}>
+                  {Array.isArray(projectsData) ? (
+                    projectsData.slice(0, 3).map((project: any) => (
+                      <Grid item xs={12} sm={6} md={4} key={project._id}>
+                         <ProjectCard
+                            width={"100%"}
+                            imageWidth={"100%"}
+                            projectId={project._id}
+                            projectTitle={project.title}
+                            projectDesc={project.description}
+                            projectThumb={config.rootPath + project.thumbnail}
+                            projectDate={project.updated_at}
+                            projectType={project.post_type_string}
+                            renown={project.tier}
+                            onClick={() => router.push("/challenge/" + project._id)}
+                            userThumb={config.rootPath + "/static/user/pfp/" + project.author_id}
+                            userId={project.author_id}
+                            username={project.author}
+                            backgroundName={project.background_name}
+                            backgroundPalette={project.background_color}
+                            exclusive={project["challenge_cost"] !== null}
+                            hover={false}
+      
+                        />
+                      </Grid>
+                    ))
+                  ) : (
+                    <Grid item xs={12}>
+                      <Typography variant="body1">no project data available</Typography>
+                    </Grid>
+                  )}
+                </Grid>
+              </Box>
+            </Box>
+          </Container>
+        )
+      }
+
+    const userProfileIcon = () => {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start',
+                    paddingTop: '1%',
+                    paddingLeft: '25px',
+                    height: '400px'
+                }}
+            >
+                <UserIcon
+                    userId={authState.id}
+                    userTier={authState.tier}
+                    userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
+                    size={300}
+                    backgroundName={authState.backgroundName}
+                    backgroundPalette={authState.backgroundColor}
+                    backgroundRender={authState.backgroundRenderInFront}
+                    profileButton={false}
+                    pro={authState.role > 0}
+                    mouseMove={false}
+                />
+            </Box>
+        )
+    }
+
+    const userInfoDisplay = () => {
+        return (
+            <Box sx={{
+                padding: '16px',
+                marginBottom: '16px',
+                display: 'flex',
+                justifyContent: 'center'
+            }}>
+                <Box sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: "100%",
+                    maxWidth: "600px"  // Adjust this value as needed
+                }}>
+                    {userProfileIcon()}
+                    <div style={{height: "40px"}}/>
+                    <Box
+                        sx={{
+                            boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+                            color: 'text.primary',
+                            borderRadius: 2,
+                            p: 4,
+                            width: "100%",
+                            background: authState.role > 0
+                                ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
+                                : '#282826',
+                            position: 'relative',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <div style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            width: "100%",
+                            position: 'relative',
+                            zIndex: 2
+                        }}>
+                            <Typography sx={{
+                                width: "100%",
+                                textAlign: 'center',
+                                fontSize: "2.5rem",
+                                fontWeight: 'bold',
+                                textTransform: 'uppercase',
+                                letterSpacing: '0.1em',
+                                textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                            }}>
+                                {username.charAt(0).toUpperCase() + username.slice(1).toLowerCase()}
+                            </Typography>
+                        </div>
+                        {authState.role > 0 && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '-50%',
+                                left: '-50%',
+                                right: '-50%',
+                                bottom: '-50%',
+                                background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+                                transform: 'rotate(30deg)',
+                                zIndex: 1
+                            }}></div>
+                        )}
+                    </Box>
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                        mt: 2
+                    }}>
+                        <Button
+                            onClick={() => setFriendsPopupOpen(true)}
+                            variant="contained"
+                            sx={{
+                                color: theme.palette.text.primary,
+                                borderRadius: 1,
+                                p: 1,
+                                mr: 1,
+                                backgroundColor: "secondary",
+                                minWidth: "120px"
+                            }}
+                        >
+                            Friends
+                        </Button>
+                        <Button
+                            onClick={() => getUserBackgroundInventory()}
+                            variant={"contained"}
+                            sx={{
+                                color: theme.palette.text.primary,
+                                borderRadius: 1,
+                                p: 1,
+                                ml: 1,
+                                backgroundColor: "secondary",
+                                minWidth: "120px"
+                            }}
+                        >
+                            Edit Background
+                        </Button>
+                    </Box>
+                </Box>
+            </Box>
+        )
+    }
+
+    const TopStatsBoxes = () => {
+        const [isStatsLoading, setIsStatsLoading] = useState(true);
+        const [stats, setStats] = useState<{
+            masteredConcepts: number;
+            highestStreak: number;
+            activityData: { date: string; events: number }[];
+        }>({
+            masteredConcepts: 0,
+            highestStreak: 0,
+            activityData: []
+        });
+
+        useEffect(() => {
+            const fetchStats = async () => {
+                try {
+                    const [statsResponse, streakResponse] = await Promise.all([
+                        fetch(`${config.rootPath}/api/stats/getUserProgrammingStats`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: '{}',
+                            credentials: 'include'
+                        }),
+                        fetch(`${config.rootPath}/api/stats/checkHotStreak`, {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: '{}',
+                            credentials: 'include'
+                        })
+                    ]);
+
+                    const statsData = await statsResponse.json();
+                    const streakData = await streakResponse.json();
+
+                    // Fake activity data
+                    const fakeActivityData = [
+                        { date: '2023-06-01', events: 5 },
+                        { date: '2023-06-02', events: 8 },
+                        { date: '2023-06-03', events: 3 },
+                        { date: '2023-06-04', events: 10 },
+                        { date: '2023-06-05', events: 7 },
+                        { date: '2023-06-06', events: 22 },
+                        { date: '2023-06-07', events: 6 }
+                    ];
+
+                    setStats({
+                        masteredConcepts: statsData.stats?.numbered_mastered_concepts || 0,
+                        highestStreak: streakData.highest_streak || 0,
+                        activityData: fakeActivityData
+                    });
+                    setIsStatsLoading(false);
+                } catch (e) {
+                    console.log("Failed to get stats: ", e);
+                    setIsStatsLoading(false);
+                }
+            };
+
+            fetchStats();
+        }, []);
+
+        const formatChartData = (data: any[]) => {
+            const chartData = [["Date", "Events"]];
+            data.forEach(item => {
+                chartData.push([format(new Date(item.date), 'MMM d'), item.events]);
+            });
+            return chartData;
+        };
+
+        const chartData = formatChartData(stats.activityData);
+
+        const chartOptions = {
+            title: "Activity",
+            curveType: "none",
+            legend: { position: "none" },
+            hAxis: { 
+                title: "Date",
+                textStyle: { color: '#FFF' },
+                titleTextStyle: { color: '#FFF' }
+            },
+            vAxis: { 
+                title: "Items Completed", 
+                viewWindow: { max: 30 },
+                textStyle: { color: '#FFF' },
+                titleTextStyle: { color: '#FFF' }
+            },
+            colors: [theme.palette.primary.main],
+            backgroundColor: 'transparent',
+            chartArea: { backgroundColor: 'transparent' },
+            titleTextStyle: { color: '#FFF' },
+            pointSize: 5,
+            lineWidth: 2,
+        };
+
+        const LoadingBox = () => (
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(128, 128, 128, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2,
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        animation: 'sheen 1.5s infinite',
+                    },
+                    '@keyframes sheen': {
+                        '0%': { left: '-100%' },
+                        '100%': { left: '100%' }
+                    },
+                }}
+            />
+        );
+
+        return (
+            <Grid container spacing={4}>
+                <Grid item xs={8}>
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            border: '1px solid',
+                            borderColor: theme.palette.primary.light,
+                            borderRadius: '10px',
+                            padding: 2,
+                            height: '100%',
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        {isStatsLoading && <LoadingBox />}
+                        {!isStatsLoading && (
+                            <Chart
+                                chartType="LineChart"
+                                width="100%"
+                                height="100%"
+                                data={chartData}
+                                options={chartOptions}
+                            />
+                        )}
+                    </Box>
+                </Grid>
+                <Grid item xs={4}>
+                    <Grid container direction="column" spacing={2}>
+                        {/* Mastered Concepts */}
+                        <Grid item>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    padding: 1,
+                                    height: '9vh',
+                                    overflow: 'hidden',
+                                    border: '1px solid',
+                                    borderColor: theme.palette.primary.light,
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                {isStatsLoading && <LoadingBox />}
+                                {!isStatsLoading && (
+                                    <>
+                                        <Tooltip title="This is the number of unique units you have finished in Journeys. Each completion of a unit counts towards a mastered concept.">
+                                            <Box sx={{ position: 'absolute', top: 2, right: 2 }}>
+                                                <HelpOutlineIcon sx={{ fontSize: 10 }}/>
+                                            </Box>
+                                        </Tooltip>
+                                        <Box display="flex" flexDirection="row" alignItems="center">
+                                            <SchoolIcon sx={{ fontSize: 30, marginRight: 1 }} />
+                                            <Typography variant="body2">Mastered Concepts</Typography>
+                                        </Box>
+                                        <Typography variant="h5">{stats.masteredConcepts}</Typography>
+                                    </>
+                                )}
+                            </Box>
+                        </Grid>
+
+                        {/* Highest Hot Streak */}
+                        <Grid item>
+                            <Box
+                                sx={{
+                                    position: 'relative',
+                                    padding: 1,
+                                    height: '9vh',
+                                    overflow: 'hidden',
+                                    border: '1px solid',
+                                    borderColor: theme.palette.primary.light,
+                                    borderRadius: '10px',
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    alignItems: 'center',
+                                    justifyContent: 'space-between'
+                                }}
+                            >
+                                {isStatsLoading && <LoadingBox />}
+                                {!isStatsLoading && (
+                                    <>
+                                        <Tooltip title="Keep track of your hot streaks! When you complete 3 bytes in a row without failing once, you go on a hot streak. See how far you can get!">
+                                            <Box sx={{ position: 'absolute', top: 2, right: 2 }}>
+                                                <HelpOutlineIcon sx={{ fontSize: 10 }}/>
+                                            </Box>
+                                        </Tooltip>
+                                        <Box display="flex" flexDirection="row" alignItems="center">
+                                            <LocalFireDepartmentIcon sx={{ fontSize: 30, marginRight: 1 }} />
+                                            <Typography variant="body2">Highest Hot Streak</Typography>
+                                        </Box>
+                                        <Typography variant="h5">{stats.highestStreak}</Typography>
+                                    </>
+                                )}
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        );
+    };
+
+    const userXpDisplay = () => {
+        const LoadingBox = () => (
+            <Box
+                sx={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    backgroundColor: 'rgba(128, 128, 128, 0.7)',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    zIndex: 2,
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        animation: 'sheen 1.5s infinite',
+                    },
+                    '@keyframes sheen': {
+                        '0%': { left: '-100%' },
+                        '100%': { left: '100%' }
+                    },
+                }}
+            />
+        );
+
+        return (
+            <Grid item>
+                <Box sx={{ 
+                    position: 'relative',
+                    border: '1px solid',
+                    borderColor: theme.palette.primary.light,
+                    borderRadius: '20px',
+                    height: '400px',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '20px',
+                }}>
+                    {isXpLoading && <LoadingBox />}
+                    <Grid container spacing={2} sx={{ height: '100%' }}>
+                        <Grid item sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Image
+                                alt="renown"
+                                style={{
+                                    height: '26vh',
+                                    width: 'auto',
+                                    overflow: 'hidden',
+                                }}
+                                src={renownImg}
+                            />
+                        </Grid>
+                        <Grid item xs>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'center', alignItems: 'center' }}>
+                                <Typography variant="h1" align="center">
+                                    {`Renown ${userData === null ? 'N/A' : userData['tier'] + 1}`}
+                                </Typography>
+                                <Box sx={{ textAlign: 'center' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Typography variant="h2" sx={{ marginRight: '10px' }}>
+                                            Level
+                                        </Typography>
+                                        <Box sx={{ position: 'relative', width: 'fit-content', margin: 'auto' }}>
+                                            <Image
+                                                alt="level"
+                                                style={{
+                                                    height: '7vh',
+                                                    width: 'auto',
+                                                }}
+                                                src={levelImg}
+                                            />
+                                            <Typography 
+                                                variant="h5"
+                                                sx={{ 
+                                                    position: 'absolute', 
+                                                    top: '57.5%', 
+                                                    left: '50%', 
+                                                    transform: 'translate(-50%, -75%)',
+                                                    color: 'white',
+                                                    textShadow: '1px 1px 2px black',
+                                                    fontSize: '1.1em',
+                                                }}
+                                            >
+                                                {userData === null ? 'N/A' : userData['level'] + 1}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Grid>
+                    </Grid>
+                    <Box sx={{ alignItems: 'center', mt: 2 }}>
+                        <Typography variant="h6" align="center" sx={{ mb: 1 }}>
+                            {`${currentXp} / ${maxXp} XP`}
+                        </Typography>
+                        <LinearProgress
+                            variant="determinate"
+                            value={(currentXp / maxXp) * 100}
+                            sx={{
+                                height: '1.2vw',
+                                borderRadius: '30px',
+                                '& .MuiLinearProgress-bar': {
+                                    background: barColor,
+                                },
+                                backgroundColor: '#535353',
+                                margin: '10px 0',
+                            }}
+                        />
+                    </Box>
+                </Box>
+            </Grid>
+        );
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
@@ -1283,722 +1863,34 @@ function Profile() {
                         </Helmet>
                     </HelmetProvider>
                 )}
-                {/*<AppWrapper/>*/}
                 {loading ? (
                     <div>
                         <ThreeDots/>
                     </div>
                 ) : (
-                    <div>
-                        <Typography sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            position: "relative",
-                            transform: `scale(${scaleFactor})`,
-                            marginLeft: sidebarOpen ? "-9%" : 0,
-                            marginRight: chatOpened ? "65%" : 0
-                        }}>
-                            <Typography sx={{display: "flex", flexDirection: "column", width: "20vw", position:"sticky" }}>
-                                {!isMobile ? (
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'left',
-                                            justifyContent: 'left',
-                                            paddingTop: `1%`,
-                                            paddingLeft: `25px`,
-                                            height: "400px"
-                                        }}
-                                    >
-                                        <UserIcon
-                                            userId={authState.id}
-                                            userTier={authState.tier}
-                                            userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                            size={300}
-                                            backgroundName={authState.backgroundName}
-                                            backgroundPalette={authState.backgroundColor}
-                                            backgroundRender={authState.backgroundRenderInFront}
-                                            profileButton={false}
-                                            pro={authState.role > 0}
-                                            mouseMove={false}
-                                        />
-                                    </Box>
-                                ) : (
-                                    <Box style={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        height: "auto",
-                                        width: "100vw",
-                                        flexDirection: "column",
-                                        marginBottom: "25px",
-                                        marginTop: "10%"
-                                    }}>
-                                        <UserIcon
-                                            userId={authState.id}
-                                            userTier={authState.tier}
-                                            userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                            size={185}
-                                            backgroundName={authState.backgroundName}
-                                            backgroundPalette={authState.backgroundColor}
-                                            backgroundRender={authState.backgroundRenderInFront}
-                                            profileButton={false}
-                                            pro={authState.role > 0}
-                                            mouseMove={false}
-                                        />
-                                        <Typography variant={"h4"} style={{
-                                            marginTop: "10px",
-                                        }}>
-                                            {username.charAt(0).toUpperCase() + username.slice(1).toLowerCase()}
-                                        </Typography>
-                                    </Box>
-                                )}
-                                {window.innerWidth <= 1000 ? (
-                                    <div style={{
-                                        width: "100%",
-                                        height: "15%",
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        position: "relative",
-                                        marginTop: "-10%",
-                                        marginBottom: "45%",
-                                        marginLeft: "200%",
-                                    }}>
-                                        <Button
-                                            onClick={() => setPopupOpen(true)}
-                                            variant="contained"
-                                            sx={{
-                                                color: theme.palette.text.primary,
-                                                borderRadius: 1,
-                                                p: 1,
-                                                backgroundColor: "secondary",
-                                            }}
-                                        >
-                                            Friends
-                                        </Button>
-                                    </div>
-                                ) : null}
-                                {window.innerWidth <= 1000 ? (
-                                    <div style={{marginBottom: "20px"}}>
-                                        <Grid item style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            paddingLeft: "10%",
-                                            width: "80vw",
-                                            alignItems: "center"
-                                        }}>
-                                            <Image
-                                                alt="renown"
-                                                style={!isMobile ? {
-                                                    height: "20vh",
-                                                    width: "auto",
-                                                    overflow: "hidden",
-                                                } : {
-                                                    height: "80px",
-                                                    overflow: "hidden",
-                                                }}
-                                                src={renownImg}
-                                            />
-                                            <Box display="flex" flexDirection="column" alignItems="left"
-                                                 marginLeft={"10px"}>
-                                                <Typography variant="h4" sx={{ fontSize: "18px", whiteSpace: "nowrap" }}>
-                                                    {`Renown ${userData === null ? "N/A" : userData["tier"] + 1}`}
-                                                </Typography>
-
-                                                <Typography sx={{fontSize: "14px"}}
-                                                            variant="h6">{`${currentXp} / ${maxXp} XP`}</Typography>
-                                            </Box>
-                                        </Grid>
-                                        <div style={{
-                                            display: "flex",
-                                            width: "100vw",
-                                            justifyContent: "center",
-                                            paddingTop: "10px",
-                                            position: "relative"
-                                        }}>
-                                            <Box sx={{
-                                                flexGrow: 1,
-                                                display: 'flex',
-                                                zIndex: 2,
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                position: "relative"
-                                            }}>
-                                                <ProgressBar
-                                                    padding={"10px"}
-                                                    completed={(currentXp - minXp) / (maxXp - minXp) * 100}
-                                                    customLabel={" "}
-                                                    width={"90vw"}
-                                                    height={"1vw"}
-                                                    borderRadius={"0px"}
-                                                    animateOnRender={true}
-                                                    barContainerClassName={"container"}
-                                                    bgColor={barColor}
-                                                />
-                                                <Grid item sx={{transform: "translate(-5vw, 1vh)", zIndex: 1}}>
-                                                    <Box position="relative">
-                                                        <Image
-                                                            alt="level"
-                                                            style={{
-                                                                height: "45px",
-                                                                width: "auto",
-                                                                overflow: "hidden",
-                                                            }}
-                                                            src={levelImg}
-                                                        />
-                                                        <Typography
-                                                            variant="h6"
-                                                            component="span"
-                                                            style={{
-                                                                color: "white",
-                                                                position: "absolute",
-                                                                top: "45%",
-                                                                left: "50%",
-                                                                transform: "translate(-50%, -50%)",
-                                                            }}
-                                                        >
-                                                            {userData === null ? "N/A" : userData["level"] + 1}
-                                                        </Typography>
-                                                    </Box>
-                                                </Grid>
-                                            </Box>
-                                        </div>
-                                    </div>
-
-                                ) : null}
-                                {editBackgroundModal()}
-                                <div style={{height: "10px"}}/>
-                                {!isMobile ? (
-                                    <Box
-                                        sx={{
-                                            boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
-                                            color: 'text.primary',
-                                            borderRadius: 1,
-                                            p: 3,
-                                            marginLeft: "120px"
-                                        }}
-                                    >
-                                        <div style={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                            justifyContent: "center",
-                                            alignItems: "center"
-                                        }}>
-                                            <Typography sx={{
-                                                display: 'flex',
-                                                width: "100%",
-                                                justifyContent: 'left',
-                                                textSizeAdjust: "150%"
-                                            }}>
-                                                {username.charAt(0).toUpperCase() + username.slice(1).toLowerCase()}
-                                            </Typography>
-                                            <Typography sx={{
-                                                display: 'flex',
-                                                width: "100%", justifyContent: "left"
-                                            }}>
-                                                {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
-                                            </Typography>
-                                        </div>
-                                        <hr style={{color: "white"}}/>
-                                        {userData !== null ? userData["bio"] : "N/A"}
-                                    </Box>
-                                ) : (
-                                    <div style={{
-                                        display: "flex",
-                                        flexDirection: "row",
-                                        width: "100vw",
-                                        marginTop: "50px",
-                                        paddingLeft: "5%",
-                                        paddingRight: "5%"
-                                    }}>
-                                        <Box
-                                            sx={{
-                                                color: 'text.primary',
-                                                borderRadius: 1,
-                                                p: 3,
-                                                width: "fit-content",
-                                                justifyContent: "left",
-                                                paddingLeft: "5%"
-                                            }}
-                                        >
-                                            <Typography sx={window.innerWidth <= 1000 && window.innerWidth > 300 ? {
-                                                display: 'flex',
-                                                width: "130px",
-                                                justifyContent: "left",
-                                                fontSize: "16px",
-                                                marginLeft: "10px"
-                                            } : {
-                                                display: 'flex',
-                                                width: "130px", justifyContent: "left", fontSize: "12px"
-                                            }}>
-                                                {userData !== null ? userData["follower_count"] + " Subscribers" : "n/A"}
-                                            </Typography>
-                                        </Box>
-                                        <div style={{
-                                            display: "flex",
-                                            flexDirection: "row",
-                                            justifyContent: "right",
-                                            width: "100%",
-                                            marginRight: "5px"
-                                        }}>
-                                            <div style={{position: 'relative'}}>
-                                                <Image
-                                                    alt="coffee-pot"
-                                                    style={!isMobile ? {
-                                                        height: "15vh",
-                                                        width: "auto",
-                                                        overflow: "hidden",
-                                                        zIndex: 2
-                                                    } : {
-                                                        height: "50px",
-                                                        width: "auto",
-                                                        overflow: "hidden",
-                                                        zIndex: 2,
-                                                        transform: "translate(0, -30%)",
-                                                        marginRight: "5px"
-                                                    }}
-                                                    src={coffeePot}
-                                                />
-                                                <div
-                                                    style={{
-                                                        color: "white",
-                                                        position: "absolute",
-                                                        top: "40%",
-                                                        left: "50%",
-                                                        transform: "translate(-35%, -90%)",
-                                                        zIndex: 2,
-                                                    }}
-                                                >
-                                                    {userData === null ? "N/A" : userData["coffee"]}
-                                                </div>
-                                            </div>
-                                            <div
-                                                style={window.innerWidth <= 1000 && window.innerWidth > 300 ? {
-                                                    color: "white",
-                                                    fontSize: "16px", marginRight: "10px"
-                                                } : {
-                                                    color: "white",
-                                                    fontSize: "12px"
-                                                }}
-                                            >
-                                                Coffee
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                                {!isMobile ? (
-                                    <div style={{width: "100%", alignItems: "center", display: "flex", flexDirection: "row", paddingTop: "10px", marginLeft: "40px"}}>
-                                        <Button
-                                            onClick={() => setPopupOpen(true)}
-                                            variant="contained"
-                                            sx={{
-                                                color: theme.palette.text.primary,
-                                                borderRadius: 1,
-                                                p: 1,
-                                                marginLeft: "30px",
-                                                backgroundColor: "secondary",
-                                                width: "100%",
-                                                height: "80%",
-                                                minWidth: "120px"
-                                            }}
-                                        >
-                                            Friends
-                                        </Button>
-                                        <Button
-                                            onClick={() => getUserBackgroundInventory()}
-                                            variant={"contained"}
-                                            sx={{
-                                                color: theme.palette.text.primary,
-                                                borderRadius: 1,
-                                                p: 1,
-                                                marginLeft: "30px",
-                                                backgroundColor: "secondary",
-                                                width: "100%",
-                                                height: "80%",
-                                                minWidth: "120px"
-                                            }}
-                                        >
-                                            Edit Background
-                                        </Button>
-                                    </div>
-                                ) : null}
-                            </Typography>
-                            {!isMobile ? (
-                                <Box
-                                    sx={{
-                                        display: `flex`,
-                                        alignItems: `center`,
-                                        justifyContent: "right",
-                                        width: "80%",
-                                        flexDirection: "column",
-                                        float: "right",
-                                        marginLeft: "11%",
-                                        transform: chatOpened ? `scale(1.05)` : 0,
-                                    }}>
-                                    <Grid container spacing={2} width={"105.6%"} sx={{
-                                        paddingTop: "3.6%",
-                                        marginLeft: chatOpened ? "25%" : "0%",
-                                    }}>
-                                        <Grid item>
-                                            <Image
-                                                alt="renown"
-                                                style={{
-                                                    height: "26vh",  // 20vh * 1.2
-                                                    width: "auto",
-                                                    overflow: "hidden",
-                                                }}
-                                                src={renownImg}
-                                            />
-                                        </Grid>
-                                        <Grid item xs={12} md={4}>
-                                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                                                <Box display="flex" flexDirection="column" alignItems="left">
-                                                    { chatOpened ? (
-                                                        <Typography
-                                                            variant="h4"
-                                                            sx={{
-                                                                display: 'flex',
-                                                                flexDirection: 'column',
-                                                                alignItems: 'center',
-                                                                transform: "scale(0.85) translate(-1.5vw, 0)"
-                                                            }}
-                                                        >
-                                                            <span>Renown</span>
-                                                            <span>{userData === null ? "N/A" : (userData["tier"] + 1)}</span>
-                                                        </Typography>
-                                                    ) : (
-                                                        <Typography variant="h4" sx={{transform: "translate(-1.5vw, 0)"}}>
-                                                            {`Renown ${userData === null ? "N/A" : userData["tier"] + 1}`}
-                                                        </Typography>
-                                                    )}
-                                                    <div style={{ display: 'flex', alignItems: 'left' }}>
-                                                        <Typography sx={{paddingRight: "10px"}} variant="h5">Level</Typography>
-                                                        <Grid item sx={{zIndex: 1}}>
-                                                            <Box position="relative" sx={{transform: "translate(0px, -0.8vh)"}}>
-                                                                <Image
-                                                                    alt="level"
-                                                                    style={{
-                                                                        height: "6vh",
-                                                                        width: "auto",
-                                                                        overflow: "hidden",
-                                                                    }}
-                                                                    src={levelImg}
-                                                                />
-                                                                <Typography
-                                                                    variant="h6"
-                                                                    component="span"
-                                                                    style={{
-                                                                        color: "white",
-                                                                        position: "absolute",
-                                                                        top: "45%",
-                                                                        left: "50%",
-                                                                        transform: "translate(-50%, -50%)",
-                                                                    }}
-                                                                >
-                                                                    {userData === null ? "N/A" : userData["level"] + 1}
-                                                                </Typography>
-                                                            </Box>
-                                                        </Grid>
-                                                    </div>
-                                                    <Typography sx={{paddingRight: "10px"}} variant="h6">{`${currentXp} / ${maxXp} XP`}</Typography>
-                                                </Box>
-                                                <Box sx={{ flexGrow: 1, alignItems: 'flex-end', display: 'flex', zIndex: 2}}>
-                                                    <ProgressBar
-                                                        padding={"10px"}
-                                                        completed={(currentXp - minXp) / (maxXp - minXp) * 100}
-                                                        customLabel={" "}
-                                                        width={"50%"}
-                                                        height={"1vw"}
-                                                        borderRadius={"0px"}
-                                                        animateOnRender={true}
-                                                        barContainerClassName={"container"}
-                                                        bgColor={barColor}
-                                                    />
-                                                    <Grid item sx={{transform: "translate(-5vw, 3vh)", zIndex: 1}}>
-                                                        <Box position="relative">
-                                                            <Image
-                                                                alt=""
-                                                                style={{
-                                                                    height: "7vh",
-                                                                    width: "auto",
-                                                                    overflow: "hidden",
-                                                                }}
-                                                                src={levelImg}
-                                                            />
-                                                            <Typography
-                                                                variant="h6"
-                                                                component="span"
-                                                                style={{
-                                                                    color: "white",
-                                                                    position: "absolute",
-                                                                    top: "45%",
-                                                                    left: "50%",
-                                                                    transform: "translate(-50%, -50%)",
-                                                                }}
-                                                            >
-                                                                {userData === null ? "N/A" : userData["level"] + 1}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Grid>
-                                                    <Grid item sx={{transform: "translate(-13vw, -21vh)", zIndex: 1}}>
-
-                                                        <Box position="absolute">
-                                                            <Image
-                                                                alt="coffee-pot"
-                                                                style={{
-                                                                    height: "15vh",
-                                                                    width: "auto",
-                                                                    overflow: "hidden",
-                                                                    zIndex: 2
-                                                                }}
-                                                                src={coffeePot}
-                                                            />
-                                                            <Typography
-                                                                variant="h5"
-                                                                component="span"
-                                                                style={{
-                                                                    color: "white",
-                                                                    position: "absolute",
-                                                                    top: "75%",
-                                                                    left: "-50%",
-                                                                    transform: "translate(-50%, -50%)",
-                                                                    zIndex: 2,
-                                                                    width: "200%",
-                                                                }}
-                                                            >
-                                                                Coffee Collected
-                                                            </Typography>
-                                                            <Typography
-                                                                variant="h5"
-                                                                component="span"
-                                                                style={{
-                                                                    color: "white",
-                                                                    position: "absolute",
-                                                                    top: "55%",
-                                                                    left: "53%",
-                                                                    transform: "translate(-50%, -50%)",
-                                                                    zIndex: 2,
-                                                                }}
-                                                            >
-                                                                {userData === null ? "N/A" : userData["coffee"]}
-                                                            </Typography>
-                                                        </Box>
-                                                    </Grid>
-                                                </Box>
-                                            </Box>
-                                        </Grid>
+                    <Box>
+                        <Grid container spacing={4} sx={{ padding: 4 }}>
+                            <Grid item xs={12} md={4}>
+                                {userInfoDisplay()}
+                            </Grid>
+                            <Grid item xs={12} md={8}>
+                                <Grid container direction="column" spacing={4}>
+                                    <Grid item>
+                                        <TopStatsBoxes />
                                     </Grid>
-                                    {/*<Typography component={"div"} sx={{*/}
-                                    {/*    display: "flex",*/}
-                                    {/*    justifyContent: "center",*/}
-                                    {/*    width: "90%",*/}
-                                    {/*    paddingTop: "3%",*/}
-                                    {/*    height: "100%",*/}
-                                    {/*    // marginLeft: "120px"*/}
-                                    {/*}}>*/}
-                                    {/*    {graphStuff()}*/}
-                                    {/*</Typography>*/}
-                                </Box>
-                            ) : null}
-                        </Typography>
-                        <Grid container sx={!isMobile ? {
-                            width: "calc(100vw - 60px)",
-                            padding: "30px",
-                            marginTop: "30px"
-                        } : {
-                            width: "calc(100vw - 60px)",
-                            padding: "30px",
-                        }}>
-                            {!isMobile ? (
-                                <Grid item md={12}>
-                                    <div style={{
-                                        display: "flex",
-                                        justifyContent: "left",
-                                        width: "107%",
-                                        transform: `scale(${scaleFactor})`,
-                                        marginLeft: chatOpened ? "-7.5%" : (sidebarOpen ? "-9%" : "0%"),
-                                        paddingRight: chatOpened ? "10%" : 0,
-                                        marginTop: sidebarOpen || chatOpened ? "-3%" : 0,
-                                    }}>
-                                        <TextField
-                                            label={"Search My Projects"}
-                                            variant={`outlined`}
-                                            size={`small`}
-                                            type={`username`}
-                                            color={`primary`}
-                                            helperText={" "}
-                                            onKeyDown={
-                                                e => {
-                                                    if (e.key === "Enter") {
-                                                        freshSearch()
-                                                    }
-                                                }}
-                                            onChange={e => {
-                                                if (typeof e.target.value !== "string") {
-                                                    setQuery("")
-                                                    return
-                                                }
-                                                setQuery(e.target.value)
-                                            }}
-                                            sx={{
-                                                minWidth: "350px",
-                                                height: "42px",
-                                            }}
-                                        >
-                                        </TextField>
-                                        <Autocomplete
-                                            multiple
-                                            id="languagesInputSelect"
-                                            size={"small"}
-                                            options={programmingLanguages.map((_, i) => {
-                                                return i
-                                            })}
-                                            getOptionLabel={(option) => programmingLanguages[option]}
-                                            onChange={(e: SyntheticEvent, value: number[]) => {
-                                                setLanguages(value)
-                                                freshSearch({languages: value.length > 0 ? value : undefined})
-                                            }}
-                                            value={languages === null ? [] : languages}
-                                            renderInput={(params) => (
-                                                <TextField {...params} placeholder="Language" />
-                                            )}
-                                            sx={{
-                                                marginLeft: "10px",
-                                                minWidth: "160px",
-                                                height: "42px",
-                                            }}
-                                        />
-                                        <Select
-                                            labelId={"challengeType"}
-                                            id={"challengeTypeInput"}
-                                            required={true}
-                                            value={challengeType >= -1 ? challengeType : -1}
-                                            size={"small"}
-                                            sx={{
-                                                marginLeft: "10px",
-                                                minWidth: "210px",
-                                                height: "42px",
-                                            }}
-                                            onChange={(e) => {
-                                                // ensure type is number
-                                                if (typeof e.target.value === "string") {
-                                                    return
-                                                }
-                                                setChallengeType(e.target.value);
-                                                freshSearch({
-                                                    challenge_type: e.target.value !== -1 && typeof e.target.value === "number" ? e.target.value : undefined
-                                                })
-                                            }}
-                                        >
-                                            <MenuItem value={-1}>
-                                                <em>Challenge Type</em>
-                                            </MenuItem>
-                                            <MenuItem value={0}>
-                                                <em>Interactive</em>
-                                            </MenuItem>
-                                            <MenuItem value={1}>
-                                                <em>Playground</em>
-                                            </MenuItem>
-                                            <MenuItem value={2}>
-                                                <em>Casual</em>
-                                            </MenuItem>
-                                            <MenuItem value={3}>
-                                                <em>Competitive</em>
-                                            </MenuItem>
-                                            <MenuItem value={4}>
-                                                <em>Debug</em>
-                                            </MenuItem>
-                                        </Select>
-                                        <Select
-                                            labelId={"tierInputLabel"}
-                                            id={"challengeTierInput"}
-                                            required={true}
-                                            value={tierFilter >= -1 ? tierFilter : -1}
-                                            label={"Challenge Renown"}
-                                            size={"small"}
-                                            sx={{
-                                                marginLeft: "10px",
-                                                marginRight: "10px",
-                                                minWidth: "150px",
-                                                height: "42px",
-                                            }}
-                                            onChange={(e) => {
-                                                // ensure type is number
-                                                if (typeof e.target.value === "string") {
-                                                    return
-                                                }
-                                                setTierFilter(e.target.value);
-                                                freshSearch({
-                                                    tier: e.target.value !== -1 && typeof e.target.value === "number" ? e.target.value : undefined
-                                                })
-                                            }}
-                                        >
-                                            <MenuItem value={-1}>
-                                                <em>Renown</em>
-                                            </MenuItem>
-                                            <MenuItem value={0}>
-                                                <em>Renown 1</em>
-                                            </MenuItem>
-                                            <MenuItem value={1}>
-                                                <em>Renown 2</em>
-                                            </MenuItem>
-                                            <MenuItem value={2}>
-                                                <em>Renown 3</em>
-                                            </MenuItem>
-                                            <MenuItem value={3}>
-                                                <em>Renown 4</em>
-                                            </MenuItem>
-                                            <MenuItem value={4}>
-                                                <em>Renown 5</em>
-                                            </MenuItem>
-                                            <MenuItem value={5}>
-                                                <em>Renown 6</em>
-                                            </MenuItem>
-                                            <MenuItem value={6}>
-                                                <em>Renown 7</em>
-                                            </MenuItem>
-                                            <MenuItem value={7}>
-                                                <em>Renown 8</em>
-                                            </MenuItem>
-                                            <MenuItem value={8}>
-                                                <em>Renown 9</em>
-                                            </MenuItem>
-                                            <MenuItem value={9}>
-                                                <em>Renown 10</em>
-                                            </MenuItem>
-                                        </Select>
-                                        <ShowButton/>
-                                        <Tabs
-                                            orientation="horizontal"
-                                            value={typeTab}
-                                            onChange={handleChange}
-                                            aria-label="Vertical tabs"
-                                            style={{
-                                                // marginLeft: "auto",
-                                                // marginRight: "20px",
-                                                marginLeft: "20px",
-                                                width: "fit-content",
-                                                height: "42px",
-                                                overflowY: "auto",
-                                                maxHeight: "42px"
-                                            }}
-                                        >
-                                            {minorValues.map((minorValue) => {
-                                                return <Tab key={minorValue} label={minorValue} value={minorValue} sx={{color: "text.primary"}}/>;
-                                            })}
-                                        </Tabs>
-                                    </div>
+                                    {userXpDisplay()}
                                 </Grid>
-                            ) : null}
-                            {SearchBox()}
+                            </Grid>
                         </Grid>
-
-                    </div>
+                        <RecentActivity/>
+                    </Box>
                 )}
+                {editBackgroundModal()}
                 <Dialog
                     PaperProps={{ style: !isMobile ? { minHeight: "50vh", minWidth: "20vw", maxHeight: "50vh", width: "40vw" } : { minHeight: "50vh", maxHeight: "50vh", width: "90vw" }}}
-                    open={popupOpen}
+                    open={friendsPopupOpen}
                     onClose={() => {
-                        setPopupOpen(false);
+                        setFriendsPopupOpen(false);
                     }}
                 >
                     {friendList()}
