@@ -238,7 +238,7 @@ function Profile() {
     const [currentXp, setCurrentXp] = React.useState(0)
     const [maxXp, setMaxXp] = React.useState(0)
     const [minXp, setMinXp] = React.useState(0)
-    const [isXpLoading, setIsXpLoading] = useState(true);
+    const [isXpLoading, setIsXpLoading] = React.useState(true);
 
     const getXP = async () => {
         setIsXpLoading(true);
@@ -405,7 +405,7 @@ function Profile() {
         setBackgroundArray(profileBackgroundArray.slice(0,3))
     }
 
-    const [dataLoaded, setDataLoaded] = useState(false);
+    const [dataLoaded, setDataLoaded] = React.useState(false);
 
     useEffect(() => {
         if (!dataLoaded) {
@@ -741,8 +741,8 @@ function Profile() {
     };
 
     const AddFriendsPopup = () => {
-        const [searchQuery, setSearchQuery] = useState("");
-        const [searchResults, setSearchResults] = useState([]);
+        const [searchQuery, setSearchQuery] = React.useState("");
+        const [searchResults, setSearchResults] = React.useState([]);
 
         const handleClose = () => {
             setAddFriendsPopupOpen(false); // Close the Add Friends popup
@@ -981,7 +981,7 @@ function Profile() {
 
     }
 
-    const [marginTop, setMarginTop] = useState(0);
+    const [marginTop, setMarginTop] = React.useState(0);
     const containerRef = React.useRef<HTMLDivElement | null>(null);
 
     const scaleFactor = sidebarOpen ? 0.85 : (chatOpened ? 0.80 : 1.0);
@@ -1198,10 +1198,10 @@ function Profile() {
     }
 
     const RecentActivity = () => {
-        const [loading, setLoading] = useState(true)
-        const [bytesData, setBytesData] = useState([])
-        const [journeysData, setJourneysData] = useState([])
-        const [projectsData, setProjectsData] = useState([])
+        const [loading, setLoading] = React.useState(true)
+        const [bytesData, setBytesData] = React.useState([])
+        const [journeysData, setJourneysData] = React.useState([])
+        const [projectsData, setProjectsData] = React.useState([])
       
         useEffect(() => {
           const fetchData = async () => {
@@ -1214,7 +1214,7 @@ function Profile() {
                           'Content-Type': 'application/json',
                           'Cookie': ''
                       },
-                      body: '{}',
+                      body: JSON.stringify({ user_id: userId }),
                       credentials: 'include'
                   }),
                   fetch(`${config.rootPath}/api/profile/getAttemptedJourneys`,
@@ -1224,7 +1224,7 @@ function Profile() {
                               'Content-Type': 'application/json',
                               'Cookie': ''
                           },
-                          body: '{}',
+                          body: JSON.stringify({ user_id: userId }),
                           credentials: 'include'
                       }),
                   fetch(`${config.rootPath}/api/profile/getAttemptedProjects`,
@@ -1234,7 +1234,7 @@ function Profile() {
                               'Content-Type': 'application/json',
                               'Cookie': ''
                           },
-                          body: '{}',
+                          body: JSON.stringify({ user_id: userId }),
                           credentials: 'include'
                       }),
               ])
@@ -1504,8 +1504,8 @@ function Profile() {
     }
 
     const TopStatsBoxes = () => {
-        const [isStatsLoading, setIsStatsLoading] = useState(true);
-        const [stats, setStats] = useState<{
+        const [isStatsLoading, setIsStatsLoading] = React.useState(true);
+        const [stats, setStats] = React.useState<{
             masteredConcepts: number;
             highestStreak: number;
             activityData: { date: string; events: number }[];
@@ -1519,22 +1519,22 @@ function Profile() {
             const fetchStats = async () => {
                 try {
                     const [statsResponse, streakResponse, activityResponse] = await Promise.all([
-                        fetch(`${config.rootPath}/api/stats/getUserProgrammingStats`, {
+                        fetch(`${config.rootPath}/api/stats/checkNumberMasteredAnon`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: '{}',
+                            body: JSON.stringify({ user_id: userId }),
                             credentials: 'include'
                         }),
-                        fetch(`${config.rootPath}/api/stats/checkHotStreak`, {
+                        fetch(`${config.rootPath}/api/stats/checkHotStreakAnon`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: '{}',
+                            body: JSON.stringify({ user_id: userId }),
                             credentials: 'include'
                         }),
                         fetch(`${config.rootPath}/api/profile/getUserRecentActivity`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: '{}',
+                            body: JSON.stringify({ user_id: userId }),
                             credentials: 'include'
                         })
                     ]);
@@ -1557,8 +1557,8 @@ function Profile() {
                     ];
 
                     setStats({
-                        masteredConcepts: statsData.stats?.numbered_mastered_concepts || 0,
-                        highestStreak: streakData.highest_streak || 0,
+                        masteredConcepts: statsData.totalMasteredConcepts || 0,
+                        highestStreak: streakData.hot_streak || 0,
                         activityData: activityData.activity || []
                         //activityData: fakeActivityData
                     });
@@ -1787,7 +1787,7 @@ function Profile() {
         );
 
         return (
-            <Grid item>
+            <Grid item xs={12}>
                 <Box sx={{ 
                     position: 'relative',
                     borderRadius: '30px',
@@ -1814,8 +1814,8 @@ function Profile() {
                 }}>
                     {isXpLoading && <LoadingBox />}
                     <Grid container spacing={2} sx={{ height: '100%' }}>
-                        <Grid item xs>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start', alignItems: 'flex-start', paddingLeft: '30px' }}>
+                        <Grid item xs={12} md={6}>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', justifyContent: 'flex-start', alignItems: { xs: 'center', md: 'flex-start' }, paddingLeft: { xs: '0', md: '30px' } }}>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                 <Typography variant="h1" sx={{
                                     fontWeight: 'bold',
@@ -1855,7 +1855,7 @@ function Profile() {
                                 </Box>
                             </Box>
                         </Grid>
-                        <Grid item sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingRight: '40px' }}>
+                        <Grid item xs={12} md={6} sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-end' }, paddingRight: { xs: '0', md: '40px' } }}>
                             <Image
                                 alt="renown"
                                 style={{
@@ -1867,11 +1867,11 @@ function Profile() {
                             />
                         </Grid>
                     </Grid>
-                    <Box sx={{ alignItems: 'center', mt: 2 }}>
+                    <Box sx={{ alignItems: 'center', mt: 2, width: '100%', position: 'absolute', bottom: '20px', left: '0', padding: '0 20px' }}>
                         <Typography variant="h6" align="center" sx={{ mb: 1, color: theme.palette.text.secondary }}>
                             {`${currentXp} / ${maxXp} XP`}
                         </Typography>
-                        <Box sx={{ position: 'relative', width: '100%', height: '1.8vw' }}>
+                        <Box sx={{ position: 'relative', width: '100%', height: '24px' }}>
                             <LinearProgress
                                 variant="determinate"
                                 value={Math.min(100, (currentXp / maxXp) * 100)}
