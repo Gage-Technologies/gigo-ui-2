@@ -234,6 +234,7 @@ function Profile() {
         setFriendsList(res["friends"])
     }
 
+
     const [currentXp, setCurrentXp] = React.useState(0)
     const [maxXp, setMaxXp] = React.useState(0)
     const [minXp, setMinXp] = React.useState(0)
@@ -1265,101 +1266,92 @@ function Profile() {
       
         return (
           <Container maxWidth="lg">
-            <Box sx={{ mt: 4, mb: 4 }}>
-              <Typography variant="h4" component="h1" gutterBottom>
-                recent activity
-              </Typography>
-              
-              {/* journeys row */}
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  journeys
+            {(journeysData?.length > 0 || bytesData?.length > 0 || projectsData?.length > 0) && (
+              <Box sx={{ mt: 4, mb: 4 }}>
+                <Typography variant="h4" component="h1" gutterBottom>
+                  recent activity
                 </Typography>
-                <Grid container spacing={2}>
-                  {Array.isArray(journeysData) ? (
-                    journeysData.slice(0, 3).map((journey: any) => (
-                      <Grid item xs={12} sm={6} md={4} key={journey._id}>
-                        <DetourCard data={journey} width={"100%"} />
-                      </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12}>
-                      <Typography variant="body1">no journey data available</Typography>
+                
+                {/* journeys row */}
+                {journeysData?.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      journeys
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {journeysData.slice(0, 3).map((journey: any) => (
+                        <Grid item xs={12} sm={6} md={4} key={journey._id}>
+                          <DetourCard data={journey} width={"100%"} />
+                        </Grid>
+                      ))}
                     </Grid>
-                  )}
-                </Grid>
-              </Box>
-      
-              {/* bytes row */}
-              <Box sx={{ mb: 4 }}>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  bytes
-                </Typography>
-                <Grid container spacing={4}>
-                  {Array.isArray(bytesData) ? (
-                    bytesData.slice(0, 5).map((byte: any) => (
-                      <Grid item xs={12} sm={6} md={2.4} key={byte._id}>
-                       <BytesCard
-                            height={"355px"}
-                            imageHeight={355}
-                            width={'100%'}
-                            imageWidth={'100%'}
-                            bytesId={byte._id}
-                            bytesDesc={"Concept Explanation"}
-                            bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
-                            language={byte.langauge}
-                            animate={false} 
-                            onClick={() => router.push("/byte/" + byte._id)}
-                        />
-                      </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12}>
-                      <Typography variant="body1">no byte data available</Typography>
+                  </Box>
+                )}
+        
+                {/* bytes row */}
+                {bytesData?.length > 0 && (
+                  <Box sx={{ mb: 4 }}>
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      bytes
+                    </Typography>
+                    <Grid container spacing={4}>
+                      {bytesData.slice(0, 5).map((byte: any) => (
+                        <Grid item xs={12} sm={6} md={2.4} key={byte._id}>
+                         <BytesCard
+                              height={"355px"}
+                              imageHeight={355}
+                              width={'100%'}
+                              imageWidth={'100%'}
+                              bytesId={byte._id}
+                              bytesDesc={byte.description}
+                              bytesTitle={byte.name}
+                              bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
+                              language={byte.langauge}
+                              animate={false} 
+                              onClick={() => router.push("/byte/" + byte._id)}
+                          />
+                        </Grid>
+                      ))}
                     </Grid>
-                  )}
-                </Grid>
-              </Box>
-      
-              {/* projects row */}
-              <Box>
-                <Typography variant="h5" component="h2" gutterBottom>
-                  projects
-                </Typography>
-                <Grid container spacing={2}>
-                  {Array.isArray(projectsData) ? (
-                    projectsData.slice(0, 3).map((project: any) => (
-                      <Grid item xs={12} sm={6} md={4} key={project._id}>
-                         <ProjectCard
-                            width={"100%"}
-                            imageWidth={"100%"}
-                            projectId={project._id}
-                            projectTitle={project.title}
-                            projectDesc={project.description}
-                            projectThumb={config.rootPath + project.thumbnail}
-                            projectDate={project.updated_at}
-                            projectType={project.post_type_string}
-                            renown={project.tier}
-                            onClick={() => router.push("/challenge/" + project._id)}
-                            userThumb={config.rootPath + "/static/user/pfp/" + project.author_id}
-                            userId={project.author_id}
-                            username={project.author}
-                            backgroundName={project.background_name}
-                            backgroundPalette={project.background_color}
-                            exclusive={project["challenge_cost"] !== null}
-                            hover={false}
-      
-                        />
-                      </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12}>
-                      <Typography variant="body1">no project data available</Typography>
+                  </Box>
+                )}
+        
+                {/* projects row */}
+                {projectsData?.length > 0 && (
+                  <Box sx={{ mt: 8 }}> {/* increased top margin for larger gap */}
+                    <Typography variant="h5" component="h2" gutterBottom>
+                      projects
+                    </Typography>
+                    <Grid container spacing={2}>
+                      {projectsData.slice(0, 3).map((project: any) => (
+                        <Grid item xs={12} sm={6} md={4} key={project._id}>
+                           <ProjectCard
+                              width={"100%"}
+                              imageWidth={"100%"}
+                              projectId={project._id}
+                              projectTitle={project.title}
+                              projectDesc={project.description}
+                              projectThumb={config.rootPath + project.thumbnail}
+                              projectDate={project.updated_at}
+                              projectType={project.post_type_string}
+                              renown={project.tier}
+                              onClick={() => router.push("/challenge/" + project._id)}
+                              userThumb={config.rootPath + "/static/user/pfp/" + project.author_id}
+                              userId={project.author_id}
+                              username={project.author}
+                              backgroundName={project.background_name}
+                              backgroundPalette={project.background_color}
+                              exclusive={project["challenge_cost"] !== null}
+                              hover={false}
+        
+                          />
+                        </Grid>
+                      ))}
                     </Grid>
-                  )}
-                </Grid>
+                  </Box>
+                )}
               </Box>
-            </Box>
+            )}
           </Container>
         )
       }
@@ -1417,7 +1409,7 @@ function Profile() {
                             p: 4,
                             width: "100%",
                             background: authState.role > 0
-                                ? `linear-gradient(135deg, ${theme.palette.primary.dark} 0%, ${theme.palette.primary.main} 100%)`
+                                ? `linear-gradient(135deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 100%)`
                                 : '#282826',
                             position: 'relative',
                             overflow: 'hidden'
@@ -1464,7 +1456,15 @@ function Profile() {
                         mt: 2
                     }}>
                         <Button
-                            onClick={() => setFriendsPopupOpen(true)}
+                            onClick={(e) => {
+                                e.preventDefault(); // prevent default button behavior
+                                setFriendsPopupOpen(true);
+                                // update friends list without full page refresh
+                                getFriendsList().then(() => {
+                                    // update friends list state directly
+                                    setFriendsList(prevList => [...prevList]);
+                                });
+                            }}
                             variant="contained"
                             sx={{
                                 color: theme.palette.text.primary,
@@ -1478,7 +1478,13 @@ function Profile() {
                             Friends
                         </Button>
                         <Button
-                            onClick={() => getUserBackgroundInventory()}
+                            onClick={(e) => {
+                                e.preventDefault(); // prevent default button behavior
+                                getUserBackgroundInventory().then(() => {
+                                    // update inventory state directly
+                                    setInventory(prevInventory => [...prevInventory]);
+                                });
+                            }}
                             variant={"contained"}
                             sx={{
                                 color: theme.palette.text.primary,
@@ -1864,9 +1870,15 @@ function Profile() {
                     </HelmetProvider>
                 )}
                 {loading ? (
-                    <div>
-                        <ThreeDots/>
-                    </div>
+                    <Box sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh', // full viewport height
+                        width: '100vw' // full viewport width
+                    }}>
+                        <CircularProgress size={60} />
+                    </Box>
                 ) : (
                     <Box>
                         <Grid container spacing={4} sx={{ padding: 4 }}>
