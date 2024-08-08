@@ -955,68 +955,100 @@ const ProfileMobile = () => {
 
     
 
-    const userInfoDisplay = () => (
-        <Box sx={{ 
-            display: 'flex', 
-            flexDirection: 'column', 
-            alignItems: 'center', 
-            padding: 2,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            boxShadow: 3,
-            position: 'relative',
-            overflow: 'hidden'
-        }}>
-            {userBackground && (
-                <div 
-                    style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        zIndex: 0,
-                        backgroundImage: `url(${userBackground})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center'
-                    }}
-                />
-            )}
-            <Box sx={{ position: 'relative', zIndex: 1 }}>
+    // function to display the user profile icon
+    const userProfileIcon = () => {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    justifyContent: 'flex-start',
+                    paddingTop: '1%',
+                    height: '400px'
+                }}
+            >
                 <UserIcon
-                    userId={authState.id}
-                    userTier={authState.tier}
-                    userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                    size={100}
-                    backgroundName={null}
-                    backgroundPalette={null}
-                    backgroundRender={null}
+                    userId={userData?._id} // using optional chaining for safety
+                    userTier={userData?.tier} // using optional chaining for safety
+                    userThumb={userData ? `${config.rootPath}${userData.pfp_path}` : ""} // constructing user thumbnail URL
+                    size={300}
+                    backgroundName={userData?.name} // using optional chaining for safety
+                    backgroundPalette={userData?.color_palette} // using optional chaining for safety
+                    backgroundRender={userData?.render_in_front} // using optional chaining for safety
                     profileButton={false}
-                    pro={authState.role > 0}
+                    pro={userData?.user_status > 0} // using optional chaining for safety
                     mouseMove={false}
                 />
-                <Typography variant="h6" sx={{ mt: 2, color: theme.palette.text.primary }}>
-                    {userData === null ? 'Loading...' : userData["user_name"]}
-                </Typography>
-                <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
-                    {userData === null ? 'Loading...' : userData["email"]}
-                </Typography>
-                <Button 
-                    variant="outlined" 
-                    onClick={getUserBackgroundInventory} 
-                    sx={{ 
-                        mt: 2,
-                        backgroundColor: theme.palette.background.paper,
-                        '&:hover': {
-                            backgroundColor: theme.palette.action.hover,
-                        }
+            </Box>
+        )
+    }
+
+    // function to display user information
+    const userInfoDisplay = () => {
+        return (
+            <Box sx={{
+                padding: '16px',
+                marginBottom: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                width: "100%",
+                maxWidth: { xs: "100%", sm: "600px" } // responsive max-width
+            }}>
+                {userProfileIcon()}
+                <div style={{height: "40px"}}/>
+                <Box
+                    sx={{
+                        boxShadow: "0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)",
+                        color: 'text.primary',
+                        borderRadius: 2,
+                        p: 4,
+                        width: "100%",
+                        background: userData?.user_status > 0 
+                            ? `linear-gradient(135deg, ${theme.palette.primary.dark} 30%, ${theme.palette.primary.main} 100%)`
+                            : '#282826',
+                        position: 'relative',
+                        overflow: 'hidden'
                     }}
                 >
-                    Change Background
-                </Button>
+                    <div style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        width: "100%",
+                        position: 'relative',
+                        zIndex: 2
+                    }}>
+                        <Typography sx={{
+                            width: "100%",
+                            textAlign: 'center',
+                            fontSize: "2.5rem",
+                            fontWeight: 'bold',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                        }}>
+                            {userData ? userData.user_name.charAt(0).toUpperCase() + userData.user_name.slice(1).toLowerCase() : "N/A"}
+                        </Typography>
+                    </div>
+                    {userData?.user_status > 0 && ( // using optional chaining for safety
+                        <div style={{
+                            position: 'absolute',
+                            top: '-50%',
+                            left: '-50%',
+                            right: '-50%',
+                            bottom: '-50%',
+                            background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%)',
+                            transform: 'rotate(30deg)',
+                            zIndex: 1
+                        }}></div>
+                    )}
+                </Box>
+            
             </Box>
-        </Box>
-    );
+        )
+    }
     const TopStatsBoxes = () => {
         const [isStatsLoading, setIsStatsLoading] = React.useState(true);
         const [stats, setStats] = React.useState<{
@@ -1268,55 +1300,107 @@ const ProfileMobile = () => {
         );
     };
 
-    const userXpDisplay = () => (
-        <Box sx={{ 
-            mt: 2,
-            p: 2,
-            backgroundColor: theme.palette.background.paper,
-            borderRadius: 2,
-            boxShadow: 3
-        }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-                <Typography variant="h6">
-                    {`Level ${userData === null ? 'N/A' : userData['level'] + 1}`}
-                </Typography>
-                <Typography variant="body2">
-                    {`${currentXp ?? 0} / ${maxXp ?? 0} XP`}
-                </Typography>
+    const userXpDisplay = () => {
+        const LoadingBox = () => (
+            <Box sx={{
+                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                backgroundColor: 'rgba(0, 0, 0, 0.7)', display: 'flex',
+                justifyContent: 'center', alignItems: 'center', zIndex: 2,
+                '&::after': {
+                    content: '""', position: 'absolute', top: 0, left: '-100%',
+                    width: '100%', height: '100%',
+                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)',
+                    animation: 'sheen 1.5s infinite',
+                },
+                '@keyframes sheen': {
+                    '0%': { left: '-100%' },
+                    '100%': { left: '100%' }
+                },
+            }}>
+                <CircularProgress color="secondary" />
             </Box>
-            <Box sx={{ position: 'relative', width: '100%', height: '24px' }}>
-                <LinearProgress
-                    variant="determinate"
-                    value={Math.min(100, (currentXp / maxXp) * 100)}
-                    sx={{
-                        height: '100%',
-                        borderRadius: '30px',
-                        '& .MuiLinearProgress-bar': {
-                            background: barColor,
-                            transition: 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)',
-                        },
-                        backgroundColor: 'rgba(255,255,255,0.1)',
-                    }}
-                />
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                    }}
-                >
-                    <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold', textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
-                        {`${Math.round((currentXp / maxXp) * 100)}%`}
-                    </Typography>
+        );
+
+        return (
+            <Grid item xs={12}>
+                <Box sx={{ 
+                    position: 'relative', borderRadius: '15px', minHeight: '150px',
+                    width: '100%', display: 'flex', flexDirection: 'column', // changed to column for proper layout
+                    padding: '8px', background: `linear-gradient(135deg, ${theme.palette.background.default}, ${theme.palette.background.paper})`,
+                    boxShadow: '0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)',
+                    '&::before': {
+                        content: '""', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0,
+                        zIndex: -1, margin: '-2px', borderRadius: 'inherit', background: barColor,
+                    },
+                }}>
+                    <Box sx={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'flex-start' }}>
+                            <Typography variant="h5" sx={{
+                                fontWeight: 'bold', background: barColor,
+                                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+                                fontSize: '1.2rem'
+                            }}>
+                                {`Renown ${userData === null ? 'N/A' : userData['tier'] + 1}`}
+                            </Typography>
+                            <Box sx={{ mt: 1, display: 'flex', alignItems: 'center' }}>
+                                <Typography variant="h6" sx={{ marginRight: '8px', color: theme.palette.text.secondary }}>
+                                    Level
+                                </Typography>
+                                <Box sx={{ position: 'relative', width: 'fit-content' }}>
+                                    <Image alt="level" width={50} height={50} src={levelImg} />
+                                    <Typography variant="body1" sx={{ 
+                                        position: 'absolute', top: '50%', left: '50%',
+                                        transform: 'translate(-50%, -50%)', color: 'white',
+                                        textShadow: '1px 1px 2px rgba(0,0,0,0.6)',
+                                        fontWeight: 'bold', fontSize: '0.9rem'
+                                    }}>
+                                        {userData === null ? 'N/A' : userData['level'] + 1}
+                                    </Typography>
+                                </Box>
+                            </Box>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Image alt="renown" style={{
+                                height: 'auto', maxHeight: '15vh',
+                                width: 'auto', maxWidth: '100%',
+                            }} src={renownImg} />
+                        </Box>
+                    </Box>
+                    <Box sx={{ position: 'relative', width: '100%', height: '24px', marginTop: 'auto' }}> {/* moved LinearProgress inside this box */}
+                        <LinearProgress
+                            variant="determinate"
+                            value={Math.min(100, (currentXp / maxXp) * 100)}
+                            sx={{
+                                height: '100%',
+                                borderRadius: '30px',
+                                '& .MuiLinearProgress-bar': {
+                                    background: barColor,
+                                    transition: 'transform 0.4s cubic-bezier(0.65, 0, 0.35, 1)',
+                                },
+                                backgroundColor: 'rgba(255,255,255,0.1)',
+                            }}
+                        />
+                        <Box
+                            sx={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            <Typography variant="body2" sx={{ color: 'white', fontWeight: 'bold', textShadow: '1px 1px 2px rgba(0,0,0,0.7)' }}>
+                                {`${Math.round((currentXp / maxXp) * 100)}%`}
+                            </Typography>
+                        </Box>
+                    </Box>
                 </Box>
-            </Box>
-        </Box>
-    );
+            </Grid>
+        );
+    };
 
     const RecentActivity = () => {
         const [loading, setLoading] = React.useState(true)
@@ -1389,20 +1473,36 @@ const ProfileMobile = () => {
           )
         }
         return (
-          <Box sx={{ mt: 4 }}>
+          <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
             <Typography variant="h6" gutterBottom>
               Recent Activity
             </Typography>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+            <Grid container spacing={2} justifyContent="center"> {/* center the grid items */}
+              <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
+                <Typography variant="subtitle1" gutterBottom>
+                  Journeys
+                </Typography>
+                {journeysData.slice(0, 5).map((journey: any) => (
+                  <Box key={journey._id} sx={{ mb: 2 }}>
+                    <DetourMobileCard
+                      data={journey}
+                      width="100%"
+                    />
+                  </Box>
+                ))}
+              </Grid>
+              <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
                 <Typography variant="subtitle1" gutterBottom>
                   Bytes
                 </Typography>
                 {bytesData.slice(0, 5).map((byte: any) => (
-                  <Box key={byte._id} sx={{ mb: 2 }}>
+                  <Box key={byte._id} sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}> {/* center the byte card */}
                     <BytesCardMobile
                       bytesId={byte._id}
-                      bytesTitle={byte.name}
+                      width={"100%"}
+                      height={"auto"}
+                      imageWidth={"70%"}
+                      bytesTitle={byte.name} // ensuring the title is not abbreviated
                       // @ts-ignore
                       bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
                       // @ts-ignore
@@ -1419,24 +1519,11 @@ const ProfileMobile = () => {
                   </Box>
                 ))}
               </Grid>
-              <Grid item xs={12}>
-                <Typography variant="subtitle1" gutterBottom>
-                  Journeys
-                </Typography>
-                {journeysData.slice(0, 5).map((journey: any) => (
-                  <Box key={journey._id} sx={{ mb: 2 }}>
-                    <DetourMobileCard
-                      data={journey}
-                      width="100%"
-                    />
-                  </Box>
-                ))}
-              </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
                 <Typography variant="subtitle1" gutterBottom>
                   Projects
                 </Typography>
-                {projectsData.slice(0, 5).map((project: any) => (
+                {projectsData.slice(0, 3).map((project: any) => (
                   <Box key={project._id} sx={{ mb: 2 }}>
                     <ProjectCard
                       projectId={project._id}
