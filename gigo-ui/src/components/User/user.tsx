@@ -721,11 +721,13 @@ function UserPage({params}: { params: {id: string}}) {
                         <Typography sx={{
                             width: "100%",
                             textAlign: 'center',
-                            fontSize: "2.5rem",
+                            fontSize: { xs: "1.5rem", sm: "2rem", md: "2.5rem" }, // Responsive font size
                             fontWeight: 'bold',
                             textTransform: 'uppercase',
                             letterSpacing: '0.1em',
-                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)'
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                            wordBreak: 'break-word', // Ensure long usernames wrap
+                            lineHeight: 1 // Add more spacing between lines
                         }}>
                             {userData !== null ?  userData["user_name"].charAt(0).toUpperCase() + userData["user_name"].slice(1).toLowerCase() : "N/A"}
                         </Typography>
@@ -765,7 +767,6 @@ function UserPage({params}: { params: {id: string}}) {
             </Box>
         )
     }
-
     const TopStatsBoxes = () => {
         const [isStatsLoading, setIsStatsLoading] = React.useState(true);
         const [stats, setStats] = React.useState<{
@@ -782,22 +783,22 @@ function UserPage({params}: { params: {id: string}}) {
             const fetchStats = async () => {
                 try {
                     const [statsResponse, streakResponse, activityResponse] = await Promise.all([
-                        fetch(`${config.rootPath}/api/stats/getUserProgrammingStats`, {
+                        fetch(`${config.rootPath}/api/stats/checkNumberMasteredAnon`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: '{}',
+                            body: JSON.stringify({ user_id: userData["_id"] }),
                             credentials: 'include'
                         }),
-                        fetch(`${config.rootPath}/api/stats/checkHotStreak`, {
+                        fetch(`${config.rootPath}/api/stats/checkHotStreakAnon`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: '{}',
+                            body: JSON.stringify({ user_id: userData["_id"] }),
                             credentials: 'include'
                         }),
                         fetch(`${config.rootPath}/api/profile/getUserRecentActivity`, {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({ user_id: params.id }),
+                            body: JSON.stringify({ user_id: userData["_id"] }),
                             credentials: 'include'
                         })
                     ]);
@@ -820,8 +821,8 @@ function UserPage({params}: { params: {id: string}}) {
                     ];
 
                     setStats({
-                        masteredConcepts: statsData.stats?.numbered_mastered_concepts || 0,
-                        highestStreak: streakData.highest_streak || 0,
+                        masteredConcepts: statsData.totalMasteredConcepts || 0,
+                        highestStreak: streakData.hot_streak || 0,
                         activityData: activityData.activity || []
                         //activityData: fakeActivityData
                     });
