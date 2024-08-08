@@ -1,12 +1,15 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import RenderQuizPage from '@/components/Bytes/intro';
+import RenderQuizPage from '@/components/Quiz/quiz';
+import RenderQuizPageMobile from '@/components/Quiz/quizMobile';
 import config from '@/config';
+import { useSearchParams } from 'next/navigation';
 
 export default function QuizPage({ params }: { params: { id: string } }) {
   const quizId = params.id;
-
   const [quizData, setQuizData] = useState<any>(null);
+  const query = useSearchParams();
+  const isMobile = query.get("viewport") === "mobile";
 
   const startQuizAttempt = async (quizId: string) => {
     try {
@@ -20,7 +23,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const data = await response.json();
       
     } catch (error) {
-      console.error("Error: An error occurred while starting the byte attempt.", error);
+      console.error("Error: An error occurred while starting the quiz attempt.", error);
     }
   };
 
@@ -36,22 +39,26 @@ export default function QuizPage({ params }: { params: { id: string } }) {
       const data = await response.json();
       setQuizData(data.quiz)
     } catch (error) {
-      console.error("Error: An error occurred while starting the byte attempt.", error);
+      console.error("Error: An error occurred while fetching the quiz data.", error);
     }
   };
 
-    useEffect(() => {
-        startQuizAttempt(quizId)
-        getQuiz(quizId)
-    }, [])
-
-    
+  useEffect(() => {
+    startQuizAttempt(quizId)
+    getQuiz(quizId)
+  }, [quizId])
 
   return (
     quizData && (
-        <RenderQuizPage
-            data={quizData}
+      isMobile ? (
+        <RenderQuizPageMobile
+          data={quizData}
         />
+      ) : (
+        <RenderQuizPage
+          data={quizData}
+        />
+      )
     )
   );
 }

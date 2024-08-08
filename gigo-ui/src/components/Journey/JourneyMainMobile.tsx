@@ -497,7 +497,7 @@ function JourneyMainMobile() {
                     '--button-raise-level': '12px',
                     '--button-hover-pressure': '3',
                     '--transform-speed': '0.275s',
-                }} type="primary" href={`/byte/${item.code_source_id}?journey`}>
+                }} type="primary" href={item.code_source_type === 4 ? `/quiz/${item.code_source_id}?journey` : `/byte/${item.code_source_id}?journey`}>
                     <CheckIcon fontSize="large" sx={{width: '2em', height: '2em'}}/>
                 </AwesomeButton>
 
@@ -523,7 +523,7 @@ function JourneyMainMobile() {
                     '--button-hover-pressure': '3',
                     '--transform-speed': '0.275s',
                 }} type="primary"
-                               href={`/byte/${item.code_source_id}?journey`}
+                href={item.code_source_type === 4 ? `/quiz/${item.code_source_id}?journey` : `/byte/${item.code_source_id}?journey`}
                 >
                     {outOfHearts ? <Lock fontSize="large" sx={{width: '2em', height: '2em'}}/> :handleLanguage(item.lang)}
                 </AwesomeButton>
