@@ -571,84 +571,86 @@ function UserPageMobile({params}: { params: {id: string}}) {
           )
         }
         return (
-          <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
-            <Typography variant="h6" gutterBottom>
-              Recent Activity
-            </Typography>
-            <Grid container spacing={2} justifyContent="center"> {/* center the grid items */}
-              <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
-                <Typography variant="subtitle1" gutterBottom>
-                  Journeys
-                </Typography>
-                {journeysData.slice(0, 5).map((journey: any) => (
-                  <Box key={journey._id} sx={{ mb: 2 }}>
-                    <DetourMobileCard
-                      data={journey}
-                      width="100%"
-                    />
-                  </Box>
-                ))}
+          (bytesData && bytesData.length > 0) || (journeysData && journeysData.length > 0) || (projectsData && projectsData.length > 0) ? ( // check if any data exists before rendering
+            <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
+              <Typography variant="h6" gutterBottom>
+                Recent Activity
+              </Typography>
+              <Grid container spacing={2} justifyContent="center"> {/* center the grid items */}
+                { journeysData && journeysData.length > 0 && ( // only show if journeys data exists
+                  <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
+                    <Typography variant="subtitle1" gutterBottom>
+                      Journeys
+                    </Typography>
+                    {journeysData.slice(0, 5).map((journey: any) => (
+                      <Box key={journey._id} sx={{ mb: 2 }}>
+                        <DetourMobileCard
+                          data={journey}
+                          width="100%"
+                        />
+                      </Box>
+                    ))}
+                  </Grid>
+                )}
+                { bytesData && bytesData.length > 0 && ( // only show if bytes data exists
+                  <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
+                    <Typography variant="subtitle1" gutterBottom>
+                      Bytes
+                    </Typography>
+                    {bytesData.slice(0, 5).map((byte: any) => (
+                      <Box key={byte._id} sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}> {/* center the byte card */}
+                        <BytesCardMobile
+                          bytesId={byte._id}
+                          width={"100%"}
+                          height={"auto"}
+                          imageWidth={"70%"}
+                          bytesTitle={byte.name} // ensuring the title is not abbreviated
+                          bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id} // constructing the thumbnail URL
+                          bytesDesc={byte.description} // description of the byte
+                          language={byte.language} // programming language of the byte
+                          completedEasy={byte.completedEasy} // easy completion status
+                          completedMedium={byte.completedMedium} // medium completion status
+                          completedHard={byte.completedHard} // hard completion status
+                        />
+                      </Box>
+                    ))}
+                  </Grid>
+                )}
+                { projectsData && projectsData.length > 0 && ( // only show if projects data exists
+                  <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
+                    <Typography variant="subtitle1" gutterBottom>
+                      Projects
+                    </Typography>
+                    {projectsData.slice(0, 3).map((project: any) => (
+                      <Box key={project._id} sx={{ mb: 2 }}>
+                        <ProjectCard
+                          projectId={project._id}
+                          projectTitle={project.title}
+                          projectDesc={project.description}
+                          projectThumb={config.rootPath + project.thumbnail}
+                          projectDate={project.updated_at}
+                          projectType={project.post_type_string}
+                          renown={project.tier}
+                          onClick={() => router.push("/challenge/" + project._id)} // navigate to project challenge
+                          userThumb={config.rootPath + "/static/user/pfp/" + project.author_id} // user thumbnail URL
+                          userId={project.author_id} // author ID
+                          username={project.author} // author's username
+                          backgroundName={project.background_name} // background name for the project
+                          backgroundPalette={project.background_color} // background color for the project
+                          exclusive={project["challenge_cost"] !== null} // check if the project is exclusive
+                          hover={false} // disable hover effect
+                          width="100%"
+                          height="auto"
+                          imageWidth="100%"
+                          imageHeight="20vh"
+                        />
+                      </Box>
+                    ))}
+                  </Grid>
+                )}
               </Grid>
-              <Grid item xs={12} md={4} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}> {/* center the content horizontally */}
-                <Typography variant="subtitle1" gutterBottom>
-                  Bytes
-                </Typography>
-                {bytesData.slice(0, 5).map((byte: any) => (
-                  <Box key={byte._id} sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}> {/* center the byte card */}
-                    <BytesCardMobile
-                      bytesId={byte._id}
-                      width={"100%"}
-                      height={"auto"}
-                      imageWidth={"70%"}
-                      bytesTitle={byte.name} // ensuring the title is not abbreviated
-                      // @ts-ignore
-                      bytesThumb={config.rootPath + "/static/bytes/t/" + byte._id}
-                      // @ts-ignore
-                      bytesDesc={byte.description}
-                      // @ts-ignore
-                      language={byte.language}
-                      // @ts-ignore
-                      completedEasy={byte.completedEasy}
-                      // @ts-ignore
-                      completedMedium={byte.completedMedium}
-                      // @ts-ignore
-                      completedHard={byte.completedHard}
-                    />
-                  </Box>
-                ))}
-              </Grid>
-              <Grid item xs={12} md={4}> {/* adjust grid item size for better layout */}
-                <Typography variant="subtitle1" gutterBottom>
-                  Projects
-                </Typography>
-                {projectsData.slice(0, 3).map((project: any) => (
-                  <Box key={project._id} sx={{ mb: 2 }}>
-                    <ProjectCard
-                      projectId={project._id}
-                      projectTitle={project.title}
-                      projectDesc={project.description}
-                      projectThumb={config.rootPath + project.thumbnail}
-                      projectDate={project.updated_at}
-                      projectType={project.post_type_string}
-                      renown={project.tier}
-                      onClick={() => router.push("/challenge/" + project._id)}
-                      userThumb={config.rootPath + "/static/user/pfp/" + project.author_id}
-                      userId={project.author_id}
-                      username={project.author}
-                      backgroundName={project.background_name}
-                      backgroundPalette={project.background_color}
-                      exclusive={project["challenge_cost"] !== null}
-                      hover={false}
-                      width="100%"
-                      height="auto"
-                      imageWidth="100%"
-                      imageHeight="20vh"
-                    />
-                  </Box>
-                ))}
-              </Grid>
-            </Grid>
-          </Box>
+            </Box>
+          ) : null // render nothing if no data exists
         )
     }
 
