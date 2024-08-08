@@ -7,7 +7,7 @@ import {
     updateAuthState,
     initialAuthStateUpdate
 } from "@/reducers/auth/auth";
-import { ThemeProvider, CssBaseline, Box, Grid, Typography, CircularProgress, LinearProgress, Button, Tabs, Tab, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Tooltip, TableContainer, TableBody, Table, TableRow, TableCell, TableHead } from '@mui/material';
+import { ThemeProvider, CssBaseline, Box, Grid, Typography, CircularProgress, LinearProgress, Button, Tabs, Tab, List, ListItem, ListItemAvatar, ListItemText, Dialog, DialogTitle, DialogContent, DialogActions, TextField, IconButton, Tooltip, TableContainer, TableBody, Table, TableRow, TableCell, TableHead, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import config from '../../config';
@@ -263,32 +263,42 @@ const ProfileMobile = () => {
     };
 
     const getFriendsList = async () => {
-        try {
-            const response = await fetch(`${config.rootPath}/api/friends/list`, {
+        let friends = await fetch(
+            `${config.rootPath}/api/friends/list`,
+            {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}',
                 credentials: 'include'
-            });
-            const data = await response.json();
-            setFriendsList(data.friends);
-        } catch (error) {
-            console.error("failed to fetch friends list:", error);
-        }
-    };
+            }
+        ).then(async (response) => response.json())
+
+        const [res] = await Promise.all([friends])
+        setFriendsList(res["friends"])
+    }
 
     const getRequestList = async () => {
-        try {
-            const response = await fetch(`${config.rootPath}/api/friends/requestList`, {
+        let friends = await fetch(
+            `${config.rootPath}/api/friends/requestList`,
+            {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: '{}',
                 credentials: 'include'
-            });
-            const data = await response.json();
-            setRequestList(data.requests);
-        } catch (error) {
-            console.error("failed to fetch friend requests:", error);
-        }
-    };
+            }
+        ).then(async (response) => response.json())
+
+        const [res] = await Promise.all([friends])
+        setRequestList(res["requests"])
+
+        res["requests"].map((row: { [x: string]: string; }) => (
+            row["friend_name"].toLowerCase() === username.toLowerCase()
+                ? setRequestPopupOpen(true) : setRequestPopupOpen(false)))
+    }
 
     const fetchBackgroundData = async () => {
         try {
@@ -518,6 +528,7 @@ const ProfileMobile = () => {
         const handleClose = () => {
             setAddFriendsPopupOpen(false); // Close the Add Friends popup
         };
+        
 
         // Assume sendFriendRequest takes a friend_id parameter
         const handleAddFriend = async (friendId: any) => {
@@ -623,6 +634,13 @@ const ProfileMobile = () => {
         };
         return (
             <Box style={{ justifyContent: "center", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px", position: "relative", overflow: "visible", height: "100%", width: "100%" }}>
+                {/* close button for the popup */}
+                <IconButton 
+                    onClick={() => {setRequestPopupOpen(false);}} // closes the popup when clicked
+                    style={{ position: 'absolute', top: '10px', right: '10px' }} 
+                >
+                    <CloseIcon />
+                </IconButton>
                 <TableContainer component={Paper} style={{opacity: 1}} className={'check'}>
                     <Table sx={{ minWidth: 650 }} aria-label="caption table">
                         <TableHead style={{ backgroundColor: "#2b8761" }}>
@@ -1045,6 +1063,35 @@ const ProfileMobile = () => {
                         }}></div>
                     )}
                 </Box>
+                <Box sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        width: "100%",
+                        mt: 2
+                    }}>
+                        <Button
+                            onClick={(e) => {
+                                e.preventDefault(); // prevent default button behavior
+                                setFriendsPopupOpen(true);
+                                // update friends list without full page refresh
+                                getFriendsList().then(() => {
+                                    // update friends list state directly
+                                    setFriendsList(prevList => [...prevList]);
+                                });
+                            }}
+                            variant="outlined"
+                            sx={{
+                                color: theme.palette.text.primary,
+                                borderRadius: 1,
+                                p: 1,
+                                mr: 1,
+                                backgroundColor: "secondary",
+                                minWidth: "120px"
+                            }}
+                        >
+                            Friends
+                        </Button>
+                    </Box>
             
             </Box>
         )
@@ -1587,6 +1634,48 @@ const ProfileMobile = () => {
                         <RecentActivity />
                     </Box>
                 )}
+                <Dialog
+                    PaperProps={{ style: { minHeight: "50vh", minWidth: "80vw", maxHeight: "50vh", width: "80vw" }}}
+                    open={friendsPopupOpen}
+                    onClose={() => {
+                        setFriendsPopupOpen(false);
+                    }}
+                >
+                    {friendList()}
+                </Dialog>
+                <Dialog
+                    PaperProps={{ style: { minHeight: "50vh", minWidth: "80vw", maxHeight: "50vh", width: "80vw" }}}
+                    open={addFriendsPopupOpen}
+                    onClose={() => {
+                        setAddFriendsPopupOpen(false);
+                    }}
+                >
+                    {AddFriendsPopup()}
+                </Dialog>
+                <Dialog
+                    PaperProps={{ style: { minHeight: "50vh", minWidth: "80vw" } }}
+                    open={requestPopupOpen}
+                    onClose={() => {
+                        setRequestPopupOpen(false);
+                    }}
+                >
+                    {friendRequests()}
+                    {requestList.length === 0
+                        ?
+                        <Typography component={"div"}
+                                    sx={{display: "flex",
+                                        justifyContent: "center",
+                                        paddingTop: "2%",
+                                        paddingBottom: "2%",
+                                        flexDirection: "row",
+                                        opacity: "0.3"
+                                    }}>
+                            No pending requests
+                        </Typography>
+                        :
+                        <></>
+                    }
+                </Dialog>
             </CssBaseline>
         </ThemeProvider>
     );
