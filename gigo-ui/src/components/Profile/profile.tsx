@@ -1,30 +1,14 @@
 'use client'
 import * as React from "react";
-import {SyntheticEvent, useEffect, useMemo, useState} from "react";
+import {useEffect, useState} from "react";
 import {
-    Autocomplete,
     Box,
     Button,
-    createTheme,
     CssBaseline,
     Grid,
-    MenuItem,
-    PaletteMode,
-    Select,
-    Tab,
-    Tabs,
-    TextField,
     ThemeProvider,
     Typography,
-    Modal,
-    DialogTitle,
-    DialogContent,
-    Dialog,
     Tooltip,
-    List,
-    ListItem,
-    ListItemAvatar,
-    ListItemText, DialogActions, IconButton,
     LinearProgress,
     CircularProgress,
     Container
@@ -34,39 +18,19 @@ import {theme} from "@/theme";
 import ProjectCard from "@/components/Project/ProjectCard";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import {
-    initialAuthStateUpdate,
     selectAuthState, selectAuthStateId,
     selectAuthStateTier,
     selectAuthStateUserName,
-    updateAuthState
 } from "@/reducers/auth/auth";
-import ProfilePicture from "@/icons/User/ProfilePicture";
 import {Chart} from "react-google-charts";
-import call from "@/services/api-call";
 import config from "@/config";
 import swal from "sweetalert";
-import Lottie from "react-lottie"
-import * as animationData from '@/img/71619-coding.json'
-import {ThreeDots} from "react-loading-icons";
 import Post from "@/models/post";
 import ReactGA from "react-ga4";
-import {programmingLanguages} from "@/services/vars";
 import SearchIcon from '@mui/icons-material/Search';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import LockIcon from '@mui/icons-material/Lock';
 import UserIcon from "@/icons/User/UserIcon";
-import TableContainer from "@mui/material/TableContainer";
-import Paper from "@mui/material/Paper";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import MoonLoader from "react-spinners/MoonLoader";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
-import ProgressBar from "@ramonak/react-progress-bar";
 import "@/components/Profile/styles/progress.css";
-import coffeePot from "@/img/renown/coffee_maker.svg";
 import r1Lvl from "@/img/renown/r1Lvl.svg";
 import r2Lvl from "@/img/renown/r2Lvl.svg";
 import r3Lvl from "@/img/renown/r3Lvl.svg";
@@ -87,39 +51,21 @@ import renown7 from "@/img/renown/renown7.svg"
 import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
-import alternativeImage from "@/img/Black.png"
 import useDebounce from "@/hooks/debounce";
-import AddIcon from "@mui/icons-material/Add";
-import CloseIcon from "@mui/icons-material/Close";
 import {Helmet, HelmetProvider} from "react-helmet-async";
 import {useRouter, useSearchParams} from "next/navigation";
 import SchoolIcon from '@mui/icons-material/School';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { format, subDays } from 'date-fns';
+import { format } from 'date-fns';
 import DetourCard from "@/components/Journey/DetourCard";
 import BytesCard from "@/components/BytesCard";
-
-
-type BackgroundArray = {
-    modules: string;
-    id?: string;
-    name: string;
-    data: null | any;
-};
-
-interface Reward {
-    id: string; // Or number, depending on your data
-    render_in_front: boolean; // Adjust this type if different
-    full_name: string;
-}
-
+import EditBackground from "./editBackground";
+import Friends from "./friends";
 
 function Profile() {
     const username = useAppSelector(selectAuthStateUserName);
-    const tier = useAppSelector(selectAuthStateTier);
     let queryParams = useSearchParams();
-    let isMobile = queryParams.get("viewport") === "mobile";
     const chatOpened = queryParams.get("chat") === "true";
     const sidebarOpen = queryParams.get("menu") === "true";
 
@@ -143,25 +89,8 @@ function Profile() {
         },
     };
 
-    let profileBackgroundArrayFull: BackgroundArray[] = [{"modules": "red_paint", "name": "red_paint", "data": null}, {"modules": "white_paint", "name": "white_paint", "data": null}, {"modules": "pink_paint", "name": "pink_paint", "data": null},{"modules": "blue_geometric_lines", "name": "blue_geometric_lines", "data": null}, {"modules": "green_geometric_lines", "name": "green_geometric_lines", "data": null}, {"modules": "red_geometric_lines", "name": "red_geometric_lines", "data": null}, {"modules": "blue_helix_circle", "name": "blue_helix_circle", "data": null}, {"modules": "green_helix_circle", "name": "green_helix_circle", "data": null}, {"modules": "red_helix_circle", "name": "red_helix_circle", "data": null}, {"modules": "pink_70s_funk", "name": "pink_70s_funk", "data": null}, {"modules": "orange_70s_funk", "name": "orange_70s_funk", "data": null}, {"modules": "green_70s_funk", "name": "green_70s_funk", "data": null},{"modules": "green_coffee_stain", "name": "green_coffee_stain", "data": null}, {"modules": "orange_coffee_stain", "name": "orange_coffee_stain", "data": null}, {"modules": "purple_coffee_stain", "name": "purple_coffee_stain", "data": null}, {"modules": "green_wave", "name": "green_wave", "data": null}, {"modules": "orange_wave", "name": "orange_wave", "data": null}, {"modules":"purple_wave", "name": "purple_wave", "data": null}, {"modules": "green_pulse", "name": "green_pulse", "data": null}, {"modules": "pink_pulse", "name": "pink_pulse", "data": null}, {"modules": "purple_pulse", "name": "purple_pulse", "data": null}, {"modules": "blue_dotted_circle", "name": "blue_dotted_circle", "data": null}, {"modules": "green_dotted_circle", "name": "green_dotted_circle", "data": null}, {"modules": "orange_dotted_circle", "name": "orange_dotted_circle", "data": null}, {"modules": "blue_fast_circle", "name": "blue_fast_circle", "data": null}, {"modules": "grey_fast_circle", "name": "grey_fast_circle", "data": null}, {"modules": "red_fast_circle", "name": "red_fast_circle", "data": null}, {"modules": "blue_dotted_vortex", "name": "blue_dotted_vortex", "data": null}, {"modules": "green_dotted_vortex", "name": "green_dotted_vortex", "data": null}, {"modules": "red_dotted_vortex", "name": "red_dotted_vortex", "data": null}]
-
-    const [searchText, setSearchText] = React.useState("")
-
-    const [chosenBackground, setChosenBackground] = React.useState<BackgroundArray[]>([]);
-    const [backgroundTab, setBackgroundTab] = React.useState(0);
-    const [backgroundArray, setBackgroundArray] = useState<BackgroundArray[]>([]);
-    const [profileBackgroundArray, setProfileBackgroundArray] = React.useState<BackgroundArray[]>([]);
-    const [friendsPopupOpen, setFriendsPopupOpen] = React.useState(false);
-    const [requestPopupOpen, setRequestPopupOpen] = React.useState(false);
-    const [addFriendsPopupOpen, setAddFriendsPopupOpen] = React.useState(false);
-    const [mutual, setMutual] = React.useState(false)
-
-    const dispatch = useAppDispatch();
-
     const authState = useAppSelector(selectAuthState);
 
-
-    const [userActivity, setUserActivity] = React.useState<Array<{ date: string; events: number }>>([]);
 
     const [userData, setUserData] = React.useState(null)
 
@@ -169,14 +98,8 @@ function Profile() {
 
     const [searchOptions, setSearchOptions] = React.useState<Post[]>([])
 
-    const [unPubSearch, setUnPubSearch] = React.useState<Post[]>([])
-
-    const [searchActive, setSearchActive] = React.useState(false)
-
     const [query, setQuery] = React.useState("")
     const debounceQuery = useDebounce(query, 500);
-
-    const [published, setPublished] = React.useState(true)
 
     const [languages, setLanguages] = React.useState<number[]>([])
 
@@ -184,13 +107,7 @@ function Profile() {
 
     const [tierFilter, setTierFilter] = React.useState(-1)
 
-    const [showPopup, setShowPopup] = React.useState(false)
-
-    const [inventory, setInventory] = React.useState<Reward[]>([])
     const [userBackground, setUserBackground] = useState("")
-    const [friendsList, setFriendsList] = React.useState([])
-    const [requestList, setRequestList] = React.useState([])
-    const [projectPage, setProjectPage] = React.useState(0)
     const [publishedBool, setPublishedBool] = React.useState(true)
 
     const [skip, setSkip] = React.useState(0)
@@ -199,41 +116,7 @@ function Profile() {
 
     ReactGA.initialize("G-38KBFJZ6M6");
 
-    const ShowButton = () => (
-        <Button
-            variant="contained"
-            color="primary"
-            onClick={() => freshSearch()}
-            style={{width: "5px", height: "42px"}}
-        >
-            {<SearchIcon/>}
-        </Button>
-    )
-
     const userId = useAppSelector(selectAuthStateId);
-
-    function daysInThisMonth() {
-        let now = new Date();
-        return new Date(now.getFullYear(), now.getMonth()+1, 0).getDate();
-    }
-
-    const getFriendsList = async () => {
-        let friends = await fetch(
-            `${config.rootPath}/api/friends/list`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: '{}',
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        const [res] = await Promise.all([friends])
-        setFriendsList(res["friends"])
-    }
-
 
     const [currentXp, setCurrentXp] = React.useState(0)
     const [maxXp, setMaxXp] = React.useState(0)
@@ -280,73 +163,7 @@ function Profile() {
         setSkip(skip + 32)
     }
 
-    const getRequestList = async () => {
-        let friends = await fetch(
-            `${config.rootPath}/api/friends/requestList`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: '{}',
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        const [res] = await Promise.all([friends])
-        setRequestList(res["requests"])
-
-        res["requests"].map((row: { [x: string]: string; }) => (
-            row["friend_name"].toLowerCase() === username.toLowerCase()
-                ? setRequestPopupOpen(true) : setRequestPopupOpen(false)))
-    }
-
-    const acceptFriend = async (requesterId: any) => {
-        let res = await fetch(
-            `${config.rootPath}/api/friends/accept`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    requester_id: requesterId
-                }),
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        if (res["message"] !== "friend request accepted") {
-            //@ts-ignore
-            swal("An unexpected error has occurred", "We're sorry, we'll get right on that!", "error")
-        } else if (res["message"] === "friend request accepted") {
-            //@ts-ignore
-            swal("Friend request accepted!", "", "success")
-        }
-    }
-
-    const declineFriend = async (requesterId: any) => {
-        let res = await fetch(
-            `${config.rootPath}/api/friends/decline`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    requester_id: requesterId
-                }),
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        if (res["message"] !== "friend request declined") {
-            //@ts-ignore
-            swal("An unexpected error has occurred", "We're sorry, we'll get right on that!", "error")
-        }
-    }
-
-    const getUserProjects = async () => {
+    const getProfileData = async () => {
         //todo check if maybe it should be formatted safer
         if (userData === null) {
             let user = await fetch(
@@ -381,28 +198,8 @@ function Profile() {
                     })
                     .catch(error => console.error(error));
             }
-            // setUserBackground(res["user"]["color_palette"] + "_" + res["user"]["name"])
-            setUserActivity(res["activity"])
-
+            setUserBackground(res["user"]["color_palette"] + "_" + res["user"]["name"])
         }
-    }
-
-    const fetchBackgroundData = async () => {
-        let promises: Promise<any>[] = [];
-        for (let i = 0; i < profileBackgroundArrayFull.length; i++){
-            promises.push(
-                fetch(`${config.rootPath}/static/ui/lottie/user_backgrounds/${profileBackgroundArrayFull[i]["name"]}.json`, {credentials: 'include'})
-                .then(data => {
-                    data.json().then(json => {
-                        profileBackgroundArrayFull[i]["data"] = json
-                    })
-                })
-                .catch(error => console.error(error))
-            );
-        }
-        await Promise.all(promises)
-        setProfileBackgroundArray(profileBackgroundArrayFull)
-        setBackgroundArray(profileBackgroundArray.slice(0,3))
     }
 
     const [dataLoaded, setDataLoaded] = React.useState(false);
@@ -413,10 +210,7 @@ function Profile() {
                 setLoading(true);
                 await Promise.all([
                     getXP(),
-                    getUserProjects(),
-                    getFriendsList(),
-                    getRequestList(),
-                    fetchBackgroundData()
+                    getProfileData(),
                 ]);
                 setDataLoaded(true);
                 setLoading(false);
@@ -483,434 +277,12 @@ function Profile() {
 
     const stopScroll = React.useRef(false)
 
-    // const [isFetching, setIsFetching] = useInfiniteScroll(infiniteScrollHandler, false, 1440, disableInfiniteScroll)
-    const [isFetching, setIsFetching] = useInfiniteScroll(scrollSearch, true, 1440, stopScroll)
     useEffect(() => {
         if (debounceQuery) {
             freshSearch()
         }
     }, [debounceQuery]);
 
-    const handleChanges = (event: React.SyntheticEvent, newValue: number) => {
-        switch(newValue){
-            case 0 : {
-                setBackgroundArray([])
-                setBackgroundTab(0)
-                setChosenBackground([])
-                break
-            }
-            case 1 : {
-                setBackgroundArray(profileBackgroundArray.slice(3,6))
-                setBackgroundTab(1)
-                break
-            }
-            case 2 : {
-                setBackgroundArray(profileBackgroundArray.slice(6,9))
-                setBackgroundTab(2)
-                break
-            }
-            case 3 : {
-                setBackgroundArray(profileBackgroundArray.slice(9,12))
-                setBackgroundTab(3)
-                break
-            }
-            case 4 : {
-                setBackgroundArray(profileBackgroundArray.slice(12,15))
-                setBackgroundTab(4)
-                break
-            }
-            case 5 : {
-                setBackgroundArray(profileBackgroundArray.slice(15,18))
-                setBackgroundTab(5)
-                break
-            }
-            case 6 : {
-                setBackgroundArray(profileBackgroundArray.slice(18,21))
-                setBackgroundTab(6)
-                break
-            }
-            case 7 : {
-                setBackgroundArray(profileBackgroundArray.slice(21,24))
-                setBackgroundTab(7)
-                break
-            }
-            case 8 : {
-                setBackgroundArray(profileBackgroundArray.slice(24,27))
-                setBackgroundTab(8)
-                break
-            }
-            case 9 : {
-                setBackgroundArray(profileBackgroundArray.slice(27,30))
-                setBackgroundTab(9)
-                break
-            }
-            case 10 : {
-                setBackgroundArray(profileBackgroundArray.slice(0,3))
-                setBackgroundTab(10)
-                break
-            }
-        }
-    };
-
-
-    const submitBackgroundChange = async (background: BackgroundArray[] | null) => {
-        if (background === null) {
-            setUserBackground("");
-            setShowPopup(false);
-            let authState = { ...initialAuthStateUpdate };
-            authState.backgroundColor = "null";
-            authState.backgroundName = "null";
-            dispatch(updateAuthState(authState));
-        } else {
-            const currentBackground = background[0];
-            setUserBackground(currentBackground.data);
-            setShowPopup(false);
-            let authState = { ...initialAuthStateUpdate };
-
-            const nameParts = currentBackground.name.split("_");
-            authState.backgroundColor = nameParts[0];
-
-            if (nameParts.length > 2) {
-                authState.backgroundName = nameParts[1] + "_" + nameParts[2];
-            } else {
-                authState.backgroundName = nameParts[1];
-            }
-
-            dispatch(updateAuthState(authState));
-        }
-    };
-
-    const getUserBackgroundInventory = async () => {
-        if (inventory.length === 0) {
-            let inventoryData = await fetch(
-                `${config.rootPath}/api/reward/getUserRewardInventory`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: '{}',
-                    credentials: 'include'
-                }
-            ).then(async (response) => response.json())
-
-            const [res] = await Promise.all([
-                inventoryData
-            ])
-
-            if (res === undefined) {
-                swal("There has been an issue loading data. Please try again later.")
-            }
-
-            let finalRewards = []
-
-            if (res["rewards"]!== undefined){
-                for (let i = 0; i < res["rewards"].length; i++){
-                    finalRewards.push({
-                        "id": res["rewards"][i]["id"],
-                        "render_in_front": res["rewards"][i]["render_in_front"],
-                        "full_name" : res["rewards"][i]["color_palette"] + "_" + res["rewards"][i]["name"],
-                    })
-                }
-            }
-
-            setInventory(finalRewards)
-
-        }
-        setShowPopup(true)
-    }
-
-    const sendFriendRequest = async (friendId: any) => {
-        let friend = await fetch(
-            `${config.rootPath}/api/friends/request`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    friend_id: friendId
-                }),
-                credentials: 'include'
-            }
-        ).then(async (response) => response.json())
-
-        const [res] = await Promise.all([
-            friend
-        ]);
-
-        // Handle different cases based on the response
-        if (res["message"] === "mutual request") {
-            setMutual(true);
-        } else if (res["message"] === "already friends") {
-            //@ts-ignore
-            swal("You are already friends!");
-        } else if (res["message"] === "pending request") {
-            //@ts-ignore
-            swal("Friend request already sent", "", "info");
-        } else if (res["message"] === "friend request sent") {
-            //@ts-ignore
-            swal("Your friend request has been sent!", "", "success");
-        }
-    }
-
-    const handleAddFriends = () => {
-        setAddFriendsPopupOpen(true);
-    }
-
-    const friendList = () => {
-        return (
-            <>
-                <DialogTitle style={{width: "100%", display: "flex", flexDirection: "row"}}>
-                    <Tooltip title="Go Back" placement="top">
-                        <Button
-                            onClick={() => {
-                                setFriendsPopupOpen(false);
-                            }}
-                            sx={!isMobile ?{
-                                marginRight: "16px",
-                                width: "16px",
-                                height: "28px"
-                            } : {
-                                marginRight: "4px",
-                                width: "8px",
-                                height: "28px"
-                            }}
-                        >
-                            <ArrowBackIcon style={{ fontSize: 36 }} />
-                        </Button>
-                    </Tooltip>
-                    <div style={!isMobile ? {} : {width: "100%"}}>
-                        Friends List
-                    </div>
-                    <Tooltip title="Add Friends" placement="top">
-                        <Button
-                            onClick={() => {
-                                handleAddFriends();
-                            }}
-                            sx={!isMobile ? {
-                                marginLeft: "16px",
-                                width: "16px",
-                                height: "28px"
-                            } : {
-                                marginLeft: "4px",
-                                width: "8px",
-                                height: "28px"
-                            }}
-                        >
-                            <AddIcon style={{ fontSize: 36 }} />
-                        </Button>
-                    </Tooltip>
-                </DialogTitle>
-                <DialogContent>
-                    <List>
-                        {friendsList.length > 0 ? (
-                            friendsList.map((row) => (
-                                <ListItem button onClick={() => router.push("/user/" + row["friend"])} key={row["friend"]}>
-                                    <Tooltip title={"Since " + new Date(row["date"]).toLocaleString("en-us", {day: '2-digit', month: 'short', year: 'numeric'})}>
-                                        <ListItemAvatar>
-                                            <UserIcon
-                                                userTier={"n/a"}
-                                                userThumb={config.rootPath + "/static/user/pfp/" + row["friend"]}
-                                                userId={row["friend"]}
-                                                backgroundName={null}
-                                                backgroundPalette={null}
-                                                backgroundRender={null}
-                                                size={50}
-                                            />
-                                        </ListItemAvatar>
-                                    </Tooltip>
-                                    <ListItemText primary={row["friend_name"]} />
-                                </ListItem>
-                            ))
-                        ) : (
-                            <Typography align="center">You have no friends yet.</Typography>
-                        )}
-                    </List>
-                </DialogContent>
-                <DialogActions style={{ justifyContent: 'center' }}>
-                    <Button onClick={() => {
-                        setRequestPopupOpen(true);
-                        setFriendsPopupOpen(false);
-                    }} color="primary">
-                        Friend Requests
-                    </Button>
-                </DialogActions>
-            </>
-        );
-    };
-
-    const AddFriendsPopup = () => {
-        const [searchQuery, setSearchQuery] = React.useState("");
-        const [searchResults, setSearchResults] = React.useState([]);
-
-        const handleClose = () => {
-            setAddFriendsPopupOpen(false); // Close the Add Friends popup
-        };
-
-        // Assume sendFriendRequest takes a friend_id parameter
-        const handleAddFriend = async (friendId: any) => {
-            await sendFriendRequest(friendId);
-        };
-
-        const handleSearch = async (e: { target: { value: React.SetStateAction<string>; }; }) => {
-            if (typeof e.target.value !== "string") {
-                return;
-            }
-
-            setSearchQuery(e.target.value);
-
-            let res = await fetch(
-                `${config.rootPath}/api/search/users`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        query: e.target.value,
-                        skip: 0,
-                        limit: 5,
-                    }),
-                    credentials: 'include'
-                }
-            ).then(async (response) => response.json())
-
-            // Handle server responses similar to handleAuthorSearch
-            if (res === undefined) {
-                // Handle undefined result
-                return;
-            }
-
-            if (res["users"] !== undefined) {
-                setSearchResults(res["users"]);
-            }
-        };
-
-        return (
-            <>
-                <DialogTitle style={{ textAlign: 'center', position: 'relative' }}>
-                    Add Friends
-                    <Tooltip title="Close" placement="top" style={{ position: 'absolute', right: '8px', top: '8px', zIndex: 1 }}>
-                        <Button onClick={handleClose}>
-                            <CloseIcon />
-                        </Button>
-                    </Tooltip>
-                </DialogTitle>
-                <DialogContent>
-                    <TextField
-                        label="Search for User"
-                        fullWidth
-                        variant="outlined"
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        style={!isMobile ? { marginBottom: "16px", marginTop: "1%" } : { marginBottom: "16px", marginTop: "2%" }}
-                    />
-                    <List>
-                        {searchResults.length > 0 ? (
-                            searchResults.map((row: any) => (
-                                <ListItem key={row["_id"]} button style={!isMobile ? { display: 'flex', justifyContent: 'center', alignItems: 'center' } : { display: 'flex', justifyContent: 'start', alignItems: 'center', width: "75vw" }}>
-                                    <ListItemAvatar>
-                                        <UserIcon
-                                            userTier={row["user_status_string"]}
-                                            userThumb={config.rootPath + row["pfp_path"]}
-                                            userId={row["_id"]}
-                                            backgroundName={null}
-                                            backgroundPalette={null}
-                                            backgroundRender={null}
-                                            size={50}
-                                        />
-                                    </ListItemAvatar>
-                                    {!isMobile ? (
-                                        <ListItemText primary={row["user_name"]} />
-                                    ) : (
-                                        <ListItemText primary={row["user_name"].length > 8 ? row["user_name"].slice(0,5) + "..." : row["user_name"]} />
-                                    )}
-                                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                        <Tooltip title="Send Friend Request" placement="top">
-                                            <Button
-                                                onClick={() => handleAddFriend(row["_id"])}
-                                                color="primary"
-                                                style={{ minWidth: '50px', minHeight: '50px' }}
-                                            >
-                                                <AddIcon fontSize="large" />
-                                            </Button>
-                                        </Tooltip>
-                                    </div>
-                                </ListItem>
-                            ))
-                        ) : (
-                            <Typography align="center">No results found.</Typography>
-                        )}
-                    </List>
-                </DialogContent>
-            </>
-        );
-    };
-
-    const friendRequests = () => {
-        const handleDeleteRow = (id: number) => {
-            setRequestList((prevRows) => prevRows.filter((row) => row["_id"] !== id));
-        };
-        return (
-            <Box style={{ justifyContent: "center", display: "flex", flexDirection: "column", alignItems: "center", padding: "40px", position: "relative", overflow: "visible", height: "100%", width: "100%" }}>
-                <TableContainer component={Paper} style={{opacity: 1}} className={'check'}>
-                    <Table sx={{ minWidth: 650 }} aria-label="caption table">
-                        <TableHead style={{ backgroundColor: "#2b8761" }}>
-                            <TableRow>
-                                <TableCell>Friend Requests</TableCell>
-                                <TableCell align="right"></TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {requestList.map((row: any) => (
-                                <TableRow key={row["_id"]}>
-                                    <TableCell component="th" scope="row">
-                                        {row["user_name"].toLowerCase() === username.toLowerCase()
-                                            ? row["friend_name"]
-                                            : row["user_name"]}
-                                    </TableCell>
-                                    <TableCell align="right">
-                                        {row["user_name"].toLowerCase() === username.toLowerCase()
-                                            ?
-                                            <>
-                                                <Button variant="contained" disabled={true}>
-                                                    Sent
-                                                </Button>
-                                            </>
-                                            :
-                                            <>
-                                                <Button variant="contained" color={"primary"}
-                                                        onClick={() => {
-                                                            acceptFriend(row["user_id"])
-                                                            handleDeleteRow(row["_id"])
-                                                        }}>
-                                                    Accept
-                                                </Button>
-                                                <Button variant="contained" color={"error"}
-                                                        onClick={() => {
-                                                            declineFriend(row["user_id"])
-                                                            handleDeleteRow(row["_id"])
-                                                        }}>
-                                                    Decline
-                                                </Button>
-                                            </>
-                                        }
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-            </Box>
-        )
-    }
-
-    const closeBackgroundPopup = () => {
-        setBackgroundArray(profileBackgroundArray.slice(0,3))
-        setBackgroundTab(0)
-        setShowPopup(false)
-    }
 
     let renownImg;
     let levelImg;
@@ -1011,191 +383,6 @@ function Profile() {
         return () => cancelAnimationFrame(frameId);
     }, [sidebarOpen, chatOpened, scaleFactor, searchOptions]);
 
-    const editBackgroundModal = () => {
-        return(
-            <Modal
-                open={showPopup}
-                onClose={() => closeBackgroundPopup()}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <div style={{display: "flex", width: "60vw", height: "60vh", alignItems: "center", justifyContent: "center"}}>
-                    <Box
-                        sx={{
-                            boxShadow: "0px 6px 3px -3px rgba(0,0,0,0.3),0px 3px 3px 0px rgba(0,0,0,0.3),0px 3px 9px 0px rgba(0,0,0,0.3)",
-                            color: 'text.primary',
-                            borderRadius: 1,
-                            width: "60vw",
-                            minHeight: "550px",
-                            height: "60vh",
-                            backgroundColor: theme.palette.background.default,
-                            display: "flex",
-                            flexDirection: "row",
-                            justifyContent: "start",
-                            alignItems: "center",
-                            transform: "translate(30%, 30%)"
-                        }}
-                    >
-                        <IconButton
-                            aria-label="close"
-                            onClick={() => closeBackgroundPopup()}
-                            color="primary"
-                            style={{position: 'absolute', top: "1%", right: "1%", zIndex: 10}}
-                        >
-                            <CloseIcon/>
-                        </IconButton>
-                        <div style={{height: "90%", overflowY: "hidden", paddingRight: "20px"}}>
-                            <Tabs
-                                orientation="vertical"
-                                variant="scrollable"
-                                value={backgroundTab}
-                                onChange={handleChanges}
-                                aria-label="Vertical tabs example"
-                                sx={{
-                                    borderRight: 1,
-                                    borderColor: 'divider',
-                                    height: "100%",
-                                    overflowY: "auto"
-                                }}
-                            >
-                                <Tab label="None"/>
-                                <Tab label="Geometric"/>
-                                <Tab label="Helix"/>
-                                <Tab label="70s Funk"/>
-                                <Tab label="Coffee Stain"/>
-                                <Tab label="Wave"/>
-                                <Tab label="Pulse"/>
-                                <Tab label="Dotted Circle"/>
-                                <Tab label="Fast Circle"/>
-                                <Tab label="Dotted Vortex"/>
-                                <Tab label="Paint"/>
-                            </Tabs>
-                        </div>
-                        <div style={{
-                            height: "90%",
-                            width: "30%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            flexDirection: "column",
-                            padding: "10px"
-                        }}>
-                            {backgroundArray.map((background, index) => {
-                                let personalInventory = inventory.filter(e => e.full_name === background["name"])
-                                return (
-                                    <div key={index} style={{padding: "10px"}}>
-                                        {personalInventory.length === 0 ? (
-                                            <div style={{width: "100px", height: "100px", position: "relative", zIndex: 9}}>
-                                                <div style={{position: "absolute", top: 0, left: 0, width: "100%", height: "100%", opacity: 0.3}}>
-                                                    <Button disabled={true}>
-                                                        <div style={{display: "flex", alignItems: "center", justifyContent: "center"}}>
-                                                            <Lottie options={
-                                                                {loop: true,
-                                                                    autoplay: true,
-                                                                    animationData: background["data"],
-                                                                    rendererSettings: {
-                                                                        preserveAspectRatio: 'xMidYMid slice'
-                                                                    }
-                                                                }} width={100}
-                                                                    height={100} isClickToPauseDisabled={true}/>
-                                                        </div>
-                                                    </Button>
-                                                </div>
-                                                <div style={{zIndex: 10, width: "100px", height: "100px", position: "absolute", top: 40, left: 45}}>
-                                                    <LockIcon/>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <Button onClick={() => setChosenBackground([
-                                                {
-                                                    modules: background["modules"],
-                                                    id: personalInventory[0]["id"],
-                                                    name: background["name"],
-                                                    data: background["data"],
-                                                }
-                                            ])} disabled={false}>
-                                                <div style={{
-                                                    display: "flex",
-                                                    alignItems: "center",
-                                                    justifyContent: "center"
-                                                }}>
-                                                    <Lottie options={
-                                                        {
-                                                            loop: true,
-                                                            autoplay: true,
-                                                            animationData: background["data"],
-                                                            rendererSettings: {
-                                                                preserveAspectRatio: 'xMidYMid slice'
-                                                            }
-                                                        }} width={100}
-                                                            height={100}
-                                                            isClickToPauseDisabled={true}
-                                                    />
-                                                </div>
-                                            </Button>
-                                        )}
-                                    </div>
-                                )
-                            })}
-                        </div>
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                position: 'relative',
-                            }}
-                        >
-                            <div
-                                style={{
-                                    position: 'relative',
-                                    zIndex: 1,
-                                }}
-                            >
-                                <UserIcon
-                                    userId={authState.id}
-                                    userTier={authState.tier}
-                                    userThumb={userData === null ? "" : config.rootPath + userData["pfp_path"]}
-                                    size={300}
-                                    backgroundName={null}
-                                    backgroundPalette={null}
-                                    backgroundRender={null}
-                                    profileButton={false}
-                                    pro={authState.role > 0}
-                                    mouseMove={false}
-                                />
-                            </div>
-                            {chosenBackground.length !== 0 && (
-                                <div
-                                    style={{
-                                        position: 'absolute',
-                                        width: 575,
-                                        height: 575,
-                                        zIndex: 2,
-                                    }}
-                                >
-                                    <Lottie
-                                        options={{
-                                            loop: true,
-                                            autoplay: true,
-                                            animationData: chosenBackground[0]["data"],
-                                            rendererSettings: {
-                                                preserveAspectRatio: 'xMidYMid slice',
-                                            },
-                                        }}
-                                        isClickToPauseDisabled={true}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                        <div style={{position: 'absolute', bottom: "1%", right: "1%", zIndex: 10}}>
-                            <Button onClick={() => submitBackgroundChange(chosenBackground)}>Submit</Button>
-                        </div>
-                    </Box>
-                </div>
-            </Modal>
-        )
-    }
 
     const RecentActivity = () => {
         const [loading, setLoading] = React.useState(true)
@@ -1452,51 +639,16 @@ function Profile() {
                     <Box sx={{
                         display: "flex",
                         justifyContent: "center",
+                        alignItems: "center",
                         width: "100%",
-                        mt: 2
+                        mt: 4,
+                        gap: 3
                     }}>
-                        <Button
-                            onClick={(e) => {
-                                e.preventDefault(); // prevent default button behavior
-                                setFriendsPopupOpen(true);
-                                // update friends list without full page refresh
-                                getFriendsList().then(() => {
-                                    // update friends list state directly
-                                    setFriendsList(prevList => [...prevList]);
-                                });
-                            }}
-                            variant="outlined"
-                            sx={{
-                                color: theme.palette.text.primary,
-                                borderRadius: 1,
-                                p: 1,
-                                mr: 1,
-                                backgroundColor: "secondary",
-                                minWidth: "120px"
-                            }}
-                        >
-                            Friends
-                        </Button>
-                        <Button
-                            onClick={(e) => {
-                                e.preventDefault(); // prevent default button behavior
-                                getUserBackgroundInventory().then(() => {
-                                    // update inventory state directly
-                                    setInventory(prevInventory => [...prevInventory]);
-                                });
-                            }}
-                            variant={"outlined"}
-                            sx={{
-                                color: theme.palette.text.primary,
-                                borderRadius: 1,
-                                p: 1,
-                                ml: 1,
-                                backgroundColor: "secondary",
-                                minWidth: "120px"
-                            }}
-                        >
-                            Edit Background
-                        </Button>
+                        <EditBackground 
+                            userBackground={userBackground} 
+                            userData={userData}
+                        />
+                        <Friends />
                     </Box>
                 </Box>
             </Box>
@@ -1956,49 +1108,7 @@ function Profile() {
                         <RecentActivity/>
                     </Box>
                 )}
-                {editBackgroundModal()}
-                <Dialog
-                    PaperProps={{ style: !isMobile ? { minHeight: "50vh", minWidth: "20vw", maxHeight: "50vh", width: "40vw" } : { minHeight: "50vh", maxHeight: "50vh", width: "90vw" }}}
-                    open={friendsPopupOpen}
-                    onClose={() => {
-                        setFriendsPopupOpen(false);
-                    }}
-                >
-                    {friendList()}
-                </Dialog>
-                <Dialog
-                    PaperProps={{ style: !isMobile ? { minHeight: "50vh", minWidth: "20vw", maxHeight: "50vh", width: "40vw" } : { minHeight: "50vh", maxHeight: "50vh", width: "90vw" }}}
-                    open={addFriendsPopupOpen}
-                    onClose={() => {
-                        setAddFriendsPopupOpen(false);
-                    }}
-                >
-                    {AddFriendsPopup()}
-                </Dialog>
-                <Dialog
-                    PaperProps={{ style: { minHeight: "50vh", minWidth: "50vw" } }}
-                    open={requestPopupOpen}
-                    onClose={() => {
-                        setRequestPopupOpen(false);
-                    }}
-                >
-                    {friendRequests()}
-                    {requestList.length === 0
-                        ?
-                        <Typography component={"div"}
-                                    sx={{display: "flex",
-                                        justifyContent: "center",
-                                        paddingTop: "2%",
-                                        paddingBottom: "2%",
-                                        flexDirection: "row",
-                                        opacity: "0.3"
-                                    }}>
-                            No pending requests
-                        </Typography>
-                        :
-                        <></>
-                    }
-                </Dialog>
+            
             </CssBaseline>
         </ThemeProvider>
     );
