@@ -17,6 +17,9 @@ import type { Metadata, ResolvingMetadata } from 'next'
 import GigoCircleIcon from "@/icons/GigoCircleLogo";
 import MainRender from "@/components/Pages/Referral/MainRender";
 import JsonLd from '@/components/JsonLD';
+import backgroundImage from '@/img/welcome-background.png';
+import ThinkingGorillaImage from '@/img/thinking-gorilla-discord-png.svg'; // import the svg image
+import Image from 'next/image';
 
 type Props = {
     params: { name: string }
@@ -107,6 +110,40 @@ async function ReferralWelcome({ params, searchParams }: Props) {
         }
         return data["user"]
     })
+
+    // check if the referral user is null and return a message if so
+    if (referralUser === null) {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                    backgroundImage: `url(${backgroundImage.src})`, // ensure the background image is correctly referenced
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    textAlign: 'center',
+                    padding: '20px', // add padding for better spacing
+                }}
+            >
+                <Typography variant="h2" color="error" sx={{ mb: 2, fontSize: { xs: '4vw', sm: '3vw', md: '2.5vw' } }}>
+                    Sorry, we could not find that user on GIGO
+                </Typography>
+                <Typography variant="h6" sx={{ color: '#fff', maxWidth: '600px', fontSize: { xs: '3vw', sm: '2.5vw', md: '1.5rem' }, lineHeight: 1.4 }}>
+                    Please check the username and try again. If you believe this is an error, contact support at <a href="mailto:contact@gigo.dev" style={{ color: '#fff', textDecoration: 'underline' }}>contact@gigo.dev</a>.
+                </Typography>
+                <Image 
+                    src={ThinkingGorillaImage} // use the svg image
+                    alt="thinking gorilla emoji" 
+                    style={{ marginTop: '20px' }} 
+                    width={250} // 3x the original width of 50px
+                    height={250} // 3x the original height of 50px
+                /> {/* add the image below the text */}
+            </Box>
+        );
+    }
 
     ///////// Server Fetching //////////
 
