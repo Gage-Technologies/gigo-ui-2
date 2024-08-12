@@ -57,7 +57,6 @@ import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import UserIcon from "@/icons/User/UserIcon";
-import {Helmet, HelmetProvider} from "react-helmet-async";
 import {useRouter, useSearchParams} from "next/navigation";
 import Chart from "react-google-charts";
 import BytesCard from "@/components/BytesCard";
@@ -1083,22 +1082,6 @@ function UserPageMobile({params}: { params: {id: string}}) {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline>
-                {userData !== null ? (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>{userData["user_name"]}</title>
-                            <meta property="og:title" content={userData["user_name"]} data-rh="true"/>
-                            <meta property="og:image" content={config.rootPath + userData["pfp_path"]} data-rh="true"/>
-                        </Helmet>
-                    </HelmetProvider>
-                ) : (
-                    <HelmetProvider>
-                        <Helmet>
-                            <title>User</title>
-                            <meta property="og:image" content={"image not found"} data-rh="true"/>
-                        </Helmet>
-                    </HelmetProvider>
-                )}
                 {loading ? (
                     <Box sx={{
                         display: 'flex',

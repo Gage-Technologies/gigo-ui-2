@@ -46,6 +46,33 @@ export async function generateMetadata(
 
 async function fetchUser(id: string): Promise<User | null> {
     try {
+        // check if the user id is a snowflake id
+        if (!/^[0-9]{19}$/.test(id)) {
+            // handle username by retrieving the user id
+            const response = await fetch(`${config.rootPath}/api/user/getId`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: id }),
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) {
+                    return null;
+                }
+                throw new Error('Failed to fetch user data');
+            }
+
+            let data = await response.json();
+            if (data["id"] !== undefined) {
+                id = data["id"];
+            } else {
+                return null;
+            }
+        }
+
         const response = await fetch(`${config.rootPath}/api/user/profilePage`, {
             method: 'POST',
             credentials: 'include',
@@ -74,6 +101,10 @@ async function fetchUser(id: string): Promise<User | null> {
 export default async function HandleUserPage({ params, searchParams }: { params: { id: string }, searchParams: { viewport?: string } }) {
     const isMobile = searchParams.viewport === "mobile";
     const user = await fetchUser(params.id);
+    // ensure that the user id is always correct
+    if (user) {
+        params.id = user._id;
+    }
 
     if (!user) {
         return <div>User not found</div>;
