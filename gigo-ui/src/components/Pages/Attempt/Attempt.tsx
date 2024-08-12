@@ -1233,6 +1233,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         let clickCallback = () => {
             if (!loggedIn) {
                 router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                return
             }
 
             if (authState.role < 2) {
@@ -1254,7 +1255,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         if (attempt !== null && attempt["start_time_millis"] !== undefined && attempt["start_time_millis"] !== null && attempt["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(attempt["start_time_millis"])}`
         }
-        if (authState.role < 2) {
+        if (loggedIn && authState.role < 2) {
             toolTipText = (
                 <Box sx={{ position: "relative", width: "fit-content" }}>
                     You must be Pro Advanced or Max to launch this Challenge
@@ -1298,6 +1299,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         let clickCallback = () => {
             if (!loggedIn) {
                 router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                return
             }
 
             if (authState.role < 2) {
@@ -1312,7 +1314,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
             <Tooltip
                 open={mobileLaunchTooltipOpen}
                 onClose={() => setMobileLaunchTooltipOpen(false)}
-                title={authState.role < 2 ? (
+                title={loggedIn && authState.role < 2 ? (
                     <Box>
                         You must be Pro Advanced or Max to launch this Challenge <br />
                         <Box sx={{ width: "100%", position: "relative", height: "30px" }}>

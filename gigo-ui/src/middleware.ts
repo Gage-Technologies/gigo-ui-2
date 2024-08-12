@@ -36,11 +36,7 @@ const privateRoutes = [
     '/welcome',
 ];
 
-const softBlockedRoutes = [
-    '/challenge',
-    '/attempt',
-    '/user',
-];
+const softBlockedRoutes: string[] = [];
 
 function handlePrivatePaths(request: NextRequest, url: NextURL): { url: NextURL; redirect: boolean } {
     const cookie = request.cookies.get("gigoAuthToken");

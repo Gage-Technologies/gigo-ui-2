@@ -1514,6 +1514,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
         let clickCallback = () => {
             if (!loggedIn) {
                 window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
+                return
             }
             if (authState.role < 2) {
                 setGoProPopup(true)
@@ -1545,7 +1546,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
         if (project !== undefined && project !== null && project["start_time_millis"] !== undefined && project["start_time_millis"] !== null && project["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(project["start_time_millis"])}`
         }
-        if (authState.role < 2) {
+        if (loggedIn && authState.role < 2) {
             toolTipText = (
                 <Box sx={{ position: "relative", width: "fit-content" }}>
                     You must be Pro Advanced or Max to launch this Challenge
@@ -1612,6 +1613,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
         let clickCallback = () => {
             if (!loggedIn) {
                 router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
+                return
             }
             if (authState.role < 2) {
                 setMobileLaunchTooltipOpen(true)
@@ -1641,7 +1643,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             <Tooltip
                 open={mobileLaunchTooltipOpen}
                 onClose={() => setMobileLaunchTooltipOpen(false)}
-                title={authState.role < 2 ? (
+                title={loggedIn && authState.role < 2 ? (
                     <Box>
                         You must be Pro Advanced or Max to launch this Challenge <br />
                         <Box sx={{ width: "100%", position: "relative", height: "30px" }}>
