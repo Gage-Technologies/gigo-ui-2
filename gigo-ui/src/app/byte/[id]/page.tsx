@@ -79,13 +79,12 @@ export default async function HandleByte({ params }: { params: { id: string } })
 
   const jsonLdData = {
     "@context": "https://schema.org",
-    "@type": "Course",
+    "@type": "LearningResource",
     "name": byte.name,
     "description": byte.description_medium,
     "provider": {
       "@type": "Organization",
-      "name": "GIGO Dev",
-      "sameAs": "https://gigo.dev"
+      "name": "GIGO Dev"
     },
     "url": `https://gigo.dev/byte/${params.id}`
   };
