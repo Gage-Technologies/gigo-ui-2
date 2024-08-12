@@ -17,24 +17,55 @@ import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour";
 import swal from "sweetalert";
 import {Unit} from "@/models/journey";
 import {debounce} from "lodash";
-import {useSearchParams} from "next/navigation";
+import {useSearchParams, useRouter} from "next/navigation";
 import JourneyDetoursMobile from "@/components/Journey/JourneyDetoursMobile";
+import JourneyDetourPopup from "@/components/Journey/JourneyDetourPopup";
 
 interface JourneyGroups {
-    [key: string]: Unit[]; // Key is the title, value is an array of units
+    [key: string]: {
+        Units: Unit[];
+        GroupID: string;
+    };
 }
 
 function JourneyDetours() {
+    const router = useRouter();
     let query = useSearchParams();
     let isMobile = query.get("viewport") === "mobile";
     const [isSticky, setIsSticky] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
     const sections = useRef([]);
     const [unitsPython, setUnitsPython] = React.useState([])
-    const [searchUnits, setSearchUnits] = React.useState([])
+    const [searchUnits, setSearchUnits] = React.useState<Unit[]>([])
     const [searchText, setSearchText] = React.useState("")
     const [searchPending, setSearchPending] = React.useState(false)
     const reduxIdState = useAppSelector(selectJourneysId);
+
+    const [openPopup, setOpenPopup] = useState(false);
+    const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
+
+    const [journeyGroups, setJourneyGroups] = useState<JourneyGroups>({});
+    
+    useEffect(() => {
+        const unitId = query.get("unitId");
+        if (unitId) {
+            // flatten the journeygroups object into a single array of units
+            const allUnits = Object.values(journeyGroups).flatMap(group => group.Units);
+            // find the unit with matching id
+            const unit = allUnits.find(u => u._id === unitId);
+            if (unit) {
+                setSelectedUnit(unit);
+                setOpenPopup(true);
+            } else {
+                // if unit not found in journeyGroups, search in searchUnits
+                const searchUnit = searchUnits.find(u => u._id === unitId);
+                if (searchUnit) {
+                    setSelectedUnit(searchUnit);
+                    setOpenPopup(true);
+                }
+            }
+        }
+    }, [journeyGroups, query]);
 
     const handleScroll = () => {
         const top = window.scrollY;
@@ -83,7 +114,7 @@ function JourneyDetours() {
         }
     };
 
-    const [journeyGroups, setJourneyGroups] = useState<JourneyGroups>({});
+    
 
     // TODO subject to change
     // @ts-ignore
@@ -285,7 +316,7 @@ function JourneyDetours() {
                     ) : (
                         <Grid container spacing={2}>
                             {searchUnits.map((unit) => (
-                                <Grid item xs={6} key={unit}>
+                                <Grid item xs={6} key={unit._id}>
                                     <DetourCard data={unit} />
                                 </Grid>
                             ))}
@@ -368,7 +399,29 @@ function JourneyDetours() {
         }
     }
 
-    return renderJourneyDetours()
+    const handleClosePopup = () => {
+        setOpenPopup(false);
+        setSelectedUnit(null);
+
+        // remove the unitId from the url
+        const currentParams = new URLSearchParams(window.location.search);
+        currentParams.delete('unitId');
+        const newUrl = `${window.location.pathname}?${currentParams.toString()}`;
+        router.replace(newUrl);
+    };
+
+    return (
+        <>
+            {renderJourneyDetours()}
+            {selectedUnit && (
+                <JourneyDetourPopup
+                    open={openPopup}
+                    onClose={handleClosePopup}
+                    unit={selectedUnit}
+                />
+            )}
+        </>
+    );
 }
 
 export default JourneyDetours;
