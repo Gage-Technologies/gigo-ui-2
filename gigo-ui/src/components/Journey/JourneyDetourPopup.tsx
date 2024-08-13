@@ -4,14 +4,15 @@ import Close from '@mui/icons-material/Close'; // Assuming you're using MUI icon
 import {theme, themeHelpers} from "@/theme";
 import config from "@/config";
 import JourneyMap from "./JourneysMap";
-import {useAppSelector} from "@/reducers/hooks";
-import {selectAuthStateId} from "@/reducers/auth/auth";
+import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
+import {initialAuthStateUpdate, selectAuthStateId, updateAuthState} from "@/reducers/auth/auth";
 import {selectJourneysId} from "@/reducers/journeyDetour/journeyDetour"; // Adjust import based on actual location
 import swal from "sweetalert";
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
 import {Unit} from "@/models/journey";
 import DetourCard from "./DetourCard";
 import Image from "next/image";
+import { useRouter } from 'next/navigation';
 
 interface JourneyDetourPopupProps {
     open: boolean;
@@ -56,7 +57,9 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
         window.location.href = newUrl;
     }
 
-
+    let navigate = useRouter();
+    const dispatch = useAppDispatch();
+    
     const TakeDetour = async() => {
         let detour = await fetch(
             `${config.rootPath}/api/journey/createDetour`,
@@ -73,6 +76,10 @@ const JourneyDetourPopup: React.FC<JourneyDetourPopupProps> = ({ open, onClose, 
 
         if (detour !== undefined && detour["success"] !== undefined && detour["success"] === true){
             redirectToMain("/journey")
+        } else if (detour["message"] === "You must be logged in to access the GIGO system."){
+            let authState = Object.assign({}, initialAuthStateUpdate)
+            dispatch(updateAuthState(authState))
+            navigate.push("/login?forward="+encodeURIComponent(window.location.pathname))
         } else {
             swal("There was an issue adding this detour")
         }

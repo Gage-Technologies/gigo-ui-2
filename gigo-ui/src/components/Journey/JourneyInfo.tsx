@@ -10,9 +10,10 @@ import { Unit, Task } from '@/models/journey';
 import swal from "sweetalert";
 import MarkdownRenderer from '@/components/Markdown/MarkdownRenderer';
 import Image from "next/image";
-import { selectAuthStateId } from '@/reducers/auth/auth';
-import { useAppSelector } from '@/reducers/hooks';
+import { initialAuthStateUpdate, selectAuthStateId, updateAuthState } from '@/reducers/auth/auth';
+import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
 import { selectJourneysId } from '@/reducers/journeyDetour/journeyDetour';
+import {useRouter} from "next/navigation";
 
 interface JourneyInfoProps {
   params: {
@@ -101,6 +102,9 @@ export default function JourneyInfo({ params }: JourneyInfoProps) {
     window.location.href = newUrl;
 }
 
+  let navigate = useRouter();
+  const dispatch = useAppDispatch();
+  
   const TakeDetour = async() => {
     let detour = await fetch(
         `${config.rootPath}/api/journey/createDetour`,
@@ -117,8 +121,12 @@ export default function JourneyInfo({ params }: JourneyInfoProps) {
 
     if (detour !== undefined && detour["success"] !== undefined && detour["success"] === true){
         redirectToMain("/journey")
+    } else if (detour["message"] === "You must be logged in to access the GIGO system."){
+      let authState = Object.assign({}, initialAuthStateUpdate)
+      dispatch(updateAuthState(authState))
+      navigate.push("/login?forward="+encodeURIComponent(window.location.pathname))
     } else {
-        swal("There was an issue adding this detour")
+        swal(detour["message"])
     }
   } 
 

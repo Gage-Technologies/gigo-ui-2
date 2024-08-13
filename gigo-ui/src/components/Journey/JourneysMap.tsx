@@ -387,7 +387,7 @@ function JourneyMap({ unitId }: JourneyMapProps) {
         const firstIncompleteIndex = metadata.findIndex((item: { completed: any; }) => !item.completed);
 
         return (
-            <Box sx={{ position: 'relative', width: '100%', height: `${points.length * speedDialHeight}px`, display: 'flex',
+            <Box sx={{ position: 'relative', width: '100%', height: `${points.length * speedDialHeight - (points.length * 15)}px`, display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center', flexDirection: 'column'}}>
                 <CurvedPath points={points} />
