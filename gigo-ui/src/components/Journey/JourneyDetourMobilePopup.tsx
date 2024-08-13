@@ -256,7 +256,23 @@ const JourneyDetourMobilePopup: React.FC<JourneyDetourPopupProps> = ({ open, onC
                             ))}
                         </Box>
                     </Grid>
-                    <div style={{width: "100%", display: "flex", justifyContent: "center", paddingTop: "50px"}}>
+                    
+                    <div style={{width: "100%", display: "flex", flexDirection: "column", alignItems: "center", paddingTop: "40px", gap: "10px"}}>
+                        <MuiAwesomeButton
+                            backgroundColor={theme.palette.secondary.main}
+                            hoverColor={theme.palette.secondary.light}
+                            secondaryColor={theme.palette.secondary.dark}
+                            textColor={theme.palette.secondary.dark}
+                            href={`/journey/info/${unit._id}`}
+                            sx={{
+                                height: "40px",
+                                marginBottom: "10px",
+                            }}
+                        >
+                            <h1 style={{fontSize: "1em", paddingRight: "0.5vw", paddingLeft: "0.5vw"}}>
+                                More Details
+                            </h1>
+                        </MuiAwesomeButton>
                         <MuiAwesomeButton
                             backgroundColor={theme.palette.primary.main}
                             hoverColor={theme.palette.primary.light}

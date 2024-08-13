@@ -20,6 +20,7 @@ import {debounce} from "lodash";
 import {useSearchParams, useRouter} from "next/navigation";
 import JourneyDetoursMobile from "@/components/Journey/JourneyDetoursMobile";
 import JourneyDetourPopup from "@/components/Journey/JourneyDetourPopup";
+import JourneyDetourMobilePopup from "@/components/Journey/JourneyDetourMobilePopup";
 
 interface JourneyGroups {
     [key: string]: {
@@ -414,11 +415,19 @@ function JourneyDetours() {
         <>
             {renderJourneyDetours()}
             {selectedUnit && (
-                <JourneyDetourPopup
-                    open={openPopup}
-                    onClose={handleClosePopup}
-                    unit={selectedUnit}
-                />
+                isMobile ? (
+                    <JourneyDetourMobilePopup
+                        open={openPopup}
+                        onClose={handleClosePopup}
+                        unit={selectedUnit}
+                    />
+                ) : (
+                    <JourneyDetourPopup
+                        open={openPopup}
+                        onClose={handleClosePopup}
+                        unit={selectedUnit}
+                    />
+                )
             )}
         </>
     );
