@@ -41,6 +41,9 @@ export async function generateMetadata(
             description: `Check out ${user.user_name}'s profile on GIGO Dev. View their projects, contributions, and coding journey.`,
             images: [`${config.rootPath}/static/user/pfp/${user._id}`],
         },
+        alternates: {
+            canonical: `https://www.gigo.dev/user/${user.user_name}`,
+        }
     };
 }
 
