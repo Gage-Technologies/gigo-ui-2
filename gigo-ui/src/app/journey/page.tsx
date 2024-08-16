@@ -7,8 +7,10 @@ import {
     Card, Chip,
     CircularProgress,
     Grid,
+    IconButton,
     Popover,
     SpeedDial,
+    Tooltip,
     Typography
 } from "@mui/material";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
@@ -46,7 +48,7 @@ import StarIcon from "@mui/icons-material/Star";
 import {useSearchParams} from "next/navigation";
 import JourneyMainMobile from '@/components/Journey/JourneyMainMobile';
 import Image from 'next/image'
-import { Lock } from '@mui/icons-material';
+import { Article, HelpOutline, Lock } from '@mui/icons-material';
 import GoProDisplay from '@/components/GoProDisplay';
 import { selectOutOfHearts } from '@/reducers/hearts/hearts';
 
@@ -67,6 +69,7 @@ function JourneyMain() {
     const [currentUnit, setCurrentUnit] = useState<string | null>(null);
     const [proPopupOpen, setProPopupOpen] = useState(false)
     const initCallMade = useRef(false)
+    const [shownHandouts, setShownHandouts] = useState<string[]>([])
 
 
     function extractIdFromUrl(urlString: string): string | null {
@@ -462,40 +465,40 @@ function JourneyMain() {
         setAnchorElDesc(null);
     };
 
-    const handleLanguage = (lang: string) => {
+    const handleLanguage = (lang: string, buttonSize: number) => {
         switch (lang.toLowerCase()) {
             case "python":
             case "py":
-                return <PythonOriginal size={"80px"}/>
+                return <PythonOriginal size={`${buttonSize * 0.8}px`}/>
             case "golang":
             case "go":
-                return <GoPlain size={"80px"}/>
+                return <GoPlain size={`${buttonSize * 0.8}px`}/>
             case "rust":
             case "rs":
-                return <RustOriginal size={"80px"}/>
+                return <RustOriginal size={`${buttonSize * 0.8}px`}/>
             case "cpp":
             case "c++":
             case "cc":
             case "cxx":
-                return <CplusplusPlain size={"80px"}/>
+                return <CplusplusPlain size={`${buttonSize * 0.8}px`}/>
             case "javascript":
             case "js":
-                return <JavascriptPlain size={"80px"}/>
+                return <JavascriptPlain size={`${buttonSize * 0.8}px`}/>
             case "c#":
             case "csharp":
             case "cs":
-                return <CsharpPlain size={"80px"}/>
+                return <CsharpPlain size={`${buttonSize * 0.8}px`}/>
             default:
                 return null
         }
     }
 
-    const handleIcon = (item: any, index: any, firstIncomplete: any) => {
+    const handleIcon = (item: any, index: any, firstIncomplete: any, buttonSize: number) => {
         if (item.completed) {
             return (
                 <AwesomeButton style={{
-                    width: "10em",
-                    height: "10em",
+                    width: `${buttonSize}px`,
+                    height: `${buttonSize}px`,
                     alignItems: 'center',
                     justifyContent: 'center',
                     textAlign: 'center',
@@ -508,19 +511,19 @@ function JourneyMain() {
                     '--button-default-font-size': '14px',
                     '--button-default-border-radius': '80%',
                     '--button-horizontal-padding': '3px',
-                    '--button-raise-level': '12px',
+                    '--button-raise-level': `${buttonSize * 0.12}px`,
                     '--button-hover-pressure': '3',
                     '--transform-speed': '0.275s',
                 }} type="primary" href={item.code_source_type === 4 ? `/quiz/${item.code_source_id}?journey` : `/byte/${item.code_source_id}?journey`}>
-                    <CheckIcon fontSize="large" sx={{width: '2em', height: '2em'}}/>
+                    <CheckIcon fontSize="large" sx={{width: `${buttonSize * 0.8}px`, height: `${buttonSize * 0.8}px`}}/>
                 </AwesomeButton>
 
             );
         } else if (index === firstIncomplete) {
             return (
                 <AwesomeButton style={{
-                    width: "10em",
-                    height: "10em",
+                    width: `${buttonSize}px`,
+                    height: `${buttonSize}px`,
                     alignItems: 'center',
                     justifyContent: 'center',
                     textAlign: 'center',
@@ -533,20 +536,20 @@ function JourneyMain() {
                     '--button-default-font-size': '14px',
                     '--button-default-border-radius': '80%',
                     '--button-horizontal-padding': '3px',
-                    '--button-raise-level': '12px',
+                    '--button-raise-level': `${buttonSize * 0.12}px`,
                     '--button-hover-pressure': '3',
                     '--transform-speed': '0.275s',
                 }} type="primary"
                                href={item.code_source_type === 4 ? `/quiz/${item.code_source_id}?journey` : `/byte/${item.code_source_id}?journey`}
                 >
-                    {outOfHearts ? <Lock fontSize="large" sx={{width: '2em', height: '2em'}}/> :handleLanguage(item.lang)}
+                    {outOfHearts ? <Lock fontSize="large" sx={{width: `${buttonSize * 0.8}px`, height: `${buttonSize * 0.8}px`}}/> : handleLanguage(item.lang, buttonSize)}
                 </AwesomeButton>
             );
         } else {
             return (
                 <AwesomeButton style={{
-                    width: "10em",
-                    height: "10em",
+                    width: `${buttonSize}px`,
+                    height: `${buttonSize}px`,
                     alignItems: 'center',
                     justifyContent: 'center',
                     textAlign: 'center',
@@ -559,11 +562,11 @@ function JourneyMain() {
                     '--button-default-font-size': '14px',
                     '--button-default-border-radius': '80%',
                     '--button-horizontal-padding': '3px',
-                    '--button-raise-level': '12px',
+                    '--button-raise-level': `${buttonSize * 0.12}px`,
                     '--button-hover-pressure': '3',
                     '--transform-speed': '0.275s',
                 }} type="primary">
-                    <QuestionMarkIcon fontSize="large" sx={{width: '2em', height: '2em'}}/>
+                    <QuestionMarkIcon fontSize="large" sx={{width: `${buttonSize * 0.8}px`, height: `${buttonSize * 0.8}px`}}/>
                 </AwesomeButton>
             );
         }
@@ -572,46 +575,6 @@ function JourneyMain() {
 
     const openDetour = Boolean(anchorElDetour);
     const openDesc = Boolean(anchorElDesc);
-
-    //@ts-ignore
-    const CurvedPath = ({ points }) => {
-        const curveDepth = 70;
-        let minX = Math.min(...points.map((p: { x: any; }) => p.x));
-        let maxX = Math.max(...points.map((p: { x: any; }) => p.x));
-        let minY = Math.min(...points.map((p: { y: any; }) => p.y));
-        let maxY = Math.max(...points.map((p: { y: any; }) => p.y));
-
-        // Adjust the min and max to include the curve depth and ensure the path does not clip
-        minX -= curveDepth;
-        maxX += curveDepth;
-        minY -= curveDepth;
-        maxY += curveDepth;
-
-        const d = points.map((point: { x: any; y: any; }, i: number, arr: any[]) => {
-            if (i === 0) {
-                return `M${point.x},${point.y}`;
-            } else {
-                const prev = arr[i - 1];
-                const midX = (prev.x + point.x) / 2;
-                const controlPointX1 = midX + (i % 2 === 0 ? -curveDepth : curveDepth);
-                const controlPointX2 = midX + (i % 2 === 0 ? -curveDepth : curveDepth);
-                return `C${prev.x},${prev.y} ${controlPointX1},${prev.y} ${point.x},${point.y}`;
-            }
-        }).join(' ');
-
-        // Calculate viewBox dimensions
-        const width = maxX - minX;
-        const height = maxY - minY;
-
-        return (
-            <svg viewBox={`${minX} ${minY} ${width} ${height}`} style={{ width: '100%', height: '100%', position: 'absolute', top: 0, left: 0 }}>
-                <path d={d} stroke="#008866" strokeWidth="12" fill="none" strokeDasharray="30,10" />
-            </svg>
-        );
-    };
-
-
-
 
     const TaskDescription = () => {
         return (
@@ -720,15 +683,15 @@ function JourneyMain() {
         )
     }
 
-    const Tasks = (item: any, index: any, firstIncomplete: any) => {
+    const Tasks = (item: any, index: any, firstIncomplete: any, buttonSize: number) => {
         return (
             <>
 
                 <SpeedDial
                     sx={{
                         '& .MuiSpeedDial-fab': {
-                            width: "130px",
-                            height: "130px",
+                            width: `${buttonSize}px`,
+                            height: `${buttonSize}px`,
                             backgroundColor: 'transparent',
                             boxShadow: "none",
                             '&:hover': {
@@ -737,7 +700,7 @@ function JourneyMain() {
                         },
                     }}
                     ariaLabel={`SpeedDial ${item.name}`}
-                    icon={handleIcon(item, index, firstIncomplete)}
+                    icon={handleIcon(item, index, firstIncomplete, buttonSize)}
                     direction="right"
                     open={openSpeedDial === item._id}
                 >
@@ -759,40 +722,67 @@ function JourneyMain() {
         )
     }
 
-    // @ts-ignore
-    const journeyStops = (metadata: Task[]) => {
-        const gap = 10;
-        const speedDialHeight = 130; // Height of each SpeedDial plus gap
-        const points = metadata.map((item: any, index: number) => ({
-            x: index % 2 === 0 ? 100 : 300,
-            y: speedDialHeight * index + speedDialHeight / 2
-        }));
+    const journeyStops = (unit: Unit, metadata: Task[]) => {
+        let buttonSpacing = 40; // space between buttons
+        let buttonSize = 130; // size of each button
+        let maxOffset = 200; // maximum offset from center
+        const offsetBase = 4; // number of tasks before repeating the pattern
 
+        if (window !== undefined) {
+            buttonSize = Math.max(Math.min(window.innerWidth * 0.055, 130), 55);
+            buttonSpacing = Math.max(Math.min(buttonSize * 0.3, 40), 16);
+            maxOffset = Math.max(Math.min(buttonSize * 1.3, 170), 84);
+            console.log("buttonSize: ", buttonSize);
+            console.log("buttonSpacing: ", buttonSpacing);
+            console.log("maxOffset: ", maxOffset);
+        }
+
+        // get base offset by summing all the task counts of the previous units
+        const unitIdx = unitData.findIndex((u: Unit) => u._id === unit._id)
+        let baseOffset = 0;
+        if (unitIdx > 0) {
+            baseOffset = unitData.slice(0, unitIdx).reduce((acc, unit) => acc + unit.tasks.length, 0);
+        }
+    
+        const calculateOffset = (index: number) => {
+            let lastCenter = index;
+            while (lastCenter > 0 && lastCenter % offsetBase !== 0) {
+                lastCenter--;
+            }
+            const inverse = (lastCenter / offsetBase) % 2 === 0;
+    
+            let scalingFactor = (index - lastCenter) / (offsetBase / 2);
+            if (index % offsetBase > Math.floor(offsetBase / 2)) {
+                let stepsFromMidpoint = index % offsetBase - Math.floor(offsetBase / 2);
+                scalingFactor = Math.abs(index - (stepsFromMidpoint * 2) - lastCenter) / (offsetBase / 2);
+            }
+    
+            const offset = inverse ? maxOffset : -maxOffset;
+            return offset * scalingFactor;
+        };
+    
         const firstIncompleteIndex = metadata.findIndex((item: { completed: any; }) => !item.completed);
-
+    
         return (
-            <Box sx={{ position: 'relative', width: '100%', height: `${points.length * speedDialHeight}px` }}>
-                <CurvedPath points={points} />
-                {metadata.map((item: { _id: React.Key | null | undefined; }, index: number) => (
-                    <div
+            <Box sx={{ position: 'relative', width: '100%', minHeight: `${metadata.length * (buttonSize + buttonSpacing)}px` }}>
+                {metadata.map((item: Task, index: number) => (
+                    <Box
                         key={item._id}
-                        style={{
+                        sx={{
                             position: 'absolute',
-                            top: `${points[index].y - speedDialHeight / 2}px`,
-                            left: `${index % 2 === 0 ? '150px' : '350px'}`,
-                            //transform: 'translateY(-50%)',
+                            top: `${index * (buttonSize + buttonSpacing)}px`,
+                            left: `calc(50% + ${calculateOffset(index + baseOffset)}px)`,
+                            transform: 'translateX(-50%)',
                         }}
                         onMouseEnter={handleMouseEnter(item._id)}
                         onMouseLeave={handleMouseLeave}
                     >
-                        {Tasks(item, index, firstIncompleteIndex)}
-                    </div>
+                        {Tasks(item, index, firstIncompleteIndex, buttonSize)}
+                    </Box>
                 ))}
             </Box>
         );
     };
-
-
 
     const GetStarted = () => {
         const [selectedJourney, setSelectedJourney] = useState('');
@@ -1076,28 +1066,46 @@ function JourneyMain() {
                                 display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
-                                backgroundColor: nextUnit.color,
-                                borderRadius: '30px',
-                                position: 'relative',
-                                zIndex: 1,
-                                mt: 1,
-                                mb: 2,
-                                width: "625px",
-                                paddingBottom: '30px'
+                                backgroundColor: "transparent",
+                                zIndex: 10,
+                                width: "100%",
+                                maxWidth: "625px",
+                                paddingTop: "16px"
                             }}>
-                                <Box sx={{p: 2, }}>
-                                    <Typography variant="h5" sx={{color: getTextColor(nextUnit.color)}}>{nextUnit.name}</Typography>
+                                <Box sx={{
+                                    p: 2, 
+                                    backgroundColor: nextUnit.color, 
+                                    borderRadius: '30px',
+                                    width: "100%",
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    marginBottom: "24px",
+                                    position: "relative"
+                                }}>
+                                    <Typography 
+                                        variant="h5" 
+                                        sx={{
+                                            color: getTextColor(nextUnit.color), 
+                                            fontSize: "clamp(1rem, 1.3vw, 1.5rem)", 
+                                            paddingLeft: "55px", 
+                                            paddingRight: "55px",
+                                            textAlign: "center"
+                                        }}
+                                    >
+                                        {nextUnit.name}
+                                    </Typography>
                                 </Box>
-                                {journeyStops(nextUnit.tasks)}
+                                {journeyStops(nextUnit, nextUnit.tasks)}
                             </Box>
                         </Grid>
                         <Box sx={{
-                            position: 'absolute', // This is the 'wall' overlay.
+                            position: 'absolute',
                             top: 0,
                             left: 0,
                             width: '100%',
                             height: '100%',
-                            zIndex: 2,
+                            zIndex: 11, // increased zIndex to be above the content
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -1111,7 +1119,7 @@ function JourneyMain() {
                             left: 0,
                             width: '100%',
                             height: '100%',
-                            zIndex: 2,
+                            zIndex: 12, // increased zIndex to be above the blur
                             display: 'flex',
                             justifyContent: 'center',
                             alignItems: 'center',
@@ -1173,7 +1181,7 @@ function JourneyMain() {
                             margin: "20px",
                             fontSize: "0.8rem",
                             width: "fit-content",
-                            maxWidth: "475px",
+                            maxWidth: "clamp(200px, 22vw, 600px)",
                         }}
                     />
                 </Box>
@@ -1240,14 +1248,13 @@ function JourneyMain() {
         const rightStyle = isEven ? "start" : "center"
 
         const conditionalHandout = (tasks: Task[]) => {
-            if (allCompleted(tasks)) return <></>;
-            if (atLeastOneCompleted(tasks)) return <>{unitHandout(unit, index)}</>;
-            return unitHandout(unit, index);
+            if (shownHandouts.includes(unit._id) || lastIndex) return unitHandout(unit, index);
+            return <></>;
         };
 
         return (
             <>
-                <Grid item xs={12} sm={6} md={4} lg={3} xl={4} sx={{
+                <Grid item xs={4} sx={{
                     display: 'flex',
                     justifyContent: (lastIndex && isEven) ? 'start' : leftStyle,
                     flexDirection: 'column',
@@ -1260,7 +1267,7 @@ function JourneyMain() {
                         conditionalHandout(unit.tasks)
                     }
                 </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={6} xl={4} sx={{
+                <Grid item xs={4} sx={{
                     display: 'flex', flexDirection: 'column', alignItems: 'center',
                     borderRadius: '30px', position: 'relative',
                 }}>
@@ -1268,39 +1275,87 @@ function JourneyMain() {
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        backgroundColor: unit.color,
-                        borderRadius: '30px',
-                        position: 'relative',
+                        backgroundColor: "transparent",
+                        // borderRadius: '30px',
                         zIndex: 10,
-                        width: "625px",
-                        paddingBottom: '30px'
+                        width: "100%",
+                        maxWidth: "625px",
+                        // paddingBottom: '30px'
                     }}>
-                        {(allCompleted(unit.tasks))
-                            ?
-                            <Box sx={{
-                                position: 'absolute',
-                                bottom: 8,
-                                right: 8,
-                                borderRadius: '50%',
-                                backgroundColor: "#41c18c",
-                                width: 55,
-                                height: 55,
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center'
-                            }}>
-                                <CheckIcon style={{color: 'white'}}/>
-                            </Box>
-                            :
-                            null
-                        }
-                        <Box sx={{p: 2, }}>
-                            <Typography variant="h5" sx={{color: getTextColor(unit.color)}}>{unit.name}</Typography>
+                        <Box sx={{
+                            p: 2, 
+                            backgroundColor: unit.color, 
+                            borderRadius: '30px',
+                            width: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: "24px",
+                            position: "relative"
+                        }}>
+                            <Typography 
+                                variant="h5" 
+                                sx={{
+                                    color: getTextColor(unit.color), 
+                                    fontSize: "clamp(1rem, 1.3vw, 1.5rem)", 
+                                    paddingLeft: "55px", 
+                                    paddingRight: "55px",
+                                    textAlign: "center"
+                                }}
+                            >
+                                {unit.name}
+                            </Typography>
+                            {(allCompleted(unit.tasks))
+                                ?
+                                <Box sx={{
+                                    position: 'absolute',
+                                    bottom: 8,
+                                    left: 8,
+                                    borderRadius: '50%',
+                                    backgroundColor: "#41c18c",
+                                    width: 55,
+                                    height: 55,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <CheckIcon style={{color: 'white'}}/>
+                                </Box>
+                                :
+                                null
+                            }
+                            {(!lastIndex) && (
+                                <Tooltip title={shownHandouts.includes(unit._id) ? "Close Handout" : "Show Handout"}>
+                                    <IconButton
+                                        onClick={() => {
+                                            if (shownHandouts.includes(unit._id)) {
+                                                setShownHandouts(shownHandouts.filter(id => id !== unit._id));
+                                            } else {
+                                                setShownHandouts([...shownHandouts, unit._id]);
+                                            }
+                                        }}
+                                        sx={{
+                                            position: 'absolute',
+                                            bottom: 8,
+                                            right: 8,
+                                            height: 55,
+                                            width: 55,
+                                        }}
+                                    >
+                                        <Article 
+                                            fontSize="large" 
+                                            sx={{
+                                                color: shownHandouts.includes(unit._id) ? "grey" : getTextColor(unit.color)
+                                            }}
+                                        />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                         </Box>
-                        {journeyStops(unit.tasks)}
+                        {journeyStops(unit, unit.tasks)}
                     </Box>
                 </Grid>
-                <Grid item xs={12} sm={6} md={4} lg={3} xl={4} sx={{
+                <Grid item xs={4} sx={{
                     display: 'flex',
                     justifyContent: lastIndex ? 'start' : rightStyle,
                     flexDirection: 'column',
@@ -1333,7 +1388,6 @@ function JourneyMain() {
                         <Grid container spacing={2}>
                             {handleMap(unit, index)}
                         </Grid>
-                        <Box sx={{paddingBottom: '100px'}}/>
                     </section>
                 ))}
                 {nextUnitPreview()}

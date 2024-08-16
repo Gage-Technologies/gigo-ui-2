@@ -229,7 +229,16 @@ const MarkdownRenderer = ({
                       {goToLink}
                     </Box>
                     <ErrorBoundary>
-                      <Suspense fallback={<div />}>
+                      <Suspense 
+                        fallback={
+                          <div style={{
+                            padding: "8px",
+                            paddingTop: "18px",
+                          }}>
+                            {t}
+                          </div>
+                        }
+                      >
                         <ReactSyntaxHighlighter
                           style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
                           language={match[1]}

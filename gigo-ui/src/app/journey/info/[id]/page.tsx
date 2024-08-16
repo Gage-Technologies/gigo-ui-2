@@ -124,9 +124,15 @@ export default async function HandleJourneyInfo({ params, searchParams }: { para
         <>
             <JsonLd data={jsonLdData} />
             {isMobile ? (
-                <JourneyInfoMobile params={params} />
+                <JourneyInfoMobile params={{
+                    id: params.id,
+                    unitData: unitPromise.unit,
+                }} />
             ) : (
-                <JourneyInfo params={params} />
+                <JourneyInfo params={{
+                    id: params.id,
+                    unitData: unitPromise.unit,
+                }} />
             )}
         </>
     )
