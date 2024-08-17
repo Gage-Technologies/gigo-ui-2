@@ -4,6 +4,7 @@ import config from "@/config";
 import JsonLd from '@/components/JsonLD';
 import UserPage from "@/components/User/user";
 import UserPageMobile from "@/components/User/userMobile";
+import { notFound } from 'next/navigation';
 
 export async function generateMetadata(
     { params }: { params: { id: string } }
@@ -11,10 +12,7 @@ export async function generateMetadata(
     const user = await fetchUser(params.id);
 
     if (!user) {
-        return {
-            title: 'User Not Found - GIGO Dev',
-            description: 'This user profile could not be found on GIGO Dev.',
-        };
+        notFound();
     }
 
     return {
@@ -62,10 +60,7 @@ async function fetchUser(id: string): Promise<User | null> {
             });
 
             if (!response.ok) {
-                if (response.status === 404) {
-                    return null;
-                }
-                throw new Error('Failed to fetch user data');
+                return null;
             }
 
             let data = await response.json();
@@ -110,7 +105,7 @@ export default async function HandleUserPage({ params, searchParams }: { params:
     }
 
     if (!user) {
-        return <div>User not found</div>;
+        notFound();
     }
 
     const jsonLdData = {
