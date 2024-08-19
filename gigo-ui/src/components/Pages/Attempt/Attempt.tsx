@@ -57,7 +57,7 @@ import { initialAuthStateUpdate, selectAuthState, selectAuthStateId } from "@/re
 import fetchWithUpload from "@/services/chunkUpload";
 import Image from "next/image";
 import { revalidatePath } from "@/actions/revalidatePath";
-
+import useIsMobile from "@/hooks/isMobile";
 
 interface AttemptProps {
     params: { id: string };
@@ -71,7 +71,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
     const id = params.id;
 
     const queryParams = useSearchParams()
-    let isMobile = queryParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     const embedded = queryParams.has('embed') && queryParams.get('embed') === 'true';
 
     const [mainTab, setMainTab] = React.useState(window.location.hash.replace('#', '') !== "" ? window.location.hash.replace('#', '') : "project")

@@ -14,7 +14,8 @@ import { isHoliday, theme, Holiday } from "@/theme";
 import { makeStyles } from "@mui/styles";
 import config from "@/config";
 import swal from "sweetalert";
-import { useSearchParams } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
+
 interface SubscriptionState {
     allEmails: boolean;
     streak: boolean;
@@ -45,8 +46,7 @@ const useStyles = makeStyles(() => ({
 }));
 
 function Unsubscribe() {
-    const searchParams = useSearchParams()
-    const isMobile = searchParams.get("viewport") === "mobile"
+    const isMobile = useIsMobile();
 
     const [email, setEmail] = useState<string>("");
     const [userId, setUserId] = useState<string>("");

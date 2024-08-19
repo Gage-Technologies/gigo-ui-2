@@ -15,12 +15,12 @@ import loginImg from "../img/login/login_background.png";
 import config from "@/config";
 import swal from "sweetalert";
 import { useEffect, useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 
 function ForgotPassword() {
-    const searchParams = useSearchParams()
-    const isMobile = searchParams.get("viewport") === "mobile"
+    const isMobile = useIsMobile();
 
     const styles = {
         themeButton: {

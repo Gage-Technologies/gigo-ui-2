@@ -1,11 +1,10 @@
 'use client';
-import { useSearchParams } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 import AllBytesScrollMobile from "@/components/allBytesScrollMobile";
 import AllBytesScroll from "@/components/allBytesScroll";
 
 function HandleByte({ params }: { params: { id: string } }) {
-    const query = useSearchParams();
-    const isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     if (isMobile) {
         return <AllBytesScrollMobile />;

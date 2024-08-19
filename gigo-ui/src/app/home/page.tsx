@@ -12,7 +12,7 @@ import BytesIcon from "@/icons/Bytes/BytesIcon";
 import "react-awesome-button/dist/styles.css"
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
-import {cookies} from "next/headers";
+import {cookies, headers} from "next/headers";
 import Tutorial from "@/components/Pages/Home/Tutorial";
 import {checkSessionStatus, getSessionCookies} from "@/services/utils";
 import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjectsScroll";
@@ -190,7 +190,8 @@ async function Home({
     }
     ////////////////////////////////////////////////////
 
-    const isMobile = searchParams?.viewport === "mobile";
+    const headersList = headers();
+    const isMobile = headersList.get('X-Device-Type') === "mobile";
 
     ReactGA.initialize("G-38KBFJZ6M6");
 

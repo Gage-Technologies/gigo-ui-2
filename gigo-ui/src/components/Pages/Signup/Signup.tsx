@@ -60,6 +60,7 @@ import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import fetchWithUpload from "@/services/chunkUpload";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 
 interface TimezoneOption {
@@ -109,7 +110,7 @@ function CreateNewAccount({params}: { params: { referrer: string | undefined } }
     const searchParams = useSearchParams();
     const forwardPath = searchParams.get("forward") ? decodeURIComponent(searchParams.get("forward") || "") : "";
 
-    let isMobile = searchParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const styles = {
         themeButton: {

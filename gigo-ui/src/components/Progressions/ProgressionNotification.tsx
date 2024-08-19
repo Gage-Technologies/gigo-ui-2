@@ -4,7 +4,7 @@ import { Code, School, Chat, Comment, FitnessCenter, Whatshot } from '@mui/icons
 import XpPopup from '../XpPopup';
 import DetermineProgressionLevel from '@/utils/progression';
 import config from "@/config";
-import { useSearchParams } from 'next/navigation';
+import useIsMobile from "@/hooks/isMobile";
 
 interface AchievementProgressProps {
     open: boolean;
@@ -28,8 +28,7 @@ interface AchievementProps {
 const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose, title, description, progress, progressMax, icon, isDataHog }) => {
     const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
-    let query = useSearchParams();
-let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (open) {
@@ -101,8 +100,7 @@ interface AchievementProgressRuntimeProps {
 const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({ open, onClose, title, description, progress, progressMax, icon }) => {
     const [progressValue, setProgressValue] = useState(0);
     const value = (progress / progressMax) * 100;
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         if (open) {
@@ -196,8 +194,7 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
 };
 
 const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, description, icon }) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     
     return (
         <Snackbar

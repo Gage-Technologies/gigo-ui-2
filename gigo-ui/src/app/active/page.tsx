@@ -12,10 +12,12 @@ import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import { selectAuthState } from "@/reducers/auth/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
+import useIsMobile from "@/hooks/isMobile";
 
 function Active() {
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+
+    const isMobile = useIsMobile();
 
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";

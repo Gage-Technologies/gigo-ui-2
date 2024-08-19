@@ -38,6 +38,7 @@ import { useAppDispatch } from "@/reducers/hooks";
 import { TutorialState, initialAuthStateUpdate, updateAuthState } from "@/reducers/auth/auth";
 import { theme, isHoliday, Holiday } from "@/theme";
 import Image from "next/image";
+import useIsMobile from "@/hooks/isMobile";
 
 
 function Login(this: any) {
@@ -60,7 +61,7 @@ function Login(this: any) {
     const searchParams = useSearchParams();
     const forwardPath = searchParams.get("forward") ? decodeURIComponent(searchParams.get("forward") || "") : "";
 
-    let isMobile = searchParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const styles = {
         themeButton: {

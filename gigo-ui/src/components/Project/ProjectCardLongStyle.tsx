@@ -22,7 +22,7 @@ import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import DebugIcon from "@/icons/ProjectCard/Debug";
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface IProps {
     role: any | null;
@@ -52,8 +52,7 @@ interface IProps {
 }
 
 export default function ProjectCardLongStyle(props: IProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const styles = {
         card: !isMobile ? {

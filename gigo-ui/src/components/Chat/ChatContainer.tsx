@@ -83,6 +83,7 @@ import ReactDOM from "react-dom";
 import Menu from "@mui/material/Menu";
 import Image from "next/image";
 import {usePathname, useRouter, useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 type TransitionProps = Omit<SlideProps, 'direction'>;
 
@@ -167,7 +168,7 @@ export default function ChatContainer() {
     let router = useRouter();
     let pathname = usePathname();
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)

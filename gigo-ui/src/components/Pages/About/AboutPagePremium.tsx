@@ -19,7 +19,8 @@ import resources from "@/img/premiumPageIcons/technology.svg"
 import privateWorkspace from "@/img/premiumPageIcons/padlock.svg"
 import vscodeTheme from "@/img/premiumPageIcons/coding.svg"
 import Image from "next/image";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 function AboutPagePremium() {
     // load auth state from storage
@@ -131,8 +132,7 @@ function AboutPagePremium() {
         }
     }
 
-    const query = useSearchParams();
-    const isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     return (
         <CssBaseline>

@@ -130,6 +130,7 @@ import BytesCard from "@/components/Bytes/BytesCard";
 import {programmingLanguages} from "@/services/vars";
 import FocusOnThis from './FocusOnThis';
 import { isAfter, addWeeks, parseISO, addMinutes } from 'date-fns';
+import useIsMobile from '@/hooks/isMobile';
 
 // lazy imports to reduce bundle size
 const Snowfall = React.lazy(() => import('react-snowfall'));
@@ -151,7 +152,8 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
     let router = useRouter();
     let query = useSearchParams();
     let pathname = usePathname();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)

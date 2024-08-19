@@ -16,7 +16,7 @@ import Image from "next/image";
 import { useGetProUrls } from '@/hooks/getProUrls';
 import { useGetUserSubData } from '@/hooks/getUserSubData';
 import CheckIcon from '@mui/icons-material/Check';
-import { useSearchParams } from 'next/navigation';
+import useIsMobile from '@/hooks/isMobile';
 
 // Define the types for the benefits
 type BenefitType = {
@@ -226,8 +226,7 @@ const GoProDisplay: React.FC<GoProPopupProps> = ({ open, onClose }) => {
     const dispatch = useAppDispatch();
     const authState = useAppSelector(selectAuthState);
 
-    const queryParams = useSearchParams();
-    const isMobile = queryParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const [previewLoading, setPreviewLoading] = React.useState<string | null>(null)
     const [preview, setPreview] = React.useState<{ status: string, price?: string, downgradeDate?: string } | null>(null)

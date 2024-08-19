@@ -3,7 +3,7 @@ import * as React from "react";
 import {FC, memo, useEffect, useRef, useState} from "react";
 import {Player} from '@lottiefiles/react-lottie-player';
 import {useInView} from 'react-intersection-observer';
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface LottieAnimationProps {
     animationData: any;
@@ -13,8 +13,7 @@ interface LottieAnimationProps {
 }
 
 const LottieAnimation: FC<LottieAnimationProps> = memo(({animationData, mouseMove, ...props}) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     if (isMobile) {
         mouseMove = false

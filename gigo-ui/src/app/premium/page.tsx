@@ -17,12 +17,13 @@ import swal from "sweetalert";
 import premiumImage from "@/img/croppedPremium.png";
 import premiumGorilla from "@/img/pro-pop-up-icon-plain.svg";
 import GoProDisplay from "@/components/GoProDisplay";
-import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
-import { initialAuthState, selectAuthState } from "@/reducers/auth/auth";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useAppSelector } from "@/reducers/hooks";
+import { selectAuthState } from "@/reducers/auth/auth";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
 import { Subscription } from "@/models/subscription";
+import useIsMobile from "@/hooks/isMobile";
 
 // Define the types for the benefits
 type BenefitType = {
@@ -82,8 +83,7 @@ const SubscriptionCard: React.FC<SubscriptionCardProps> = ({ title, subtitle, be
 };
 
 function PremiumDescription() {
-    const searchParams = useSearchParams();
-    const isMobile = searchParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     // load auth state from storage
     const authState = useAppSelector(selectAuthState);

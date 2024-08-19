@@ -12,7 +12,7 @@ import {Unit} from "@/models/journey";
 import DetourSignIcon from "@/icons/Journey/DetourSign";
 import config from "@/config";
 import DetourMobileCard from "@/components/Journey/DetourMobileCard";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface DetourSelectionProps {
     detours: Unit[];
@@ -22,8 +22,8 @@ interface DetourSelectionProps {
 }
 
 function DetourSelection(props: DetourSelectionProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     const [detours, setDetours] = useState<Unit[]>([])
     const detourUnitPreview = async () => {
         let res = await fetch(

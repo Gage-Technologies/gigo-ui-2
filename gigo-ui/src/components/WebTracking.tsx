@@ -3,7 +3,8 @@ import React, { useEffect, useRef, ReactNode } from 'react';
 import { useTracking } from 'react-tracking';
 import { RecordWebUsage, WebTrackingEvent } from '../models/web_usage';
 import config from '../config';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
+import useIsMobile from '@/hooks/isMobile';
 
 interface WebTrackingProps {
     children?: ReactNode; // Adding children to props
@@ -27,8 +28,7 @@ const WebTracking: React.FC<WebTrackingProps> = ({ children }) => {
     });
     const enterTimeRef = useRef<number>(Date.now());
     const pathname = usePathname();
-    const searchParams = useSearchParams();
-    const isMobile = searchParams.get('viewport') === 'mobile';
+    const isMobile = useIsMobile();
 
     useEffect(() => {
         // Store the current time when the component mounts

@@ -1,5 +1,5 @@
 'use client';
-import { useSearchParams } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 import ByteMobile from "@/components/Bytes/byteMobile";
 import BytePage from "@/components/Bytes/byte";
 import { Byte } from "@/models/bytes";
@@ -12,8 +12,9 @@ interface ByteProps {
 }
 
 function ByteViewportRouter({ params, byte }: ByteProps) {
-    const query = useSearchParams();
-    const isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
+    console.log("byte isMobile", isMobile)
 
     if (isMobile) {
         return <ByteMobile params={params} byte={byte} />;

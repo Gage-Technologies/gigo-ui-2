@@ -26,7 +26,7 @@ import GoProDisplay from "./GoProDisplay";
 import GigoCircleIcon from "@/icons/GIGO/GigoCircleLogo";
 import Close from "@mui/icons-material/Close";
 import premiumGorilla from "@/img/pro/pro-pop-up-icon-plain.svg"
-import { useSearchParams } from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface IProps {
     oldXP: number;
@@ -59,8 +59,7 @@ const XpPopup = (props: IProps) => {
 
     const authState = useAppSelector(selectAuthState);
 
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     const [steps, setSteps] = React.useState([{
         content: <h2>Let&apos;s begin our journey!</h2>,
         locale: { skip: <strong aria-label="skip">Skip</strong> },

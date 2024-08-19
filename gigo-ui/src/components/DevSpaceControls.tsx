@@ -20,7 +20,7 @@ import goProGorilla from "../img/pro-pop-up-icon-plain.svg"
 import GoProDisplay from "./GoProDisplay";
 import config from "@/config";
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface IProps {
     wsId: string;
@@ -28,8 +28,8 @@ interface IProps {
 
 
 const DevSpaceControls = (props: React.PropsWithChildren<IProps>) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     const [isClient, setIsClient] = useState(false)
     React.useEffect(() => {
         setIsClient(true)

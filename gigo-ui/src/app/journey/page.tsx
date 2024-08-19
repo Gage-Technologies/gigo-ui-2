@@ -45,17 +45,17 @@ import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
 import {Task, Unit} from "@/models/journey";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
-import {useSearchParams} from "next/navigation";
 import JourneyMainMobile from '@/components/Journey/JourneyMainMobile';
 import Image from 'next/image'
 import { Article, HelpOutline, Lock } from '@mui/icons-material';
 import GoProDisplay from '@/components/GoProDisplay';
 import { selectOutOfHearts } from '@/reducers/hearts/hearts';
+import useIsMobile from '@/hooks/isMobile';
 
 function JourneyMain() {
     const outOfHearts = useAppSelector(selectOutOfHearts);
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+
+    const isMobile = useIsMobile();
 
     const [loadingMapData, setLoadingMapData] = useState(false);
     const [contentLoaded, setContentLoaded] = useState(true)

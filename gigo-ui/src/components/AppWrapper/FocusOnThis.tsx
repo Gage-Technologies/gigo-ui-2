@@ -6,8 +6,8 @@ import config from '@/config';
 import { programmingLanguages } from '@/services/vars';
 import { theme, themeHelpers } from '@/theme';
 import BytesCard from '../BytesCard';
-import { useSearchParams } from 'next/navigation';
 import BytesCardMobile from '../Bytes/BytesCardMobile';
+import useIsMobile from '@/hooks/isMobile';
 
 interface FocusOnThisProps {
   open: boolean;
@@ -49,8 +49,7 @@ const languages: LanguageOption[] = [
 ];
 
 const FocusOnThis: React.FC<FocusOnThisProps> = ({ open }) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const styles = {
         fotBox: {

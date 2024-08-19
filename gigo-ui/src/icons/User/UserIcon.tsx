@@ -7,8 +7,8 @@ import LottieAnimation from "../../components/LottieAnimation";
 import ProBannerCircle from "@/components/Pro/ProBannerCircle";
 import { Buffer } from 'buffer';
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
+import useIsMobile from "@/hooks/isMobile";
 
 interface IProps {
     size: number,
@@ -25,8 +25,7 @@ interface IProps {
 }
 
 export default function UserIcon(props: IProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     let styles = {
         lottie: {

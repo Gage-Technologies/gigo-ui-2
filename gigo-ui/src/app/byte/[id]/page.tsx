@@ -3,6 +3,9 @@ import config from "@/config";
 import { Byte } from "@/models/bytes";
 import type { Metadata, ResolvingMetadata } from 'next'
 import JsonLd from '@/components/JsonLD';
+import BytePage from "@/components/Bytes/byte";
+import ByteMobile from "@/components/Bytes/byteMobile";
+import { headers } from "next/headers";
 
 export async function generateMetadata(
     { params }: { params: { id: string } },
@@ -89,10 +92,17 @@ export default async function HandleByte({ params }: { params: { id: string } })
     "url": `https://gigo.dev/byte/${params.id}`
   };
 
+  const headersList = headers();
+  const isMobile = headersList.get('X-Device-Type') === 'mobile'
+  let ByteRenderer = BytePage
+  if (isMobile) {
+    ByteRenderer = ByteMobile
+  }
+
   return (
     <>
       <JsonLd data={jsonLdData} />
-      <ByteViewportRouter byte={byte} params={params} />
+      <ByteRenderer params={params} byte={byte} />
     </>
   );
 }

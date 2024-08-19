@@ -16,7 +16,7 @@ import config from "../../config";
 import {Close} from "@mui/icons-material";
 import {LoadingButton} from "@mui/lab";
 import Image from "next/image";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface IProps {
     oldXP: number;
@@ -32,8 +32,8 @@ interface IProps {
 }
 
 const XpPopup = (props: IProps) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     const [isClient, setIsClient] = React.useState(false)
     React.useEffect(() => {
         setIsClient(true)

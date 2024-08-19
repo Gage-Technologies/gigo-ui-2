@@ -96,7 +96,6 @@ export type ByteChatProps = {
 export default function ByteChat(props: ByteChatProps) {
 
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";
 

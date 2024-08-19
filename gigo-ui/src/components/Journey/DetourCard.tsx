@@ -6,11 +6,10 @@ import {theme} from "@/theme";
 import config from "@/config"
 import {programmingLanguages} from "@/services/vars";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 function DetourCard(props: any) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     const [openPopup, setOpenPopup] = useState<boolean>(false);
 
     const closePopup = () => {

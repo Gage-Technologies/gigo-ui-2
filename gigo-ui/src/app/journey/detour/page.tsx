@@ -21,6 +21,7 @@ import {useSearchParams, useRouter} from "next/navigation";
 import JourneyDetoursMobile from "@/components/Journey/JourneyDetoursMobile";
 import JourneyDetourPopup from "@/components/Journey/JourneyDetourPopup";
 import JourneyDetourMobilePopup from "@/components/Journey/JourneyDetourMobilePopup";
+import useIsMobile from "@/hooks/isMobile";
 
 interface JourneyGroups {
     [key: string]: {
@@ -32,7 +33,7 @@ interface JourneyGroups {
 function JourneyDetours() {
     const router = useRouter();
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
     const [isSticky, setIsSticky] = useState(false);
     const [activeTab, setActiveTab] = useState(0);
     const sections = useRef([]);

@@ -15,12 +15,12 @@ import JourneyIcon from "@/icons/Journey/JourneyIcon";
 import DetourSignIcon from "@/icons/Journey/DetourSign";
 import RocketLaunchIcon from "@mui/icons-material/RocketLaunch";
 import Image from 'next/image';
-import {useSearchParams} from "next/navigation";
 import {useState} from "react";
+import useIsMobile from "@/hooks/isMobile";
 
 function AboutGIGO() {
-    const query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+    
     //@ts-ignore
     const DesktopVideo = ({ videoSrc }) => {
         const [loading, setLoading] = useState(true);

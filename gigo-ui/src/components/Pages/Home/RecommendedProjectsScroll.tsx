@@ -8,10 +8,11 @@ import * as React from "react";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
 import {theme} from "@/theme";
 import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 export default function RecommendedProjectsScroll() {
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";

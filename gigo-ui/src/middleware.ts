@@ -104,18 +104,17 @@ export function middleware(request: NextRequest) {
         redirect = true;
     }
 
-    // Handle device redirects
-    const { device } = userAgent(request)
-    const viewport = device.type === 'mobile' || device.type === 'tablet' ? 'mobile' : 'desktop'
-    if (url.searchParams.get('viewport') !== viewport) {
-        url.searchParams.set('viewport', viewport)
-        redirect = true
-    }
-    ////
-
     if (redirect) {
         return NextResponse.redirect(url)
     }
 
     const res =  NextResponse.next()
+
+    // Handle device headers
+    const { device } = userAgent(request)
+    const deviceType = device.type === 'mobile' || device.type === 'tablet' ? 'mobile' : 'desktop'
+    res.headers.set('X-Device-Type', deviceType)
+    ////
+
+    return res
 }

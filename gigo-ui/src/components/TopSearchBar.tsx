@@ -76,6 +76,7 @@ import SuspenseFallback from "@/components/SuspenseFallback";
 import JourneyDetourPopup from "./Journey/JourneyDetourPopup";
 import { Unit as JourneyUnit } from "@/models/journey";
 import JourneyDetourMobilePopup from "./Journey/JourneyDetourMobilePopup";
+import useIsMobile from "@/hooks/isMobile";
 
 
 interface SearchOption {
@@ -179,8 +180,7 @@ export default function TopSearchBar({
     width = "35vw",
     height = "auto",
 }: IProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     // redux states for search params
     const dispatch = useAppDispatch();

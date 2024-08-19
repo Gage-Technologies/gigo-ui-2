@@ -98,6 +98,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import fetchWithUpload from "@/services/chunkUpload";
 import GoProDisplay from "@/components/GoProDisplay";
 import { revalidatePath } from "@/actions/revalidatePath";
+import useIsMobile from "@/hooks/isMobile";
 
 interface ChallengeProps {
     params: { id: string };
@@ -119,7 +120,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const [editImage, setEditImage] = React.useState(false);
 
     const queryParams = useSearchParams()
-    let isMobile = queryParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const TutorialLaunchButton = styled(LoadingButton)`
         animation: auraEffect1 2s infinite alternate;

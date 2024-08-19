@@ -2,7 +2,7 @@ import React from 'react';
 import config from '@/config';
 import { Metadata, ResolvingMetadata } from 'next';
 import { checkSessionStatus, getSessionCookies } from '@/services/utils';
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import { Unit } from '@/models/journey';
 import JsonLd from '@/components/JsonLD';
 import JourneyInfo from '@/components/Journey/JourneyInfo';
@@ -74,13 +74,15 @@ export async function generateMetadata(
 }
 
 export default async function HandleJourneyInfo({ params, searchParams }: { params: { id: string }, searchParams: { viewport?: string } }) {
-    const isMobile = searchParams.viewport === "mobile";
-    const headers: any = {
+    const headersList = headers();
+    const isMobile = headersList.get('X-Device-Type') === "mobile";
+
+    const reqHeaders: any = {
         "Content-Type": "application/json",
     }
 
     if (checkSessionStatus(cookies().get('gigoAuthToken'))) {
-        headers['Cookie'] = getSessionCookies(cookies());
+        reqHeaders['Cookie'] = getSessionCookies(cookies());
     }
 
     let unitPromise: {
@@ -89,7 +91,7 @@ export default async function HandleJourneyInfo({ params, searchParams }: { para
         `${config.rootPath}/api/journey/getUnitMetadata`,
         {
             method: "POST",
-            headers: headers,
+            headers: reqHeaders,
             body: JSON.stringify({ unit_id: params.id }),
             next: {revalidate: 86400}
         }

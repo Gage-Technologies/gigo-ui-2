@@ -21,7 +21,7 @@ import User from "@/models/user";
 import { Unit } from "@/models/journey";
 import DetourCard from "@/components/Journey/DetourCard";
 import { checkSessionStatus, getSessionCookies } from "@/services/utils";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { programmingLanguages } from "@/services/vars";
 import Image from "next/image";
 import DetourMobileCard from "@/components/Journey/DetourMobileCard";
@@ -29,7 +29,8 @@ import DetourMobileCard from "@/components/Journey/DetourMobileCard";
 
 async function SearchMain({ searchParams: rawSearchParams }: { searchParams?: { [key: string]: string | string[] | undefined } }) {
     const searchParams = rawSearchParams || {};
-    const isMobile = searchParams.viewport === "mobile";
+    const headersList = headers();
+    const isMobile = headersList.get('X-Device-Type') === "mobile";
 
     ///////// Server Side Data Loading //////////
     let searchRecordId: string | null = null;

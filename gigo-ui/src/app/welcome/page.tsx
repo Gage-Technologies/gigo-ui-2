@@ -16,6 +16,7 @@ import WelcomeMobilePage from "@/components/Welcome/welcomeMobile";
 import CheckIcon from '@mui/icons-material/Check';
 import { theme } from '@/theme';
 import MuiAwesomeButton from '@/components/MuiAwesomeButton';
+import useIsMobile from '@/hooks/isMobile';
 
 
 const WelcomePage: React.FC = () => {
@@ -24,7 +25,7 @@ const WelcomePage: React.FC = () => {
     const query = useSearchParams();
     const forwardPath = query.get("forward") ? decodeURIComponent(query.get("forward") || "") : "";
 
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const authState = useAppSelector(selectAuthState)
 

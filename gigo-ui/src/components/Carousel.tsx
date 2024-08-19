@@ -4,7 +4,7 @@ import {Box, IconButton, MobileStepper} from '@mui/material';
 import {KeyboardArrowLeft, KeyboardArrowRight} from '@mui/icons-material';
 import SwipeableViews from 'react-swipeable-views';
 import {theme} from "@/theme";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface CarouselProps {
     children: ReactNode;
@@ -21,8 +21,7 @@ const Carousel: React.FC<CarouselProps> = ({
                                                infiniteLoop,
                                                detour,
                                            }) => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const [activeStep, setActiveStep] = useState(0);
     const childrenArray = React.Children.toArray(children);

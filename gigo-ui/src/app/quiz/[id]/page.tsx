@@ -3,13 +3,12 @@ import React, { useEffect, useState } from 'react';
 import RenderQuizPage from '@/components/Quiz/quiz';
 import RenderQuizPageMobile from '@/components/Quiz/quizMobile';
 import config from '@/config';
-import { useSearchParams } from 'next/navigation';
+import useIsMobile from '@/hooks/isMobile';
 
 export default function QuizPage({ params }: { params: { id: string } }) {
   const quizId = params.id;
   const [quizData, setQuizData] = useState<any>(null);
-  const query = useSearchParams();
-  const isMobile = query.get("viewport") === "mobile";
+  const isMobile = useIsMobile();
 
   const startQuizAttempt = async (quizId: string) => {
     try {

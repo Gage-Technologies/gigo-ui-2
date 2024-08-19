@@ -28,6 +28,7 @@ import Image from "next/image";
 import DetourMobileCard from "@/components/Journey/DetourMobileCard";
 import { useSearchParams } from "next/navigation";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
+import useIsMobile from "@/hooks/isMobile";
 
 
 function SearchMain({
@@ -37,7 +38,7 @@ function SearchMain({
 }) {
     const type = params.type;
     const searchParams = useSearchParams();
-    const isMobile = searchParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const baseQueryParams: any = {
         query: searchParams.get("q") || "",

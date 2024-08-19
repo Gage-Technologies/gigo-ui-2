@@ -3,7 +3,7 @@ import React from "react";
 import {Dialog, DialogContent} from "@mui/material";
 import {theme} from "@/theme";
 import Picker from '@emoji-mart/react';
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 type EmojiProps = {
     open: boolean; // Prop to control dialog visibility
@@ -12,8 +12,7 @@ type EmojiProps = {
 };
 
 export default function EmojiPicker({open, closeCallback, onEmojiSelect}: EmojiProps) {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const addEmoji = (emoji: any) => {
         onEmojiSelect(emoji);

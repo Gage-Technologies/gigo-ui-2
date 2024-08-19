@@ -4,7 +4,7 @@ import { Button, Box, Typography, Container } from '@mui/material';
 import { styled } from '@mui/styles';
 import config from '@/config';
 import { theme } from '@/theme';
-import { useSearchParams } from 'next/navigation';
+import useIsMobile from '@/hooks/isMobile';
 
 const BackgroundContainer = styled(Box)({
     backgroundColor: 'black',
@@ -34,8 +34,7 @@ const ContentContainer = styled(Container)({
 });
 
 export default function StripeReauth() {
-    const searchParams = useSearchParams();
-    const isMobile = searchParams.get('viewport') === 'mobile';
+    const isMobile = useIsMobile();
     return (
         <BackgroundContainer>
             <ContentContainer>

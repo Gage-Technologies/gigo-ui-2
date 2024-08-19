@@ -2,7 +2,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {Box, Card, CardMedia, Dialog, DialogContent, Grid, TextField} from "@mui/material";
 import {theme} from "@/theme";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 interface MediaItem {
     dims: [number, number];
@@ -88,8 +88,7 @@ type TenorProps = {
 };
 
 export default function Tenor({open, closeCallback, addGif}: TenorProps) {
-    let urlQueryParams = useSearchParams();
-    let isMobile = urlQueryParams.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const [query, setQuery] = useState<string>("");
     const [gifs, setGifs] = useState<Gif[]>([]);

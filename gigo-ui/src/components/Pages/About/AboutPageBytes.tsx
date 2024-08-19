@@ -19,11 +19,11 @@ import ByteMediumSelectionIcon from "@/icons/Bytes/ByteMediumSelection";
 import ByteHardSelectionIcon from "@/icons/Bytes/ByteHardSelection";
 import config from "@/config";
 import {useState} from "react";
-import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 function AboutBytes() {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     //@ts-ignore
     const DesktopVideo = ({ videoSrc }) => {
         const [loading, setLoading] = useState(true);

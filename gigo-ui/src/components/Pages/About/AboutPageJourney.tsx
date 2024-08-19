@@ -12,13 +12,14 @@ import AboutPageJourneyMobile from "@/components/Pages/About/AboutPageJourneyMob
 import {fontSize} from "@mui/system";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
+import useIsMobile from "@/hooks/isMobile";
 
 function AboutPageJourney() {
     const query = useSearchParams();
     const authState = useAppSelector(selectAuthState);
     const [sidebarOpen, setSidebarOpen] = React.useState(query.get("menu") === "true");
     const [chatOpen, setChatOpen] = React.useState(query.get("chat") === "true" && authState.authenticated);
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const aspectRatio = useAspectRatio();
 

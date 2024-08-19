@@ -5,6 +5,7 @@ import JsonLd from '@/components/JsonLD';
 import UserPage from "@/components/User/user";
 import UserPageMobile from "@/components/User/userMobile";
 import { notFound } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export async function generateMetadata(
     { params }: { params: { id: string } }
@@ -97,7 +98,8 @@ async function fetchUser(id: string): Promise<User | null> {
 }
 
 export default async function HandleUserPage({ params, searchParams }: { params: { id: string }, searchParams: { viewport?: string } }) {
-    const isMobile = searchParams.viewport === "mobile";
+    const headersList = headers();
+    const isMobile = headersList.get('X-Device-Type') === "mobile";
     const user = await fetchUser(params.id);
     // ensure that the user id is always correct
     if (user) {

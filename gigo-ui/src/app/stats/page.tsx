@@ -1,38 +1,29 @@
 'use client'
 
 import React, {Suspense, useEffect, useState} from 'react';
-import {Container, Grid, Paper, Typography, Box, Tooltip, IconButton, Button} from '@mui/material';
+import {Grid, Typography, Box, Tooltip, Button} from '@mui/material';
 import {theme} from "@/theme";
 import LinearProgress from "@mui/material/LinearProgress";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
-import PsychologyIcon from '@mui/icons-material/Psychology';
 import SchoolIcon from '@mui/icons-material/School';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import SearchIcon from '@mui/icons-material/Search';
-import WaterDropIcon from '@mui/icons-material/WaterDrop';
 import ComputerIcon from '@mui/icons-material/Computer';
 import TimerIcon from '@mui/icons-material/Timer';
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import call from "@/services/api-call";
-import swal from "sweetalert";
-import {Extension} from "@uiw/react-codemirror";
 import config from "@/config";
 import BytesCard from '@/components/BytesCard';
 import { programmingLanguages } from '@/services/vars';
-import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
-import { string } from 'prop-types';
 import DetermineProgressionLevel from '@/utils/progression';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
-import { useSearchParams } from 'next/navigation';
 import StatsPageMobile from './statsMobile';
-import Image from 'next/image';
 import SheenPlaceholder from '@/components/Loading/SheenPlaceholder';
 import Lottie from 'react-lottie';
+import useIsMobile from '@/hooks/isMobile';
 
 export default function StatsPage() {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     const styles = {
         progressBar: {
             flexGrow: 1,

@@ -1,11 +1,10 @@
 'use client';
-import { useSearchParams } from "next/navigation";
 import ProfileMobile from "@/components/Profile/profileMobile";
 import Profile from "@/components/Profile/profile";
+import useIsMobile from "@/hooks/isMobile";
 
 function HandleProfile() {
-    const query = useSearchParams();
-    const isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     // decide which component to render based on the viewport
     if (isMobile) {

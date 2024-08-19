@@ -57,7 +57,7 @@ import renown8 from "@/img/renown/renown8.svg"
 import renown9 from "@/img/renown/renown9.svg"
 import renown10 from "@/img/renown/renown10.svg"
 import UserIcon from "@/icons/User/UserIcon";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 import Chart from "react-google-charts";
 import BytesCard from "@/components/BytesCard";
 import DetourCard from "@/components/Journey/DetourCard";
@@ -71,11 +71,6 @@ import { Byte } from "@/models/bytes";
 import JourneyUnit from "@/models/journey_unit";
 
 function UserPageMobile({params}: { params: {id: string}}) {
-    let queryParams = useSearchParams();
-    let isMobile = queryParams.get("viewport") === "mobile";
-    const chatOpened = queryParams.get("chat") === "true";
-    const sidebarOpen = queryParams.get("menu") === "true";
-
     const dispatch = useAppDispatch();
 
     const [userActivity, setUserActivity] = React.useState([])

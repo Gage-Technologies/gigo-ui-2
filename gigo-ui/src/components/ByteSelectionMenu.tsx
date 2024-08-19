@@ -30,7 +30,7 @@ const ByteSelectionMenu: React.FC<ByteSelectionMenuProps> = ({ bytes, onSelectBy
     const query = useSearchParams();
     const chatOpen = query.get("chat") === "true";
     const sidebarOpen = query.get("menu") === "true";
-    let isMobile = query.get("viewport") === "mobile";
+
     return (
         <div style={{
             height: '80vh',

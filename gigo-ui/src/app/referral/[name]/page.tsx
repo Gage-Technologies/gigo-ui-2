@@ -20,6 +20,7 @@ import JsonLd from '@/components/JsonLD';
 import backgroundImage from '@/img/welcome-background.png';
 import ThinkingGorillaImage from '@/img/thinking-gorilla-discord-png.svg'; // import the svg image
 import Image from 'next/image';
+import { headers } from "next/headers";
 
 type Props = {
     params: { name: string }
@@ -148,7 +149,8 @@ async function ReferralWelcome({ params, searchParams }: Props) {
     ///////// Server Fetching //////////
 
 
-    const isMobile = searchParams?.viewport === "mobile";
+    const headersList = headers();
+    const isMobile = headersList.get('X-Device-Type') === "mobile";
 
     ReactGA.initialize("G-38KBFJZ6M6");
 

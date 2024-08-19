@@ -14,6 +14,7 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 import FocusPageMobile from './focusMobile';
 import { useSearchParams } from 'next/navigation';
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
+import useIsMobile from '@/hooks/isMobile';
 
 interface LanguageOption {
     name: string;
@@ -51,8 +52,8 @@ const languages: LanguageOption[] = [
 ];
 
 const FocusPage: React.FC = () => {
-    let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
+
     type FOT = {
         id: string;
         owner_id: string;

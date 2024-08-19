@@ -8,6 +8,7 @@ import * as React from "react";
 import {useAppSelector} from "@/reducers/hooks";
 import {selectAuthState} from "@/reducers/auth/auth";
 import {useSearchParams} from "next/navigation";
+import useIsMobile from "@/hooks/isMobile";
 
 export interface IProps {
     activeData: any[];
@@ -15,7 +16,7 @@ export interface IProps {
 
 function ActiveChallenges({activeData}: IProps) {
     let query = useSearchParams();
-    let isMobile = query.get("viewport") === "mobile";
+    const isMobile = useIsMobile();
 
     const authState = useAppSelector(selectAuthState);
     const chatOpen = query.get("chat") === "true";
