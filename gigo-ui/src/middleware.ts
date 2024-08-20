@@ -45,7 +45,8 @@ function handlePrivatePaths(request: NextRequest, url: NextURL): { url: NextURL;
     let redirect = false;
 
     if (!cookie) {
-        if (privateRoutes.includes(url.pathname)) {
+        const trimmedPath = url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
+        if (privateRoutes.includes(trimmedPath)) {
             url.pathname = "/signup";
             redirect = true;
         } else if (softBlockedRoutes.includes(url.pathname) && !isBot) {
