@@ -25,8 +25,6 @@ import { useAppDispatch, useAppSelector } from "@/reducers/hooks";
 import { useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import call from "@/services/api-call";
-import 'ace-builds';
-import 'ace-builds/webpack-resolver';
 import config from "@/config";
 import { useParams } from "react-router";
 import { useGlobalWebSocket } from "@/services/websocket";

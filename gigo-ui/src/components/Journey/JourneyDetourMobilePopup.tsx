@@ -13,7 +13,12 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation';
 
 // import necessary icons
-import { PythonOriginal, GoPlain, RustOriginal, CplusplusPlain, JavascriptPlain, CsharpPlain } from 'devicons-react';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
 import { CheckCircle, HelpOutline, Article as ArticleIcon, Map as MapIcon, Route as RouteIcon } from '@mui/icons-material';
 import { AwesomeButton } from "react-awesome-button";
 

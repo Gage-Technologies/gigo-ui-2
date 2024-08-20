@@ -1,9 +1,9 @@
-import React, {Suspense, useCallback, useEffect, useState} from 'react';
+import React, {Suspense, useCallback, useEffect, useState, lazy} from 'react';
 import remarkGfm from 'remark-gfm';
 import rehypeRaw from 'rehype-raw';
 import {defaultSchema} from 'rehype-sanitize';
 import remarkCodeBlock from 'remark-code-blocks';
-import ReactMarkdown from 'react-markdown';
+const ReactMarkdown = lazy(() => import('react-markdown'));
 // import {Prism as SyntaxHighlighter} from 'react-syntax-highlighter';
 import ReactSyntaxHighlighter from '../SyntaxHighlighter/ReactSyntaxHighlighter';
 import {darkSyntaxTheme, lightSyntaxTheme} from './SyntaxHighlights';
@@ -16,6 +16,7 @@ import {visit} from 'unist-util-visit';
 import config from "../../config";
 import "./css/MarkdownRenderer.css";
 import ErrorBoundary from "../ErrorBoundary";
+import SheenPlaceholder from '../Loading/SheenPlaceholder';
 
 const syntaxHighlightingSchema = merge(defaultSchema, {
   attributes: {
@@ -145,136 +146,147 @@ const MarkdownRenderer = ({
   return (
     <>
       <div className="markdown-body" style={style}>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkCodeBlock, ...remarkPlugins.map(x => x[0])]}
-          rehypePlugins={[rehypeRaw, rehypeOnLoadPlugin, {settings: syntaxHighlightingSchema}, ...rehypePlugins.map(x => x[0])]}
-          components={{
-            code({node, inline, className, children, ...props}) {
-              const match = /language-(\w+)/.exec(className || '');
-              let t = String(children).trim();
+        <ErrorBoundary>
+          <Suspense fallback={(
+            <Box sx={{
+              width: "100%",
+              height: "100%",
+            }}>
+              <SheenPlaceholder width={"100%"} height={"100%"} />
+            </Box>
+          )}>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkCodeBlock, ...remarkPlugins.map(x => x[0])]}
+              rehypePlugins={[rehypeRaw, rehypeOnLoadPlugin, {settings: syntaxHighlightingSchema}, ...rehypePlugins.map(x => x[0])]}
+              components={{
+                code({node, inline, className, children, ...props}) {
+                  const match = /language-(\w+)/.exec(className || '');
+                  let t = String(children).trim();
 
-              // return styled code
-              if (!inline && match) {
-                const goToLinkMatch = t.trim().match(/^\[[^\]]+\]\(editor:\/\/(.+?)#(\d+)(?:-(\d+))?\)/);
-                let goToLink = null;
-                if (goToLinkMatch) {
-                  // regardless of whether the user has a goToCallback, we still want to remove the link from the text
-                  t = t.replace(goToLinkMatch[0], "").trim();
+                  // return styled code
+                  if (!inline && match) {
+                    const goToLinkMatch = t.trim().match(/^\[[^\]]+\]\(editor:\/\/(.+?)#(\d+)(?:-(\d+))?\)/);
+                    let goToLink = null;
+                    if (goToLinkMatch) {
+                      // regardless of whether the user has a goToCallback, we still want to remove the link from the text
+                      t = t.replace(goToLinkMatch[0], "").trim();
 
-                  if (goToCallback) {
-                    const filePath = goToLinkMatch[1];
-                    let startLine = parseInt(goToLinkMatch[2], 10);
-                    if (startLine > 0) {
-                      startLine -= 1;
+                      if (goToCallback) {
+                        const filePath = goToLinkMatch[1];
+                        let startLine = parseInt(goToLinkMatch[2], 10);
+                        if (startLine > 0) {
+                          startLine -= 1;
+                        }
+                        // Use a ternary operator to handle the optional end line
+                        const endLine = goToLinkMatch[3] ? parseInt(goToLinkMatch[3], 10) : startLine + 1; // Use startLine if endLine is not specified
+
+                        goToLink = (
+                          <Tooltip title={"Go To Code"} placement="top">
+                            <IconButton
+                              onClick={() => goToCallback(filePath, parseInt(startLine, 10), parseInt(endLine, 10))}
+                              size="small"
+                              color={"secondary"}
+                            >
+                              <Launch style={{fontSize: "12px", marginLeft: "3px"}}/>
+                            </IconButton>
+                          </Tooltip>
+                        );
+                      }
                     }
-                    // Use a ternary operator to handle the optional end line
-                    const endLine = goToLinkMatch[3] ? parseInt(goToLinkMatch[3], 10) : startLine + 1; // Use startLine if endLine is not specified
 
-                    goToLink = (
-                      <Tooltip title={"Go To Code"} placement="top">
-                        <IconButton
-                          onClick={() => goToCallback(filePath, parseInt(startLine, 10), parseInt(endLine, 10))}
-                          size="small"
-                          color={"secondary"}
+                    return (
+                      <div style={{position: 'relative', marginRight: "18px", paddingTop: "4px"}}>
+                        <Typography
+                          variant={"body2"}
+                          className="notranslate"
+                          sx={{
+                            fontSize: "11px",
+                            textTransform: "none",
+                            fontWeight: "normal",
+                            fontFamily: "monospace",
+                            position: 'absolute',
+                            color: theme.palette.text.primary,
+                            top: 3,
+                            left: 8,
+                            zIndex: 1,
+                          }}
                         >
-                          <Launch style={{fontSize: "12px", marginLeft: "3px"}}/>
-                        </IconButton>
-                      </Tooltip>
+                          {match[1] !== "" && match[1] !== "_" ? match[1] : "plaintext"}
+                        </Typography>
+                        <Box
+                          display={"inline-flex"}
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            right: -14,
+                            zIndex: 1,
+                            paddingTop: "2px",
+                          }}
+                        >
+                          <Tooltip title={copied === t ? "Copied" : "Copy"} placement="top">
+                            <IconButton
+                              size="small"
+                              onClick={() => copyToClipboard(t)}
+                              color={copied === t ? 'success' : 'primary'}
+                            >
+                              {copied === t ? (
+                                <Check sx={{height: 14, width: 14}}/>
+                              ) : (
+                                <ContentCopy sx={{height: 14, width: 14}}/>
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                          {goToLink}
+                        </Box>
+                        <ErrorBoundary>
+                          <Suspense 
+                            fallback={
+                              <div style={{
+                                padding: "8px",
+                                paddingTop: "18px",
+                              }}>
+                                {t}
+                              </div>
+                            }
+                          >
+                            <ReactSyntaxHighlighter
+                              style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
+                              language={match[1]}
+                              PreTag="div"
+                              className="notranslate"
+                              {...props}
+                            >
+                              {t}
+                            </ReactSyntaxHighlighter>
+                          </Suspense>
+                        </ErrorBoundary>
+                      </div>
                     );
                   }
-                }
 
-                return (
-                  <div style={{position: 'relative', marginRight: "18px", paddingTop: "4px"}}>
-                    <Typography
-                      variant={"body2"}
-                      className="notranslate"
-                      sx={{
-                        fontSize: "11px",
-                        textTransform: "none",
-                        fontWeight: "normal",
-                        fontFamily: "monospace",
-                        position: 'absolute',
-                        color: theme.palette.text.primary,
-                        top: 3,
-                        left: 8,
-                        zIndex: 1,
-                      }}
-                    >
-                      {match[1] !== "" && match[1] !== "_" ? match[1] : "plaintext"}
-                    </Typography>
-                    <Box
-                      display={"inline-flex"}
-                      sx={{
-                        position: 'absolute',
-                        top: 0,
-                        right: -14,
-                        zIndex: 1,
-                        paddingTop: "2px",
-                      }}
-                    >
-                      <Tooltip title={copied === t ? "Copied" : "Copy"} placement="top">
-                        <IconButton
-                          size="small"
-                          onClick={() => copyToClipboard(t)}
-                          color={copied === t ? 'success' : 'primary'}
-                        >
-                          {copied === t ? (
-                            <Check sx={{height: 14, width: 14}}/>
-                          ) : (
-                            <ContentCopy sx={{height: 14, width: 14}}/>
-                          )}
-                        </IconButton>
-                      </Tooltip>
-                      {goToLink}
-                    </Box>
-                    <ErrorBoundary>
-                      <Suspense 
-                        fallback={
-                          <div style={{
-                            padding: "8px",
-                            paddingTop: "18px",
-                          }}>
-                            {t}
-                          </div>
-                        }
+                  // return inline code
+                  return (
+                    <Tooltip title={copied === t ? "Copied" : "Click to copy"} placement="top">
+                      <span
+                        onClick={() => copyToClipboard(t)}
                       >
-                        <ReactSyntaxHighlighter
-                          style={theme.palette.mode === 'light' ? lightSyntaxTheme : darkSyntaxTheme}
-                          language={match[1]}
-                          PreTag="div"
-                          className="notranslate"
+                        <CopyCode
+                          onClick={() => copyToClipboard(t)}
+                          className={className}
                           {...props}
                         >
-                          {t}
-                        </ReactSyntaxHighlighter>
-                      </Suspense>
-                    </ErrorBoundary>
-                  </div>
-                );
-              }
-
-              // return inline code
-              return (
-                <Tooltip title={copied === t ? "Copied" : "Click to copy"} placement="top">
-                  <span
-                    onClick={() => copyToClipboard(t)}
-                  >
-                    <CopyCode
-                      onClick={() => copyToClipboard(t)}
-                      className={className}
-                      {...props}
-                    >
-                      {children}
-                    </CopyCode>
-                  </span>
-                </Tooltip>
-              );
-            },
-          }}
-        >
-          {markdown}
-        </ReactMarkdown>
+                          {children}
+                        </CopyCode>
+                      </span>
+                    </Tooltip>
+                  );
+                },
+              }}
+            >
+              {markdown}
+            </ReactMarkdown>
+          </Suspense>
+        </ErrorBoundary>
       </div>
       {portals}
     </>

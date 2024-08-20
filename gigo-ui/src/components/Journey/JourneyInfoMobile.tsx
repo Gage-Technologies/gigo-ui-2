@@ -14,7 +14,12 @@ import { initialAuthStateUpdate, selectAuthStateId, updateAuthState } from '@/re
 import { useAppDispatch, useAppSelector } from '@/reducers/hooks';
 import { selectJourneysId } from '@/reducers/journeyDetour/journeyDetour';
 import { useRouter } from "next/navigation";
-import { PythonOriginal, GoPlain, RustOriginal, CplusplusPlain, JavascriptPlain, CsharpPlain } from 'devicons-react';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
 import { AwesomeButton } from "react-awesome-button";
 import RouteIcon from '@mui/icons-material/Route';
 import MapIcon from '@mui/icons-material/Map';

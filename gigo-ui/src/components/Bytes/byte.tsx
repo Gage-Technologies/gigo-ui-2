@@ -22,8 +22,6 @@ import Add from "@mui/icons-material/Add";
 import PlayArrow from "@mui/icons-material/PlayArrow";
 import {useAppDispatch, useAppSelector} from "@/reducers/hooks";
 import swal from "sweetalert";
-import 'ace-builds';
-import 'ace-builds/webpack-resolver';
 import ByteSelectionMenu from "@/components/ByteSelectionMenu";
 import config from "@/config";
 import {useGlobalWebSocket} from "@/services/websocket";

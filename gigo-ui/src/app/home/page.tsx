@@ -33,7 +33,8 @@ async function Home({
         {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept-Encoding': 'gzip, deflate, br'
             },
             body: '{}',
             credentials: 'include'
@@ -232,7 +233,7 @@ async function Home({
                         <Carousel itemsShown={1} infiniteLoop={true} itemsToSlide={1}>
                             {
                                 byteContent && byteContent.length > 0 ?
-                                    byteContent.map((project, index) => (
+                                    byteContent.slice(0, 20).map((project, index) => (
                                         <Box display={"flex"} justifyContent={"center"} key={index}
                                              style={{width: "100%", padding: "0 5%"}}>
                                             <Suspense fallback={<SheenPlaceholder height={500} width={281}/>}>

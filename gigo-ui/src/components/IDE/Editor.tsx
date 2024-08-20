@@ -1,26 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import CodeMirror, { Extension, ReactCodeMirrorRef, ViewUpdate } from '@uiw/react-codemirror';
 import { indentUnit, StreamLanguage } from '@codemirror/language';
-import { python } from '@codemirror/lang-python';
-import { cpp } from '@codemirror/lang-cpp';
-import { html } from '@codemirror/lang-html';
-import { java } from '@codemirror/lang-java';
-import { javascript } from '@codemirror/lang-javascript';
-import { javascript as legacyJavascript } from '@codemirror/legacy-modes/mode/javascript';
-import { json } from '@codemirror/lang-json';
-import { markdown } from '@codemirror/lang-markdown';
-import { php } from '@codemirror/lang-php';
-import { rust } from '@codemirror/lang-rust';
-import { sql } from '@codemirror/lang-sql';
-import { xml } from '@codemirror/lang-xml';
-import { less } from '@codemirror/lang-less';
-import { sass } from '@codemirror/lang-sass';
-// import { yaml } from '@codemirror/lang-yaml';
-import { clojure } from '@nextjournal/lang-clojure';
-import { csharp } from '@replit/codemirror-lang-csharp';
-import { go } from '@codemirror/legacy-modes/mode/go';
-import { shell } from '@codemirror/legacy-modes/mode/shell';
-import { toml } from '@codemirror/legacy-modes/mode/toml';
 import { copilot } from '@uiw/codemirror-theme-copilot';
 import { quietlight } from '@uiw/codemirror-theme-quietlight';
 import useDynamicStyles from "../../hooks/dynamicStyles";
@@ -105,77 +85,100 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
 
     const [extensions, setExtensions] = useState<Extension[]>([])
 
-    const selectLang = () => {
+    const [languageExtension, setLanguageExtension] = useState<Extension | null>(null);
+
+    const selectLang = async () => {
         switch (props.language.toLowerCase()) {
             case "golang":
             case "go":
-                return [StreamLanguage.define(go)];
+                let go = await import('@codemirror/legacy-modes/mode/go').then(mod => (StreamLanguage.define(mod.go)));
+                return [go]
             case "py":
             case "python":
-                return [python()];
+                let python = await import('@codemirror/lang-python').then(mod => (mod.python()));
+                return [python]
             case "cpp":
             case "cc":
             case "cxx":
             case "c++":
             case "hpp":
-                return [cpp()];
+                let cpp = await import('@codemirror/lang-cpp').then(mod => (mod.cpp()));
+                return [cpp]
             case "html":
             case "htm":
-                return [html()];
+                let html = await import('@codemirror/lang-html').then(mod => (mod.html()));
+                return [html]
             case "java":
-                return [java()];
+                let java = await import('@codemirror/lang-java').then(mod => (mod.java()));
+                return [java]
             case "ts":
             case "typescript":
             case "tsx":
             case "js":
             case "jsx":
             case "javascript":
-                return [javascript({ jsx: true, typescript: true }), StreamLanguage.define(legacyJavascript)];
+                let js1 = import('@codemirror/lang-javascript').then(mod => (mod.javascript({ jsx: true, typescript: true })));
+                let js2 = import('@codemirror/legacy-modes/mode/javascript').then(mod => (StreamLanguage.define(mod.javascript)));
+                return Promise.all([js1, js2]).then(([js1, js2]) => {
+                    return [js1, js2]
+                })
             case "json":
-                return [json()];
+                let json = await import('@codemirror/lang-json').then(mod => (mod.json()));
+                return [json]
             case "md":
             case "markdown":
-                return [markdown()];
+                let markdown = await import('@codemirror/lang-markdown').then(mod => (mod.markdown()));
+                return [markdown]
             case "php":
-                return [php()];
+                let php = await import('@codemirror/lang-php').then(mod => (mod.php()));
+                return [php]
             case "rs":
             case "rust":
-                return [rust()];
+                let rust = await import('@codemirror/lang-rust').then(mod => (mod.rust()));
+                return [rust]
             case "sql":
-                return [sql()];
+                let sql = await import('@codemirror/lang-sql').then(mod => (mod.sql()));
+                return [sql]
             case "xml":
-                return [xml()];
+                let xml = await import('@codemirror/lang-xml').then(mod => (mod.xml()));
+                return [xml]
             case "less":
-                return [less()];
+                let less = await import('@codemirror/lang-less').then(mod => (mod.less()));
+                return [less]
             case "sass":
             case "scss":
-                return [sass()];
+                let sass = await import('@codemirror/lang-sass').then(mod => (mod.sass()));
+                return [sass]
             case "clj":
             case "clojure":
-                return [clojure()];
+                let clojure = await import('@nextjournal/lang-clojure').then(mod => (mod.clojure()));
+                return [clojure]
             case "cs":
             case "c#":
             case "csharp":
-                return [csharp()];
-            // todo: figure out why this doesn't work
-            // case "yaml":
-            // case "yml":
-            //     return [yaml()];
+                let csharp = await import('@replit/codemirror-lang-csharp').then(mod => (mod.csharp()));
+                return [csharp]
             case "sh":
             case "shell":
             case "bash":
-                return [StreamLanguage.define(shell)];
+                let shell = await import('@codemirror/legacy-modes/mode/shell').then(mod => (StreamLanguage.define(mod.shell)));
+                return [shell]
             case "toml":
-                return [StreamLanguage.define(toml)];
-            // Additional cases for other languages and their extensions
+                let toml = await import('@codemirror/legacy-modes/mode/toml').then(mod => (StreamLanguage.define(mod.toml)));
+                return [toml]
             default:
-                return undefined;
+                return null;
         }
     }
 
+    useEffect(() => {
+        selectLang().then((lang) => {
+            setLanguageExtension(lang)
+        });
+    }, [props.language]);
+
     let getLspData = (): { fp: string, root: string, code: string } | undefined => {
         if (props.filePath === undefined || props.byteId === undefined || props.difficulty === undefined) {
-            console.log("getLspData: filePath: ", props.filePath, " byteId: ", props.byteId, " difficulty: ", props.difficulty)
             return undefined
         }
 
@@ -326,7 +329,6 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
 
         // get fp for the language
         let lspData = getLspData()
-        console.log("lspData: ", lspData)
         if (lspData === undefined) {
             return
         }
@@ -358,15 +360,14 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
             ctTextHighlightExtension,
             ctTextHighlightTheme,
         ];
-        let lang = selectLang();
-        if (lang) {
-            exts = exts.concat(lang)
+        if (languageExtension) {
+            exts.push(languageExtension);
         }
         if (wsLanguageServer) {
-            exts = exts.concat(wsLanguageServer)
+            exts = exts.concat(wsLanguageServer);
         }
         if (props.extensions) {
-            exts = exts.concat(props.extensions)
+            exts = exts.concat(props.extensions);
         }
         // if ((props.beginnerMode !== undefined && props.beginnerMode) || (props.beginnerMode === undefined && defaultProps.beginnerMode)) {
         //     exts = exts.concat(
@@ -379,7 +380,7 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
 
     useEffect(() => {
         setExtensions(getExtensions())
-    }, [props.extensions, props.language, wsLanguageServer]);
+    }, [props.extensions, languageExtension, wsLanguageServer]);
 
     const onChange = React.useCallback((val: string, viewUpdate: ViewUpdate) => {
         if (props.onChange) {
@@ -407,17 +408,19 @@ const Editor = React.forwardRef<ReactCodeMirrorRef, EditorProps>((props: EditorP
             style={props.parentStyles ? props.parentStyles : defaultProps.parentStyles}
             className={"notranslate"}
         >
-            <CodeMirror
-                ref={ref}
-                value={props.code}
-                height="100%"
-                theme={(props.theme ? props.theme : defaultProps.theme).toLowerCase() === 'light' ? quietlight : copilot}
-                style={props.wrapperStyles ? props.wrapperStyles : defaultProps.wrapperStyles}
-                extensions={extensions}
-                onChange={onChange}
-                onUpdate={onUpdate}
-                readOnly={props.readonly}
-            />
+            <Suspense fallback={<div>Loading...</div>}>
+                <CodeMirror
+                    ref={ref}
+                    value={props.code}
+                    height="100%"
+                    theme={(props.theme ? props.theme : defaultProps.theme).toLowerCase() === 'light' ? quietlight : copilot}
+                    style={props.wrapperStyles ? props.wrapperStyles : defaultProps.wrapperStyles}
+                    extensions={extensions}
+                    onChange={onChange}
+                    onUpdate={onUpdate}
+                    readOnly={props.readonly}
+                />
+            </Suspense>
             {PopupPortal}
         </Box>
     )

@@ -115,7 +115,7 @@ async function SearchMain({ searchParams: rawSearchParams }: { searchParams?: { 
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Cookie': getSessionCookies(cookies())
+                'Cookie': getSessionCookies(cookies()),
             },
             body: JSON.stringify(params),
             credentials: 'include'

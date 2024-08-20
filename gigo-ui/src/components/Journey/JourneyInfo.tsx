@@ -26,7 +26,12 @@ import { selectJourneysId } from '@/reducers/journeyDetour/journeyDetour';
 import { useRouter } from "next/navigation";
 import { theme } from '@/theme';
 import Image from 'next/image';
-import { PythonOriginal, GoPlain, RustOriginal, CplusplusPlain, JavascriptPlain, CsharpPlain } from 'devicons-react';
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
 import { AwesomeButton } from "react-awesome-button";
 import Close from '@mui/icons-material/Close';
 

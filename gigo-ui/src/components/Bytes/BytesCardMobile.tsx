@@ -13,6 +13,7 @@ import BytesMediumBadge from "@/icons/Bytes/BytesMediumBadge";
 import BytesHardBadge from "@/icons/Bytes/BytesHardBadge";
 import BytesLanguage from "@/icons/Bytes/BytesLanguage";
 import {useRouter} from "next/navigation";
+import Image from "next/image";
 
 
 interface IProps {
@@ -53,14 +54,6 @@ export default function BytesCardMobile(props: IProps) {
             backgroundImage: "none",
             animation: props.animate ? 'auraEffect 2s infinite alternate' : 'none',
             overflow: "visible"
-        },
-        image: {
-            borderRadius: "10px",
-            // width: props.imageWidth,
-            height: props.imageHeight,
-            width: props.imageWidth,
-            minWidth: "80vw",
-            objectFit: "cover",
         },
         title: {
             textOverflow: "ellipsis",
@@ -119,8 +112,24 @@ export default function BytesCardMobile(props: IProps) {
                     onMouseLeave={props.onMouseLeave}
                 >
                     <div style={{ position: 'relative' }}>
-                        {/* @ts-ignore */}
-                        <img style={styles.image} src={props.bytesThumb} loading="lazy" />
+                        <Box
+                            sx={{
+                                width: props.imageWidth,
+                                height: props.imageHeight,
+                            }}
+                        >
+                            <Image 
+                                alt="bytes-thumbnail"
+                                style={{
+                                    borderRadius: "10px",
+                                    objectFit: "cover",
+                                }} 
+                                src={props.bytesThumb} 
+                                loading="lazy" 
+                                width={281}
+                                height={500}
+                            />
+                        </Box>
                         {!props.isHome && (
                             <Box
                                 display={"flex"}

@@ -19,6 +19,9 @@ Allow: /
 User-agent: AhrefBot
 Allow: /
 
+User-agent: DuckDuckBot
+Allow: /
+
 User-agent: *
 Disallow: /
 

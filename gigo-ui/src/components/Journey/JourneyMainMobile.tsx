@@ -28,18 +28,16 @@ import {selectAuthStateId} from "@/reducers/auth/auth";
 import {initialJourneyDetourStateUpdate, updateJourneyDetourState} from "@/reducers/journeyDetour/journeyDetour";
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
 import MuiAwesomeButton from "@/components/MuiAwesomeButton";
-import {
-    CplusplusOriginal,
-    CplusplusPlain,
-    CsharpOriginal,
-    CsharpPlain,
-    GoOriginal,
-    GoPlain,
-    JavascriptOriginal,
-    JavascriptPlain,
-    PythonOriginal,
-    RustOriginal
-} from "devicons-react";
+import PythonOriginal from 'devicons-react/lib/icons/PythonOriginal';
+import GoPlain from 'devicons-react/lib/icons/GoPlain';
+import RustOriginal from 'devicons-react/lib/icons/RustOriginal';
+import CplusplusPlain from 'devicons-react/lib/icons/CplusplusPlain';
+import JavascriptPlain from 'devicons-react/lib/icons/JavascriptPlain';
+import CsharpPlain from 'devicons-react/lib/icons/CsharpPlain';
+import GoOriginal from 'devicons-react/lib/icons/GoOriginal';
+import CplusplusOriginal from 'devicons-react/lib/icons/CplusplusOriginal';
+import CsharpOriginal from 'devicons-react/lib/icons/CsharpOriginal';
+import JavascriptOriginal from 'devicons-react/lib/icons/JavascriptOriginal';
 import {Task, Unit} from "@/models/journey";
 import DetourSelection from "@/components/Journey/DetourSelection";
 import StarIcon from "@mui/icons-material/Star";
@@ -1216,6 +1214,8 @@ function JourneyMainMobile() {
                         maxHeight: '80vh',
                         borderTopLeftRadius: 16,
                         borderTopRightRadius: 16,
+                        borderBottomLeftRadius: 0,
+                        borderBottomRightRadius: 0,
                         backgroundColor: unit.color,
                         zIndex: 1300,
                         overflow: 'hidden',
