@@ -92,7 +92,7 @@ const GIGOLandingPage: React.FC = () => {
                         fontSize: '4vw',
                     }}
                 >
-                    Learn to code for free
+                    Learn to code fast
                 </Typography>
                 <Typography
                     variant="h2"
@@ -104,7 +104,8 @@ const GIGOLandingPage: React.FC = () => {
                         fontSize: '2vw',
                     }}
                 >
-                    with thousands of lessons
+                    Start with guided learning plans<br />
+                    Grow with real-world projects
                 </Typography>
                 <Typography
                     variant="body1"
@@ -116,9 +117,9 @@ const GIGOLandingPage: React.FC = () => {
                         maxWidth: '40vw',
                     }}
                 >
-                    Code in the cloud, learn from thousands of lessons, and work with the latest technologies from any
-                    machine, even a tablet! Built by self-taught developers, GIGO focuses on aligning learning with the
-                    real world of development.
+                    GIGO solves the problem we faced when learning to code: it&apos;s hard. 
+                    Learn directly in your browser—no installation, no setup required. 
+                    Get real-time help with GIGO&apos;s integrated learning assistant, Code Teacher.
                 </Typography>
                 {windowSize <= 1300 && (
                     <Button

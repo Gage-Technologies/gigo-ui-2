@@ -1,13 +1,13 @@
 'use client'
-import {Grid, Typography} from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import LazyLoad from "react-lazyload";
 import ProjectCard from "@/components/Project/ProjectCard";
 import config from "@/config";
 import MoonLoader from "react-spinners/MoonLoader";
 import * as React from "react";
 import useInfiniteScroll from "@/hooks/infiniteScroll";
-import {theme} from "@/theme";
-import {useSearchParams} from "next/navigation";
+import { theme } from "@/theme";
+import { useSearchParams } from "next/navigation";
 import useIsMobile from "@/hooks/isMobile";
 
 export default function RecommendedProjectsScroll() {
@@ -80,21 +80,35 @@ export default function RecommendedProjectsScroll() {
                 paddingBottom: "10px",
                 marginLeft: "1%",
             }}>
-                <div style={{display: "inline-flex"}}>
-                    <Typography variant="h6" gutterBottom sx={{
+                <div style={{ display: "inline-flex" }}>
+                    <Typography variant="h6" sx={{
                         paddingLeft: "10px",
                         paddingTop: "6px",
                         fontSize: "1.2em",
-                        paddingBottom: "20px",
+                        paddingBottom: isMobile ? "10px" : "0px",
                     }}>
                         Recommended Challenges
                     </Typography>
                 </div>
+                {!isMobile && (
+                    <Typography variant="body2" gutterBottom
+                        sx={{
+                            paddingTop: "10px",
+                            paddingLeft: "10px",
+                            fontSize: "0.65em",
+                            lineHeight: "0.5",
+                            opacity: "0.7",
+                            paddingBottom: "20px",
+                        }}
+                    >
+                        Full-length projects that can be completed in a web-based VSCode Editor
+                    </Typography>
+                )}
                 <Grid container spacing={4}
-                      sx={{
-                          paddingRight: "10px",
-                          paddingLeft: "10px"
-                      }}
+                    sx={{
+                        paddingRight: "10px",
+                        paddingLeft: "10px"
+                    }}
                 >
                     {
                         recData.map((project, index) => {
@@ -136,7 +150,7 @@ export default function RecommendedProjectsScroll() {
                 {
                     isFetching ? (
                         <Grid container spacing={2} justifyContent="center" alignItems="center"
-                              style={{marginTop: "10px"}}
+                            style={{ marginTop: "10px" }}
                         >
                             <Grid item xs={12}>
                                 <div
@@ -147,7 +161,7 @@ export default function RecommendedProjectsScroll() {
                                         width: "100%"
                                     }}
                                 >
-                                    <MoonLoader color={theme.palette.primary.main} loading={true} size={35}/>
+                                    <MoonLoader color={theme.palette.primary.main} loading={true} size={35} />
                                 </div>
                             </Grid>
                         </Grid>

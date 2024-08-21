@@ -1,30 +1,31 @@
 import * as React from "react";
-import {Suspense} from "react";
-import {Box, Button, Grid, Typography} from "@mui/material";
+import { Suspense } from "react";
+import { Box, Button, Grid, Typography } from "@mui/material";
 import config from "@/config";
 import Carousel from "../../components/Carousel";
 import ReactGA from "react-ga4";
 import GIGOLandingPage from "@/components/LandingPage/Landing2";
 import GIGOLandingPageMobile from "@/components/LandingPage/LandingMobile2";
 import BytesCard from "@/components/Bytes/BytesCard";
-import {programmingLanguages} from "@/services/vars";
+import { programmingLanguages } from "@/services/vars";
 import BytesIcon from "@/icons/Bytes/BytesIcon";
 import "react-awesome-button/dist/styles.css"
 import BytesCardMobile from "@/components/Bytes/BytesCardMobile";
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
-import {cookies, headers} from "next/headers";
+import { cookies, headers } from "next/headers";
 import Tutorial from "@/components/Pages/Home/Tutorial";
-import {checkSessionStatus, getSessionCookies} from "@/services/utils";
+import { checkSessionStatus, getSessionCookies } from "@/services/utils";
 import RecommendedProjectsScroll from "@/components/Pages/Home/RecommendedProjectsScroll";
 import ActiveChallenges from "@/components/Pages/Home/ActiveChallenges";
 import JourneyBanner from "@/components/Pages/Home/JourneyBanner";
 import JourneyBannerMobile from "@/components/Pages/Home/JourneyBannerMobile";
 import SuspenseFallback from "@/components/SuspenseFallback";
+import { theme } from "@/theme";
 
 
 async function Home({
-                        searchParams,
-                    }: {
+    searchParams,
+}: {
     searchParams?: { [key: string]: string | string[] | undefined };
 }) {
     ///////////// Server Side Data Loading /////////////
@@ -207,11 +208,11 @@ async function Home({
                 width: "100%",
                 paddingBottom: "10px",
             }}>
-                <div style={{display: "inline-flex", alignItems: 'center', padding: "10px 0"}}>
+                <div style={{ display: "inline-flex", alignItems: 'center', padding: "10px 0" }}>
                     <Typography variant="h6" gutterBottom
-                                sx={{display: 'flex', alignItems: 'center', flexGrow: 1, marginLeft: "10%"}}>
-                        <BytesIcon style={{height: "20px", width: "20px", marginRight: "5px"}}
-                                   miniIcon={false}/>
+                        sx={{ display: 'flex', alignItems: 'center', flexGrow: 1, marginLeft: "10%" }}>
+                        <BytesIcon style={{ height: "20px", width: "20px", marginRight: "5px" }}
+                            miniIcon={false} />
                         Bytes Swipe
                     </Typography>
                     <Button variant="text" href="/bytes" sx={{
@@ -229,14 +230,14 @@ async function Home({
                     overflowX: "auto",
                     paddingLeft: "5%"
                 }}>
-                    <Suspense fallback={<SheenPlaceholder height={500} width={"100%"}/>}>
+                    <Suspense fallback={<SheenPlaceholder height={500} width={"100%"} />}>
                         <Carousel itemsShown={1} infiniteLoop={true} itemsToSlide={1}>
                             {
                                 byteContent && byteContent.length > 0 ?
                                     byteContent.slice(0, 20).map((project, index) => (
                                         <Box display={"flex"} justifyContent={"center"} key={index}
-                                             style={{width: "100%", padding: "0 5%"}}>
-                                            <Suspense fallback={<SheenPlaceholder height={500} width={281}/>}>
+                                            style={{ width: "100%", padding: "0 5%" }}>
+                                            <Suspense fallback={<SheenPlaceholder height={500} width={281} />}>
                                                 <BytesCardMobile
                                                     height={"550px"}
                                                     imageHeight={500}
@@ -258,7 +259,7 @@ async function Home({
                                             </Suspense>
                                         </Box>
                                     )) : (
-                                        <SheenPlaceholder height={"40vh"} width={"100%"}/>
+                                        <SheenPlaceholder height={"40vh"} width={"100%"} />
                                     )
                             }
                         </Carousel>
@@ -284,12 +285,12 @@ async function Home({
                 paddingBottom: "10px",
                 height: "100%"
             }}>
-                <div style={{display: "inline-flex"}}>
+                <div style={{ display: "inline-flex" }}>
                     <Typography
                         variant="h6"
                         gutterBottom
                         sx={{
-                            paddingLeft: "10px",
+                            paddingLeft: "30px",
                             paddingTop: "6px",
                             fontSize: "1.2em",
                             display: 'flex',
@@ -306,16 +307,27 @@ async function Home({
                         Bytes
                     </Typography>
                     <Button variant="text"
-                            href={"/bytes"}
-                            sx={{
-                                fontSize: "0.8em",
-                                fontWeight: "light",
-                                textTransform: "lowercase",
-                            }}
+                        href={"/bytes"}
+                        sx={{
+                            fontSize: "0.8em",
+                            fontWeight: "light",
+                            textTransform: "lowercase",
+                        }}
                     >
                         (show all)
                     </Button>
                 </div>
+                <Typography variant="body2" gutterBottom
+                    sx={{
+                        paddingTop: "4px",
+                        paddingLeft: "30px",
+                        fontSize: "0.65em",
+                        lineHeight: "0.5",
+                        opacity: "0.7"
+                    }}
+                >
+                    Bite-sized challenges that can be completed in under 10 minutes
+                </Typography>
                 <div style={{
                     display: "flex",
                     justifyContent: "start",
@@ -324,16 +336,16 @@ async function Home({
                     overflowX: "auto",
                     marginLeft: "1%",
                 }}>
-                    <Suspense fallback={<SheenPlaceholder height={400} width={"100%"}/>}>
+                    <Suspense fallback={<SheenPlaceholder height={400} width={"100%"} />}>
                         <Carousel itemsShown={(isMobile ? 1 : 5)} infiniteLoop={true}
-                                  itemsToSlide={isMobile ? 1 : 5}>
+                            itemsToSlide={isMobile ? 1 : 5}>
                             {
                                 byteContent && byteContent.length > 0 ?
                                     byteContent.map((project, index) => {
                                         return (
                                             <Box display={"flex"} justifyContent={"center"}
-                                                 style={{paddingBottom: "10px", width: "16vw"}} key={project["_id"]}>
-                                                <Suspense fallback={<SheenPlaceholder height={400} width={225}/>}>
+                                                style={{ paddingBottom: "10px", width: "16vw" }} key={project["_id"]}>
+                                                <Suspense fallback={<SheenPlaceholder height={400} width={225} />}>
                                                     <BytesCard
                                                         height={"475px"}
                                                         imageHeight={400}
@@ -354,9 +366,9 @@ async function Home({
                                             </Box>
                                         )
                                     }) :
-                                    Array.from({length: 15}, (_, index) => (
+                                    Array.from({ length: 15 }, (_, index) => (
                                         <SheenPlaceholder height={"43vh"} width={"calc(43vh * 0.5625)"}
-                                                          key={`placeholder-${index}`}/>
+                                            key={`placeholder-${index}`} />
                                     ))
                             }
                         </Carousel>
@@ -372,15 +384,15 @@ async function Home({
         }
 
         if (isMobile) {
-            return (<GIGOLandingPageMobile/>)
+            return (<GIGOLandingPageMobile />)
         }
 
-        return (<GIGOLandingPage/>)
+        return (<GIGOLandingPage />)
     }
 
     return (
-        <div style={{overflow: "hidden"}}>
-            <Tutorial/>
+        <div style={{ overflow: "hidden" }}>
+            <Tutorial />
             {renderLanding()}
             <Typography component={"div"}>
             </Typography>
@@ -402,7 +414,7 @@ async function Home({
                         color: 'text.primary',
                     }}
                 >
-                    <Suspense fallback={<SuspenseFallback/>}>
+                    <Suspense fallback={<SuspenseFallback />}>
                         {(isMobile) ? (
                             <JourneyBannerMobile
                                 startedJourney={startedJourney}
@@ -447,11 +459,11 @@ async function Home({
                     }}
                 >
                     { // @ts-ignore
-                    (!isMobile && loggedIn && (activeData === null || activeData.length > 0)) ? (
-                        <Suspense fallback={<SuspenseFallback/>}>
-                            <ActiveChallenges activeData={activeData === null ? [] : activeData}/>
-                        </Suspense>
-                    ) : null}
+                        (!isMobile && loggedIn && (activeData === null || activeData.length > 0)) ? (
+                            <Suspense fallback={<SuspenseFallback />}>
+                                <ActiveChallenges activeData={activeData === null ? [] : activeData} />
+                            </Suspense>
+                        ) : null}
                 </Box>
 
                 <Box
@@ -465,8 +477,8 @@ async function Home({
                         color: 'text.primary',
                     }}
                 >
-                    <Suspense fallback={<SuspenseFallback/>}>
-                        <RecommendedProjectsScroll/>
+                    <Suspense fallback={<SuspenseFallback />}>
+                        <RecommendedProjectsScroll />
                     </Suspense>
                 </Box>
             </Grid>

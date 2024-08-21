@@ -25,14 +25,16 @@ const GIGOLandingPageMobile: React.FC = () => {
                 marginBottom: '0px',
                 lineHeight: '1.2'
             }}>
-                Learn to code for free
+                Learn to code fast
             </Typography>
             <Typography variant="h5" sx={{
                 fontWeight: 'medium',
                 fontSize: '18px',
-                marginBottom: '24px'
+                marginBottom: '24px',
+                lineHeight: '1.5'
             }}>
-                with thousands of lessons
+                Start with guided learning plans<br />
+                Grow with real-world projects
             </Typography>
             <Box sx={{
                 position: 'relative',
@@ -68,7 +70,9 @@ const GIGOLandingPageMobile: React.FC = () => {
                 fontSize: '14px',
                 marginBottom: '32px'
             }}>
-                Code in the cloud, learn from thousands of lessons, and work with the latest technologies from any device, even a tablet!
+                GIGO solves the problem we faced when learning to code: it&apos;s hard. 
+                Learn directly in your browser—no installation, no setup required. 
+                Get real-time help with GIGO&apos;s integrated learning assistant, Code Teacher.
             </Typography>
             <Button
                 variant="contained"
