@@ -263,7 +263,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
     const dispatch = useAppDispatch();
 
     const tutorialState = useAppSelector(selectAuthStateTutorialState)
-    const [runTutorial, setRunTutorial] = React.useState(/*!tutorialState.bytes && authState.authenticated*/ true)
+    const [runTutorial, setRunTutorial] = React.useState(!tutorialState.bytes && authState.authenticated)
     const [stepIndex, setStepIndex] = React.useState(0)
 
     let id = params.id;
@@ -287,7 +287,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
         if (tutorialState.bytes === !runTutorial) {
             return
         }
-        setRunTutorial(/*!tutorialState.bytes && authState.authenticated*/ true)
+        setRunTutorial(!tutorialState.bytes && authState.authenticated)
     }, [tutorialState])
 
     const tutorialCallback = async (step: number, reverse: boolean) => {
