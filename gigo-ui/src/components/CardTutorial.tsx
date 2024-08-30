@@ -20,6 +20,7 @@ type TutorialProps = {
     step: number;
     changeCallback: (step: number, back: boolean) => void;
     steps: TutorialStep[];
+    sx?: React.CSSProperties;
 };
 
 interface OverlayProps {
@@ -133,7 +134,8 @@ export default function CardTutorial(props: TutorialProps) {
                     ...themeHelpers.frostedGlass,
                     backgroundColor: "rgba(19,19,19,0.31)",
                     // backgroundColor: theme.palette.primary.main + "30",
-                    width: "95vw"
+                    width: "95vw",
+                    ...(props.sx ? props.sx : {})
                 } : {
                     position: "fixed",
                     bottom: 40,
@@ -146,6 +148,7 @@ export default function CardTutorial(props: TutorialProps) {
                     backgroundColor: "rgba(19,19,19,0.31)",
                     // backgroundColor: theme.palette.primary.main + "30",
                     width: props.steps[props.step].width ? props.steps[props.step].width : 400,
+                    ...(props.sx ? props.sx : {})
                 }}
             >
                 <DialogContent

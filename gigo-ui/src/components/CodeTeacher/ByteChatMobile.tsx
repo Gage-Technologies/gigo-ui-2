@@ -1021,6 +1021,7 @@ export default function ByteChatMobile(props: ByteChatProps & { setSpeedDialVisi
     const renderHidden = React.useMemo(() => (
         <Tooltip title={"Code Teacher Chat"}>
             <HiddenButton
+                id="byte-chat-container"
                 sx={{
                     height: "30px",
                     width: "30px",

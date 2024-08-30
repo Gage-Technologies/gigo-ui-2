@@ -340,42 +340,40 @@ export default function Tutorial() {
                 )}
                 {tutorialStepIndex === steps.length - 1 ? (
                     <>
-                        {windowWidth > 1000 && (
-                            <Button
-                                onClick={async () => {
-                                    setRunTutorial(false)
-                                    let authState = Object.assign({}, initialAuthStateUpdate)
-                                    // copy the existing state
-                                    let state = Object.assign({}, tutorialState)
-                                    // update the state
-                                    state.home = true
-                                    authState.tutorialState = state
-                                    dispatch(updateAuthState(authState))
+                        <Button
+                            onClick={async () => {
+                                setRunTutorial(false)
+                                let authState = Object.assign({}, initialAuthStateUpdate)
+                                // copy the existing state
+                                let state = Object.assign({}, tutorialState)
+                                // update the state
+                                state.home = true
+                                authState.tutorialState = state
+                                dispatch(updateAuthState(authState))
 
-                                    // send api call to backend to mark the challenge tutorial as completed
-                                    await fetch(
-                                        `${config.rootPath}/api/user/markTutorial`,
-                                        {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json'
-                                            },
-                                            body: JSON.stringify({
-                                                tutorial_key: "home"
-                                            }),
-                                            credentials: 'include'
-                                        }
-                                    )
-                                }}
-                                variant="contained"
-                                color={"secondary"}
-                                sx={{
-                                    fontSize: "0.8rem",
-                                }}
-                            >
-                                Finish
-                            </Button>
-                        )}
+                                // send api call to backend to mark the challenge tutorial as completed
+                                await fetch(
+                                    `${config.rootPath}/api/user/markTutorial`,
+                                    {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({
+                                            tutorial_key: "home"
+                                        }),
+                                        credentials: 'include'
+                                    }
+                                )
+                            }}
+                            variant="contained"
+                            color={"secondary"}
+                            sx={{
+                                fontSize: "0.8rem",
+                            }}
+                        >
+                            Finish
+                        </Button>
                     </>
                 ) : (
                     <Button

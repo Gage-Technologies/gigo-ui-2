@@ -46,6 +46,7 @@ function ByteDevStepsPlugin(props: ByteDevStepsPluginProps) {
                     marginLeft: props.mobile ? "0px" : "10px"
                 }}
                 onClick={() => expand()}
+                id="byte-dev-steps-button"
             >
                 <Flag style={{fontSize: "20px"}}/>
             </HiddenButton>

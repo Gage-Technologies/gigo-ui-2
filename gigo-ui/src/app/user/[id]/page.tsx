@@ -82,10 +82,7 @@ async function fetchUser(id: string): Promise<User | null> {
         });
 
         if (!response.ok) {
-            if (response.status === 404) {
-                return null;
-            }
-            throw new Error('Failed to fetch user data');
+            return null;
         }
 
         const responseData = await response.json();

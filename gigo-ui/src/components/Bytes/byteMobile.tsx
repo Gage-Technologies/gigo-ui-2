@@ -43,7 +43,7 @@ import chroma from 'chroma-js';
 import SheenPlaceholder from "@/components/Loading/SheenPlaceholder";
 import { sleep } from "@/services/utils";
 import { Extension, ReactCodeMirrorRef } from "@uiw/react-codemirror";
-import { TutorialState, initialAuthStateUpdate, selectAuthState, updateAuthState } from "@/reducers/auth/auth";
+import { TutorialState, initialAuthStateUpdate, selectAuthState, selectAuthStateTutorialState, updateAuthState } from "@/reducers/auth/auth";
 import { initialBytesStateUpdate, selectBytesState, updateBytesState } from "@/reducers/bytes/bytes";
 import ByteTerminal from "@/components/Terminal";
 import './byteMobile.css';
@@ -95,6 +95,7 @@ import HeartTracker from "@/components/HeartTracker";
 import { useRouter, useSearchParams } from "next/navigation";
 import ProgressionNotification from "../Progressions/ProgressionNotification";
 import { decodeToken } from "react-jwt";
+import CardTutorial from "../CardTutorial";
 
 
 interface MergedOutputRow {
@@ -261,12 +262,62 @@ function ByteMobile({ params, ...props }: ByteProps) {
     const [journeySetupDone, setJourneySetupDone] = useState(false);
     const dispatch = useAppDispatch();
 
+    const tutorialState = useAppSelector(selectAuthStateTutorialState)
+    const [runTutorial, setRunTutorial] = React.useState(/*!tutorialState.bytes && authState.authenticated*/ true)
+    const [stepIndex, setStepIndex] = React.useState(0)
+
     let id = params.id;
     const isJourney = query.has('journey')
     const embedded = query.get('embed') === 'true'
     const appToken = query.get('appToken')
 
     const navigate = useRouter();
+
+    const styles = {
+        tutorialHeader: {
+            fontSize: "1rem",
+        },
+        tutorialText: {
+            fontSize: "0.7rem",
+        }
+    };
+
+    // this enables us to push tutorial restarts from the app wrapper down into this page
+    useEffect(() => {
+        if (tutorialState.bytes === !runTutorial) {
+            return
+        }
+        setRunTutorial(/*!tutorialState.bytes && authState.authenticated*/ true)
+    }, [tutorialState])
+
+    const tutorialCallback = async (step: number, reverse: boolean) => {
+        setStepIndex(step)
+    }
+
+    const closeTutorialCallback = async () => {
+        setRunTutorial(false)
+        let authState = Object.assign({}, initialAuthStateUpdate)
+        // copy the existing state
+        let state = Object.assign({}, tutorialState)
+        // update the state
+        state.bytes = true
+        authState.tutorialState = state
+        // @ts-ignore
+        dispatch(updateAuthState(authState))
+
+        // send api call to backend to mark the challenge tutorial as completed
+        await fetch(
+            `${config.rootPath}/api/user/markTutorial`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({tutorial_key: "bytes"}),
+                credentials: 'include'
+            }
+        )
+    }
 
     const updateDifficulty = (difficulty: number, reload: boolean = true) => {
         // copy the existing state
@@ -2502,6 +2553,345 @@ function ByteMobile({ params, ...props }: ByteProps) {
         )
     }
 
+    const MobileVideo = ({videoSrc, height, width}: { videoSrc: string, height?: string, width?: string }) => {
+        const [loading, setLoading] = useState(true);
+
+        const handleLoadedData = () => {
+            setLoading(false);
+        };
+
+        return (
+            <Box sx={{position: 'relative', height: height ? height : "auto", width: width ? width : "300px"}}>
+                {loading && (
+                    <Box sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 100
+                    }}>
+                        <CircularProgress color="inherit"/>
+                    </Box>
+                )}
+                <video
+                    src={videoSrc}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="auto"
+                    onLoadedData={handleLoadedData}
+                    style={{
+                        height: height ? height : "100%", // Defaulting to 100% to fill container if height is not specified
+                        width: width ? width : "100%", // Defaulting to 100% to fill container if width is not specified
+                        borderRadius: "10px",
+                        border: "solid 2px #008664"
+                    }}
+                >
+                    Your browser does not support the video tag.
+                </video>
+            </Box>
+        );
+    };
+
+    const renderTutorial = () => {
+        const ctVideo1 = config.rootPath + "/cloudstore/videos/ask_code_teacher_big.mp4"
+        const ctVideo2 = config.rootPath + "/cloudstore/videos/ask_code_teacher_code_question.mp4"
+        const ctVideo3 = config.rootPath + "/cloudstore/videos/ask_code_teacher_small.mp4"
+        const ctVideo4 = config.rootPath + "/cloudstore/videos/byte_objective_final.mp4"
+        const ctVideo5 = config.rootPath + "/cloudstore/videos/utilities_final.mp4"
+        const ctVideo6 = config.rootPath + "/cloudstore/videos/run_example.mp4"
+
+        return (
+            <>
+                <CardTutorial
+                    sx={{
+                        bottom: "15px"
+                    }}
+                    open={runTutorial}
+                    closeCallback={closeTutorialCallback}
+                    step={stepIndex}
+                    changeCallback={tutorialCallback}
+                    steps={[
+                        {
+                            content: (
+                                <div>
+                                    <h2 style={styles.tutorialHeader}>Welcome to your first Byte!</h2>
+                                    <p style={styles.tutorialText}>
+                                        Bytes are bite-sized coding challenges designed to help you learn to code.
+                                        They are a great way to get started with coding and to learn new skills.
+                                    </p>
+                                </div>
+                            ),
+                            moreInfo: isJourney ? (
+                                <div>
+                                    <p style={styles.tutorialText}>
+                                        Bytes are the building blocks of your Journey.
+                                        Each Byte is a self-contained project that you can work on and learn from.
+                                        Bytes are organized into Units, to teach you new skills and concepts.
+                                    </p>
+                                </div>
+                            ) : undefined,
+                            targetId: "",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"250px"} width={"154px"} videoSrc={ctVideo1}/>
+                                    <Box sx={{marginLeft: "20px"}}>
+                                        <h2 style={styles.tutorialHeader}>Code Teacher</h2>
+                                        <p style={styles.tutorialText}>
+                                            Click the Code Teacher button on the left side of the screen to open the Code Teacher.
+                                            Code Teacher is a personal tutor system integrated directly into Bytes.
+                                            Code Teacher is designed to help you learn to code as fast as possible.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"column"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"auto"} width={"100%"} videoSrc={ctVideo2}/>
+                                    <Box>
+                                        <h2 style={styles.tutorialHeader}>Code Teacher Can See Your Code</h2>
+                                        <p style={styles.tutorialText}>
+                                            Code Teacher is deeply integrated with your code editor and Byte.
+                                            Code Teacher can see your code as you write it to help you better
+                                            understand your objectives and solve problems.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box>
+                                    <p style={styles.tutorialText}>
+                                        Code Teacher knows about your Byte objectives and can help explain what you
+                                        are supposed to be doing. Think of CT as your personal tutor in the Byte
+                                        and take advantage of the knowledge CT can provide.
+                                    </p>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"250px"} width={"154px"} videoSrc={ctVideo3}/>
+                                    <Box sx={{marginLeft: "20px"}}>
+                                        <h2 style={styles.tutorialHeader}>What can I ask Code Teacher</h2>
+                                        <p style={styles.tutorialText}>
+                                            Code Teacher is your personal tutor. It is here to help you at all times.
+                                            You can ask Code Teacher simple questions like &quot;What&#39;s a boolean?&quot; or
+                                            more complex questions like &quot;What is left to do to complete this Byte?&quot;
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "byte-chat-container",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"192.5px"} width={"154px"} videoSrc={ctVideo4}/>
+                                    <Box sx={{marginLeft: "20px"}}>
+                                        <h2 style={styles.tutorialHeader}>Byte Objective</h2>
+                                        <p style={styles.tutorialText}>
+                                            You can find the objective of the Byte in the &quot;Byte Objective&quot; tab of the
+                                            editor sidebar. This is a short description of what the Byte is about and
+                                            what you should be doing. You can open and close the tab in the editor
+                                            sidebar.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            targetId: "byte-dev-steps-button",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"inline-flex"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"192.5px"} width={"154px"} videoSrc={ctVideo5}/>
+                                    <Box sx={{marginLeft: "20px"}}>
+                                        <h2 style={styles.tutorialHeader}>Editor Sidebar</h2>
+                                        <p style={styles.tutorialText}>
+                                            The left side of the editor is your Editor Sidebar and contains multiple
+                                            tools to help you learn. Click &quot;More Info&quot; to see a full list of tools.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box>
+                                    <p style={styles.tutorialText}>
+                                        Editor Sidebar Tools:
+                                    </p>
+                                    <ul>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Next Step
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Next Step tool uses Code Teacher to help you with the next step in
+                                                completing
+                                                the Byte. You can use this to help you when you get stuck. It has 15s
+                                                cooldown
+                                                so use it wisely!
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Debug
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Debug tool is used everytime you run your code. It checks if the
+                                                Byte is
+                                                complete and if not, it uses Code Teacher to explain what is wrong with
+                                                your
+                                                code.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Code Cleanup
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Code Cleanup tool is triggered by the &quot;Clean Up Code&quot; button above
+                                                functions in the editor. It uses Code Teacher to clean up your code and
+                                                make it more readable. When you run Code Cleanup, it will show you the
+                                                changes it made to your code and ask you if you want to save them.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Open Ports
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Open Ports tool allows you to preview and open the network ports
+                                                that are open in your DevSpace. This is useful for when you are working
+                                                on websites or HTTP APIs and want to see the site running in your
+                                                browser.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Byte Objectives
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Byte Objectives tool allows you to see all the objectives for your
+                                                Byte. It is a great way to see what the Byte is looking for and to get
+                                                ideas for your next step.
+                                            </div>
+                                        </li>
+                                        <li style={styles.tutorialText}>
+                                            <strong style={styles.tutorialText}>
+                                                Unit Handout
+                                            </strong>
+                                            <br/>
+                                            <div style={styles.tutorialText}>
+                                                The Unit Handout tool allows you to see the handout for your current
+                                                Journey unit if you are active in a Journey. It is a great way to get
+                                                background information for your work.
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </Box>
+                            ),
+                            targetId: "editor-sidebar",
+                        },
+                        {
+                            content: (
+                                <Box
+                                    display={"flex"}
+                                    flexDirection={"column"}
+                                    alignItems={"center"}
+                                    justifyContent={"space-between"}
+                                    sx={{
+                                        height: "fit-content",
+                                        width: "fit-content",
+                                    }}
+                                >
+                                    <MobileVideo height={"auto"} width={"100%"} videoSrc={ctVideo6}/>
+                                    <Box>
+                                        <h2 style={styles.tutorialHeader}>Writing & Running Code</h2>
+                                        <p style={styles.tutorialText}>
+                                            Use the main editor to write your code and the Run button in the top right
+                                            to
+                                            run your code. Once your code has exited, your code will automatically
+                                            checked
+                                            for completion of the Byte. If the code is not complete, Code Teacher will
+                                            explain
+                                            what is wrong with your code.
+                                        </p>
+                                    </Box>
+                                </Box>
+                            ),
+                            moreInfo: (
+                                <Box>
+                                    <p style={styles.tutorialText}>
+                                        When you Run your code output console will appear at the bottom of the editor
+                                        and show you the output of your code. A text box will also appear in the console
+                                        so you can pass in input to your code.
+                                    </p>
+                                </Box>
+                            ),
+                            targetId: "byte-run-button",
+                            width: "520px",
+                            height: "calc(50vh + 10px)",
+                            left: true
+                        },
+                    ]}
+                />
+            </>
+        )
+    }
+
 
     let lang = mapFilePathToLangOption(activeFile)
 
@@ -2587,6 +2977,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
                                 >
                                     <Tooltip title="Run Code">
                                         <LoadingButton
+                                            id="byte-run-button"
                                             loading={executingCode}
                                             variant="outlined"
                                             color={"success"}
@@ -2749,6 +3140,7 @@ function ByteMobile({ params, ...props }: ByteProps) {
                 )}
                 <OutOfHeartsMobile open={outOfHearts} onClose={() => navigate.push("/journey")} onGoPro={() => setProPopupOpen(true)} />
                 <GoProDisplay open={proPopupOpen} onClose={() => setProPopupOpen(false)} />
+                {renderTutorial()}
             </CssBaseline>
         </ThemeProvider>
     );

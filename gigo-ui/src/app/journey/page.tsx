@@ -25,7 +25,7 @@ import {AwesomeButton} from 'react-awesome-button';
 import QuestionMarkIcon from '@mui/icons-material/QuestionMark';
 import journeyMap from "@/img/journey/journey-map.svg";
 import config from "@/config";
-import {selectAuthStateId} from "@/reducers/auth/auth";
+import {selectAuthStateId, selectAuthStateAuth} from "@/reducers/auth/auth";
 import JourneyPortals from "@/components/Journey/JourneyPortals";
 import {initialJourneyDetourStateUpdate, updateJourneyDetourState} from "@/reducers/journeyDetour/journeyDetour";
 import MarkdownRenderer from "@/components/Markdown/MarkdownRenderer";
@@ -51,6 +51,7 @@ import { Article, HelpOutline, Lock } from '@mui/icons-material';
 import GoProDisplay from '@/components/GoProDisplay';
 import { selectOutOfHearts } from '@/reducers/hearts/hearts';
 import useIsMobile from '@/hooks/isMobile';
+import { redirect } from 'next/navigation';
 
 function JourneyMain() {
     const outOfHearts = useAppSelector(selectOutOfHearts);
@@ -60,6 +61,7 @@ function JourneyMain() {
     const [loadingMapData, setLoadingMapData] = useState(false);
     const [contentLoaded, setContentLoaded] = useState(true)
 
+    const authenticated = useAppSelector(selectAuthStateAuth)
     const userId = useAppSelector(selectAuthStateId) as string
 
     const [unitData, setUnitData] = useState<Unit[]>([])
@@ -120,6 +122,11 @@ function JourneyMain() {
     }, []);
 
 
+    useEffect(() => {
+        if (!authenticated) {
+            redirect('/signup')
+        }
+    }, [authenticated])
 
 
     const getTasks = async () => {
