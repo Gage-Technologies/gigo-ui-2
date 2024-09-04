@@ -245,6 +245,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const [deleteProjectLoading, setDeleteProjectLoading] = React.useState<boolean>(false);
     const [goProPopup, setGoProPopup] = React.useState(false)
     const [mobileLaunchTooltipOpen, setMobileLaunchTooltipOpen] = React.useState(false)
+    const [publishPopupOpen, setPublishPopupOpen] = React.useState(false)
 
     const authState = useAppSelector(selectAuthState);
 
@@ -2147,6 +2148,15 @@ function Challenge({ params, ...props }: ChallengeProps) {
                         >
                             Edit Challenge
                         </Button>
+                        {project && !project.published && (
+                            <Button
+                                variant={"outlined"}
+                                sx={buttonStyle}
+                                onClick={() => setPublishPopupOpen(true)}
+                            >
+                                Publish
+                            </Button>
+                        )}
                         <Button
                             variant={"outlined"}
                             sx={buttonStyle}
@@ -2504,6 +2514,46 @@ function Challenge({ params, ...props }: ChallengeProps) {
         )
     }
 
+    const renderPublishDialog = () => {
+        return (
+            <Dialog
+                open={publishPopupOpen}
+                onClose={() => setPublishPopupOpen(false)}
+            >
+                <DialogTitle>{"Publish Project?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to publish this project? <br />
+                        Publishing will make your project visible to other users and allow them to attempt it.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setPublishPopupOpen(false)}
+                        color="primary"
+                        variant={"outlined"}
+                    >
+                        Cancel
+                    </Button>
+                    <LoadingButton
+                        onClick={() => {
+                            setPublishing(true)
+                            publishProject().then(() => {
+                                setPublishing(false)
+                                setPublishPopupOpen(false)
+                            })
+                        }}
+                        variant={"contained"}
+                        color={"primary"}
+                        loading={publishing}
+                    >
+                        Publish
+                    </LoadingButton>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
     return (
         <>
             <CardTutorial
@@ -2566,6 +2616,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             {/* On mobile add a hovering button to launch the project */}
             {isMobile && renderLaunchButtonMobile()}
             {renderDeleteDialog()}
+            {renderPublishDialog()}
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );
