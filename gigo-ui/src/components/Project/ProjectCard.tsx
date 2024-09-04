@@ -67,7 +67,8 @@ interface IProps {
     attempt: boolean,
     exclusive: boolean | null,
     animate: boolean,
-    estimatedTime: number | null
+    estimatedTime: number | null,
+    visibility?: number
 }
 
 export default function ProjectCard(props: IProps) {
@@ -401,7 +402,7 @@ export default function ProjectCard(props: IProps) {
                             </Tooltip>
                         </Grid>
                     ) : null}
-                    {authState.authenticated && authState.role <= 1 ? (
+                    {authState.authenticated && authState.role <= 1 && props.visibility !== undefined && props.visibility !== 6 ? (
                         <Grid item xs={6} sx={{ justifyContent: "right", alignItems: "center", display: "flex" }}>
                             <Button
                                 variant="outlined"

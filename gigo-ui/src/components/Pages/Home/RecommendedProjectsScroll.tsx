@@ -140,6 +140,7 @@ export default function RecommendedProjectsScroll() {
                                             hover={false}
                                             role={project["user_status"]}
                                             estimatedTime={project["estimated_tutorial_time_millis"]}
+                                            visibility={project["visibility"]}
                                         />
                                     </LazyLoad>
                                 </Grid>

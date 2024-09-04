@@ -246,6 +246,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
     const [goProPopup, setGoProPopup] = React.useState(false)
     const [mobileLaunchTooltipOpen, setMobileLaunchTooltipOpen] = React.useState(false)
     const [publishPopupOpen, setPublishPopupOpen] = React.useState(false)
+    const [makeFreePopupOpen, setMakeFreePopupOpen] = React.useState(false)
 
     const authState = useAppSelector(selectAuthState);
 
@@ -486,6 +487,58 @@ function Challenge({ params, ...props }: ChallengeProps) {
         setProject(stateUpdate)
         setPublishing(false)
         swal("Project Published", "Other users can now see and Attempt this project!")
+    }
+
+    const makeFreeProject = async () => {
+        if (project === null || !project.published || project.visibility === 6) {
+            return
+        }
+
+        let res = await fetch(
+            `${config.rootPath}/api/project/makePostFreeUserVisible`,
+            {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ post_id: project._id }),
+                credentials: 'include'
+            }
+        ).then((res) => res.json())
+
+        if (res["message"] === "You must be logged in to access the GIGO system.") {
+            let authState = Object.assign({}, initialAuthStateUpdate)
+            // @ts-ignore
+            dispatch(updateAuthState(authState))
+            router.push("/login?forward=" + encodeURIComponent(window.location.pathname))
+        }
+
+        if (res === undefined || res["message"] === undefined) {
+            if (sessionStorage.getItem("alive") === null)
+                //@ts-ignore
+                swal(
+                    "Server Error",
+                    "We are unable to connect with the GIGO servers at this time. We're sorry for the inconvenience!"
+                );
+            return;
+        }
+
+        if (res["message"] !== "post made free user visible") {
+            if (sessionStorage.getItem("alive") === null)
+                //@ts-ignore
+                swal(
+                    "Server Error",
+                    (res["message"] !== "internal server error occurred") ?
+                        res["message"] :
+                        "An unexpected error has occurred. We're sorry, we'll get right on that!"
+                );
+            return;
+        }
+
+        let stateUpdate = Object.assign({}, project) as Post
+        stateUpdate.visibility = 6
+        setProject(stateUpdate)
+        swal("Project Made Free", "Free users can now launch this project!")
     }
 
     const generateImage = async () => {
@@ -1518,7 +1571,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 window.location.href = "/signup?forward=" + encodeURIComponent(window.location.pathname)
                 return
             }
-            if (authState.role < 2) {
+            if (authState.role < 2 && project && project.visibility !== 6) {
                 setGoProPopup(true)
                 return
             }
@@ -1548,7 +1601,8 @@ function Challenge({ params, ...props }: ChallengeProps) {
         if (project !== undefined && project !== null && project["start_time_millis"] !== undefined && project["start_time_millis"] !== null && project["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(project["start_time_millis"])}`
         }
-        if (loggedIn && authState.role < 2) {
+        console.log("project data", project)
+        if (loggedIn && authState.role < 2 && project && project.visibility !== 6) {
             toolTipText = (
                 <Box sx={{ position: "relative", width: "fit-content" }}>
                     You must be Pro Advanced or Max to launch this Challenge
@@ -1617,7 +1671,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
                 router.push("/signup?forward=" + encodeURIComponent(window.location.pathname))
                 return
             }
-            if (authState.role < 2) {
+            if (authState.role < 2 && project && project.visibility !== 6) {
                 setMobileLaunchTooltipOpen(true)
                 return
             }
@@ -1645,7 +1699,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             <Tooltip
                 open={mobileLaunchTooltipOpen}
                 onClose={() => setMobileLaunchTooltipOpen(false)}
-                title={loggedIn && authState.role < 2 ? (
+                title={loggedIn && authState.role < 2 && project && project.visibility !== 6 ? (
                     <Box>
                         You must be Pro Advanced or Max to launch this Challenge <br />
                         <Box sx={{ width: "100%", position: "relative", height: "30px" }}>
@@ -2157,6 +2211,15 @@ function Challenge({ params, ...props }: ChallengeProps) {
                                 Publish
                             </Button>
                         )}
+                        {project && project.published && project.visibility !== 6 && authState.isAdmin && (
+                            <Button
+                                variant={"outlined"}
+                                sx={buttonStyle}
+                                onClick={() => setMakeFreePopupOpen(true)}
+                            >
+                                Make Free
+                            </Button>
+                        )}
                         <Button
                             variant={"outlined"}
                             sx={buttonStyle}
@@ -2554,6 +2617,46 @@ function Challenge({ params, ...props }: ChallengeProps) {
         )
     }
 
+    const renderMakeFreeDialog = () => {
+        return (
+            <Dialog
+                open={makeFreePopupOpen}
+                onClose={() => setMakeFreePopupOpen(false)}
+            >
+                <DialogTitle>{"Make Project Free?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        Are you sure you want to make this project free? <br />
+                        Making the project free will allow all users, including those without a subscription, to launch and attempt this project.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setMakeFreePopupOpen(false)}
+                        color="primary"
+                        variant={"outlined"}
+                    >
+                        Cancel
+                    </Button>
+                    <LoadingButton
+                        onClick={() => {
+                            setLoadingEphemeral(true)
+                            makeFreeProject().then(() => {
+                                setLoadingEphemeral(false)
+                                setMakeFreePopupOpen(false)
+                            })
+                        }}
+                        variant={"contained"}
+                        color={"primary"}
+                        loading={loadingEphemeral}
+                    >
+                        Make Free
+                    </LoadingButton>
+                </DialogActions>
+            </Dialog>
+        )
+    }
+
     return (
         <>
             <CardTutorial
@@ -2617,6 +2720,7 @@ function Challenge({ params, ...props }: ChallengeProps) {
             {isMobile && renderLaunchButtonMobile()}
             {renderDeleteDialog()}
             {renderPublishDialog()}
+            {renderMakeFreeDialog()}
             <GoProDisplay open={goProPopup} onClose={() => setGoProPopup(false)} />
         </>
     );

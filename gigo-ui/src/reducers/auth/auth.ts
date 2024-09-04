@@ -55,6 +55,7 @@ export interface AuthState {
     alreadyCancelled: boolean,
     lastRefresh: number | null,
     usedFreeTrial: boolean,
+    isAdmin: boolean,
 }
 
 export interface AuthStateUpdate {
@@ -82,6 +83,7 @@ export interface AuthStateUpdate {
     alreadyCancelled: boolean | null,
     lastRefresh: number | null,
     usedFreeTrial: boolean | null,
+    isAdmin: boolean | null,
 }
 
 export const initialAuthState: AuthState = {
@@ -120,6 +122,7 @@ export const initialAuthState: AuthState = {
     alreadyCancelled: false,
     lastRefresh: null,
     usedFreeTrial: false,
+    isAdmin: false,
 };
 
 export const initialAuthStateUpdate: AuthStateUpdate = {
@@ -147,6 +150,7 @@ export const initialAuthStateUpdate: AuthStateUpdate = {
     alreadyCancelled: null,
     lastRefresh: null,
     usedFreeTrial: null,
+    isAdmin: null,
 };
 
 export const authSlice = createSlice({
@@ -252,6 +256,10 @@ export const authSlice = createSlice({
             if (update.payload.usedFreeTrial !== null) {
                 state.usedFreeTrial = update.payload.usedFreeTrial
             }
+
+            if (update.payload.isAdmin !== null) {
+                state.isAdmin = update.payload.isAdmin
+            }
         },
     }
 });
@@ -286,5 +294,6 @@ export const selectAuthStateHasPaymentInfo = (state: RootState) => state.auth &&
 export const selectAuthStateAlreadyCancelled = (state: RootState) => state.auth && state.auth.alreadyCancelled? state.auth.alreadyCancelled : initialAuthState.alreadyCancelled;
 export const selectAuthStateLastRefresh = (state: RootState) => state.auth && state.auth.lastRefresh? state.auth.lastRefresh : initialAuthState.lastRefresh;
 export const selectAuthStateUsedFreeTrail = (state: RootState) => state.auth && state.auth.usedFreeTrial? state.auth.usedFreeTrial : initialAuthState.usedFreeTrial;
+export const selectAuthStateIsAdmin = (state: RootState) => state.auth && state.auth.isAdmin? state.auth.isAdmin : initialAuthState.isAdmin;
 
 export default authSlice.reducer;

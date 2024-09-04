@@ -174,6 +174,7 @@ function Login(this: any) {
             authState.hasPaymentInfo = auth["has_payment_info"]
             authState.hasSubscription = auth["has_subscription"]
             authState.usedFreeTrial = auth["used_free_trial"]
+            authState.isAdmin = auth["is_admin"]
             dispatch(updateAuthState(authState))
 
             await sleep(1000)
@@ -290,6 +291,7 @@ function Login(this: any) {
             authState.hasPaymentInfo = auth["has_payment_info"]
             authState.hasSubscription = auth["has_subscription"]
             authState.usedFreeTrial = auth["used_free_trial"]
+            authState.isAdmin = auth["is_admin"]
             dispatch(updateAuthState(authState))
 
             await sleep(1000)
@@ -422,6 +424,7 @@ function Login(this: any) {
             authState.hasPaymentInfo = auth["has_payment_info"]
             authState.hasSubscription = auth["has_subscription"]
             authState.usedFreeTrial = auth["used_free_trial"]
+            authState.isAdmin = auth["is_admin"]
             dispatch(updateAuthState(authState))
 
 

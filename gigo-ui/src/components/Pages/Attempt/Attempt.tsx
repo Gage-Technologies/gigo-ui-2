@@ -103,6 +103,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
     const [attemptTitle, setAttemptTitle] = React.useState<string>("")
     const [goProPopup, setGoProPopup] = React.useState(false)
     const [mobileLaunchTooltipOpen, setMobileLaunchTooltipOpen] = React.useState(false)
+    const [freeUserVisible, setFreeUserVisible] = React.useState(false)
 
     const [isScrolled, setIsScrolled] = React.useState<boolean>(false);
 
@@ -514,6 +515,10 @@ function AttemptPage({ params, ...props }: AttemptProps) {
             setExclusive(true)
         } else {
             setExclusive(false)
+        }
+
+        if (res2["visibility"] === 6) {
+            setFreeUserVisible(true)
         }
     }
 
@@ -1236,7 +1241,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 return
             }
 
-            if (authState.role < 2) {
+            if (authState.role < 2 && !freeUserVisible) {
                 setGoProPopup(true)
                 return
             }
@@ -1255,7 +1260,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
         if (attempt !== null && attempt["start_time_millis"] !== undefined && attempt["start_time_millis"] !== null && attempt["start_time_millis"] !== 0) {
             toolTipText = `Estimated Launch Time: ${millisToTime(attempt["start_time_millis"])}`
         }
-        if (loggedIn && authState.role < 2) {
+        if (loggedIn && authState.role < 2 && !freeUserVisible) {
             toolTipText = (
                 <Box sx={{ position: "relative", width: "fit-content" }}>
                     You must be Pro Advanced or Max to launch this Challenge
@@ -1302,7 +1307,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
                 return
             }
 
-            if (authState.role < 2) {
+            if (authState.role < 2 && !freeUserVisible) {
                 setMobileLaunchTooltipOpen(true)
                 return
             }
@@ -1314,7 +1319,7 @@ function AttemptPage({ params, ...props }: AttemptProps) {
             <Tooltip
                 open={mobileLaunchTooltipOpen}
                 onClose={() => setMobileLaunchTooltipOpen(false)}
-                title={loggedIn && authState.role < 2 ? (
+                title={loggedIn && authState.role < 2 && !freeUserVisible ? (
                     <Box>
                         You must be Pro Advanced or Max to launch this Challenge <br />
                         <Box sx={{ width: "100%", position: "relative", height: "30px" }}>

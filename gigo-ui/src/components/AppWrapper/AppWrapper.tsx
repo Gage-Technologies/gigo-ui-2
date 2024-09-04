@@ -531,6 +531,7 @@ export default function AppWrapper(props: React.PropsWithChildren<IProps>) {
                 authState.hasSubscription = auth["has_subscription"]
                 authState.lastRefresh = Date.now()
                 authState.usedFreeTrial = auth["used_free_trial"]
+                authState.isAdmin = auth["is_admin"]
                 dispatch(updateAuthState(authState))
 
                 await sleep(1000)
