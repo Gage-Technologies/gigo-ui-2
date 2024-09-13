@@ -9,9 +9,26 @@ const withBundleAnalyzer = bundleAnalyzer({
 const nextConfig = withBundleAnalyzer({
   reactStrictMode: false, // disable react strict mode
   images: {
-    domains: process.env.NODE_ENV === 'development' ? 
-    ['dev.api.cdn.gigo.dev', 'api.cdn.gigo.dev', 'user-images.githubusercontent.com', 'githubusercontent.com', 'raw.githubusercontent.com', 'cdn-images-1.medium.com'] : 
-    ['api.cdn.gigo.dev', 'user-images.githubusercontent.com', 'githubusercontent.com', 'raw.githubusercontent.com', 'cdn-images-1.medium.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.gigo.dev',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.medium.com',
+        port: '',
+        pathname: '/**'
+      },
+      {
+        protocol: 'https',
+        hostname: '*.githubusercontent.com',
+        port: '',
+        pathname: '/**'
+      },
+    ],
   },
   output: "standalone",
   
