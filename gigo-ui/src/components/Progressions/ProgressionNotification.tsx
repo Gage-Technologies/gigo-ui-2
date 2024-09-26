@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Snackbar, Box, Typography, LinearProgress, Slide } from '@mui/material';
-import { Code, School, Chat, Comment, FitnessCenter, Whatshot } from '@mui/icons-material';
+import { Code, School, Chat, Comment, FitnessCenter, Whatshot, CheckCircle } from '@mui/icons-material';
 import XpPopup from '../XpPopup';
 import DetermineProgressionLevel from '@/utils/progression';
 import config from "@/config";
@@ -43,44 +43,43 @@ const AchievementProgress: React.FC<AchievementProgressProps> = ({ open, onClose
             open={open}
             onClose={onClose}
             TransitionComponent={Slide}
+            // @ts-ignore
+            TransitionProps={{ direction: "left" }} // slide from right to left
             key={"slide"}
             autoHideDuration={4000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: isMobile ? "center" : "right" }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            sx={{ top: isMobile ? '48px' : '100px', right: isMobile ? '20px' : '40px' }}
         >
             <Box
                 sx={{
-                    width: isMobile ? "90vw" : "350px",
-                    height: isMobile ? "auto" : "175px",
+                    width: isMobile ? "250px" : "350px", // further reduced width for mobile
                     borderRadius: "8px",
                     display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'flex-start',
-                    padding: '16px',
-                    position: 'relative',
+                    flexDirection: 'column',
+                    padding: isMobile ? '8px' : '12px', // reduced padding
                     backdropFilter: "blur(15px)",
-                    "WebkitBackdropFilter": "blur(15px)",
+                    WebkitBackdropFilter: "blur(15px)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     backgroundColor: hexToRGBA("#0090f2", 0.31),
                 }}
             >
-                {icon}
-                <Box sx={{ display: "flex", flexDirection: "column", width: "100%", marginTop: isMobile ? '16px' : '0' }}>
-                    <Typography sx={{ color: '#fff', fontSize: isMobile ? '1.2rem' : '1rem' }}>
+                <Box sx={{ display: "flex", alignItems: "center", marginBottom: '8px' }}>
+                    {React.cloneElement(icon as React.ReactElement, { style: { width: isMobile ? 20 : 24, height: isMobile ? 20 : 24, marginRight: '8px' } })}
+                    <Typography sx={{ color: '#fff', fontSize: isMobile ? '0.9rem' : '1rem', fontWeight: 'bold' }}>
                         {title}
                     </Typography>
-                    <Typography variant="body2" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '0.875rem' }}>
-                        {description}
+                </Box>
+                <Typography variant="body2" sx={{ color: '#fff', fontSize: isMobile ? '0.75rem' : '0.875rem', marginBottom: '8px' }}>
+                    {description}
+                </Typography>
+                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                    <LinearProgress variant="determinate" value={progressValue} sx={{ height: '8px', borderRadius: '4px', backgroundColor: '#fff', flexGrow: 1, transition: 'width 1.5s ease-in-out' }} />
+                    <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.7rem' : '0.75rem' }}>
+                        {isDataHog 
+                            ? `${progress.toFixed(2)}/${progressMax.toFixed(2)} KB`
+                            : `${Math.round(progress)}/${Math.round(progressMax)}`
+                        }
                     </Typography>
-                    <Box sx={{ width: '100%', marginTop: '8px', display: 'flex', alignItems: 'center' }}>
-                        <LinearProgress variant="determinate" value={progressValue} sx={{ height: '10px', borderRadius: '5px', backgroundColor: '#fff', flexGrow: 1, transition: 'width 1.5s ease-in-out' }} />
-                        <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.9rem' : '0.875rem' }}>
-                                {isDataHog 
-                                    ? `${progress.toFixed(2)}/${progressMax.toFixed(2)} KB`
-                                    : `${Math.round(progress)}/${Math.round(progressMax)}`
-                                }
-                            </Typography>
-                    </Box>
                 </Box>
             </Box>
         </Snackbar>
@@ -115,79 +114,120 @@ const AchievementProgressRuntime: React.FC<AchievementProgressRuntimeProps> = ({
             open={open}
             onClose={onClose}
             TransitionComponent={Slide}
+            // @ts-ignore
+            TransitionProps={{ direction: "left" }} // slide from right to left
             key={"slide"}
             autoHideDuration={3000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-            sx={{ marginBottom: isMobile ? "0" : "-25px" }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            sx={{ top: isMobile ? '48px' : '100px', right: isMobile ? '20px' : '40px' }}
         >
             <Box
                 sx={{
-                    width: "100vw",
-                    height: isMobile ? "auto" : "175px",
+                    width: isMobile ? "250px" : "350px", // further reduced width for mobile
+                    borderRadius: "8px",
                     display: 'flex',
-                    flexDirection: isMobile ? 'column' : 'row',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    padding: '16px',
-                    position: 'relative',
+                    flexDirection: 'column',
+                    padding: isMobile ? '8px' : '12px', // reduced padding
                     backdropFilter: "blur(15px)",
-                    "WebkitBackdropFilter": "blur(15px)",
+                    WebkitBackdropFilter: "blur(15px)",
                     border: "1px solid rgba(255,255,255,0.18)",
                     backgroundColor: hexToRGBA("#0090f2", 0.31),
                 }}
             >
-                <Box
-                    sx={{
-                        display: "flex",
-                        flexDirection: isMobile ? 'column' : 'row',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: '100%',
-                    }}
-                >
-                    <Typography variant="h4" sx={{ color: '#fff', marginRight: isMobile ? '0' : '16px', marginBottom: isMobile ? '16px' : '0', fontSize: isMobile ? '1.5rem' : '2.125rem' }}>
+                <Box sx={{ display: "flex", alignItems: "center", marginBottom: '8px' }}>
+                    {React.cloneElement(icon as React.ReactElement, { style: { width: isMobile ? 20 : 24, height: isMobile ? 20 : 24, marginRight: '8px' } })}
+                    <Typography variant="h6" sx={{ color: '#fff', fontSize: isMobile ? '0.9rem' : '1rem', fontWeight: 'bold' }}>
                         {title}
                     </Typography>
-                    {icon}
-                    <Box sx={{ display: "flex", flexDirection: "column", width: isMobile ? "100%" : "40%", marginTop: isMobile ? '16px' : '0' }}>
-                        <Typography variant="body1" sx={{ color: '#fff', marginBottom: '8px', fontSize: isMobile ? '1rem' : '1rem' }}>
-                            {description}
-                        </Typography>
-                        <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
-                            <LinearProgress 
-                                variant="determinate" 
-                                value={progressValue} 
-                                sx={{ 
-                                    height: '10px', 
-                                    borderRadius: '5px', 
-                                    backgroundColor: 'rgba(255,255,255,0.3)', 
-                                    flexGrow: 1, 
-                                    transition: 'width 1.5s ease-in-out',
-                                    '& .MuiLinearProgress-bar': {
-                                        backgroundColor: '#fff',
-                                    }
-                                }} 
-                            />
-                            <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.9rem' : '1rem' }}>{`${progress}/${progressMax}`}</Typography>
-                        </Box>
-                    </Box>
                 </Box>
-                <Box
-                    sx={{
-                        position: isMobile ? 'relative' : 'absolute',
-                        top: isMobile ? '0' : '0%',
-                        left: isMobile ? '0' : '50%',
-                        transform: isMobile ? 'none' : 'translate(-50%, -50%)',
-                        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-                        borderRadius: '2px',
-                        padding: '8px 16px',
-                        zIndex: 1,
-                    }}
-                >
-                    <Typography variant="h6" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '1.25rem', textAlign: isMobile ? 'center' : 'left' }}>
-                        Progression Update
+                <Typography variant="body2" sx={{ color: '#fff', fontSize: isMobile ? '0.75rem' : '0.875rem', marginBottom: '8px' }}>
+                    {description}
+                </Typography>
+                <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+                    <LinearProgress 
+                        variant="determinate" 
+                        value={progressValue} 
+                        sx={{ 
+                            height: '8px', 
+                            borderRadius: '4px', 
+                            backgroundColor: 'rgba(255,255,255,0.3)', 
+                            flexGrow: 1, 
+                            transition: 'width 1.5s ease-in-out',
+                            '& .MuiLinearProgress-bar': {
+                                backgroundColor: '#fff',
+                            }
+                        }} 
+                    />
+                    <Typography sx={{ marginLeft: '8px', color: '#fff', fontSize: isMobile ? '0.7rem' : '0.75rem' }}>{`${progress}/${progressMax}`}</Typography>
+                </Box>
+                <Typography variant="caption" sx={{ color: '#fff', fontSize: isMobile ? '0.7rem' : '0.75rem', marginTop: '4px', alignSelf: 'flex-end' }}>
+                    Progression Update
+                </Typography>
+            </Box>
+        </Snackbar>
+    );
+};
+
+interface AchievementMobileProps {
+    open: boolean;
+    onClose: () => void;
+    title: string;
+    description: string;
+    icon: React.ReactNode;
+}
+
+const AchievementMobile: React.FC<AchievementMobileProps> = ({ open, onClose, title, description, icon }) => {
+    return (
+        <Snackbar
+            open={open}
+            onClose={onClose}
+            TransitionComponent={Slide}
+            // @ts-ignore
+            TransitionProps={{ direction: "left" }} // slide from right to left
+            key={"slide"}
+            autoHideDuration={4000}
+            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            sx={{ top: '48px', right: '20px' }}
+        >
+            <Box
+                sx={{
+                    width: "250px",
+                    borderRadius: "8px",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    padding: '12px',
+                    backdropFilter: "blur(15px)",
+                    WebkitBackdropFilter: "blur(15px)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    backgroundColor: hexToRGBA("#0090f2", 0.31),
+                    boxShadow: '0 0 15px 5px rgba(0, 144, 242, 0.5)', // add glow effect
+                    animation: 'pulse 2s infinite', // add pulsing animation
+                    '@keyframes pulse': {
+                        '0%': {
+                            boxShadow: '0 0 15px 5px rgba(0, 144, 242, 0.5)',
+                        },
+                        '50%': {
+                            boxShadow: '0 0 25px 10px rgba(0, 144, 242, 0.7)',
+                        },
+                        '100%': {
+                            boxShadow: '0 0 15px 5px rgba(0, 144, 242, 0.5)',
+                        },
+                    },
+                }}
+            >
+                <Box sx={{ display: "flex", alignItems: "center", marginBottom: '8px' }}>
+                    {React.cloneElement(icon as React.ReactElement, { style: { width: 24, height: 24, marginRight: '8px' } })}
+                    <Typography sx={{ color: '#fff', fontSize: '0.9rem', fontWeight: 'bold', flexGrow: 1 }}>
+                        {title}
                     </Typography>
+                    <CheckCircle sx={{ color: '#4caf50', width: 20, height: 20 }} />
                 </Box>
+                <Typography variant="body2" sx={{ color: '#fff', fontSize: '0.75rem', marginBottom: '8px' }}>
+                    {description}
+                </Typography>
+                <Typography variant="caption" sx={{ color: '#fff', fontSize: '0.7rem', alignSelf: 'flex-end' }}>
+                    Achievement Unlocked
+                </Typography>
             </Box>
         </Snackbar>
     );
@@ -254,8 +294,8 @@ const Achievement: React.FC<AchievementProps> = ({ open, onClose, title, descrip
                     }}
                 >
                     <Typography variant="h6" sx={{ color: '#fff', fontSize: isMobile ? '1rem' : '1.25rem', textAlign: isMobile ? 'center' : 'left' }}>
-                        Progression Tier Reached
-                    </Typography>
+                    Progression Tier Reached
+                </Typography>
                 </Box>
             </Box>
         </Snackbar>
@@ -310,7 +350,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
     const [progressionData, setProgressionData] = useState<Progression | null>(null);
     const [progressionLevel, setProgressionLevel] = useState('');
     const [progressionLevelMax, setProgressionLevelMax] = useState('');
-
+    const isMobile = useIsMobile();
     
 
     const getProgressions = async () => {
@@ -480,10 +520,12 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
     };
 
     const getAchievementNotification = (progression: string) => {
+        const AchievementComponent = isMobile ? AchievementMobile : Achievement;
+
         switch (progression) {
             case "data_hog":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Data Hog"
@@ -493,7 +535,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "hungry_learner":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Hungry Learner"
@@ -503,7 +545,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "man_of_the_inside":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Man on the Inside"
@@ -513,7 +555,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "scribe":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="The Scribe"
@@ -523,7 +565,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "tenacious":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Tenacious"
@@ -533,7 +575,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "hot_streak":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={true}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Hot Streak"
@@ -543,7 +585,7 @@ const ProgressionNotification: React.FC<ProgressionNotificationProps> = ({ progr
                 );
             case "unit_mastery":
                 return (
-                    <Achievement
+                    <AchievementComponent
                         open={achieveOpen}
                         onClose={() => { setAchieveOpen(false); onClose(); }}
                         title="Unit Mastery"
