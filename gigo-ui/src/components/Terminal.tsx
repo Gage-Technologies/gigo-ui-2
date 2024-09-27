@@ -22,12 +22,12 @@ interface OutputState {
 
 // million-ignore
 const ByteTerminal = (
-    { output, onClose, onStop, isRunning, onInputSubmit, fontSize }: 
-    { 
-        output: OutputState, 
-        onClose: () => void, 
-        onStop: () => void, 
-        isRunning: boolean, 
+    { output, onClose, onStop, isRunning, onInputSubmit, fontSize }:
+    {
+        output: OutputState,
+        onClose: () => void,
+        onStop: () => void,
+        isRunning: boolean,
         onInputSubmit: (input: string) => void,
         fontSize?: string
     }
@@ -40,6 +40,11 @@ const ByteTerminal = (
     const isLightMode = theme.palette.mode === 'light';
     const isMobile = window.innerWidth < 1000
 
+    let terminalHeight = isMobile ? window.innerHeight / 2 : 200; // Only apply the logic if it's mobile
+    if (terminalHeight < 200) {
+        terminalHeight = 200;
+    }
+
     // Adjust terminal styles based on the theme mode
     const terminalStyle: CSSProperties = {
         backgroundColor: isLightMode ? "#f4f5f4" : "#232a2f",
@@ -51,11 +56,12 @@ const ByteTerminal = (
         marginTop: isMobile ? "0" : "20px",
         borderRadius: "5px",
         whiteSpace: "pre-wrap",
-        height: "200px",
+        height: `${terminalHeight}px`,
         overflowY: 'auto',
         wordWrap: 'break-word',
         position: "relative",
         minWidth: '100%',
+        borderTop: isMobile ? "5px solid black" : ""
     };
 
     const inputStyle: CSSProperties = {

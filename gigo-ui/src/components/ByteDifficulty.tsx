@@ -94,21 +94,21 @@ export default function DifficultyAdjuster(props: DifficultyAdjusterProps) {
             </Typography>
             <DifficultyContainer>
                 <IconButton
-                    size="small"
+                    size="large"
                     onClick={decrementDifficulty}
                     disabled={difficultyLevel === 0} // Disable if at level 1
                     aria-label="decrease difficulty"
                 >
-                    <ArrowBackIosNewIcon fontSize="small" />
+                    <ArrowBackIosNewIcon fontSize="large" />
                 </IconButton>
                 {getColorForDifficulty(difficultyLevel)}
                 <IconButton
-                    size="small"
+                    size="large"
                     onClick={incrementDifficulty}
                     disabled={difficultyLevel === MAX_LEVELS} // Disable if at max level
                     aria-label="increase difficulty"
                 >
-                    <ArrowForwardIosIcon fontSize="small" />
+                    <ArrowForwardIosIcon fontSize="large" />
                 </IconButton>
             </DifficultyContainer>
         </Box>
